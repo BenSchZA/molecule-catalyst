@@ -1,0 +1,9 @@
+FROM node:carbon
+
+RUN npm install -g --unsafe-perm ganache-cli && \
+    npm install -g truffle && \
+    npm set progress=false
+
+EXPOSE 7545
+
+CMD ganache-cli --port 7545

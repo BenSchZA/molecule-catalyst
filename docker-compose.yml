@@ -1,0 +1,70 @@
+version: '3.5'
+services:
+  core:
+    image: registry.gitlab.com/linumlabs/molecule-sandbox/build/core:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile.core
+  builder:
+    image: registry.gitlab.com/linumlabs/molecule-sandbox/build/builder:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args: 
+        - API_HOST # Passed from pipeline env
+        - API_SCHEMA # Passed from pipeline env
+    depends_on:
+      - core
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    command: mongod --smallfiles --logpath=/dev/null
+#    logging:
+#      options:
+#        max-size: 50m
+  apiserver:
+    image: $MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE
+    build:
+      context: .
+      dockerfile: ./ApiServer/Dockerfile
+    # env_file:
+    #   - ./ApiServer/.env
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+    depends_on:
+      - mongo
+      - builder
+    ports:
+      - 3001:3001
+    links:
+      - mongo
+  webapp:
+    image: $MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE
+    build:
+      context: .
+      dockerfile: ./WebApp/Dockerfile
+      # args: 
+      #   - API_HOST=$API_HOST # Passed from pipeline env
+      #   - API_SCHEMA=$API_SCHEMA # Passed from pipeline env
+    # env_file:
+    #   - ./WebApp/.env
+    depends_on:
+      - apiserver
+      - builder
+    ports:
+      - 3000:80
+    links:
+      - apiserver
+volumes:
+    mongodb:
+
+#  ganache:
+#    image: $GANACHE_CONTAINER_IMAGE
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.Ganache
+#    ports:
+#      - 7545:7545
