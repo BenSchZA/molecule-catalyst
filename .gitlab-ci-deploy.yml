@@ -1,7 +1,7 @@
 # If build passses tests, push to release CR
 docker-build:
   stage: docker-build
-  image: registry.gitlab.com/linumlabs/molecule-sandbox/build/docker-env:latest
+  image: registry.gitlab.com/linumlabs/molecule-alpha/build/docker-env:latest
   services: 
     - docker:dind
   before_script:
@@ -21,7 +21,7 @@ docker-build:
 
 deploy:
   stage: deploy
-  image: registry.gitlab.com/linumlabs/molecule-sandbox/build/k8s-env:latest
+  image: registry.gitlab.com/linumlabs/molecule-alpha/build/k8s-env:latest
   environment:
     name: $CI_BUILD_REF_NAME
   variables:
