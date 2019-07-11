@@ -1,0 +1,5 @@
+.*
+**/node_modules
+ApiServer/dist
+Blockchain/build
+WebApp/build

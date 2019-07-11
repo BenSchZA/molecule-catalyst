@@ -1,0 +1,31 @@
+include:
+  - .gitlab-ci-test.yml
+  - .gitlab-ci-deploy.yml 
+
+image: registry.gitlab.com/linumlabs/molecule-sandbox/build/node-env:latest
+
+# Cache modules in between jobs for current branch
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - apt-cache/
+
+variables:
+  MOLECULE_FRONTEND_CONTAINER_IMAGE: registry.gitlab.com/linumlabs/molecule-sandbox/testing/molecule-frontend:$CI_BUILD_REF_NAME
+  MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE: registry.gitlab.com/linumlabs/molecule-sandbox/release/molecule-frontend:$CI_BUILD_REF_NAME
+  MOLECULE_BACKEND_CONTAINER_IMAGE: registry.gitlab.com/linumlabs/molecule-sandbox/testing/molecule-backend:$CI_BUILD_REF_NAME
+  MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE: registry.gitlab.com/linumlabs/molecule-sandbox/release/molecule-backend:$CI_BUILD_REF_NAME
+  API_HOST: api-$CI_BUILD_REF_NAME.mol.ai/api
+  GIT_SUBMODULE_STRATEGY: recursive
+  # DOCKER_HOST: tcp://localhost:2375/
+  NODE_OPTIONS: --max-old-space-size=4096
+  TOOL_NODE_FLAGS: --max-old-space-size=4096
+
+stages:
+  - build
+  - test
+  - merge
+  - docker-build
+  - push
+  - deploy

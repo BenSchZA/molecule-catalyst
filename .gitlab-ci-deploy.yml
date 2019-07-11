@@ -1,0 +1,39 @@
+# If build passses tests, push to release CR
+docker-build:
+  stage: docker-build
+  image: registry.gitlab.com/linumlabs/molecule-sandbox/build/docker-env:latest
+  services: 
+    - docker:dind
+  before_script:
+    - echo "Starting Docker build stage..."
+    - echo "Override global 'before_script'"
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker-compose -v
+    - docker-compose pull || true
+    - docker-compose build
+    - docker-compose up -d
+    - docker-compose down
+    - docker-compose push
+  only:
+    - nightly
+    - staging
+
+deploy:
+  stage: deploy
+  image: registry.gitlab.com/linumlabs/molecule-sandbox/build/k8s-env:latest
+  environment:
+    name: $CI_BUILD_REF_NAME
+  variables:
+    CLUSTER: AmazonEKS_LinumLabs_Spot
+    NAMESPACE: molecule-$CI_BUILD_REF_NAME
+  before_script:
+    - echo "Starting deploy stage..."
+    - echo "Override global 'before_script'"
+  script:
+    - .gitlab-ci-scripts/configure-k8s.sh
+    - sed 's/_APP_/'"$CI_ENVIRONMENT_SLUG"'/g; s/_TAG_/'"$CI_BUILD_REF_NAME"'/g; s/_DATE_/'\"$(date +'%s')\"'/g' ./.k8s-config/molecule-deployment.yml > kubernetes.yml;
+    - kubectl apply -f kubernetes.yml
+  only:
+    - nightly
+    - staging

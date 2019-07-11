@@ -1,0 +1,16 @@
+# Use LTS Node environment as build environment
+FROM node:10.15.3-alpine
+
+RUN apk add --no-cache \
+  git \
+  python \
+  python-dev \
+  py-pip \
+  build-base \
+  linux-headers \
+  eudev-dev \
+  libusb-dev \
+  musl-dev \
+  openssl-dev \
+  automake \
+  autoconf
