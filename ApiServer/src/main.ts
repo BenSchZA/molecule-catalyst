@@ -9,7 +9,6 @@ import { LoggerService } from './logger.service';
 
 
 async function bootstrap() {
-  require('appmetrics-dash').monitor({port: 3002});
   const app = await NestFactory.create(ApplicationModule, {logger: new LoggerService('NEST')});
 
   const configService = app.get(ConfigService);

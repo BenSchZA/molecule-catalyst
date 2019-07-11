@@ -43,7 +43,6 @@
     "@nestjs/terminus": "6.3.3",
     "@nestjs/websockets": "^6.0.0",
     "@panterazar/nestjs-prom": "0.0.5",
-    "appmetrics-dash": "^5.0.0",
     "bcrypt": "^3.0.4",
     "class-transformer": "0.2.3",
     "class-validator": "^0.9.1",
