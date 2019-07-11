@@ -26,13 +26,13 @@ deploy:
     name: $CI_BUILD_REF_NAME
   variables:
     CLUSTER: AmazonEKS_LinumLabs_Spot
-    NAMESPACE: molecule-$CI_BUILD_REF_NAME
+    NAMESPACE: molecule-alpha-$CI_BUILD_REF_NAME
   before_script:
     - echo "Starting deploy stage..."
     - echo "Override global 'before_script'"
   script:
     - .gitlab-ci-scripts/configure-k8s.sh
-    - sed 's/_APP_/'"$CI_ENVIRONMENT_SLUG"'/g; s/_TAG_/'"$CI_BUILD_REF_NAME"'/g; s/_DATE_/'\"$(date +'%s')\"'/g' ./.k8s-config/molecule-deployment.yml > kubernetes.yml;
+    - sed 's/_NAMESPACE_/'"$NAMESPACE"'/g; s/_TAG_/'"$CI_BUILD_REF_NAME"'/g; s/_DATE_/'\"$(date +'%s')\"'/g' ./.k8s-config/molecule-deployment.yml > kubernetes.yml;
     - kubectl apply -f kubernetes.yml
   only:
     - nightly
