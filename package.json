@@ -10,7 +10,7 @@
     "build:apiserver": "yarn wsrun -p molecule-apiserver -c build",
     "start:dev": "yarn wsrun start:dev --parallel --exclude-missing",
     "clean": "rm -rf ./node_modules && rm -rf ./*/node_modules",
-    "test:webapp": "cd Webapp && yarn test:watch"
+    "test:webapp": "yarn wsrun -p molecule-webapp -c test:watch"
   },
   "repository": {
     "type": "git",
