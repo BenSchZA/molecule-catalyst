@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ethInit": "etherlime init",
     "start": "etherlime ganache",
     "start:devnets": "docker image pull yodascholtz/parity-ubuntu:latest && docker run -p 8545:8545 yodascholtz/parity-ubuntu:latest",
     "build": "etherlime compile",
@@ -24,6 +23,6 @@
     "etherlime": "github:BenSchZA/etherlime#temp-feature",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",
-    "solc": "0.5.10"
+    "solc": "0.5.9"
   }
 }
