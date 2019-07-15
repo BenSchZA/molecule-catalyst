@@ -4,10 +4,18 @@ import { DomainState as AuthenticationState } from '../domain/authentication/typ
 import { ContainerState as LoginPageState } from '../containers/LoginPage/types';
 import { ContainerState as SignupPageState } from '../containers/SignUpPage/types';
 
-export interface LifeStore extends Store {
+export interface LifeStore extends Store<{}> {
   injectedReducers: any;
   injectedSagas: any;
   runSaga(saga: (() => IterableIterator<any>) | undefined, args: any | undefined): any;
+
+    /**
+   * Interoperability point for observable/reactive libraries.
+   * @returns {observable} A minimal observable of state changes.
+   * For more information, see the observable proposal:
+   * https://github.com/tc39/proposal-observable
+   */
+  [Symbol.observable](): Observable<S>;
 }
 
 export interface InjectReducerParams {
