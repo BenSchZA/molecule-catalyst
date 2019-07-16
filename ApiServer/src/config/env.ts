@@ -30,8 +30,6 @@ export const env = {
       port: toNumber(getOsEnv('MONGO_PORT')),
     }],
     database: getOsEnv('MONGO_DATABASE'),
-  },
-  options: {
     authSource: getOsEnv('MONGO_AUTH_SOURCE'),
   },
   bcrypt: {
