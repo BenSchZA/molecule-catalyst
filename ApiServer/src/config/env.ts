@@ -31,6 +31,9 @@ export const env = {
     }],
     database: getOsEnv('MONGO_DATABASE'),
   },
+  options: {
+    authSource: getOsEnv('MONGO_AUTH_SOURCE'),
+  },
   bcrypt: {
     saltRounds: toNumber(getOsEnv('BCRYPT_SALT_ROUND')),
   },
