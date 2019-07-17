@@ -47,13 +47,23 @@ contract Vault {
         _;
     }
 
-    function updateCreator(address _newCreator) 
+    /**
+      * @dev Allows deploying factory to update the address of the creator
+      *         incase the creator looses access to their wallet.
+      * @param _newCreator The address of the creators new wallet.
+      */
+    function updateCreator(address _newCreator)
         public
     {
         require(msg.sender == factory, "Only the deploying factory can change creator address");
         creator = _newCreator;
     }
 
+    /**
+      * @dev Sets the starting time of the phases.
+      * @param _market the address of the market that will
+      *     be sending funds to the vault.
+      */
     function startPhase(address _market)
         public
         onlyCreator()
@@ -62,6 +72,11 @@ contract Vault {
         startTime = block.timestamp;
     }
 
+    /**
+      * @dev Allows the creator to withdraw a funding goal if the phase period has not
+      *     expired, and the phases funding goal has been reached. Then
+      *     sendes the creator their funds, and increments the phase counter.
+      */
     function withdraw()
         public
         onlyCreator()
