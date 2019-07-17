@@ -6,10 +6,14 @@ image: registry.gitlab.com/linumlabs/molecule-alpha/build/node-env:latest
 
 # Cache modules in between jobs for current branch
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  #key: ${CI_COMMIT_REF_SLUG}
+  untracked: true
   paths:
     - node_modules/
-    - **/node_modules/
+    - ./*/node_modules/
+    - Blockchain/node_modules/
+    - ApiServer/node_modules/
+    - WebApp/node_modules/
     - apt-cache/
 
 variables:
