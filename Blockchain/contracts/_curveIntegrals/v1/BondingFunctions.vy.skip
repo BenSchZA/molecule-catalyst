@@ -1,0 +1,55 @@
+# Configure decimal point precision and scaling
+DECIMALS: constant(int128) = 18
+SCALE: constant(decimal) = convert(10**DECIMALS, decimal)
+
+@public
+@constant
+def curveIntegral(x_t: uint256, gradientDenominator: uint256, b: uint256) -> uint256:
+    # Convert scaled uint256 values from Solidity to decimal point values
+    _x_t: decimal = convert(x_t, decimal)/SCALE
+    
+    _gradient_denominator: decimal = convert(gradientDenominator, decimal)
+    _gradient: decimal = (1.0/_gradient_denominator)
+
+    _b: decimal = convert(b, decimal)/SCALE
+
+    # Convert to int128 type for exponentiation operation
+    _i128_scale: int128 = convert(SCALE, int128)
+    _i128_x_t: int128 = convert(x_t, int128)/_i128_scale
+
+    # Only int128 & uint256 support exponentiation (a**b)
+    _i128_sqr: int128 = _i128_x_t**2
+    _sqr: decimal = convert(_i128_sqr, decimal)
+
+    # Calculate result and return scaled uint
+    result: decimal = (_sqr*_gradient)/2.0 + _b*_x_t
+    return convert(result*SCALE, uint256)
+
+@public
+@constant
+def inverseCurveIntegral(x_d: uint256, gradientDenominator: uint256, b: uint256) -> uint256:
+    # Convert scaled uint256 values from Solidity to decimal point values
+    _x_d: decimal = convert(x_d, decimal)/SCALE
+
+    _gradient_denominator: decimal = convert(gradientDenominator, decimal)
+    _gradient: decimal = (1.0/_gradient_denominator)
+
+    _b: decimal = convert(b, decimal)/SCALE
+
+    # Convert to int128 type for exponentiation operation
+    _i128_b: int128 = convert(b, int128)
+
+    # Only int128 & uint256 support exponentiation (a**b)
+    _i128_sqr: int128 = _i128_b**2
+    _sqr: decimal = convert(_i128_sqr, decimal)/SCALE/SCALE
+
+    # The sqrt() function only supports decimal type
+    arg: decimal = _sqr + 2.0*_gradient*_x_d
+    sqrt_arg: decimal = sqrt(arg)
+
+    # Calculate result and return scaled uint
+    # TODO: UNDERFLOW ERROR - (-_b + sqrt_arg) always returns 0, division by 0 throws VM execution error
+    result: decimal = (-_b + sqrt_arg)/_gradient
+    return convert(result*SCALE, uint256)
+
+

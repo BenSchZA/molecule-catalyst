@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "etherlime ganache",
-    "start:devnets": "docker image pull yodascholtz/parity-ubuntu:latest && docker run -p 8545:8545 yodascholtz/parity-ubuntu:latest",
-    "build": "etherlime compile",
+    "build": "etherlime compile  --runs=999",
     "deploy:local": "etherlime deploy --runs=500",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
-    "test": "etherlime test --output=none --timeout 100000",
+    "test": "yarn build && etherlime test --skip-compilation=true  --runs=999 --timeout=10000ms --gas-report=true",
     "test-debug": "node --inspect-brk ./node_modules/etherlime/cli.js test --timeout 100000",
     "test-debug-idea": "node $NODE_DEBUG_OPTION ./node_modules/etherlime/cli.js test --timeout 100000"
   },
@@ -20,7 +19,8 @@
     "babel-polyfill": "6.26.0",
     "babel-register": "6.26.0",
     "dotenv": "8.0.0",
-    "etherlime": "github:BenSchZA/etherlime#temp-feature",
+    "etherlime": "^2.1.5",
+    "etherlime-lib": "^1.1.2",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",
     "solc": "0.5.9"
