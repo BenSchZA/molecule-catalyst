@@ -8,6 +8,8 @@ contract MarketFactory {
     address public superUser;
     //The address of the Molecule vault
     address public moleculeVault;
+    //The token address to be used for collateral 
+    address public collateralToken;
     //The storage struct of a market
     struct Market {
         address curve;
@@ -20,7 +22,7 @@ contract MarketFactory {
     event MarketCreated(address indexed curve, address indexed vault, address indexed creator);
 
     //todo add address for mol valut
-    constructor() public {
+    constructor(address _collateralToken) public {
         superUser = msg.sender;
     }
 
@@ -61,7 +63,8 @@ contract MarketFactory {
         Vault newVault = new Vault(
             _fundingGoals,
             _phaseDurations,
-            _creator
+            _creator,
+            collateralToken
         );
         //todo: Consider not passing the curve type to the curve contract,
         //      rather passing gradient/tax % etc, or have multiple preset
@@ -69,15 +72,20 @@ contract MarketFactory {
         //      currently.
         Curve newCurve = new Curve(
             _curveType,
-            address(newVault)
+            address(newVault),
+            collateralToken
         );
         //Adding market to markets
-        markets[address(newVault)] = Market({
+        markets(address(newVault)) = Market({
             curve: address(newCurve),
             vault: address(newVault),
             creator: _creator
         });
         //emitting event for creation
         emit MarketCreated(address(newCurve), address(newVault), _creator);
+    }
+
+    function getCreator(address _vault) public returns(address) {
+        return markets(_vault).creator;
     }
 }
