@@ -46,14 +46,14 @@ contract MarketFactory {
 
     /**
       * @author Veronica - @veronicalc
-      * @dev    This function allows for the creation of a 
+      * @dev    This function allows for the creation of a
       *         new market, consisting of a curve and vault
-      * @notice Vyper cannot handle arrays of unknown length, 
-      *         and thus the funding goals and durations will 
-      *         only be stored in the vault, which is Solidity. 
-      * @param _fundingGoals This is the amount wanting to be 
+      * @notice Vyper cannot handle arrays of unknown length,
+      *         and thus the funding goals and durations will
+      *         only be stored in the vault, which is Solidity.
+      * @param _fundingGoals This is the amount wanting to be
       *             raised in each round, in collateral.
-      * @param _phaseDurations The time for each round in 
+      * @param _phaseDurations The time for each round in
       *             number of blocks.
       * @param _creator Address of the researcher.
       */
@@ -63,8 +63,8 @@ contract MarketFactory {
         address _creator,
         uint8 _curveType
     )
-        onlySuper(msg.sender)
         public
+        onlySuper(msg.sender)
     {
         //todo: Consider not passing the creator address,
         //      instead pulling it from this factory.
@@ -75,9 +75,9 @@ contract MarketFactory {
             _creator
         );
         //todo: Consider not passing the curve type to the curve contract,
-        //      rather passing gradient/tax % etc, or have multiple preset 
+        //      rather passing gradient/tax % etc, or have multiple preset
         //      curves to choose from, as a curve types does not mean anything
-        //      currently. 
+        //      currently.
         Curve newCurve = new Curve(
             _curveType,
             address(newVault)
@@ -88,7 +88,7 @@ contract MarketFactory {
             vault: address(newVault),
             creator: _creator
         });
-        //emitting event for creation 
+        //emitting event for creation
         emit MarketCreated(address(newCurve), address(newVault), _creator);
     }
 }
