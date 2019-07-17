@@ -17,15 +17,12 @@ contract MarketFactory {
     //Storage used by vault
     mapping(address => Market) public markets;
 
-//------------------------------------------------
-//          EVENTS
-//------------------------------------------------
-
     event MarketCreated(address indexed curve, address indexed vault, address indexed creator);
 
-//------------------------------------------------
-//          MODIFERS
-//------------------------------------------------
+    //todo add address for mol valut
+    constructor() public {
+        superUser = msg.sender;
+    }
 
     //Access control to functions
     modifier onlySuper(address _user) {
@@ -34,15 +31,7 @@ contract MarketFactory {
             "Only the Molecule superuser can access this function"
         );
         _;
-    }
-
-//------------------------------------------------
-//          FUNCTIONS
-//------------------------------------------------
-
-    constructor() public {
-        superUser = msg.sender;
-    }
+    }//todo steal adminManaged from Protea
 
     /**
       * @author Veronica - @veronicalc
@@ -62,7 +51,7 @@ contract MarketFactory {
         uint256[] memory _phaseDurations,
         address _creator,
         uint8 _curveType
-    )
+    )//todo add registry seporatly
         public
         onlySuper(msg.sender)
     {
