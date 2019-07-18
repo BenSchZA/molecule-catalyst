@@ -86,6 +86,8 @@ contract Vault is Ownable {
         );
     }
 
+    // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
+
     function currentPhase() public view returns(uint256) {
         return currentPhase_;
     }
