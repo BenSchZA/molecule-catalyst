@@ -2,11 +2,13 @@ pragma solidity 0.5.9;
 
 import { Ownable } from "../_resources/openzeppelin-solidity/ownership/Ownable.sol";
 import { IMarket } from "../market/IMarket.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is Ownable {
     address internal market_;
     address internal collateralToken_;
+    address internal moleculeVault_;
 
     uint256 internal currentPhase_;
 
@@ -19,7 +21,7 @@ contract Vault is Ownable {
         uint256 fundingThreshold; // Collateral limit to trigger funding
         uint256 phaseDuration; // Period of time from start of phase till end
         uint256 startDate;
-        bool fundingReached;
+        bool fundingWithdrawn;
     }
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
@@ -29,7 +31,8 @@ contract Vault is Ownable {
         uint256[] memory _fundingGoals,
         uint256[] memory _phaseDurations,
         address _creator,
-        address _collateralToken
+        address _collateralToken,
+        address _moleculeVault
     )
         public
     {
@@ -38,6 +41,7 @@ contract Vault is Ownable {
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
 
         collateralToken_ = _collateralToken;
+        moleculeVault_ = _moleculeVault;
 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
@@ -60,21 +64,42 @@ contract Vault is Ownable {
         transferOwnership(_creator);
     }
 
-    function withdraw(uint256 _phase, uint256 _amount) external onlyOwner() returns(bool){
-        // TODO: Align with required business logic
-        require(fundingPhases_[_phase].fundingReached, "Phase not completed");
+    function withdraw(uint256 _phase, uint256 _amount)
+        external
+        onlyOwner()
+        returns(bool)
+    {
+        require(_validateFunding(), "Round invalid. Phase end exceeded or funding goal not reached");
+        //todo: check that its not in final phase
+            //check phase has not expired and goal has been reached
+            //set fundingWithdrawn to true
+            //send creator rounds funing
+            //todo: set fundingWithdrawn to true & increment current phase
+        require(fundingPhases_[_phase].fundingWithdrawn, "Phase not completed");
         require(IMarket(market_).poolBalance() >= fundingPhases_[_phase].fundingThreshold, "Threshold not reached");
     }
 
-    function validateFunding(uint256 _poolBalance) external onlyMarket() returns(bool){
-        if(_poolBalance >= fundingPhases_[currentPhase_].fundingThreshold){
-            if(fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration <= now){
-                fundingPhases_[currentPhase_].fundingReached = true;
-                currentPhase_ = currentPhase_ + 1;
-                fundingPhases_[currentPhase_].startDate = now;
-            }
-        }
-        return true;
+    function withdrawAndClose()
+        external
+        onlyOwner()
+    {
+        require(_validateFunding(), "Round invalid. Phase end exceeded or funding goal not reached");
+        uint256 vaultBalance = IERC20(collateralToken_).balanceOf(address(this));
+        //todo: set fundingWithdrawn to true & increment current phase
+        require(IERC20().transfer(msg.sender, vaultBalance), "Fund transfer failed");
+        //todo: lock the market from buying selling, only allow withdraw
+    }
+
+    function _validateFunding() internal returns(bool){
+        require(!fundingPhases_[currentPhase_].fundingWithdrawn, "Funding has been wtihdrawn for this round");
+        require(
+            IERC20(collateralToken_).balanceOf(address(this)) >= fundingPhases_[currentPhase_].fundingThreshold,
+            "Funding goal not reached"
+        );
+        require(
+            (fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration) <= now,
+            "Funding phase expired"
+        );
     }
 
     function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, bool) {
@@ -82,7 +107,7 @@ contract Vault is Ownable {
             fundingPhases_[_phase].fundingThreshold,
             fundingPhases_[_phase].phaseDuration,
             fundingPhases_[_phase].startDate,
-            fundingPhases_[_phase].fundingReached
+            fundingPhases_[_phase].fundingWithdrawn
         );
     }
 

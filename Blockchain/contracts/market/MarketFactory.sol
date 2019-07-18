@@ -35,13 +35,14 @@ contract MarketFactory is AdminManaged {
       *             number of blocks.
       * @param _creator Address of the researcher.
       * @param _curveType Curve selected
+      * @param _taxationRate The pecentage of taxation. e.g: 60
       */
     function deployMarket(
         uint256[] calldata _fundingGoals,
         uint256[] calldata _phaseDurations,
         address _creator,
         uint256 _curveType,
-        uint256 _contributionRate
+        uint256 _taxationRate
     )
         external
         onlyAdmin()
@@ -51,21 +52,20 @@ contract MarketFactory is AdminManaged {
         require(curveState == true, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
 
-        //      instead pulling it from this factory.
-        //      Allows for the address to be changed with min effort
         address newVault = address(new Vault(
             _fundingGoals,
             _phaseDurations,
             _creator,
-            collateralToken_
+            collateralToken_,
+            moleculeVault_
         ));
 
         address newMarket = address(new Market(
-            _contributionRate,
-            moleculeVault_,
+            _taxationRate,
             newVault,
-            curveLibrary
-        ));
+            curveLibrary,
+            collateralToken_
+        ));//todo: needs to be sent index of curve to get from curve registry
 
         Vault(newVault).initialize(newMarket, _creator);
         IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);

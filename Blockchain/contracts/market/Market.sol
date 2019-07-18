@@ -3,17 +3,17 @@ pragma solidity 0.5.9;
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 import { IVault } from "../vault/IVault.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 /// @author Veronica & Ryan of Linum Labs
 /// @title Market
-contract Market {
+contract Market is IERC20 {
     using SafeMath for uint256;
 
-    address internal moleculeVault_;
     address internal creatorVault_;
-    uint256 internal contributionRate_;
+    uint256 internal taxationRate_;
     address internal curveLibrary_;
-    // uint256 internal gradientDenominator_;
+    address internal collateralToken_;
 
     uint256 internal totalSupply_;
     uint256 internal poolBalance_;
@@ -29,21 +29,18 @@ contract Market {
     event Mint(address indexed to, uint256 amount, uint256 totalCost);
     event Burn(address indexed from, uint256 amount, uint256 reward);
 
-
     constructor(
-        uint256 _contributionRate,
-        // uint256 _gradientDenominator,
-        address _moleculeVault,
+        uint256 _taxationRate,
         address _creatorVault,
-        address _curveLibrary
+        address _curveLibrary,
+        address _collateralToken
     )
         public
     {
-        contributionRate_ = _contributionRate;
-        // gradientDenominator_ = _gradientDenominator;
-        moleculeVault_ = _moleculeVault;
+        taxationRate_ = _taxationRate;
         creatorVault_ = _creatorVault;
         curveLibrary_ = _curveLibrary;
+        collateralToken_ = _collateralToken;
     }
 
     /// @dev                Approves transfers for a given address
@@ -86,25 +83,16 @@ contract Market {
     /// @param _to          :address Address to mint tokens to
     /// @param _numTokens   :uint256 The number of tokens you want to mint
     /// @dev                We have modified the minting function to divert a portion of the purchase tokens
-    // Rough gas usage 153,440
     function mint(address _to, uint256 _numTokens) external returns(bool) {
-        // uint256 priceForTokens = priceToMint(_numTokens);
-        // require(msg.value >= priceForTokens, "Insufficent funds sent");
-
-        // moleculeAccount_.transfer(priceForTokens.div(101)); // This takes the 1 percent out of the total price
-
-        // uint256 comContribution = _numTokens.div(100).mul(contributionRate_);
-        // totalSupply_ = totalSupply_.add(_numTokens);
-        // poolBalance_ = poolBalance_.add(priceForTokens.sub(priceForTokens.div(101))); // Minus amount sent to molecule
-        // balances[msg.sender] = balances[msg.sender].add(_numTokens.sub(comContribution)); // Minus amount sent to contribution target
-
-        // balances[contributionTarget_] = balances[contributionTarget_].add(comContribution); // Minus amount sent to contribution target
-
-        // // This is for sending back any excess xDai
-        // if (msg.value > priceForTokens) {
-        //     msg.sender.transfer(msg.value - priceForTokens);
-        // }
-
+        //todo: takes tax off of the collateral and sends to vault
+            //calls the vyper contract with this number of tokens
+            //collateral price returned is taxed
+            //tax is sent to vault
+            //user is sent tokens
+        // uint256 buyTax = (_colateralTokenOffered.div(100)).mul(taxationRate_);
+        //Remaining collateral gets sent to vyper to work out amount of tokens
+        // uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
+        // require(IERC20(collateralToken_).transfer(creatorVault_, buyTax), "buy tax to vault transaction failed");
         require(IVault(creatorVault_).validateFunding(poolBalance_), "Funding validation failed");
         emit Transfer(address(0), _to, _numTokens);
         return true;
@@ -161,7 +149,9 @@ contract Market {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             :uint256 Required collateral corrected for decimals
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
-        // TODO: Update
+        //todo: passes the token amount to vyper
+        //gets the collateral in return,
+        //add tax to token price
         uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance_);
         return rawDai.add(rawDai.div(100)); // Adding 1 percent
     }
@@ -178,9 +168,11 @@ contract Market {
     ///                     Including molecule & market contributions
     /// @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function colateralToTokenBuying(uint256 _colateralTokenOffered) external view returns(uint256) {
-        // TODO: Update
-        uint256 correctedForContribution = _colateralTokenOffered.sub(_colateralTokenOffered.div(101)); // Removing 1 percent
-        return inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForContribution)).sub(totalSupply_);
+        //Gets the amount for vault
+        uint256 buyTax = (_colateralTokenOffered.div(100)).mul(taxationRate_);
+        //Remaining collateral gets sent to vyper to work out amount of tokens
+        uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
+        return inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
@@ -194,7 +186,6 @@ contract Market {
             )
         );
     }
-
 
     /// @dev                Gets the value of the current allowance specifed for that account
     /// @param _owner       :address The account sending the funds.
@@ -227,16 +218,10 @@ contract Market {
         return totalSupply_;
     }
 
-    /// @dev                Returns the address where market contibution is sent
-    /// @return             :address Address of the contribution storing account
-    function moleculeVault() external view returns(address) {
-        return moleculeVault_;
-    }
-
     /// @dev                Returns the contribution rate for the market on Token purchase
     /// @return             :uint256 The percentage of incoming collateral collected as revenue
-    function contributionRate() external view returns(uint256) {
-        return contributionRate_;
+    function taxationRate() external view returns(uint256) {
+        return taxationRate_;
     }
 
     /// @dev                Returns the decimals set for the market
@@ -250,36 +235,8 @@ contract Market {
     /// @param _x            The number of tokens supply to integrate to
     /// @return             The total supply in tokens, not wei
     function curveIntegral(uint256 _x) internal view returns (uint256) {
-        // TODO: Update
-        /** This is the formula for the curve
-            f(x) = gradient*(x + b) + c
-            f(x) indicates it is a function of x, where x is the token supply
-            the gradient is the gradient of the curve i.e. the change in price over the change in token supply
-            c is the y-offset, which is set to 0 for now.
-            For more information visit:
-            https://en.wikipedia.org/wiki/Linear_function
-        */
-
-        // uint256 c = 0;
-
-        /* The gradient of a curve is the rate at which it increases its slope.
-	    	For example, to increase at a value of 5 DAI for every 1 token,
-	    	our gradient would be (change in y)/(change in x) = 5/1 = 5 DAI/Token
-	    	Remember that contracts deal with uint256 integers with 18 decimal points, not floating points, so:
-	    	to represent our gradient of 0.0005 DAI/Token, we simply divide by the denominator, to avoid floating points,
-	    	so we end up with 1/0.0005 = 2000 as our denominator.
-	    */
-
-        /* We need to calculate the definite integral from zero to the defined token supply, x.
-	    	A definite integral is essentially the area under the curve, from zero to the defined token supply.
-	    	The area under the curve is equivalent to the value of the tokens up until that point.
-	    	The integral of the linear curve, f(x), is calculated as:
-	    	gradient*0.5*x^2 + cx; where c = 0
-	    	Because we are essentially squaring the decimal scaling in the calculation,
-	    	we need to divide the result by the scaling factor before returning - this hurt my mind a bit, but mathematically holds true.
-	    */
-        // return ((_x**2).div(2*gradientDenominator_).add(c.mul(_x)).div(10**decimals_));
-        return 0;// TODO: implement business logic
+        //todo: call vyper curve module for values
+        return 0;
     }
 
     /// @dev                Inverse integral to convert the incoming colateral value to token volume
@@ -287,24 +244,5 @@ contract Market {
     function inverseCurveIntegral(uint256 _x) internal view returns(uint256){
         // return sqrt(2*_x*gradientDenominator_*(10**decimals_));
         return 0; // TODO: implement business logic
-    }
-
-    /// @dev                Babylonian square rooting using while loops
-    /// @param _x           :uint256 The number to identify the root off
-    function sqrt(uint256 _x) internal pure returns (uint256) {
-        if (_x == 0) return 0;
-        else if (_x <= 3) return 1;
-        uint256 z = (_x + 1) / 2;
-        uint256 y = _x;
-        while (z < y)
-        /// @why3 invariant { to_int !_z = div ((div (to_int arg_x) (to_int !_y)) + (to_int !_y)) 2 }
-        /// @why3 invariant { to_int arg_x < (to_int !_y + 1) * (to_int !_y + 1) }
-        /// @why3 invariant { to_int arg_x < (to_int !_z + 1) * (to_int !_z + 1) }
-        /// @why3 variant { to_int !_y }
-        {
-            y = z;
-            z = (_x / z + z) / 2;
-        }
-        return y;
     }
 }
