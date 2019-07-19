@@ -56,7 +56,6 @@ contract Vault is AdminManaged {
 
         admins_.add(msg.sender);
 
-
         outstandingWithdraw_ = 0;
 
         creator_ = _creator;
@@ -82,14 +81,27 @@ contract Vault is AdminManaged {
         _;
     }
 
-    // TODO: get admin managed initialise function
+    /**
+      * @dev Initialized the contract, sets up owners and gets the market
+      *                 address.
+      * @param _market  : address - The market that will be sending this
+      *                 vault it'scollateral.
+      */
     function initialize(address _market) external onlyAdmin() returns(bool){
+        // TODO: get admin managed initialise function
         require(_market == address(0), "Contracts initalised");
         market_ = _market;
         admins_.remove(msg.sender);
         return true;
     }
 
+    /**
+      * @dev Allows the creator to withdraw this rounds funding. Checks that
+      *      the phase is in the correct state (2).
+      * @notice The state of the currentPhase_ will not be 0 untill the last
+      *         phase, where the terminate function will be called.
+      * @param _phase   : uint256 - The phase the fund rasing is currently on.
+      */
     function withdraw(uint256 _phase) external onlyAdmin() returns(bool){
         require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
 
