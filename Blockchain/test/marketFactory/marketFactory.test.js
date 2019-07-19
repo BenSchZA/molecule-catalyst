@@ -112,6 +112,11 @@ describe('Market Factory test', () => {
                     marketSettings.curveType,
                     marketSettings.taxationRate
                 )).wait()
+
+            firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+            assert.notEqual(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
+            assert.notEqual(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
+            assert.equal(firstMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
         });
     });
 
