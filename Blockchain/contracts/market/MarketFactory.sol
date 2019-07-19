@@ -7,19 +7,44 @@ import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 
 contract MarketFactory is AdminManaged {
+    //The molecule vault for molecule tax
     address internal moleculeVault_;
+    //The registry of all created markets
     address internal marketRegistry_;
+    //The registry of all curve types
     address internal curveRegistry_;
+    //The ERC20 collateral token contract address
     address internal collateralToken_;
+    //The % tax to be taken off successful finding rounds
+    //  i.e 5. Cannot be smaller than 0
+    uint256 internal moleculeTax_;
 
-    //todo add address for mol valut
-    constructor(address _collateralToken, address _moleculeVault, address _marketRegistry, address _curveRegistry)
+    /**
+      * @author Veronica @veronicaLC
+      * @dev Sets variables for market deployments. Molecule tax cannot
+      *         be smaller than 0 (1-99).
+      * @param _collateralToken Address of the ERC20 collateral token
+      * @param _moleculeVault   The address of the molecule tax vault
+      * @param _marketRegistry  Address of the registry of all markets
+      * @param _curveRegistry   Address of the registry of all curve types
+      * @param _moleculeTax     The percentage of tax to be taken off successful
+      *                         funding rounds
+      */
+    constructor(
+        address _collateralToken,
+        address _moleculeVault,
+        address _marketRegistry,
+        address _curveRegistry,
+        uint256 _moleculeTax
+    )
         AdminManaged(msg.sender)
-        public {
+        public
+    {
         curveRegistry_ = _curveRegistry;
         collateralToken_ = _collateralToken;
         marketRegistry_ = _marketRegistry;
         moleculeVault_ = _moleculeVault;
+        moleculeTax_ = _moleculeTax;
     }
 
     /**
@@ -57,7 +82,8 @@ contract MarketFactory is AdminManaged {
             _phaseDurations,
             _creator,
             collateralToken_,
-            moleculeVault_
+            moleculeVault_,
+            moleculeTax_
         ));
 
         address newMarket = address(new Market(
@@ -65,7 +91,7 @@ contract MarketFactory is AdminManaged {
             newVault,
             curveLibrary,
             collateralToken_
-        ));//todo: needs to be sent index of curve to get from curve registry
+        ));//todo: needs to be sent index of curve /address of curve it must use
 
         Vault(newVault).initialize(newMarket, _creator);
         IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);
