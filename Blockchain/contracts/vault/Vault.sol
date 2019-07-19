@@ -117,10 +117,14 @@ contract Vault is Ownable, Secondary {// TODO: Change andmin managed
 
     // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
     function terminate()
-        public
-        OnlyOwner()
+        internal
+        onlyOwner()
     {
-        
+        //end all rounds
+        uint256 vaultBalance = IERC20(collateralToken_).balanceOf(address(this));
+        require(IERC20(collateralToken_).transfer(market_, vaultBalance), "Transfering of funds failed");
+        //TODO: Call terminate or whatever in the market to release collateral in withdraw
+        // And end rounds, 
     }
 
     /**
