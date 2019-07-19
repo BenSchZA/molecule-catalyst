@@ -89,6 +89,8 @@ contract Vault is AdminManaged {
             }
         }else{
             // This sends the funding for the specified round
+            oustandingWithdraw_ = oustandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
+            fundingPhases_[_phase].fundingWithdrawn = true;
             IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold);
         }
         return true;
@@ -107,6 +109,9 @@ contract Vault is AdminManaged {
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold){
             if(fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration <= now){
                 fundingPhases_[currentPhase_].state = 2; // Setting to ended
+                
+                outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
+
                 currentPhase_ = currentPhase_ + 1;
                 // Here we check if this was the final round to 
                 // Set the states apprpriately 
