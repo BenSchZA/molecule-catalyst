@@ -9,6 +9,8 @@ contract Vault is AdminManaged {
     address internal collateralToken_;
     address internal moleculeVault_;
 
+    uint256 internal moleculeTaxRate_;
+
     uint256 internal currentPhase_;
 
     uint256 internal outstandingWithdraw_;
@@ -48,6 +50,8 @@ contract Vault is AdminManaged {
         
         admins_.add(_creator);
 
+        moleculeTaxRate_ = IMoleculeVault(_moleculeVault).taxRate();
+
         outstandingWithdraw_ = 0;
 
         creator_ = _creator;
@@ -56,7 +60,8 @@ contract Vault is AdminManaged {
 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
-            fundingPhases_[i].fundingThreshold = _fundingGoals[i];
+            uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate));
+            fundingPhases_[i].fundingThreshold = withTax;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
 
@@ -91,7 +96,11 @@ contract Vault is AdminManaged {
             // This sends the funding for the specified round
             oustandingWithdraw_ = oustandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].fundingWithdrawn = true;
-            require(IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold), "Tokens not transfer");
+
+            uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(100)).mul(moleculeTaxRate_);
+            require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
+
+            require(IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold.sub(molTax)), "Tokens not transfer");
         }
         return true;
     }
@@ -100,7 +109,7 @@ contract Vault is AdminManaged {
       * @dev Verifies that the phase passed in: has not been withdrawn, funding goal has been reached,
       *         and that the phase has not expired.
       */
-    function validateFunding(uint256 _poolBalance) external onlyMarket() returns(bool){
+    function validateFunding() external onlyMarket() returns(bool){
         require(fundingPhases_[currentPhase_].state == 1, "Funding inactive");
 
         uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
@@ -131,12 +140,26 @@ contract Vault is AdminManaged {
         public
         onlyAdmin()
     {
-        uint256 vaultBalance = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 remainingBalance = IERC20(collateralToken_).balanceOf(address(this));
         
         outstandingWithdraw_ = 0;
 
         // This sends all the remaining funding
-        require(IERC20(collateralToken_).transfer(market_, vaultBalance), "Transfering of funds failed");
+
+        // This checks if all funding phases completed successfully
+        if(fundingPhases_[currentPhase_].state == 0 && fundingPhases_[currentPhase_ - 1].state == 2){
+            uint256 molTax = (remainingBalance.div(100)).mul(moleculeTaxRate_);
+            require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
+
+            remainingBalance = IERC20(collateralToken_).balanceOf(address(this)); // Fetching incase of remaining fractions from math
+            require(IERC20(collateralToken_).transfer(msg.sender, remainingPostTax), "Transfering of funds failed");
+
+
+        }else{
+            require(IERC20(collateralToken_).transfer(market_, remainingBalance), "Transfering of funds failed");
+
+        }
+        
         require(IMarket(market_).finaliseMarket(), "Market termination error");
     }
 
@@ -150,9 +173,9 @@ contract Vault is AdminManaged {
     }
 
     // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
-
     function outstandingWithdraw() public view returns(uint256){
-        return outstandingWithdraw_;
+        uint256 minusMolTax = outstandingWithdraw_.sub((outstandingWithdraw_.div(100)).mul(moleculeTaxRate_));
+        return minusMolTax;
     }
     function currentPhase() public view returns(uint256) {
         return currentPhase_;

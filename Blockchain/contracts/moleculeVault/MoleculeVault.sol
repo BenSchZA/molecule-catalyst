@@ -11,7 +11,13 @@ contract MoleculeVault is AdminManaged{
         taxRate_ = _taxRate;
     }
 
+    function transfer(address _to, uint256 _amount) public onlyAdmin() {
+        require(IERC20(collateralToken_).transfer(_to, _amount), "Transfer failed");
+    }
 
+    function approve(address _spender, uint256 _amount) public onlyAdmin() {
+        require(IERC20(collateralToken_).approve(_spender, _amount), "Approve failed");
+    }
 
     function collateralToken() public view {
         return collateralToken_;
