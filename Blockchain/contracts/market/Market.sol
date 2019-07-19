@@ -10,6 +10,8 @@ import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.s
 contract Market is IERC20 {
     using SafeMath for uint256;
 
+    bool internal active_ = true;
+
     address internal creatorVault_;
     uint256 internal taxationRate_;
     address internal curveLibrary_;
@@ -43,6 +45,16 @@ contract Market is IERC20 {
         collateralToken_ = _collateralToken;
     }
 
+    modifier onlyActive(){
+        require(active_, "Market inactive");
+        _;
+    }
+
+    modifier onlyVault(){
+        require(msg.sender == creatorVault_, "Invalid requestor");
+        _;
+    }
+
     /// @dev                Approves transfers for a given address
     /// @param _spender     :address The account that will receive the funds.
     /// @param _value       :uint256 The value of funds accessed.
@@ -63,7 +75,7 @@ contract Market is IERC20 {
 
     /// @dev                Selling tokens back to the bonding curve for collateral
     /// @param _numTokens   The number of tokens that you want to burn
-    function burn(uint256 _numTokens) external returns(bool) {
+    function burn(uint256 _numTokens) external onlyActive() returns(bool) {
         require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
 
         uint256 rewardForBurn = rewardForBurn(_numTokens);
@@ -83,7 +95,7 @@ contract Market is IERC20 {
     /// @param _to          :address Address to mint tokens to
     /// @param _numTokens   :uint256 The number of tokens you want to mint
     /// @dev                We have modified the minting function to divert a portion of the purchase tokens
-    function mint(address _to, uint256 _numTokens) external returns(bool) {
+    function mint(address _to, uint256 _numTokens) external onlyActive() returns(bool) {
         //todo: takes tax off of the collateral and sends to vault
             //calls the vyper contract with this number of tokens
             //collateral price returned is taxed
@@ -93,7 +105,7 @@ contract Market is IERC20 {
         //Remaining collateral gets sent to vyper to work out amount of tokens
         // uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
         // require(IERC20(collateralToken_).transfer(creatorVault_, buyTax), "buy tax to vault transaction failed");
-        require(IVault(creatorVault_).validateFunding(poolBalance_), "Funding validation failed");
+        require(IVault(creatorVault_).validateFunding(), "Funding validation failed");
         emit Transfer(address(0), _to, _numTokens);
         return true;
     }
@@ -138,6 +150,12 @@ contract Market is IERC20 {
         return true;
     }
 
+    function finaliseMarket() public onlyVault() returns(bool) {
+        require(active_, "Market deactivated");
+        active_ = false;
+        // TODO: Trigger event
+        return true;
+    }
 
     // /// @dev                Returns the gradient for the market's curve
     // /// @return             :uint256 The gradient for the market's curve
@@ -228,6 +246,10 @@ contract Market is IERC20 {
     /// @return             :uint256 The decimals set for the market
     function decimals() external view returns(uint256) {
         return decimals_;
+    }
+
+    function active() external view returns(bool){
+        return active_;
     }
 
     // Private

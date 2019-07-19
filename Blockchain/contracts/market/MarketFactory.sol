@@ -82,8 +82,7 @@ contract MarketFactory is AdminManaged {
             _phaseDurations,
             _creator,
             collateralToken_,
-            moleculeVault_,
-            moleculeTax_
+            moleculeVault_
         ));
 
         address newMarket = address(new Market(
@@ -93,7 +92,7 @@ contract MarketFactory is AdminManaged {
             collateralToken_
         ));//todo: needs to be sent index of curve /address of curve it must use
 
-        Vault(newVault).initialize(newMarket, _creator);
+        Vault(newVault).initialize(newMarket);
         IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);
     }
 
