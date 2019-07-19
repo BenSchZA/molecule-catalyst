@@ -2,6 +2,8 @@ pragma solidity 0.5.9;
 
 import { IMarket } from "../market/IMarket.sol";
 import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is AdminManaged {
@@ -48,10 +50,9 @@ contract Vault is AdminManaged {
         require(_fundingGoals.length > 0, "No funding goals specified");
         require(_fundingGoals.length < 10, "Too many phases defined");
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
-        
+
         admins_.add(_creator);
 
-        moleculeTaxRate_ = IMoleculeVault(_moleculeVault).taxRate();
 
         outstandingWithdraw_ = 0;
 
@@ -59,9 +60,11 @@ contract Vault is AdminManaged {
         collateralToken_ = _collateralToken;
         moleculeVault_ = _moleculeVault;
 
+        moleculeTaxRate_ = IMoleculeVault(moleculeVault_).taxRate();
+
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
-            uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate));
+            uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate_));
             fundingPhases_[i].fundingThreshold = withTax;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
@@ -95,12 +98,12 @@ contract Vault is AdminManaged {
             }
         }else{
             // This sends the funding for the specified round
-            oustandingWithdraw_ = oustandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
+            outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].fundingWithdrawn = true;
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(100)).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
-            
+
             uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold.sub(molTax);
             require(IERC20(collateralToken_).transfer(msg.sender, creatorAmount), "Tokens not transfer");
             emit FundingWithdrawn(_phase, creatorAmount);
@@ -147,7 +150,7 @@ contract Vault is AdminManaged {
         onlyAdmin()
     {
         uint256 remainingBalance = IERC20(collateralToken_).balanceOf(address(this));
-        
+
         outstandingWithdraw_ = 0;
 
         // This sends all the remaining funding
@@ -158,12 +161,11 @@ contract Vault is AdminManaged {
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
 
             remainingBalance = IERC20(collateralToken_).balanceOf(address(this)); // Fetching incase of remaining fractions from math
-            require(IERC20(collateralToken_).transfer(msg.sender, remainingPostTax), "Transfering of funds failed");
-            emit FundingWithdrawn(_phase, remainingBalance);
+            require(IERC20(collateralToken_).transfer(msg.sender, remainingBalance), "Transfering of funds failed");
+            emit FundingWithdrawn(currentPhase_, remainingBalance);
         }else{
             require(IERC20(collateralToken_).transfer(market_, remainingBalance), "Transfering of funds failed");
         }
-        
         require(IMarket(market_).finaliseMarket(), "Market termination error");
     }
 
