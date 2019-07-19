@@ -27,8 +27,8 @@ interface IVault {
     function renounceOwnership() external;
 
     /**
-      * @dev Transfers ownership of the contract to a new 
-      *      account (`newOwner`). Can only be called by 
+      * @dev Transfers ownership of the contract to a new
+      *      account (`newOwner`). Can only be called by
       *      the current owner.
       */
     function transferOwnership(address newOwner) external;

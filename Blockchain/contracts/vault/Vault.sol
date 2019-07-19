@@ -85,12 +85,8 @@ contract Vault is AdminManaged {
         // This checks if we trigger the distribute on the Market
         if(fundingPhases_[currentPhase_].state == 0){
             if(IMarket(market_).active()){
-                terminateMarket();
+                terminateMarket(); // This triggers the fund transfer
             }
-            // This sends all the remaining funding
-            uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
-            IERC20(collateralToken_).transfer(msg.sender, balance);
-            
         }else{
             // This sends the funding for the specified round
             IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold);
@@ -130,6 +126,9 @@ contract Vault is AdminManaged {
         public
         onlyAdmin()
     {
+        uint256 vaultBalance = IERC20(collateralToken_).balanceOf(address(this));
+        // This sends all the remaining funding
+        require(IERC20(collateralToken_).transfer(market_, vaultBalance), "Transfering of funds failed");
         require(IMarket(market_).finaliseMarket(), "Market termination error");
     }
 
