@@ -132,6 +132,9 @@ contract Vault is AdminManaged {
         onlyAdmin()
     {
         uint256 vaultBalance = IERC20(collateralToken_).balanceOf(address(this));
+        
+        outstandingWithdraw_ = 0;
+
         // This sends all the remaining funding
         require(IERC20(collateralToken_).transfer(market_, vaultBalance), "Transfering of funds failed");
         require(IMarket(market_).finaliseMarket(), "Market termination error");
@@ -148,6 +151,9 @@ contract Vault is AdminManaged {
 
     // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
 
+    function outstandingWithdraw() public view returns(uint256){
+        return outstandingWithdraw_;
+    }
     function currentPhase() public view returns(uint256) {
         return currentPhase_;
     }
