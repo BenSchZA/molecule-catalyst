@@ -117,8 +117,8 @@ contract Vault is AdminManaged {
                 // Set the states apprpriately 
                 if(fundingPhases_[currentPhase_].fundingThreshold > 0){
                     fundingPhases_[currentPhase_].state = 1; // Setting to Started
+                    fundingPhases_[currentPhase_].startDate = now;
                 }
-                fundingPhases_[currentPhase_].startDate = now;
             }else{
                 return false; 
             }
