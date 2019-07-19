@@ -121,13 +121,29 @@ describe('Market Factory test', () => {
     });
 
     describe('Meta data', async () =>{
-        it('moleculeVault');
-        it('marketRegistry');
-        it('collateralToken');
+        it('moleculeVault', async () => {
+            const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
+            assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
+        });
+        it('marketRegistry', async () => {
+            const marketRegistry = await marketFactoryInstance.from(molAdmin).marketRegistry();
+            assert.equal(marketRegistry, marketRegistryInstance.contract.address, "Registry not set correctly")
+        });
+        it('collateralToken', async () => {
+            const collateralToken = await marketFactoryInstance.from(molAdmin).collateralToken();
+            assert.equal(collateralToken, pseudoDaiInstance.contract.address, "CollateralToken not set correctly")
+        });
     })
 
     describe("Admin Managed functions", async () => {
-        it("only allows admins to deploy")
-        it("Reverts if non admin deploys")
+        it("Reverts if non admin deploys", async () => {
+            await assert.revert(marketFactoryInstance.from(user1).deployMarket(
+                marketSettings.fundingGoals,
+                marketSettings.phaseDuration,
+                creator.signer.address,
+                marketSettings.curveType,
+                marketSettings.taxationRate
+            ));
+        })
     })
 })
