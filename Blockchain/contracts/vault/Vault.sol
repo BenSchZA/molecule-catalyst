@@ -1,6 +1,7 @@
 pragma solidity 0.5.9;
 
 import { IMarket } from "../market/IMarket.sol";
+import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is AdminManaged {
