@@ -100,8 +100,11 @@ contract Vault is AdminManaged {
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(100)).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
+            
+            uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold.sub(molTax);
+            require(IERC20(collateralToken_).transfer(msg.sender, creatorAmount), "Tokens not transfer");
+            emit FundingWithdrawn(_phase, creatorAmount);
 
-            require(IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold.sub(molTax)), "Tokens not transfer");
         }
         return true;
     }
@@ -129,6 +132,8 @@ contract Vault is AdminManaged {
                     fundingPhases_[currentPhase_].state = 1; // Setting to Started
                     fundingPhases_[currentPhase_].startDate = now;
                 }
+                emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
+
             }else{
                 return false; 
             }
@@ -154,11 +159,9 @@ contract Vault is AdminManaged {
 
             remainingBalance = IERC20(collateralToken_).balanceOf(address(this)); // Fetching incase of remaining fractions from math
             require(IERC20(collateralToken_).transfer(msg.sender, remainingPostTax), "Transfering of funds failed");
-
-
+            emit FundingWithdrawn(_phase, remainingBalance);
         }else{
             require(IERC20(collateralToken_).transfer(market_, remainingBalance), "Transfering of funds failed");
-
         }
         
         require(IMarket(market_).finaliseMarket(), "Market termination error");

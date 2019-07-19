@@ -29,7 +29,6 @@ interface IVault {
 
     function creator() external view returns(address);
 
-
     /// @dev    Used to add an admin
     /// @param _newAdmin        :address The address of the new admin
     function addAdmin(address _newAdmin) external;
