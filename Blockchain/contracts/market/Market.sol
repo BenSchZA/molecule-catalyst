@@ -82,7 +82,7 @@ contract Market is IERC20 {
 
         totalSupply_ = totalSupply_.sub(_numTokens);
         balances[msg.sender] = balances[msg.sender].sub(_numTokens);
-        poolBalance_ = poolBalance_.sub(rewardForBurn);
+        // poolBalance_ = poolBalance_.sub(rewardForBurn);
 
         msg.sender.transfer(rewardForBurn);
 
@@ -170,7 +170,7 @@ contract Market is IERC20 {
         //todo: passes the token amount to vyper
         //gets the collateral in return,
         //add tax to token price
-        uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance_);
+        uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance());
         return rawDai.add(rawDai.div(100)); // Adding 1 percent
     }
 
@@ -178,7 +178,8 @@ contract Market is IERC20 {
     /// @return             Potential return collateral corrected for decimals
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         // TODO: Update
-        return poolBalance_.sub(curveIntegral(totalSupply_.sub(_numTokens)));
+        uint256 poolBalance = poolBalance();
+        return poolBalance.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
 
     // [Inverse pricing functions]
@@ -227,7 +228,7 @@ contract Market is IERC20 {
     /// @dev                Total collateral backing the curve
     /// @return             A uint256 representing the total collateral backing the curve
     function poolBalance() external view returns (uint256){
-        return poolBalance_;
+        return IERC20(collateralToken_).balanceOf(address(this));
     }
 
     /// @dev                Total number of tokens in existence

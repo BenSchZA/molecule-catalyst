@@ -26,6 +26,12 @@ interface IMarket {
     // Rough gas usage 153,440
     function mint(address _to, uint256 _numTokens) external returns(bool);
 
+    // TODO: docs
+    function finaliseMarket() external returns(bool);
+
+    // TODO finish withdraw function
+    // function withdraw() external returns
+
     // [ERC20 functions]
     /// @dev                        Transfer ownership token from msg.sender to a specified address
     /// @param _to                  : address The address to transfer to.
