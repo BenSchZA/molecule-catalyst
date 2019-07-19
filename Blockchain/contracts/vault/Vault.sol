@@ -9,31 +9,36 @@ import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol"
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is AdminManaged {
     using SafeMath for uint256;
+    // The vault benificiary
     address internal creator_;
+    // Market feeds collateral to vault
     address internal market_;
+    // Underlying collateral token
     address internal collateralToken_;
+    // Vault for molecule tax
     address internal moleculeVault_;
-
+    // Tax percentage for molecule tax, i.e 50
     uint256 internal moleculeTaxRate_;
-
+    // The funding round that is active
     uint256 internal currentPhase_;
-
+    // Offset for checking funding threashold
     uint256 internal outstandingWithdraw_;
-
+    // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
 
+    // Information stored about each phase
     struct FundPhase{
-        uint256 fundingThreshold; // Collateral limit to trigger funding
-        uint256 phaseDuration; // Period of time from start of phase till end
+        uint256 fundingThreshold;   // Collateral limit to trigger funding
+        uint256 phaseDuration;      // Period of time from start of phase till end
         uint256 startDate;
-        uint8 state; // 0: Not started, 1: Started, 2: Ended, 3: Paid
-    }
+        uint8 state;                // 0: Not started, 1: Started, 2: Ended, 3: Paid
+    } // TODO: Change state to enum
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
     event PhaseFinalised(uint256 phase, uint256 amount);
 
     /**
-      * @dev Checks the range of funding rounds (1-9)
+      * @dev                    Checks the range of funding rounds (1-9)
       * @param _fundingGoals    The collateral goal for each funding round
       * @param _phaseDurations  The time limit of each fundign round
       * @param _creator         The address of the creator
@@ -82,7 +87,7 @@ contract Vault is AdminManaged {
     }
 
     /**
-      * @dev Initialized the contract, sets up owners and gets the market
+      * @dev            Initialized the contract, sets up owners and gets the market
       *                 address.
       * @param _market  : address - The market that will be sending this
       *                 vault it'scollateral.
@@ -96,10 +101,10 @@ contract Vault is AdminManaged {
     }
 
     /**
-      * @dev Allows the creator to withdraw this rounds funding. Checks that
-      *      the phase is in the correct state (2).
-      * @notice The state of the currentPhase_ will not be 0 untill the last
-      *         phase, where the terminate function will be called.
+      * @dev            Allows the creator to withdraw this rounds funding. Checks that
+      *                 the phase is in the correct state (2).
+      * @notice         The state of the currentPhase_ will not be 0 untill the last
+      *                 phase, where the terminate function will be called.
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
     function withdraw(uint256 _phase) external onlyAdmin() returns(bool){
@@ -128,7 +133,7 @@ contract Vault is AdminManaged {
 
     /**
       * @dev Verifies that the phase passed in: has not been withdrawn, funding goal has been reached,
-      *         and that the phase has not expired.
+      *      and that the phase has not expired.
       */
     function validateFunding() external onlyMarket() returns(bool){
         require(fundingPhases_[currentPhase_].state == 1, "Funding inactive");
@@ -136,19 +141,23 @@ contract Vault is AdminManaged {
         uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
         balance = balance.sub(outstandingWithdraw_);
 
-        if(balance >= fundingPhases_[currentPhase_].fundingThreshold){
+        if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
+
             if(fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration <= now){
-                fundingPhases_[currentPhase_].state = 2; // Setting to ended
+                // Setting active phase state to ended
+                fundingPhases_[currentPhase_].state = 2;
 
                 outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
                 currentPhase_ = currentPhase_ + 1;
                 // Here we check if this was the final round to
                 // Set the states apprpriately
-                if(fundingPhases_[currentPhase_].fundingThreshold > 0){
-                    fundingPhases_[currentPhase_].state = 1; // Setting to Started
+                if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
+                    // Setting active phase state to Started
+                    fundingPhases_[currentPhase_].state = 1; 
                     fundingPhases_[currentPhase_].startDate = now;
                 }
+
                 emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
 
             }else{
@@ -158,7 +167,12 @@ contract Vault is AdminManaged {
         return true;
     }
 
-     // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
+     /**
+       * @dev    This function sends the vaults funds to either the market, or the creator with tax
+       *         sent to the moleucle vault.
+       * @notice If this function is called before the end of all phases, all funding will be sent
+       *         to the market to be redistributed.
+       */
     function terminateMarket()
         public
         onlyAdmin()
@@ -167,23 +181,33 @@ contract Vault is AdminManaged {
 
         outstandingWithdraw_ = 0;
 
-        // This sends all the remaining funding
-
         // This checks if all funding phases completed successfully
         // Checks if ended or paid for conclusion of phase
-        if(fundingPhases_[currentPhase_].state == 0 && (fundingPhases_[currentPhase_ - 1].state >= 2)){
+        if(fundingPhases_[currentPhase_].state == 0 && (fundingPhases_[currentPhase_ - 1].state >= 2)) {
+            // Works out the molecule tax amount
             uint256 molTax = (remainingBalance.div(100)).mul(moleculeTaxRate_);
+            // Transfers amount to the molecule vault
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
-
-            remainingBalance = IERC20(collateralToken_).balanceOf(address(this)); // Fetching incase of remaining fractions from math
+            // Works out the remaining balance after mol tax, which is fetched
+                // incase of remaining fractions from math
+            remainingBalance = IERC20(collateralToken_).balanceOf(address(this));
+            // Transfers the amount to the msg.sender
+            // TODO: Change to admin address
             require(IERC20(collateralToken_).transfer(msg.sender, remainingBalance), "Transfering of funds failed");
+
             emit FundingWithdrawn(currentPhase_, remainingBalance);
-        }else{
+        } else {
+            // Transferes remaining balance to the market
             require(IERC20(collateralToken_).transfer(market_, remainingBalance), "Transfering of funds failed");
         }
+        // Finalizes market (stops buys/sells distributes collateral evenly)
         require(IMarket(market_).finaliseMarket(), "Market termination error");
     }
 
+    /**
+      * @param _phase : uint256 - The phase that you want the information of
+      * @return All stored information about the market.
+      */
     function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, uint8) {
         return (
             fundingPhases_[_phase].fundingThreshold,
@@ -193,15 +217,24 @@ contract Vault is AdminManaged {
         );
     }
 
-    // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
+    /**
+      * @dev The offset for checking the funding threshold
+      */
     function outstandingWithdraw() public view returns(uint256){
         uint256 minusMolTax = outstandingWithdraw_.sub((outstandingWithdraw_.div(100)).mul(moleculeTaxRate_));
         return minusMolTax;
     }
+
+    /**
+      * @dev The current active phase of funding
+      */
     function currentPhase() public view returns(uint256) {
         return currentPhase_;
     }
 
+    /**
+      * @dev The address of the current market
+      */
     function market() public view returns(address) {
         return market_;
     }
