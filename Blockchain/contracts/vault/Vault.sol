@@ -6,7 +6,7 @@ import { IMarket } from "../market/IMarket.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 // TODO: Consider a mapping with index instead of arrays
-contract Vault is Ownable, Secondary {
+contract Vault is Ownable, Secondary {// TODO: Change andmin managed 
     address internal market_;
     address internal collateralToken_;
     address internal moleculeVault_;
@@ -47,21 +47,22 @@ contract Vault is Ownable, Secondary {
     {
         require(_fundingGoals.length > 0, "No funding goals specified");
         require(_fundingGoals.length < 10, "Too many phases defined");
-        //Checking that there are the same number of phases in funding and duration
+        // Checking that there are the same number of phases in funding and duration
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
-        //Sets vault utills
+
+        // Sets vault utills
         collateralToken_ = _collateralToken;
         moleculeVault_ = _moleculeVault;
-        //Adding all the rounds to the rounds struct 
+        // Adding all the rounds to the rounds struct 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++) {
             fundingPhases_[i].fudningGoal = _fundingGoals[i]
-            //Adding mol tax to funding goal
+            // Adding mol tax to funding goal
             uint256 fundingGoalTaxCorrected = _fundingGoals[i].add((_fundingGoals[i].mul(_moleculeTax)).div(100));
             fundingPhases_[i].fundingThreshold = fundingGoalTaxCorrected;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
-        //Sets the start date of the phase
+        // Sets the start date of the phase
         fundingPhases_[0].startDate = now;
         currentPhase_ = 0;
     }
@@ -78,7 +79,7 @@ contract Vault is Ownable, Secondary {
     }//todo: add modifier so functiality only works if contract has been initialized
 
     /**
-      * @notice Could bw changed so that creator can withdraw portions of the funding. 
+      * @notice Could be changed so that creator can withdraw portions of the funding. 
       *     Would require code changes. 
       */
     function withdraw(uint256 _amount)
@@ -88,7 +89,7 @@ contract Vault is Ownable, Secondary {
     {
         require(_validateFunding(currentPhase_), "Round invalid. Phase end exceeded or funding goal not reached");
         require(fundingPhases_.length != currentPhase_, "Please use withdraw and close for final phase");
-            //send creator rounds funing
+            // send creator rounds funing
             fundingPhases_[currentPhase_].fundingWithdrawn = true;
             require(
                 IERC20(_collateralToken).transfer(_creator, fundingPhases_[currentPhase_].fundingThreshold), 
@@ -96,8 +97,11 @@ contract Vault is Ownable, Secondary {
             );
             emit FundingWithdrawn(currentPhase_, fundingPhases_[currentPhase_].fundingThreshold);
             currentPhase_ = currentPhase_.add(1);
+            // TODO: Check to close market
+            // TODO if last round send balance
     }
 
+    // TODO: deprecate 
     function withdrawAndClose()
         external
         onlyOwner()
@@ -112,7 +116,7 @@ contract Vault is Ownable, Secondary {
     }
 
     // TODO: in the event of a failed funding round, a function is required to divert all collateral in the Vaults account to a target account
-    function failSwitch()
+    function terminate()
         public
         OnlyOwner()
     {
