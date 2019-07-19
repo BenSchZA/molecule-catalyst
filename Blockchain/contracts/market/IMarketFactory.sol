@@ -14,12 +14,14 @@ interface IMarketFactory {
       *             number of blocks.
       * @param _creator Address of the researcher.
       * @param _curveType Curve selected
+      * @param _taxationRate The pecentage of taxation. e.g: 60
       */
     function deployMarket(
         uint256[] calldata _fundingGoals,
         uint256[] calldata _phaseDurations,
         address _creator,
-        uint256 _curveType
+        uint256 _curveType,
+        uint256 _taxationRate
     )//todo add registry seporatly
         external;
 

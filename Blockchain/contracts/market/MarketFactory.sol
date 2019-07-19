@@ -15,9 +15,6 @@ contract MarketFactory is AdminManaged {
     address internal curveRegistry_;
     //The ERC20 collateral token contract address
     address internal collateralToken_;
-    //The % tax to be taken off successful finding rounds
-    //  i.e 5. Cannot be smaller than 0
-    uint256 internal moleculeTax_;
 
     /**
       * @author Veronica @veronicaLC
@@ -27,15 +24,13 @@ contract MarketFactory is AdminManaged {
       * @param _moleculeVault   The address of the molecule tax vault
       * @param _marketRegistry  Address of the registry of all markets
       * @param _curveRegistry   Address of the registry of all curve types
-      * @param _moleculeTax     The percentage of tax to be taken off successful
       *                         funding rounds
       */
     constructor(
         address _collateralToken,
         address _moleculeVault,
         address _marketRegistry,
-        address _curveRegistry,
-        uint256 _moleculeTax
+        address _curveRegistry
     )
         AdminManaged(msg.sender)
         public
@@ -44,7 +39,6 @@ contract MarketFactory is AdminManaged {
         collateralToken_ = _collateralToken;
         marketRegistry_ = _marketRegistry;
         moleculeVault_ = _moleculeVault;
-        moleculeTax_ = _moleculeTax;
     }
 
     /**

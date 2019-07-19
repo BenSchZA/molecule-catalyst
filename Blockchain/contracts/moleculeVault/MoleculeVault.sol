@@ -2,6 +2,7 @@ pragma solidity 0.5.9;
 
 import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 
+// TODO: Update to outline buisness logic
 contract MoleculeVault is AdminManaged{
     address internal collateralToken_;
     uint256 internal taxRate_;
