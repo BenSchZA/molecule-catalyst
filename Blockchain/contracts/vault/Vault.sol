@@ -5,10 +5,13 @@ import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
+import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is AdminManaged {
     using SafeMath for uint256;
+    using BokkyPooBahsDateTimeLibrary for uint256;
+
     // The vault benificiary
     address internal creator_;
     // Market feeds collateral to vault
@@ -94,7 +97,7 @@ contract Vault is AdminManaged {
       */
     function initialize(address _market) external onlyAdmin() returns(bool){
         // TODO: get admin managed initialise function
-        require(_market == address(0), "Contracts initalised");
+        require(_market != address(0), "Contracts initalised");
         market_ = _market;
         admins_.remove(msg.sender);
         return true;
@@ -142,8 +145,8 @@ contract Vault is AdminManaged {
         balance = balance.sub(outstandingWithdraw_);
 
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
-
-            if(fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration <= now){
+            uint256 endOfPhase = BokkyPooBahsDateTimeLibrary.addMonths(fundingPhases_[currentPhase_].startDate, fundingPhases_[currentPhase_].phaseDuration);
+            if(endOfPhase <= now){
                 // Setting active phase state to ended
                 fundingPhases_[currentPhase_].state = 2;
 
@@ -154,7 +157,7 @@ contract Vault is AdminManaged {
                 // Set the states apprpriately
                 if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
                     // Setting active phase state to Started
-                    fundingPhases_[currentPhase_].state = 1; 
+                    fundingPhases_[currentPhase_].state = 1;
                     fundingPhases_[currentPhase_].startDate = now;
                 }
 

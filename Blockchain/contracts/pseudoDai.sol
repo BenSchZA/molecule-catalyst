@@ -19,10 +19,10 @@ contract PseudoDaiToken is ERC20 {
         address indexed spender,
         uint256 value
     );
-    
+
     event Transfer(
-        address indexed from, 
-        address indexed to, 
+        address indexed from,
+        address indexed to,
         uint256 value
     );
 

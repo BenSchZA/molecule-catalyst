@@ -1,74 +1,128 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let Market = require('../../../build/Market.json');
-let PseudoDaiToken = require('../../../build/PseudoDaiToken.json');
-let MoleculeVault = require('../../../build/MoleculeVault.json');
-let CurveRegistry = require('../../../build/CurveRegistry.json');
-let MarketRegistry = require('../../../build/MarketRegistry.json');
-let MarketFactory = require('../../../build/MarketFactory.json');
-// let BondingFunctions = require('../../../build/Market.json');
+let MarketAbi = require('../../build/Market.json');
+let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
+let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
+let CurveRegistryAbi = require('../../build/CurveRegistry.json');
+let MarketRegistryAbi = require('../../build/MarketRegistry.json');
+let MarketFactoryAbi = require('../../build/MarketFactory.json');
+let BondingFunctionsAbi = require('../../build/BondingFunctions.json');
 
-describe('Curve Registry test', () => {
-    let deployer;
-    let molAdmin = accounts[0];
-    let userAccount = accounts[1];
-    let marketInstance;
-    let pseudoDaiTokenInstance;
-    let moleculeVaultInstance;
-    let curveRegistryInstance;
-    let marketRegistryInstance;
-    let marketFactoryInstance;
-  
+// The user accounts are
+const defaultDaiPurchase = 500;
+const defaultTokenVolume = 100;
+
+const moleculeVaultSettings = {
+    taxationRate: ethers.utils.parseUnits("15", 0),
+}
+
+const daiSettings = {
+    name: "PDAI",
+    symbol: "PDAI",
+    decimals: 18
+}
+
+let marketSettings = {
+    fundingGoals: [
+        ethers.utils.parseUnits("2000000"),
+        ethers.utils.parseUnits("2500000"),
+        ethers.utils.parseUnits("3000000")
+    ],
+    phaseDuration: [
+        ethers.utils.parseUnits("12", 0),
+        ethers.utils.parseUnits("8", 0),
+        ethers.utils.parseUnits("6", 0)
+    ],
+    curveType: ethers.utils.parseUnits("0", 0),
+    taxationRate: ethers.utils.parseUnits("60", 0),
+}
+
+// The before each should deploy in this order:
+describe('Market Factory test', () => {
+    let molAdmin = accounts[1];
+    let creator = accounts[2];
+    let user1 = accounts[3];
+    let user2 = accounts[4];
+    let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
+
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
-        pseudoDaiTokenInstance = await deployer.deploy(
-            PseudoDaiToken,
-            false
+        pseudoDaiInstance = await deployer.deploy(
+            PseudoDaiTokenAbi, 
+            false, 
+            daiSettings.name, 
+            daiSettings.symbol, 
+            daiSettings.decimals
         );
+
         moleculeVaultInstance = await deployer.deploy(
-            MoleculeVault,
-            false
+            MoleculeVaultAbi,
+            false,
+            pseudoDaiInstance.contract.address,
+            moleculeVaultSettings.taxationRate,
+            molAdmin.signer.address
         );
+
         marketRegistryInstance = await deployer.deploy(
-            MarketRegistry,
+            MarketRegistryAbi,
             false,
         );
-        marketInstance = await deployer.deploy(
-            Market,
-            false
-        );
+
         curveRegistryInstance = await deployer.deploy(
-            CurveRegistry,
+            CurveRegistryAbi,
             false
         );
-        // vyper = await deployer.deploy(
-        //     BondingFunctions,
-        //     false
-        // );
+
+        curveIntegralInstance = await deployer.deploy(
+            BondingFunctionsAbi,
+            false
+        );
+
+        await( await curveRegistryInstance.from(molAdmin).registerCurve(
+            curveIntegralInstance.contract.address,
+            "y-axis shift"
+        )).wait();
+
         // TODO: register vyper curve
         marketFactoryInstance = await deployer.deploy(
-            MarketFactory,
+            MarketFactoryAbi,
             false,
-            pseudoDaiTokenInstance.contract.address,
+            pseudoDaiInstance.contract.address,
             moleculeVaultInstance.contract.address,
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
+
+        await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
     });
 
     describe('Admin functions', async () => {
-        it('Registers a curve');
-        it('Deactivates a curve');
-        it('Activates a curve');
+        it('Deploys a compound ecosystem', async () => {
+            let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+            assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
+            assert.equal(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
+            assert.equal(firstMarketDataObj[2], ethers.constants.AddressZero, "Contract registry creator incorrect")
+
+            await (await marketFactoryInstance.from(molAdmin).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )).wait()
+        });
     });
 
     describe('Meta data', async () =>{
-        it('Get curve address by index');
-        it('Get curve data by index');
-        it('Get index');
-        it('Published Block number');
+        it('moleculeVault');
+        it('marketRegistry');
+        it('collateralToken');
+    })
 
+    describe("Admin Managed functions", async () => {
+        it("only allows admins to deploy")
+        it("Reverts if non admin deploys")
     })
 })
