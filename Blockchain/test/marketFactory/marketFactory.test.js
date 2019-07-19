@@ -1,22 +1,61 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let BondingFunctions = require('../../../build/BondingFunctions.json');
+let Market = require('../../../build/Market.json');
+let PseudoDaiToken = require('../../../build/PseudoDaiToken.json');
+let MoleculeVault = require('../../../build/MoleculeVault.json');
+let CurveRegistry = require('../../../build/CurveRegistry.json');
+let MarketRegistry = require('../../../build/MarketRegistry.json');
+let MarketFactory = require('../../../build/MarketFactory.json');
+// let BondingFunctions = require('../../../build/Market.json');
 
 describe('Curve Registry test', () => {
     let deployer;
     let molAdmin = accounts[0];
     let userAccount = accounts[1];
-    let bondingFunctionsInstance;
+    let marketInstance;
+    let pseudoDaiTokenInstance;
+    let moleculeVaultInstance;
+    let curveRegistryInstance;
+    let marketRegistryInstance;
+    let marketFactoryInstance;
   
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
-        bondingFunctionsInstance = await deployer.deploy(
-            BondingFunctions,
+        pseudoDaiTokenInstance = await deployer.deploy(
+            PseudoDaiToken,
             false
         );
-
+        moleculeVaultInstance = await deployer.deploy(
+            MoleculeVault,
+            false
+        );
+        marketRegistryInstance = await deployer.deploy(
+            MarketRegistry,
+            false,
+        );
+        marketInstance = await deployer.deploy(
+            Market,
+            false
+        );
+        curveRegistryInstance = await deployer.deploy(
+            CurveRegistry,
+            false
+        );
+        // vyper = await deployer.deploy(
+        //     BondingFunctions,
+        //     false
+        // );
+        // TODO: register vyper curve
+        marketFactoryInstance = await deployer.deploy(
+            MarketFactory,
+            false,
+            pseudoDaiTokenInstance.contract.address,
+            moleculeVaultInstance.contract.address,
+            marketRegistryInstance.contract.address,
+            curveRegistryInstance.contract.address
+        );
     });
 
     describe('Admin functions', async () => {

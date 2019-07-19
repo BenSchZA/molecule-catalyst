@@ -6,11 +6,12 @@
   "scripts": {
     "start": "etherlime ganache",
     "vyperPatch": "cd ./contracts/_curveIntegrals/v1/ && cp ./BondingFunction.json ../../../build/BondingFunctions.json && cd ../../..",
-    "build": "etherlime compile  --runs=999 && yarn vyperPatch ",
+    "build": "etherlime compile  --runs=999 && yarn vyperPatch",
     "deploy:local": "etherlime deploy --runs=500",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "yarn build && etherlime test --skip-compilation=true  --runs=999 --timeout=10000ms --gas-report=true",
+    "buildntest": "etherlime compile  --runs=999 && etherlime test --skip-compilation=true  --runs=999 --timeout=10000ms --gas-report=true",
     "test-debug": "node --inspect-brk ./node_modules/etherlime/cli.js test --timeout 100000",
     "test-debug-idea": "node $NODE_DEBUG_OPTION ./node_modules/etherlime/cli.js test --timeout 100000"
   },
