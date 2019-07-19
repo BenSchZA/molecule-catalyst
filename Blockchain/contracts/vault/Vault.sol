@@ -91,7 +91,7 @@ contract Vault is AdminManaged {
             // This sends the funding for the specified round
             oustandingWithdraw_ = oustandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].fundingWithdrawn = true;
-            IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold);
+            require(IERC20(collateralToken_).transfer(msg.sender, fundingPhases_[_phase].fundingThreshold), "Tokens not transfer");
         }
         return true;
     }
