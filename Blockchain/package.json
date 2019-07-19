@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "etherlime ganache",
-    "build": "etherlime compile  --runs=999",
+    "vyperPatch": "cd ./contracts/_curveIntegrals/v1/ && cp ./BondingFunction.json ../../../build/BondingFunctions.json && cd ../../..",
+    "build": "etherlime compile  --runs=999 && yarn vyperPatch ",
     "deploy:local": "etherlime deploy --runs=500",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
