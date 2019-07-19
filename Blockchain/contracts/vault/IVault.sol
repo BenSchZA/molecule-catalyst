@@ -4,10 +4,8 @@ interface IVault {
     event FundingWithdrawn(uint256 phase, uint256 amount);
     event PhaseFinalised(uint256 phase, uint256 amount);
 
-    event FundingWithdrawn(uint256 phase, uint256 amount);
-
     // TODO: get admin managed initialise function
-    function initialize(address _market) external;
+    function initialize(address _market) external returns(bool);
 
     function withdraw(uint256 _phase) external returns(bool);
 

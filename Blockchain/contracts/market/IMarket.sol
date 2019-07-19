@@ -98,4 +98,7 @@ interface IMarket {
     /// @dev                Returns the decimals set for the market
     /// @return             :uint256 The decimals set for the market
     function decimals() external view returns(uint256);
+
+    // TODO: documentation
+    function active() external view returns(bool);
 }

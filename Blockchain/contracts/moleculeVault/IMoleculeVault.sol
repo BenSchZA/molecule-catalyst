@@ -2,12 +2,12 @@ pragma solidity 0.5.9;
 
 interface IMoleculeVault {
     function transfer(address _to, uint256 _amount) external;
-    
+
     function approve(address _spender, uint256 _amount) external;
 
-    function collateralToken() external view;
+    function collateralToken() external view returns(address);
 
-    function taxRate() external view;
+    function taxRate() external view returns(uint256);
 
     /// @dev    Used to add an admin
     /// @param _newAdmin        :address The address of the new admin

@@ -4,9 +4,11 @@ import { IMarket } from "../market/IMarket.sol";
 import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 contract Vault is AdminManaged {
+    using SafeMath for uint256;
     address internal creator_;
     address internal market_;
     address internal collateralToken_;
@@ -24,7 +26,7 @@ contract Vault is AdminManaged {
         uint256 fundingThreshold; // Collateral limit to trigger funding
         uint256 phaseDuration; // Period of time from start of phase till end
         uint256 startDate;
-        uint8 state; // 0: Not started, 1: Started, 2: Ended
+        uint8 state; // 0: Not started, 1: Started, 2: Ended, 3: Paid
     }
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
@@ -46,12 +48,13 @@ contract Vault is AdminManaged {
         address _moleculeVault
     )
         public
+        AdminManaged(_creator)
     {
         require(_fundingGoals.length > 0, "No funding goals specified");
         require(_fundingGoals.length < 10, "Too many phases defined");
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
 
-        admins_.add(_creator);
+        admins_.add(msg.sender);
 
 
         outstandingWithdraw_ = 0;
@@ -80,7 +83,7 @@ contract Vault is AdminManaged {
     }
 
     // TODO: get admin managed initialise function
-    function initialize(address _market) external onlyAdmin(){
+    function initialize(address _market) external onlyAdmin() returns(bool){
         require(_market == address(0), "Contracts initalised");
         market_ = _market;
         admins_.remove(msg.sender);
@@ -89,7 +92,6 @@ contract Vault is AdminManaged {
 
     function withdraw(uint256 _phase) external onlyAdmin() returns(bool){
         require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
-        require(!fundingPhases_[_phase].fundingWithdrawn, "Funds already withdrawn");
 
         // This checks if we trigger the distribute on the Market
         if(fundingPhases_[currentPhase_].state == 0){
@@ -99,7 +101,7 @@ contract Vault is AdminManaged {
         }else{
             // This sends the funding for the specified round
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
-            fundingPhases_[_phase].fundingWithdrawn = true;
+            fundingPhases_[_phase].state == 3;
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(100)).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
@@ -125,12 +127,12 @@ contract Vault is AdminManaged {
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold){
             if(fundingPhases_[currentPhase_].startDate + fundingPhases_[currentPhase_].phaseDuration <= now){
                 fundingPhases_[currentPhase_].state = 2; // Setting to ended
-                
+
                 outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
                 currentPhase_ = currentPhase_ + 1;
-                // Here we check if this was the final round to 
-                // Set the states apprpriately 
+                // Here we check if this was the final round to
+                // Set the states apprpriately
                 if(fundingPhases_[currentPhase_].fundingThreshold > 0){
                     fundingPhases_[currentPhase_].state = 1; // Setting to Started
                     fundingPhases_[currentPhase_].startDate = now;
@@ -138,7 +140,7 @@ contract Vault is AdminManaged {
                 emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
 
             }else{
-                return false; 
+                return false;
             }
         }
         return true;
@@ -156,7 +158,8 @@ contract Vault is AdminManaged {
         // This sends all the remaining funding
 
         // This checks if all funding phases completed successfully
-        if(fundingPhases_[currentPhase_].state == 0 && fundingPhases_[currentPhase_ - 1].state == 2){
+        // Checks if ended or paid for conclusion of phase
+        if(fundingPhases_[currentPhase_].state == 0 && (fundingPhases_[currentPhase_ - 1].state >= 2)){
             uint256 molTax = (remainingBalance.div(100)).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
 
