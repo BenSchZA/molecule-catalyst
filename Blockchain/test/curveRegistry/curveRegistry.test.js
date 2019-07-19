@@ -1,7 +1,7 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let BondingFunctions = require('../../../build/BondingFunctions.json');
+let BondingFunctions = require('../../build/CurveRegistry.json');
 
 describe('Curve Registry test', () => {
     let deployer;
@@ -25,11 +25,10 @@ describe('Curve Registry test', () => {
         it('Activates a curve');
     });
 
-    describe('Meta data', async () =>{
+    describe('Meta data', async () => {
         it('Get curve address by index');
         it('Get curve data by index');
         it('Get index');
         it('Published Block number');
-
-    })
+    });
 })
