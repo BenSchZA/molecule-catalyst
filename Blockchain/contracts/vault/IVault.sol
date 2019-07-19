@@ -9,7 +9,7 @@ interface IVault {
     // TODO: get admin managed initialise function
     function initialize(address _market) external;
 
-    function withdraw(uint256 _phase) external onlyAdmin() returns(bool);
+    function withdraw(uint256 _phase) external returns(bool);
 
     /**
       * @dev Verifies that the phase passed in: has not been withdrawn, funding goal has been reached,

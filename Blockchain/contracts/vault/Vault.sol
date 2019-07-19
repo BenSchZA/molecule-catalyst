@@ -85,7 +85,7 @@ contract Vault is AdminManaged {
     }
 
     function withdraw(uint256 _phase) external onlyAdmin() returns(bool){
-        require(fundingPhases_[_phase].state == 2, "Fund phase incomplete")
+        require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
         require(!fundingPhases_[_phase].fundingWithdrawn, "Funds already withdrawn");
 
         // This checks if we trigger the distribute on the Market
