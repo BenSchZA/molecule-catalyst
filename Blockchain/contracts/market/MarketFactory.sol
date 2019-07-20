@@ -90,7 +90,7 @@ contract MarketFactory is AdminManaged {
             _scaledShift
         ));
 
-        Vault(newVault).initialize(newMarket);
+        require(Vault(newVault).initialize(newMarket), "Vault not initialised");
         IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);
     }
 

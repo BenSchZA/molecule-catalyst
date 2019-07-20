@@ -50,7 +50,7 @@ contract CurveRegistry is AdminManaged {
 
     function reactivateCurve(uint256 _index) external onlyAdmin{
         require(curveContracts_[_index].active == false, "Curve already activated");
-        require(curveContracts_[_index].libraryAddress == address(0), "Curve not registered");
+        require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = true;
     }
 
