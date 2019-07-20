@@ -2,13 +2,12 @@ const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
 let MarketAbi = require('../../build/Market.json');
-let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
 let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../../build/CurveRegistry.json');
 let MarketRegistryAbi = require('../../build/MarketRegistry.json');
 let MarketFactoryAbi = require('../../build/MarketFactory.json');
-let BondingFunctionsAbi = require('../../build/BondingFunctions.json');
+let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 
 // The user accounts are
 const defaultDaiPurchase = 500;
@@ -54,8 +53,8 @@ describe('Curve Registry test', () => {
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
-        bondingFunctionsInstance = await deployer.deploy(
-            BondingFunctions,
+        curveFunctionsInstance = await deployer.deploy(
+            CurveFunctionsAbi,
             false
         );
 

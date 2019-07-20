@@ -1,31 +1,59 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let BondingFunctions = require('../../build/BondingFunctions.json');
+let MarketAbi = require('../../build/Market.json');
+let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
+let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
+let CurveRegistryAbi = require('../../build/CurveRegistry.json');
+let MarketRegistryAbi = require('../../build/MarketRegistry.json');
+let MarketFactoryAbi = require('../../build/MarketFactory.json');
+let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 
-const simulatedCurve = {
-    scaledShift: ethers.utils.parseUnits("50", 16), // 0.5
-    gradientDenominator: ethers.utils.parseUnits("17500", 0),
-    defaultPurchaseAmount: ethers.utils.parseUnits("100", 18),
-    init:{
-        totalSupply: ethers.utils.parseUnits("0", 18),
-    },
-    purchased: {
-        totalSupply: ethers.utils.parseUnits("100", 18),
-    }
+// The user accounts are
+const defaultDaiPurchase = 500;
+const defaultTokenVolume = 100;
+
+const moleculeVaultSettings = {
+    taxationRate: ethers.utils.parseUnits("15", 0),
 }
 
+const daiSettings = {
+    name: "PDAI",
+    symbol: "PDAI",
+    decimals: 18
+}
+
+let marketSettings = {
+    fundingGoals: [
+        ethers.utils.parseUnits("2000000"),
+        ethers.utils.parseUnits("2500000"),
+        ethers.utils.parseUnits("3000000")
+    ],
+    phaseDuration: [
+        ethers.utils.parseUnits("12", 0),
+        ethers.utils.parseUnits("8", 0),
+        ethers.utils.parseUnits("6", 0)
+    ],
+    curveType: ethers.utils.parseUnits("0", 0),
+    taxationRate: ethers.utils.parseUnits("60", 0),
+    scaledShift: ethers.utils.parseUnits("500000000000000000", 0),
+    gradientDenominator: ethers.utils.parseUnits("17000", 0),
+}
+
+
 describe('Curve Integral test', () => {
-    let deployer;
-    let molAdmin = accounts[0];
-    let userAccount = accounts[1];
-    let bondingFunctionsInstance;
+    let molAdmin = accounts[1];
+    let creator = accounts[2];
+    let user1 = accounts[3];
+    let user2 = accounts[4];
+    let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
+
   
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
-        bondingFunctionsInstance = await deployer.deploy(
-            BondingFunctions,
+        curveFunctionsInstance = await deployer.deploy(
+            CurveFunctionsAbi,
             false
         );
 
@@ -33,7 +61,7 @@ describe('Curve Integral test', () => {
 
     describe('Curve checks', async () => {
         it('Curve Integral functions as expected', async () => {
-            const rawDaiBN = await bondingFunctionsInstance.from(userAccount)
+            const rawDaiBN = await curveFunctionsInstance.from(userAccount)
                 .curveIntegral(simulatedCurve.defaultPurchaseAmount, simulatedCurve.gradientDenominator, simulatedCurve.scaledShift)
             assert.equal(
                 ethers.utils.formatUnits(rawDaiBN, 18),
@@ -43,9 +71,9 @@ describe('Curve Integral test', () => {
         });
 
         it('Inverse Curve Integral functions as expected', async () =>{
-            const rawDaiBN = await bondingFunctionsInstance.from(userAccount)
+            const rawDaiBN = await curveFunctionsInstance.from(userAccount)
                 .curveIntegral(simulatedCurve.defaultPurchaseAmount, simulatedCurve.gradientDenominator, simulatedCurve.scaledShift)
-            const rawTokenBN = await bondingFunctionsInstance.from(userAccount)
+            const rawTokenBN = await curveFunctionsInstance.from(userAccount)
                 .inverseCurveIntegral(
                     rawDaiBN, 
                     simulatedCurve.gradientDenominator, 

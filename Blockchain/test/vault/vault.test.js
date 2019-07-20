@@ -1,19 +1,19 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let BondingFunctions = require('../../../build/BondingFunctions.json');
+let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 
 describe('Vault test', () => {
     let deployer;
     let molAdmin = accounts[0];
     let userAccount = accounts[1];
-    let bondingFunctionsInstance;
+    let curveFunctionsInstance;
   
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
-        bondingFunctionsInstance = await deployer.deploy(
-            BondingFunctions,
+        curveFunctionsInstance = await deployer.deploy(
+            CurveFunctionsAbi,
             false
         );
 

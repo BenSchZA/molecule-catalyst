@@ -87,7 +87,6 @@ describe('Market Registry test', () => {
             "y-axis shift"
         )).wait();
 
-        // TODO: register vyper curve
         marketFactoryInstance = await deployer.deploy(
             MarketFactoryAbi,
             false,

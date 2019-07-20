@@ -89,7 +89,13 @@ contract Market is IERC20 {
         totalSupply_ = totalSupply_.sub(_numTokens);
         balances[msg.sender] = balances[msg.sender].sub(_numTokens);
 
-        msg.sender.transfer(rewardForBurn);
+        require(
+            IERC20(collateralToken_).transfer(
+                msg.sender,
+                rewardForBurn
+            ),
+            "Tokens not sent"
+        );
 
         emit Transfer(msg.sender, address(0), _numTokens);
 
@@ -106,10 +112,31 @@ contract Market is IERC20 {
             //collateral price returned is taxed
             //tax is sent to vault
             //user is sent tokens
-        // uint256 buyTax = (_colateralTokenOffered.div(100)).mul(taxationRate_);
-        //Remaining collateral gets sent to vyper to work out amount of tokens
-        // uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
-        // require(IERC20(collateralToken_).transfer(creatorVault_, buyTax), "buy tax to vault transaction failed");
+        uint256 priceToMint = priceToMint(_numTokens);
+
+        // After the price is caculated, it is 100% plus the taxation percentage, this is to normalise
+        uint256 vaultPortion = (priceToMint.div(taxationRate_.add(100))).mul(taxationRate_);
+
+        require(
+            IERC20(collateralToken_).transferFrom(
+                msg.sender,
+                address(this),
+                priceToMint
+            ),
+            "Require transferFrom to succeed"
+        );
+
+        require(
+            IERC20(collateralToken_).transfer(
+                creatorVault_,
+                vaultPortion
+            ),
+            "Vault portion not sent"
+        );
+
+        totalSupply_ = totalSupply_.add(_numTokens);
+        balances[msg.sender] = balances[msg.sender].add(_numTokens); // Minus amount sent to Revenue target
+
         require(IVault(creatorVault_).validateFunding(), "Funding validation failed");
         emit Transfer(address(0), _to, _numTokens);
         return true;
@@ -162,6 +189,18 @@ contract Market is IERC20 {
         return true;
     }
 
+    function withdraw(uint256 _amount) public returns(bool){
+        require(active_ == false, "Market not finalised");
+        require(_amount <= balances[msg.sender], "Insufficient funds");
+
+        balances[msg.sender] = balances[msg.sender].sub(_amount);
+
+        uint256 poolBalance = IERC20(collateralToken_).balanceOf(address(this));
+        // This works out the value of 1 token then caculates what the whole amount is
+        uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
+        require(IERC20(collateralToken_).transfer(msg.sender, daiToTransfer), "Dai transfer failed");
+    }
+
     // /// @dev                Returns the gradient for the market's curve
     // /// @return             :uint256 The gradient for the market's curve
     // function gradientDenominator() external view returns(uint256) {
@@ -177,7 +216,7 @@ contract Market is IERC20 {
         //add tax to token price
         uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
         uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
-        return rawDai.add(rawDai.div(100)); // Adding 1 percent
+        return rawDai.add((rawDai.div(100)).mul(taxationRate_));
     }
 
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens

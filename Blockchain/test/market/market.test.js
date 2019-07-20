@@ -42,26 +42,73 @@ let marketSettings = {
 }
 
 describe('Market test', () => {
-    let deployer;
-    let molAdmin = accounts[0];
-    let userAccount = accounts[1];
-    let marketInstance, pseudoDaiInstance;
+    let molAdmin = accounts[1];
+    let creator = accounts[2];
+    let user1 = accounts[3];
+    let user2 = accounts[4];
+    let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
+
   
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
         pseudoDaiInstance = await deployer.deploy(
-            PseudoDaiToken, 
+            PseudoDaiTokenAbi, 
             false, 
             daiSettings.name, 
             daiSettings.symbol, 
             daiSettings.decimals
         );
 
-        marketInstance = await deployer.deploy(
-            MarketAbi,
+        moleculeVaultInstance = await deployer.deploy(
+            MoleculeVaultAbi,
+            false,
+            pseudoDaiInstance.contract.address,
+            moleculeVaultSettings.taxationRate,
+            molAdmin.signer.address
+        );
+
+        marketRegistryInstance = await deployer.deploy(
+            MarketRegistryAbi,
+            false,
+        );
+
+        curveRegistryInstance = await deployer.deploy(
+            CurveRegistryAbi,
             false
         );
+
+        curveIntegralInstance = await deployer.deploy(
+            CurveFunctionsAbi,
+            false
+        );
+
+        await( await curveRegistryInstance.from(molAdmin).registerCurve(
+            curveIntegralInstance.contract.address,
+            "y-axis shift"
+        )).wait();
+
+        marketFactoryInstance = await deployer.deploy(
+            MarketFactoryAbi,
+            false,
+            pseudoDaiInstance.contract.address,
+            moleculeVaultInstance.contract.address,
+            marketRegistryInstance.contract.address,
+            curveRegistryInstance.contract.address
+        );
+
+        await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
+
+        // Creating a market
+        await (await marketFactoryInstance.from(molAdmin).deployMarket(
+            marketSettings.fundingGoals,
+            marketSettings.phaseDuration,
+            creator.signer.address,
+            marketSettings.curveType,
+            marketSettings.taxationRate,
+            marketSettings.gradientDenominator,
+            marketSettings.scaledShift
+        )).wait()
 
     });
 
@@ -73,7 +120,14 @@ describe('Market test', () => {
     })
 
     describe("Token exchange", () =>{
-        it()
+        it("Mints specified token amount")
+        it("Burns specified token amount")
+    })
+
+    describe("Vault interactions", () =>{
+        it("Only Vault can finalise market")
+        it("When finalised, mint/burn unavailable")
+        it("When finalised, withdraw functions correctly")
     })
 
     describe('Meta data', () =>{
