@@ -98,7 +98,7 @@ describe('Market Factory test', () => {
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
     });
 
-    describe('Admin functions', async () => {
+    describe('Admin functions', () => {
         it('Deploys a compound ecosystem', async () => {
             let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
             assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
@@ -120,7 +120,7 @@ describe('Market Factory test', () => {
         });
     });
 
-    describe('Meta data', async () =>{
+    describe('Meta data', () =>{
         it('moleculeVault', async () => {
             const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
             assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
@@ -135,7 +135,7 @@ describe('Market Factory test', () => {
         });
     })
 
-    describe("Admin Managed functions", async () => {
+    describe("Admin Managed functions", () => {
         it("Reverts if non admin deploys", async () => {
             await assert.revert(marketFactoryInstance.from(user1).deployMarket(
                 marketSettings.fundingGoals,
