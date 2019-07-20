@@ -113,16 +113,13 @@ contract Market is IERC20 {
             //user is sent tokens
         uint256 priceToMint = priceToMint(_numTokens);
 
-        // After the price is caculated, it is 100% plus the taxation percentage, this is to normalise
+        // // After the price is caculated, it is 100% plus the taxation percentage, this is to normalise
         uint256 vaultPortion = (priceToMint.div(taxationRate_.add(100))).mul(taxationRate_);
 
-        require(
-            IERC20(collateralToken_).transferFrom(
-                msg.sender,
-                address(this),
-                priceToMint
-            ),
-            "Require transferFrom to succeed"
+        IERC20(collateralToken_).transferFrom(
+            msg.sender,
+            address(this),
+            priceToMint
         );
 
         require(
@@ -210,12 +207,11 @@ contract Market is IERC20 {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             :uint256 Required collateral corrected for decimals
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
-        //todo: passes the token amount to vyper
-        //gets the collateral in return,
-        //add tax to token price
         uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
         uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
         return rawDai.add((rawDai.div(100)).mul(taxationRate_));
+        // return rawDai.add((rawDai.div(100 - taxationRate_))).mul(100));
+        // return (rawDai.div(100 - taxationRate_)).mul(100);
     }
 
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
@@ -232,7 +228,7 @@ contract Market is IERC20 {
     /// @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function colateralToTokenBuying(uint256 _colateralTokenOffered) external view returns(uint256) {
         //Gets the amount for vault
-        uint256 buyTax = (_colateralTokenOffered.div(100)).mul(taxationRate_);
+        uint256 buyTax = (_colateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
         //Remaining collateral gets sent to vyper to work out amount of tokens
         uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
         return inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax)).sub(totalSupply_);

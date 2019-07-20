@@ -1,45 +1,21 @@
-const etherlime = require('etherlime-lib');
-const ethers = require('ethers');
-
-let MarketAbi = require('../../build/Market.json');
-let VaultAbi = require('../../build/Vault.json');
-let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
-let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
-let CurveRegistryAbi = require('../../build/CurveRegistry.json');
-let MarketRegistryAbi = require('../../build/MarketRegistry.json');
-let MarketFactoryAbi = require('../../build/MarketFactory.json');
-let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
-
-// The user accounts are
-const defaultDaiPurchase = 500;
-const defaultTokenVolume = 100;
-
-const moleculeVaultSettings = {
-    taxationRate: ethers.utils.parseUnits("15", 0),
-}
-
-const daiSettings = {
-    name: "PDAI",
-    symbol: "PDAI",
-    decimals: 18
-}
-
-let marketSettings = {
-    fundingGoals: [
-        ethers.utils.parseUnits("2000000"),
-        ethers.utils.parseUnits("2500000"),
-        ethers.utils.parseUnits("3000000")
-    ],
-    phaseDuration: [
-        ethers.utils.parseUnits("12", 0),
-        ethers.utils.parseUnits("8", 0),
-        ethers.utils.parseUnits("6", 0)
-    ],
-    curveType: ethers.utils.parseUnits("0", 0),
-    taxationRate: ethers.utils.parseUnits("60", 0),
-    scaledShift: ethers.utils.parseUnits("500000000000000000", 0),
-    gradientDenominator: ethers.utils.parseUnits("17000", 0),
-}
+const { 
+    PseudoDaiTokenAbi,
+    MoleculeVaultAbi, 
+    MarketRegistryAbi, 
+    CurveRegistryAbi, 
+    CurveFunctionsAbi, 
+    MarketFactoryAbi, 
+    ethers, 
+    etherlime, 
+    daiSettings,
+    moleculeVaultSettings,
+    marketSettings,
+    MarketAbi,
+    VaultAbi,
+    defaultDaiPurchase,
+    defaultTokenVolume,
+    purchasingSequences
+ } = require("../testing.settings.js");
 
 describe('Market test', () => {
     let molAdmin = accounts[1];
@@ -118,7 +94,7 @@ describe('Market test', () => {
 
         
         // Setting up dai
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < 5; i++){
             // Getting tokens
             await (await pseudoDaiInstance.from(accounts[i]).mint());
             // Setting approval
@@ -130,10 +106,39 @@ describe('Market test', () => {
     });
 
     describe("Pricing functions", () => {
+        // TODO: Resolve inverse intergrals variance issue
         it("Calculates Dai to Tokens accurately - Mint")
+        // , async () => {
+        //     const priceToMintForDai = await marketInstance.colateralToTokenBuying(purchasingSequences.first.dai.daiCost);
+        //     assert.ok(priceToMintForDai.eq(purchasingSequences.first.dai.tokenResult), "Price to mint dai incorrect");
+        // })
         it("Calculates Dai to Tokens accurately - Burn")
-        it("Calculates Token to Dai accurately - Mint")
-        it("Calculates Token to Dai accurately - Burn")
+        it("Calculates Token to Dai accurately - Mint", async () => {
+            const priceToMintForToken = await marketInstance.priceToMint(purchasingSequences.first.token.tokenResult);
+            console.log("Price to mint", ethers.utils.formatUnits(priceToMintForToken, 18))
+            assert.ok(priceToMintForToken.eq(purchasingSequences.first.token.daiCost), "Price to mint token incorrect");
+        })
+        it("Calculates Token to Dai accurately - Burn", async () =>{
+            let daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
+            const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
+
+            const balance = await marketInstance.balanceOf(user1.signer.address);
+            const rewardForBurn = await marketInstance.rewardForBurn(balance);
+            console.log("price to burn", ethers.utils.formatUnits(rewardForBurn, 18));
+
+            daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
+            console.log("Dai Balance after mint", ethers.utils.formatUnits(daiBalance, 18));
+
+            const transfers = (await(txReceipt.events.filter(
+                event => event.topics[0] == marketInstance.interface.events.Transfer.topic
+            ))).map(transferEvent => marketInstance.interface.parseLog(transferEvent))
+            
+            assert.ok(daiBalance.sub())
+            const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
+            console.log("purposedBurnValue", ethers.utils.formatUnits(purposedBurnValue, 18));
+            console.log(ethers.utils.formatUnits(transfers[0].values.value, 18))
+            // This will be the vault assert console.log(ethers.utils.formatUnits(transfers[1].values.value, 18))
+        })
     })
 
     describe("Token exchange", () =>{
@@ -148,7 +153,29 @@ describe('Market test', () => {
     })
 
     describe("Events", () => {
-        it('Emits Transfer in mint');
+        it('Emits Transfer in mint', async () =>{
+            let daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
+            console.log("Dai Balance before mint", ethers.utils.formatUnits(daiBalance, 18));
+            const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
+
+            
+            daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
+            const balance = await marketInstance.balanceOf(user1.signer.address);
+            console.log("Dai Balance after mint", ethers.utils.formatUnits(daiBalance, 18));
+            console.log("Balance after mint", ethers.utils.formatUnits(balance, 18));
+
+            const transfers = (await(txReceipt.events.filter(
+                event => event.topics[0] == marketInstance.interface.events.Transfer.topic
+            ))).map(transferEvent => marketInstance.interface.parseLog(transferEvent))
+            
+
+            // TODO: the value of the second & third event values should equal the first
+            console.log(transfers.length)
+            const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
+            console.log(ethers.utils.formatUnits(transfers[0].values.value, 18))
+            console.log(ethers.utils.formatUnits(transfers[1].values.value, 18))
+            console.log(ethers.utils.formatUnits(transfers[2].values.value, 18))
+        });
         it('Emits Transfer in burn');
         it('Emits Approve');
         it('Emits MarketTerminated');
