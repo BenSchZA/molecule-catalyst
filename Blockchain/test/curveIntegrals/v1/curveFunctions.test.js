@@ -1,17 +1,29 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let MarketAbi = require('../../build/Market.json');
-let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
-let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
-let CurveRegistryAbi = require('../../build/CurveRegistry.json');
-let MarketRegistryAbi = require('../../build/MarketRegistry.json');
-let MarketFactoryAbi = require('../../build/MarketFactory.json');
-let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
+let MarketAbi = require('../../../build/Market.json');
+let PseudoDaiTokenAbi = require('../../../build/PseudoDaiToken.json');
+let MoleculeVaultAbi = require('../../../build/MoleculeVault.json');
+let CurveRegistryAbi = require('../../../build/CurveRegistry.json');
+let MarketRegistryAbi = require('../../../build/MarketRegistry.json');
+let MarketFactoryAbi = require('../../../build/MarketFactory.json');
+let CurveFunctionsAbi = require('../../../build/CurveFunctions.json');
 
 // The user accounts are
 const defaultDaiPurchase = 500;
 const defaultTokenVolume = 100;
+
+const simulatedCurve = {
+    scaledShift: ethers.utils.parseUnits("50", 16), // 0.5
+    gradientDenominator: ethers.utils.parseUnits("17500", 0),
+    defaultPurchaseAmount: ethers.utils.parseUnits("100", 18),
+    init:{
+        totalSupply: ethers.utils.parseUnits("0", 18),
+    },
+    purchased: {
+        totalSupply: ethers.utils.parseUnits("100", 18),
+    }
+}
 
 const moleculeVaultSettings = {
     taxationRate: ethers.utils.parseUnits("15", 0),
@@ -59,9 +71,9 @@ describe('Curve Integral test', () => {
 
     });
 
-    describe('Curve checks', async () => {
+    describe('Curve checks', () => {
         it('Curve Integral functions as expected', async () => {
-            const rawDaiBN = await curveFunctionsInstance.from(userAccount)
+            const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
                 .curveIntegral(simulatedCurve.defaultPurchaseAmount, simulatedCurve.gradientDenominator, simulatedCurve.scaledShift)
             assert.equal(
                 ethers.utils.formatUnits(rawDaiBN, 18),
@@ -71,9 +83,9 @@ describe('Curve Integral test', () => {
         });
 
         it('Inverse Curve Integral functions as expected', async () =>{
-            const rawDaiBN = await curveFunctionsInstance.from(userAccount)
+            const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
                 .curveIntegral(simulatedCurve.defaultPurchaseAmount, simulatedCurve.gradientDenominator, simulatedCurve.scaledShift)
-            const rawTokenBN = await curveFunctionsInstance.from(userAccount)
+            const rawTokenBN = await curveFunctionsInstance.from(molAdmin)
                 .inverseCurveIntegral(
                     rawDaiBN, 
                     simulatedCurve.gradientDenominator, 

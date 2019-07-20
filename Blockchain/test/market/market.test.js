@@ -48,7 +48,8 @@ describe('Market test', () => {
     let user2 = accounts[4];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
-  
+    let marketInstance;
+
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
@@ -110,6 +111,21 @@ describe('Market test', () => {
             marketSettings.scaledShift
         )).wait()
 
+        const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+        
+        marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+
+        
+        // Setting up dai
+        for(let i = 0; i < 10; i++){
+            // Getting tokens
+            await (await pseudoDaiInstance.from(accounts[i]).mint());
+            // Setting approval
+            await (await pseudoDaiInstance.from(accounts[i]).approve(
+                marketInstance.contract.address,
+                ethers.constants.MaxUint256
+            ))
+        }
     });
 
     describe("Pricing functions", () => {

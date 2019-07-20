@@ -53,6 +53,11 @@ describe('Curve Registry test', () => {
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
+        curveRegistryInstance = await deployer.deploy(
+            CurveRegistryAbi,
+            false
+        );
+        
         curveFunctionsInstance = await deployer.deploy(
             CurveFunctionsAbi,
             false

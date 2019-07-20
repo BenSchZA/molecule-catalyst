@@ -84,7 +84,7 @@ contract PseudoDaiToken is ERC20 {
         address _to,
         uint256 _value
     )
-        public 
+        public
         returns (bool)
     {
         require(_value <= balances[_from]);
@@ -108,11 +108,11 @@ contract PseudoDaiToken is ERC20 {
       * @param _value    : The amount of tokens to be spent.
       */
     function approve(
-        address _spender, 
+        address _spender,
         uint256 _value
-    ) 
+    )
         public 
-        returns (bool success) 
+        returns (bool success)
     {
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
