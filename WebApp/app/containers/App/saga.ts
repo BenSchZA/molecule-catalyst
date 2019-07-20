@@ -1,30 +1,12 @@
-import { fork, take, put, race, takeLatest } from 'redux-saga/effects';
-import rootAuthenticationSaga from 'domain/authentication/saga';
+import {fork} from 'redux-saga/effects';
 
-import { setApiSendingFlag } from './actions';
+import AuthSaga from '../../domain/authentication/saga';
+import UserProfileSaga from '../../domain/userProfile/saga';
 
-export function* toggleApiSendingFlag(action) {
-  try {
-    yield put(setApiSendingFlag(true));
-    yield race({
-      success: take(action.type.replace('_REQUEST', '_SUCCESS')),
-      failure: take(action.type.replace('_REQUEST', '_FAILURE'))
-    })
-  } catch (error) {
-  } finally {
-    yield put(setApiSendingFlag(false));
-  }
-}
 
-export function* apiRequestListener() {
-  yield takeLatest(action => (action.type.endsWith('_REQUEST')), toggleApiSendingFlag);
-}
-
-export default function* appSaga() {
-  yield put(setApiSendingFlag(false));
-  yield fork(apiRequestListener);
+export default function * root() {
   // Add other global DAEMON sagas here.
   // To prevent performance bottlenecks add sagas with caution.
-  yield fork(rootAuthenticationSaga)
+  yield fork(AuthSaga);
+  yield fork(UserProfileSaga);
 }
-

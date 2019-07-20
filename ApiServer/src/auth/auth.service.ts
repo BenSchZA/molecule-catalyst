@@ -1,46 +1,92 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
+import { ethers } from 'ethers';
+import { ConfigService } from 'src/config/config.service';
+import { UserType, IUser } from 'src/user/user.schema';
 
 export interface JwtPayload {
   userId: string;
+  userType: UserType;
   // TODO: Add Role or permissions here
 }
 
-export interface SignInDto {
-  email: string;
-  password: string;
-}
-
-export enum LoginStatus {
-  success = 'SUCCESS',
-}
-
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
   userId: string;
-  status: LoginStatus;
+  ethAddress: string;
+}
+
+export interface AccessPermit {
+  permit: string;
 }
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly config: ConfigService,
     private readonly jwtService: JwtService,
   ) { }
 
-  async signIn({ email, password }: SignInDto): Promise<LoginResponse> {
-    const user = await this.userService.findByEmail(email);
-    if (!user) { throw new UnauthorizedException('Invalid Username or Password'); }
+  async generatePermit(ethAddress): Promise<AccessPermit> {
+    const serverAccountWallet = await ethers.Wallet.fromMnemonic(
+      this.config.get('serverWallet').mnemonic,
+    );
+    const returnMessage = await serverAccountWallet.signMessage(
+      `${this.config.get('jwt').permitSalt} - ${ethAddress.toLowerCase()}`,
+    );
+    
+    return { permit: returnMessage };
+  }
 
-    if (await user.comparePassword(password)) {
-      const tokenPayload: JwtPayload = { userId: user.id };
-      const token = this.jwtService.sign(tokenPayload);
-
-      return ({ token, userId: user.id, status: LoginStatus.success });
-    } else {
-      throw new UnauthorizedException('Invalid Username or Password');
+  async validateUserSignature(signedMessage, ethAddress): Promise<boolean> {
+    const { permit } = await this.generatePermit(ethAddress);
+    try {
+      const addressOfSigner = await ethers.utils.verifyMessage(
+        permit,
+        signedMessage,
+      );
+      return addressOfSigner.toLowerCase() === ethAddress.toLowerCase();
+    } catch (error) {
+      console.error(error);
+      return false;
     }
+  }
+
+  async login(signedPermit: string, ethAddress: string): Promise<LoginResponse> {
+    const isSignatureValid = await this.validateUserSignature(signedPermit, ethAddress);
+    if (!isSignatureValid) {
+      throw new UnauthorizedException('Invalid message signature');
+    }
+
+    const _user = await this.userService.getUserByEthAddress(ethAddress);
+    let user: IUser;
+
+    if (_user) {
+      user = _user;
+    } else {
+      const newUser = await this.userService.create(ethAddress);
+      user = newUser;
+    }
+
+    // TODO get expiry from config
+    const accessToken = this.jwtService.sign(
+      {
+        userId: user.id,
+        type: user.type,
+      },
+      {
+        expiresIn: `${this.config.get('jwt').expiry}h`,
+        subject: ethAddress,
+        issuer: this.config.get('app').host,
+      },
+    );
+
+    return { accessToken: accessToken, userId: user.id, ethAddress: user.ethAddress };
   }
 
   async validateUser(payload: JwtPayload): Promise<any> {

@@ -11,27 +11,72 @@
  * the linting exception.
  */
 
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router';
+import { compose, Dispatch } from 'redux';
 import { Redirect, Route } from 'react-router-dom';
-import { compose } from 'redux';
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectIsLoggedIn, makeSelectCurrentlySending } from './selectors';
-import saga from './saga';
-import { DAEMON } from 'utils/constants';
-import AppWrapper from '../../components/AppWrapper';
-import reducer from './reducer'
-import { RootState } from './types';
-import routes from './routes';
-import * as authenticationActions from '../../domain/authentication/actions';
 
-function PrivateRoute({ component: Component, isLoggedIn, ...rest }) {
+import injectSaga from 'utils/injectSaga';
+import { DAEMON } from 'utils/constants';
+
+import AppWrapper from '../../components/AppWrapper/index';
+import * as authActions from '../../domain/authentication/actions'
+import routes from './routes';
+import saga from './saga';
+import selectApp from './selectors';
+
+interface OwnProps { }
+
+export interface StateProps {
+  isLoggedIn: boolean;
+  walletUnlocked: boolean;
+  ethAddress: string;
+  selectedNetworkName: string;
+  userDisplayName: string;
+}
+
+export interface DispatchProps {
+ onConnect(): void;
+}
+
+type Props = StateProps & DispatchProps & OwnProps;
+const App: React.SFC<Props> = (props: Props) => {
+  return (
+    <AppWrapper navRoutes={routes.filter(r => r.isNavRequired)} {...props}>
+      <Switch>
+        {routes.map(r => {
+          return (r.isProtected) ?
+            (<PrivateRoute path={r.path} exact component={r.component} isLoggedIn={props.isLoggedIn} key={r.path} />) :
+            (<PublicRoute path={r.path} exact component={r.component} isLoggedIn={props.isLoggedIn} key={r.path} />);
+        })}
+      </Switch>
+    </AppWrapper>
+  );
+};
+
+const mapStateToProps = state => selectApp(state);
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  onConnect: () => dispatch(authActions.authenticate.request()),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });
+
+export default compose(
+  withRouter,
+  withSaga,
+  withConnect,
+)(App);
+
+const PrivateRoute: React.SFC<any> = ({ component: Component, isLoggedIn, ...rest }) => {
   return (
     <Route
-      exact
       {...rest}
       render={props => {
         return isLoggedIn ? (
@@ -39,7 +84,7 @@ function PrivateRoute({ component: Component, isLoggedIn, ...rest }) {
         ) : (
             <Redirect
               to={{
-                pathname: '/login',
+                pathname: '/',
                 state: { from: props.location },
               }}
             />
@@ -48,12 +93,11 @@ function PrivateRoute({ component: Component, isLoggedIn, ...rest }) {
       }
     />
   );
-}
+};
 
-function PublicRoute({ component: Component, isLoggedIn, ...rest }) {
+const PublicRoute: React.SFC<any> = ({ component: Component, isLoggedIn, ...rest }) => {
   return (
     <Route
-      exact
       {...rest}
       render={props => {
         return !isLoggedIn ? (
@@ -66,69 +110,8 @@ function PublicRoute({ component: Component, isLoggedIn, ...rest }) {
               }}
             />
           );
-      }
+        }
       }
     />
   );
-}
-
-interface OwnProps { }
-
-interface StateProps {
-  isLoggedIn: boolean;
-  currentlySending: boolean;
-}
-
-interface DispatchProps {
-  onLogout();
-}
-
-type Props = StateProps & DispatchProps & OwnProps;
-function App(props: Props) {
-  const { isLoggedIn, onLogout, currentlySending } = props;
-
-  // The PublicRoute and PrivateRoute components below should only be used for top level components
-  // that will be connected to the store, as no props can be passed down to the child components from here.
-  return (
-    <AppWrapper 
-      isLoggedIn={isLoggedIn} 
-      onLogout={onLogout} 
-      currentlySending={currentlySending}
-      navLinks={routes.filter(r => r.isNavRequired)} >
-      <Switch>
-        {routes.map(r => {
-          const route = (r.isProtected) ?
-            (<PrivateRoute path={r.path} exact component={r.component} isLoggedIn={isLoggedIn} key={r.path} />) :
-            (<PublicRoute path={r.path} exact component={r.component} isLoggedIn={isLoggedIn} key={r.path} />);
-          return route;
-        })}
-      </Switch>
-    </AppWrapper>
-  );
-}
-
-const mapStateToProps = createStructuredSelector<RootState, StateProps>({
-  isLoggedIn: makeSelectIsLoggedIn(),
-  currentlySending: makeSelectCurrentlySending(),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  onLogout: () => {
-    dispatch(authenticationActions.logout());
-  },
-});
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-const withReducer = injectReducer<OwnProps>({key: 'app', reducer: reducer})
-const withSaga = injectSaga<OwnProps>({ key: 'app', saga: saga, mode: DAEMON });
-
-export default compose(
-  withRouter,
-  withReducer,
-  withSaga,
-  withConnect,
-)(App);
+};

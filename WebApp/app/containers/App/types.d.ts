@@ -3,14 +3,17 @@ import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
-interface AppState { 
-  currentlySending: boolean;
+interface AppState {
+
 }
+
 
 /* --- ACTIONS --- */
 type AppActions = ActionType<typeof actions>;
 
+
 /* --- EXPORTS --- */
+
 type RootState = ApplicationRootState;
 type ContainerState = AppState;
 type ContainerActions = AppActions;

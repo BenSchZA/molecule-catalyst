@@ -1,59 +1,65 @@
-import {Schema, Document} from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { env } from '../config/env';
+import { Schema, Document } from 'mongoose';
+import { Schemas } from 'src/app.constants';
+import { spreadEnumKeys } from 'src/helpers/spreadEnum';
 
-export interface User {
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  password: string;
-  comparePassword(candidatePassword: string): Promise<boolean>;
+export enum UserType {
+  Standard,
+  ProjectCreator,
+  Admin
+}
+
+export interface IUser extends User {
+  id: string;
+}
+
+interface User {
+  ethAddress: string;
+  firstName?: string;
+  lastName?: string;
+  fullName?: string;
+  // email?: string;
+  profileImage?: { type: Schema.Types.ObjectId, ref: Schemas.Attachment },
+  type: UserType;
+  isValidated: Boolean;
+  valid: Boolean;
+  blacklisted: Boolean;
 }
 
 export interface UserDocument extends User, Document { }
 
 export const UserSchema = new Schema({
-    firstName: {type: String, required: true},
-    lastName: {type: String, required: true},
-    email: {type: String, required: true, unique: true},
-    password: {type: String, required: true, select: false},
+  ethAddress: { type: String, required: true, unique: true },
+  firstName: { type: String, required: false },
+  lastName: { type: String, required: false },
+  // email: { type: String, required: false, unique: true },
+  profileImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: false },
+  type: { type: Number, required: true, enum:[...spreadEnumKeys(UserType)],  default: UserType.Standard },
+  isValidated: { type: Boolean, default: false },
+  valid: { type: Boolean, default: false },
+  blacklisted: { type: Boolean, default: false }
 }, {
     timestamps: true,
     toJSON: {
-        getters: true,
-        versionKey: false,
-        transform: (doc, ret) => {
-            ret.id = String(ret._id);
-            delete ret._id;
-            return ret;
-        },
-        virtuals: true,
+      getters: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        ret.id = String(ret._id);
+        delete ret._id;
+        return ret;
+      },
+      virtuals: true,
     },
     toObject: {
-        getters: true,
-        versionKey: false,
-        transform: (doc, ret) => {
-            ret.id = String(ret._id);
-            delete ret._id;
-            return ret;
-        },
+      getters: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        ret.id = String(ret._id);
+        delete ret._id;
+        return ret;
+      },
     },
-});
+  });
 
-UserSchema.pre('save', async function(this: UserDocument, next) {
-    if (!this.isModified('password')) return next();
-
-    const hashedPassword = await bcrypt.hash(this.password, env.bcrypt.saltRounds);
-    this.password = hashedPassword;
-
-    next();
-});
-
-UserSchema.methods.comparePassword = async function(candidatePassword: string) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-UserSchema.virtual('fullName').get(function() {
-    return this.firstName + ' ' + this.lastName;
+UserSchema.virtual('fullName').get(function () {
+  return this.firstName + ' ' + this.lastName;
 });

@@ -4,14 +4,13 @@ const apiRequest = async (method, url, body?, contentType?, authenticate = false
     body: body,
     headers: {},
   };
-
+  
   if (!body) {
     delete options.body;
   }
 
   if (authenticate) {
     if (!token) { throw new Error('No Authentication token provided'); }
-    // tslint:disable-next-line: no-string-literal
     options.headers['Authorization'] = `Bearer ${token}`;
   }
 

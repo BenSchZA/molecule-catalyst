@@ -24,6 +24,12 @@ export interface EnvConfig {
   ethers: {
     [key: string]: any;
   };
+  serverWallet: {
+    [key: string]: any;
+  };
+  contracts: {
+    [key: string]: any;
+  };
 }
 
 @Injectable()
