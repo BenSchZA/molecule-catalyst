@@ -16,7 +16,7 @@ const {
     defaultTokenVolume,
     purchasingSequences
  } = require("../testing.settings.js");
- 
+
 describe('Vault test', () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
@@ -113,10 +113,10 @@ describe('Vault test', () => {
     })
 
     describe('Admin functions', async () => {
-        it('Registers a curve');
-        it('Deactivates a curve');
-        it('Terminate market');
-        it("Withdraws valid funding correctly")
+        it('Terminate market', async () => {
+            await assert.revert(vaultInstance.from(user1).terminateMarket());
+            await assert.notRevert(vaultInstance.from(creator).terminateMarket());
+        });
     });
 
     describe("Events", () => {
@@ -125,10 +125,30 @@ describe('Vault test', () => {
     })
 
     describe('Meta data', async () =>{
-        it('Get Funding phase data');
-        it('Get outstanding withdraw amount');
-        it('Get current phase');
-        it('Get market');
+        it('Get Funding phase data', async () => {
+            const fundingData = await vaultInstance.fundingPhase(0);
+            assert.ok(fundingData[0].gt(0), "Funding threshold incorrect")
+            assert.ok(fundingData[1].eq(marketSettings.phaseDuration[0]), "Phase incorrect")
+            assert.ok(fundingData[2].gt(0), "Date not set")
+            assert.equal(fundingData[3], 1, "State incorrect")
+        });
+        it('Get outstanding withdraw amount', async () =>{
+            const outstandingWithdraw = await vaultInstance.outstandingWithdraw();
+            assert.ok(outstandingWithdraw.eq(0), "Phase invalid")
+
+            // TODO: Check after a fund phase succeeds
+        });
+        it('Get current phase', async () => {
+            const currentPhase = await vaultInstance.currentPhase();
+            assert.ok(currentPhase.eq(0), "Phase invalid")
+
+
+            // TODO: check once funding has increase to next phase
+        });
+        it('Get market', async () =>{
+            const marketAddress = await vaultInstance.market();
+            assert.equal(marketAddress, marketInstance.contract.address, "Market Contract address invaild")
+        });
     })
 
     describe("Admin Managed Specific", () => {
