@@ -11,23 +11,23 @@ let MarketFactoryAbi = require('../build/MarketFactory.json');
 let CurveFunctionsAbi = require('../build/CurveFunctions.json');
 
 const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
-const defaultTokenVolume = ethers.utils.parseUnits("250000", 18);
+const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);
 
 const purchasingSequences = {
     first: {
         dai: {
             daiCost: defaultDaiPurchase,
-            tokenResult: ethers.utils.parseUnits("252406.6535262267", 18)
+            tokenResult: ethers.utils.parseUnits("317571.0051884025", 18)
         },
         token: {
-            daiCost: ethers.utils.parseUnits("4908085.9375",18),
+            daiCost: ethers.utils.parseUnits("5074821.12",18),
             tokenResult: defaultTokenVolume
         }
     },
     second: {
         dai: {
             daiCost: defaultDaiPurchase.mul(2),
-            tokenResult: ethers.utils.parseUnits("360379.8109633054", 18)
+            // tokenResult: ethers.utils.parseUnits("360379.8109633054", 18)
         },
         token: {
             daiCost: "",
@@ -63,6 +63,18 @@ let marketSettings = {
     gradientDenominator: ethers.utils.parseUnits("17000", 0),
 }
 
+const simulatedCurve = {
+    scaledShift: ethers.utils.parseUnits("50", 16), // 0.5
+    gradientDenominator: ethers.utils.parseUnits("17500", 0),
+    defaultPurchaseAmount: ethers.utils.parseUnits("100", 18),
+    init:{
+        totalSupply: ethers.utils.parseUnits("0", 18),
+    },
+    purchased: {
+        totalSupply: ethers.utils.parseUnits("100", 18),
+    }
+}
+
 module.exports = { 
     ethers,
     etherlime,
@@ -79,5 +91,6 @@ module.exports = {
     defaultDaiPurchase,
     defaultTokenVolume,
     purchasingSequences,
-    moleculeVaultSettings
+    moleculeVaultSettings,
+    simulatedCurve
 }

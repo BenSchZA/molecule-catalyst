@@ -39,7 +39,7 @@ contract PseudoDaiToken is ERC20 {
     }
 
     
-    /// @notice Mints 10 000 000 free tokens to a user.
+    /// @notice Mints 100 000 000 free tokens to a user.
     function mint() public {
         require(
             !mintingRewards[msg.sender],
@@ -47,9 +47,9 @@ contract PseudoDaiToken is ERC20 {
         );
         
         mintingRewards[msg.sender] = true;
-        totalSupply_.add(10000000000000000000000000);
-        balances[msg.sender] = balances[msg.sender].add(10000000000000000000000000);
-        emit Transfer(address(0), msg.sender, 10000000000000000000000000);
+        totalSupply_.add(100000000000000000000000000);
+        balances[msg.sender] = balances[msg.sender].add(100000000000000000000000000);
+        emit Transfer(address(0), msg.sender, 100000000000000000000000000);
     }
 
     /**

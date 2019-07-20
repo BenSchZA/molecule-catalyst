@@ -1,5 +1,22 @@
-const { PseudoDaiTokenAbi, MoleculeVaultAbi, MarketRegistryAbi, CurveRegistryAbi, CurveFunctionsAbi, MarketFactoryAbi, ethers, etherlime, daiSettings } = require("../testing.settings.js");
-
+const { 
+    PseudoDaiTokenAbi,
+    MoleculeVaultAbi, 
+    MarketRegistryAbi, 
+    CurveRegistryAbi, 
+    CurveFunctionsAbi, 
+    MarketFactoryAbi, 
+    ethers, 
+    etherlime, 
+    daiSettings,
+    moleculeVaultSettings,
+    marketSettings,
+    MarketAbi,
+    VaultAbi,
+    defaultDaiPurchase,
+    defaultTokenVolume,
+    purchasingSequences
+ } = require("../testing.settings.js");
+ 
 describe('Market Registry test', () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];

@@ -106,26 +106,21 @@ contract Market is IERC20 {
     /// @param _numTokens   :uint256 The number of tokens you want to mint
     /// @dev                We have modified the minting function to divert a portion of the purchase tokens
     function mint(address _to, uint256 _numTokens) external onlyActive() returns(bool) {
-        //todo: takes tax off of the collateral and sends to vault
-            //calls the vyper contract with this number of tokens
-            //collateral price returned is taxed
-            //tax is sent to vault
-            //user is sent tokens
-        uint256 priceToMint = priceToMint(_numTokens);
+        uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
 
-        // // After the price is caculated, it is 100% plus the taxation percentage, this is to normalise
-        uint256 vaultPortion = (priceToMint.div(taxationRate_.add(100))).mul(taxationRate_);
+        uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
 
         IERC20(collateralToken_).transferFrom(
             msg.sender,
             address(this),
-            priceToMint
+            untaxedDai.add(tax)
         );
 
         require(
             IERC20(collateralToken_).transfer(
                 creatorVault_,
-                vaultPortion
+                untaxedDai
             ),
             "Vault portion not sent"
         );
@@ -178,6 +173,7 @@ contract Market is IERC20 {
         return true;
     }
 
+    // TODO: documentation
     function finaliseMarket() public onlyVault() returns(bool) {
         require(active_, "Market deactivated");
         active_ = false;
@@ -185,6 +181,7 @@ contract Market is IERC20 {
         return true;
     }
 
+    // TODO: documentation
     function withdraw(uint256 _amount) public returns(bool){
         require(active_ == false, "Market not finalised");
         require(_amount <= balances[msg.sender], "Insufficient funds");
@@ -208,10 +205,10 @@ contract Market is IERC20 {
     /// @return             :uint256 Required collateral corrected for decimals
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
         uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
-        uint256 rawDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
-        return rawDai.add((rawDai.div(100)).mul(taxationRate_));
-        // return rawDai.add((rawDai.div(100 - taxationRate_))).mul(100));
-        // return (rawDai.div(100 - taxationRate_)).mul(100);
+        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
+
+        uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
+        return untaxedDai.add(tax);
     }
 
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
@@ -228,6 +225,7 @@ contract Market is IERC20 {
     /// @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function colateralToTokenBuying(uint256 _colateralTokenOffered) external view returns(uint256) {
         //Gets the amount for vault
+        // Incoming dai is 100% + taxation rate, implying dividing by 100+taxRate, will produce an accurate 1 percent to work with
         uint256 buyTax = (_colateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
         //Remaining collateral gets sent to vyper to work out amount of tokens
         uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
