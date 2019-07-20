@@ -123,7 +123,7 @@ contract Vault is AdminManaged {
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].state == 3;
 
-            uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(100)).mul(moleculeTaxRate_);
+            uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
 
             uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold.sub(molTax);
@@ -188,7 +188,7 @@ contract Vault is AdminManaged {
         // Checks if ended or paid for conclusion of phase
         if(fundingPhases_[currentPhase_].state == 0 && (fundingPhases_[currentPhase_ - 1].state >= 2)) {
             // Works out the molecule tax amount
-            uint256 molTax = (remainingBalance.div(100)).mul(moleculeTaxRate_);
+            uint256 molTax = (remainingBalance.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             // Transfers amount to the molecule vault
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
             // Works out the remaining balance after mol tax, which is fetched
@@ -224,7 +224,7 @@ contract Vault is AdminManaged {
       * @dev The offset for checking the funding threshold
       */
     function outstandingWithdraw() public view returns(uint256){
-        uint256 minusMolTax = outstandingWithdraw_.sub((outstandingWithdraw_.div(100)).mul(moleculeTaxRate_));
+        uint256 minusMolTax = outstandingWithdraw_.sub((outstandingWithdraw_.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_));
         return minusMolTax;
     }
 

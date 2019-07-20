@@ -2,6 +2,7 @@ const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
 let MarketAbi = require('../../build/Market.json');
+let VaultAbi = require('../../build/Vault.json');
 let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
 let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../../build/CurveRegistry.json');
@@ -47,6 +48,7 @@ describe('Molecule vault test', () => {
     let user2 = accounts[4];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
+    let marketInstance, vaultInstance;
   
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
@@ -97,20 +99,48 @@ describe('Molecule vault test', () => {
         );
 
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
+
+        // Creating a market
+        await (await marketFactoryInstance.from(molAdmin).deployMarket(
+            marketSettings.fundingGoals,
+            marketSettings.phaseDuration,
+            creator.signer.address,
+            marketSettings.curveType,
+            marketSettings.taxationRate,
+            marketSettings.gradientDenominator,
+            marketSettings.scaledShift
+        )).wait()
+
+        const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+        
+        marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+        vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
+
+        
+        // Setting up dai
+        for(let i = 0; i < 10; i++){
+            // Getting tokens
+            await (await pseudoDaiInstance.from(accounts[i]).mint());
+            // Setting approval
+            await (await pseudoDaiInstance.from(accounts[i]).approve(
+                marketInstance.contract.address,
+                ethers.constants.MaxUint256
+            ))
+        }
     });
 
-    describe('Admin functions', async () => {
-        it('Registers a curve');
-        it('Deactivates a curve');
-        it('Activates a curve');
+    describe('Admin functions', () => {
+        it('Executes transfer correctly');
+        it('Executes approve correctly');
     });
 
-    describe('Meta data', async () =>{
-        it('Get curve address by index');
-        it('Get curve data by index');
-        it('Get index');
-        it('Published Block number');
+    describe("Vault interactions", () => {
+        it("Receives tax from vault withdraws")
+    })
 
+    describe('Meta data', () =>{
+        it('Get collateralToken');
+        it('Get taxRate');
     })
 
     describe("Admin Managed Specific", () => {

@@ -30,8 +30,7 @@ contract Market is IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
 
-    event Mint(address indexed to, uint256 amount, uint256 totalCost);
-    event Burn(address indexed from, uint256 amount, uint256 reward);
+    event MarketTerminated();
 
     constructor(
         uint256 _taxationRate,
@@ -185,7 +184,7 @@ contract Market is IERC20 {
     function finaliseMarket() public onlyVault() returns(bool) {
         require(active_, "Market deactivated");
         active_ = false;
-        // TODO: Trigger event
+        emit MarketTerminated();
         return true;
     }
 

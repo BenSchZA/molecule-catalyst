@@ -1,8 +1,8 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-
 let MarketAbi = require('../../build/Market.json');
+let VaultAbi = require('../../build/Vault.json');
 let PseudoDaiTokenAbi = require('../../build/PseudoDaiToken.json');
 let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../../build/CurveRegistry.json');
@@ -48,7 +48,7 @@ describe('Market test', () => {
     let user2 = accounts[4];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
-    let marketInstance;
+    let marketInstance, vaultInstance;
 
     beforeEach('', async () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
@@ -114,6 +114,7 @@ describe('Market test', () => {
         const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
         
         marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+        vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
 
         
         // Setting up dai
@@ -144,6 +145,13 @@ describe('Market test', () => {
         it("Only Vault can finalise market")
         it("When finalised, mint/burn unavailable")
         it("When finalised, withdraw functions correctly")
+    })
+
+    describe("Events", () => {
+        it('Emits Transfer in mint');
+        it('Emits Transfer in burn');
+        it('Emits Approve');
+        it('Emits MarketTerminated');
     })
 
     describe('Meta data', () =>{
