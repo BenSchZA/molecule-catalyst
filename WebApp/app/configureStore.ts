@@ -2,10 +2,11 @@
  * Create the store with dynamic reducers
  */
 
-import { createStore, applyMiddleware, compose } from 'redux';
+import createReducer from 'reducers';
+import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import createReducer from './reducers';
-import { LifeStore } from 'types';
+
+const sagaMiddleware = createSagaMiddleware();
 
 declare interface IWindow extends Window {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any; // redux-dev-tools definitions not needed
@@ -13,39 +14,32 @@ declare interface IWindow extends Window {
 declare const window: IWindow;
 
 export default function configureStore(initialState = {}) {
-  let composeEnhancers = compose;
-  const reduxSagaMonitorOptions = {};
-
-  // If Redux Dev Tools and Saga Dev Tools Extensions are installed, enable them
-  /* istanbul ignore next */
-  if (process.env.NODE_ENV !== 'production' && typeof window === 'object') {
-    /* eslint-disable no-underscore-dangle */
-    if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
-      composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({});
-    }
-
-    // NOTE: Uncomment the code below to restore support for Redux Saga
-    // Dev Tools once it supports redux-saga version 1.x.x
-    // if (window.__SAGA_MONITOR_EXTENSION__)
-    //   reduxSagaMonitorOptions = {
-    //     sagaMonitor: window.__SAGA_MONITOR_EXTENSION__,
-    //   };
-    /* eslint-enable */
-  }
-
-  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
-
-  // Create the store with two middlewares
-  // 1. sagaMiddleware: Makes redux-sagas work
   const middlewares = [sagaMiddleware];
 
   const enhancers = [applyMiddleware(...middlewares)];
+
+  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
+  /* eslint-disable no-underscore-dangle, indent */
+  const composeEnhancers =
+    // Uncomment to disable devtools in production
+    // process.env.NODE_ENV !== 'production' &&
+    typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+          // TODO Try to remove when `react-router-redux` is out of beta, LOCATION_CHANGE should not be fired more than once after hot reloading
+          // Prevent recomputing reducers for `replaceReducer`
+          shouldHotReload: false,
+          trace: true,
+          traceLimit: 25
+        })
+      : compose;
+  /* eslint-enable */
 
   const store = createStore(
     createReducer(),
     initialState,
     composeEnhancers(...enhancers),
-  ) as LifeStore;
+  ) as any; // TODO: disable any
 
   // Extensions
   store.runSaga = sagaMiddleware.run;

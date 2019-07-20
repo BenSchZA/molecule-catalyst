@@ -1,234 +1,135 @@
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import React, { Fragment, useState } from 'react';
+import { List, ListItem, Button, Menu, MenuItem, Avatar } from '@material-ui/core';
+import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import MenuIcon from '@material-ui/icons/Menu';
-import clsx from 'clsx';
-import React, { Fragment } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import LinearProgressIndicator from '../LinearProgressIndicator';
+import { Link } from 'react-router-dom';
+import ReactSVG from 'react-svg';
 import { AppRoute } from 'containers/App/routes';
+import Blockies from 'react-blockies';
+import { colors } from 'theme';
 
-const drawerWidth = 240;
 
-const styles = theme => createStyles({
-  root: {
-    display: 'flex',
-    backgroundColor: '#00b5bd',
-  },
+// import { appRoute } from 'containers/App/routes';
+
+
+const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    background: '#01223b',
+    zIndex: zIndex.drawer + 1,
   },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 36,
-    color: 'white',
-    justifyContent: 'start',
-    flexGrow: 1,
-  },
-  profileButton: {
-    marginLeft: 36,
-    marginRight: 12,
-  },
-  hide: {
-    display: 'none',
-  },
-  appHeading: {
-    flexGrow: 1,
-    textAlign: 'center',
-    color: 'white',
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
+  appBarLogo: {
+    paddingLeft: spacing(3),
   },
   toolbar: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    ...mixins.toolbar,
   },
   content: {
-    flexGrow: 1,
-    minHeight: '100vh',
-    padding: `${theme.spacing(9)}px ${theme.spacing(3)}px ${theme.spacing(3)}px `,
+    paddingTop: spacing(8),
+    paddingLeft: spacing(2),
+    paddingRight: spacing(2),
   },
-  logo: {
-    height: '50px',
-    flexGrow: 1,
+  navAccount: {
+    display: 'flex',
+    height: '',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignContent: 'center',
+    '& > *': {
+      display: 'inline-block',
+      alignSelf: 'center',
+    }
   },
-  appLink: {
-    textDecoration: 'none', 
-    paddingRight: '10px', 
-    flexGrow: 1
+  navList: {
+    display: 'flex',
+    flexDirection: 'row',
+    margin: 0,
+    padding: 0, 
+    '& > *': {
+      margin: `0px ${spacing(4)}px 0px ${spacing(4)}px`,
+      textAlign: 'center',
+      color: colors.white,
+    },
+  },
+  avatar: {
+    marginRight: spacing(3),
   },
 });
 
 interface Props extends WithStyles<typeof styles> {
+  children: React.ReactNode;
+  onConnect(): void;
   isLoggedIn: boolean;
-  onLogout: () => void;
-  currentlySending: boolean;
-  navLinks: AppRoute[];
+  walletUnlocked: boolean;
+  ethAddress: string;
+  selectedNetworkName: string;
+  userDisplayName: string;
+  navRoutes: Array<AppRoute>;
 }
 
-class AppWrapper extends React.Component<Props> {
-  public state = {
-    drawerOpen: false,
-    anchorEl: null,
-  };
-
-  public toggleDrawer = () => {
-    this.setState({ drawerOpen: !this.state.drawerOpen });
-  };
-
-  public handleMenu = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  public handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  public handleLogout = () => {
-    this.handleClose();
-    const { onLogout } = this.props;
-    onLogout();
-  }
-
-  public render() {
-    const { classes, children, isLoggedIn, currentlySending, navLinks } = this.props;
-    const { anchorEl } = this.state;
-    const open = Boolean(anchorEl);
-
-    return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar disableGutters={isLoggedIn}>
-            {isLoggedIn && (
-              <IconButton
-                aria-label="Open drawer"
-                onClick={this.toggleDrawer}
-                className={classes.menuButton} >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Link to="/" className={classes.appLink}>
-              <img className={classes.logo} src={(isLoggedIn) ? "https://i.imgur.com/6HDY4yZ.png" : "https://i.imgur.com/GbMCcG0.png"} />
-            </Link>
+const AppWrapper: React.SFC<Props> = ({
+  classes,
+  children,
+  navRoutes,
+  isLoggedIn,
+  onConnect,
+  ethAddress,
+  walletUnlocked
+}: Props) => {
+  const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
+  return (
+    <Fragment>
+      <AppBar position="fixed" className={classes.appBar} >
+        <Toolbar disableGutters={true} className={classes.toolbar}>
+          <Link className={classes.appBarLogo} to="/dashboard">
+            <ReactSVG src="molecule-logo.svg" />
+          </Link>
+          <div className={classes.navAccount}>
+            <List className={classes.navList}>
+              {navRoutes.map(r => (
+                <ListItem button key={r.path}>{r.name}</ListItem>
+              ))}
+            </List>
             {!isLoggedIn ? (
               <div>
-                <Link to="/login" style={{ textDecoration: 'none', paddingRight: '10px' }}>
-                  <Button color={'secondary'} variant="contained">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/Signup" style={{ textDecoration: 'none' }}>
-                  <Button color={'secondary'} variant="contained">
-                    Sign Up
-                  </Button>
-                </Link>
+                <Button onClick={() => onConnect()} disabled={!walletUnlocked}>CONNECT</Button>
               </div>
             ) : (
-              <div>
-                <IconButton
-                  className={classes.profileButton}
-                  aria-owns={open ? 'menu-appbar' : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit">
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={this.handleClose}>
-                  <Link to="/profile" style={{ textDecoration: 'none' }}>
-                    <MenuItem onClick={this.handleClose}>
-                      Profile
+                <Fragment>
+                  <Avatar onClick={(e) => setAnchorEl(e.currentTarget)} className={classes.avatar}>
+                    <Blockies seed={ethAddress || '0x'} size={10} />
+                  </Avatar>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl as Element}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}>
+                    <Link to="/profile" style={{ textDecoration: 'none' }}>
+                      <MenuItem onClick={() => setAnchorEl(null)}>
+                        Profile
                     </MenuItem>
-                  </Link>
-                  <MenuItem onClick={this.handleLogout}>
-                    Logout
-                </MenuItem>
-                </Menu>
-              </div>
-            )}
-          </Toolbar>
-          <LinearProgressIndicator active={currentlySending} />
-        </AppBar>
-        {isLoggedIn && (
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: clsx(classes.drawerPaper, !this.state.drawerOpen && classes.drawerPaperClose),
-            }}
-            open={this.state.drawerOpen}>
-            <div className={classes.toolbar}>
-              <IconButton onClick={this.toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
-              {
-                navLinks.map(({ name, path, routeNavLinkIcon }) => (
-                  <NavLink to={path} key={name}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        {(routeNavLinkIcon) ? React.createElement(routeNavLinkIcon) : <Fragment />}
-                      </ListItemIcon>
-                      <ListItemText primary={name} />
-                    </ListItem>
-                  </NavLink>
-                ))
-              }
-            </List>
-          </Drawer>
-        )}
-        <main className={classes.content}>
-          {children}
-        </main>
-      </div>
-    );
-  }
+                    </Link>
+                  </Menu>
+                </Fragment>
+              )}
+          </div>
+        </Toolbar>
+      </AppBar>
+      <main className={classes.content}>
+        {children}
+      </main>
+    </Fragment>
+  );
 }
 
 export default withStyles(styles, { withTheme: true })(AppWrapper);

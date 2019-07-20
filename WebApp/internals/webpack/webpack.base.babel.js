@@ -4,7 +4,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
-
+const Dotenv = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = options => ({
@@ -121,6 +122,10 @@ module.exports = options => ({
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
+    new Dotenv({
+      systemvars: true,
+    }),
+    new CopyWebpackPlugin([{ from: 'static' }]),
     new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true }),
   ]),
   resolve: {

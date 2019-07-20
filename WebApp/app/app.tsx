@@ -13,6 +13,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'sanitize.css/sanitize.css';
+import { init as initApm } from '@elastic/apm-rum';
 
 // Import root app
 import App from 'containers/App';
@@ -24,22 +25,13 @@ import 'file-loader?name=[name].[ext]!./.htaccess'; // eslint-disable-line impor
 import throttle from 'lodash/throttle';
 import configureStore from './configureStore';
 import history from './utils/history';
-import { loadState, saveState } from './utils/localStorage';
+import {loadState, saveState} from './utils/localStorage';
 
 // Import CSS reset and Global Styles
 
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { Router } from 'react-router';
-
-const theme = createMuiTheme({
-  palette: {
-    type: 'light',
-  },
-  typography: {
-    fontFamily: '\'Montserrat\', sans-serif',
-  },
-});
+import theme from 'theme';
 
 const persistedState = loadState();
 const store = configureStore(persistedState);
@@ -73,11 +65,21 @@ if (module.hot) {
   });
 }
 
-render();
+// We need the providers injected for the app to load
+window.addEventListener('load', () => render(), {once:true});
 
 // Install ServiceWorker and AppCache in the end since
 // it's not most important operation and if main code fails,
 // we do not want it installed
-if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install();
-}
+// if (process.env.NODE_ENV === 'production') {
+//   require('offline-plugin/runtime').install();
+// }
+
+initApm({
+  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
+  serviceName: process.env.APM_SERVICE_NAME,
+  // Set custom APM Server URL (default: http://localhost:8200)
+  serverUrl: process.env.APM_SERVER_ENDPOINT,
+  // Set service version (required for sourcemap feature)
+  serviceVersion: ''
+})

@@ -4,15 +4,22 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface AuthenticationState {
-  readonly refreshToken: string;
-  readonly accessToken: string;
-  readonly userId: string;
+  accessToken: string,
+  ethAddress: string,
+  signedPermit: string,
+  walletUnlocked: boolean,
+  selectedNetworkId?: number,
+  errorMessage: string,
+  type: number,
 }
+
 
 /* --- ACTIONS --- */
 type AuthenticationActions = ActionType<typeof actions>;
 
+
 /* --- EXPORTS --- */
+
 type RootState = ApplicationRootState;
 type DomainState = AuthenticationState;
 type DomainActions = AuthenticationActions;

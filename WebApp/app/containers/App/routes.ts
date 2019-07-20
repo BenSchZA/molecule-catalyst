@@ -1,8 +1,6 @@
-import { Dashboard } from '@material-ui/icons';
-import DashboardContainer from 'containers/DashboardPage';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import LoginPage from 'containers/LoginPage';
-import SignUpPage from 'containers/SignUpPage';
+import DiscoverContainer from 'containers/DiscoverContainer';
+import LandingPage from 'components/LandingPage';
+import CreateProjectContainer from 'containers/CreateProjectContainer';
 
 export interface AppRoute {
   name: string;
@@ -10,28 +8,26 @@ export interface AppRoute {
   component: React.ComponentType<any>;
   isProtected: boolean;
   isNavRequired: boolean;
-  routeNavLinkIcon?: React.ComponentType<SvgIconProps>; // Should be provided if Nav is required
 }
 
 const routes: AppRoute[] = [{
-  name: 'Dashboard',
-  path: '/dashboard',
-  component: DashboardContainer,
-  isProtected: true,
+  name: 'Landing Page',
+  path: '/',
+  component: LandingPage,
+  isProtected: false,
+  isNavRequired: false,
+}, {
+  name: 'Discover',
+  path: '/discover',
+  component: DiscoverContainer,
+  isProtected: false,
   isNavRequired: true,
-  routeNavLinkIcon: Dashboard,
 }, {
-  name: 'Login',
-  path: '/login',
-  component: LoginPage,
+  name: 'Create Project',
+  path: '/projects/create',
+  component: CreateProjectContainer,
   isProtected: false,
-  isNavRequired: false,
-}, {
-  name: 'Sign Up',
-  path: '/signup',
-  component: SignUpPage,
-  isProtected: false,
-  isNavRequired: false,
+  isNavRequired: true,
 }];
 
 export default routes;
