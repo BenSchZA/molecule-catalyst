@@ -61,7 +61,9 @@ contract MarketFactory is AdminManaged {
         uint256[] calldata _phaseDurations,
         address _creator,
         uint256 _curveType,
-        uint256 _taxationRate
+        uint256 _taxationRate,
+        uint256 _gradientDenominator,
+        uint256 _scaledShift
     )
         external
         onlyAdmin()
@@ -83,8 +85,10 @@ contract MarketFactory is AdminManaged {
             _taxationRate,
             newVault,
             curveLibrary,
-            collateralToken_
-        ));//todo: needs to be sent index of curve /address of curve it must use
+            collateralToken_,
+            _gradientDenominator,
+            _scaledShift
+        ));
 
         Vault(newVault).initialize(newMarket);
         IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);

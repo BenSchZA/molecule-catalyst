@@ -4,6 +4,7 @@ import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol"
 import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 import { IVault } from "../vault/IVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
 
 /// @author Veronica & Ryan of Linum Labs
 /// @title Market
@@ -19,7 +20,9 @@ contract Market is IERC20 {
 
     uint256 internal totalSupply_;
 
-    uint256 internal decimals_ = 18; // For now, assume 10^18 decimal precision
+    uint256 internal decimals_ = 18;
+    uint256 internal scaledShift_;
+    uint256 internal gradientDenominator_;
 
     mapping(address => mapping (address => uint256)) internal allowed;
     mapping(address => uint256) internal balances;
@@ -34,7 +37,9 @@ contract Market is IERC20 {
         uint256 _taxationRate,
         address _creatorVault,
         address _curveLibrary,
-        address _collateralToken
+        address _collateralToken,
+        uint256 _gradientDenominator,
+        uint256 _scaledShift
     )
         public
     {
@@ -42,6 +47,8 @@ contract Market is IERC20 {
         creatorVault_ = _creatorVault;
         curveLibrary_ = _curveLibrary;
         collateralToken_ = _collateralToken;
+        gradientDenominator_ = _gradientDenominator;
+        scaledShift_ = _scaledShift;
     }
 
     modifier onlyActive(){
@@ -258,13 +265,14 @@ contract Market is IERC20 {
     /// @return             The total supply in tokens, not wei
     function curveIntegral(uint256 _x) internal view returns (uint256) {
         //todo: call vyper curve module for values
-        return 0;
+        return ICurveFunctions(curveLibrary_).curveIntegral(_x, gradientDenominator_, scaledShift_);
     }
 
     /// @dev                Inverse integral to convert the incoming colateral value to token volume
     /// @param _x           :uint256 The volume to identify the root off
     function inverseCurveIntegral(uint256 _x) internal view returns(uint256){
         // return sqrt(2*_x*gradientDenominator_*(10**decimals_));
-        return 0; // TODO: implement business logic
+        return ICurveFunctions(curveLibrary_).inverseCurveIntegral(_x, gradientDenominator_, scaledShift_);
+
     }
 }

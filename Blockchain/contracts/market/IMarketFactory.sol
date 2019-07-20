@@ -21,7 +21,9 @@ interface IMarketFactory {
         uint256[] calldata _phaseDurations,
         address _creator,
         uint256 _curveType,
-        uint256 _taxationRate
+        uint256 _taxationRate,
+        uint256 _gradientDenominator,
+        uint256 _scaledShift
     )//todo add registry seporatly
         external;
 

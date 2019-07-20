@@ -1,7 +1,7 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
 
-let BondingFunctions = require('../../../build/BondingFunctions.json');
+let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 
 describe('Curve Registry test', () => {
     let deployer;
@@ -13,7 +13,7 @@ describe('Curve Registry test', () => {
         deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
 
         bondingFunctionsInstance = await deployer.deploy(
-            BondingFunctions,
+            CurveFunctionsAbi,
             false
         );
 

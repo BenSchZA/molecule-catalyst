@@ -7,8 +7,7 @@ let MoleculeVaultAbi = require('../../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../../build/CurveRegistry.json');
 let MarketRegistryAbi = require('../../build/MarketRegistry.json');
 let MarketFactoryAbi = require('../../build/MarketFactory.json');
-let BondingFunctionsAbi = require('../../build/BondingFunctions.json');
-
+let CurveFunctionsAbi = require('../../build/CurveFunctions.json');
 
 // The user accounts are
 const defaultDaiPurchase = 500;
@@ -37,7 +36,10 @@ let marketSettings = {
     ],
     curveType: ethers.utils.parseUnits("0", 0),
     taxationRate: ethers.utils.parseUnits("60", 0),
+    scaledShift: ethers.utils.parseUnits("500000000000000000", 0),
+    gradientDenominator: ethers.utils.parseUnits("17000", 0),
 }
+
 
 describe('Market Registry test', () => {
     let molAdmin = accounts[1];
@@ -76,7 +78,7 @@ describe('Market Registry test', () => {
         );
 
         curveIntegralInstance = await deployer.deploy(
-            BondingFunctionsAbi,
+            CurveFunctionsAbi,
             false
         );
 
@@ -110,7 +112,9 @@ describe('Market Registry test', () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate
+                    marketSettings.taxationRate,
+                    marketSettings.gradientDenominator,
+                    marketSettings.scaledShift
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -133,7 +137,9 @@ describe('Market Registry test', () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate
+                marketSettings.taxationRate,
+                marketSettings.gradientDenominator,
+                marketSettings.scaledShift
             ));
         });
     });
@@ -154,7 +160,9 @@ describe('Market Registry test', () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate
+                marketSettings.taxationRate,
+                marketSettings.gradientDenominator,
+                marketSettings.scaledShift
             ));
 
             await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(secondMarketFactoryInstance.contract.address, "Initial factory")).wait()
@@ -164,7 +172,9 @@ describe('Market Registry test', () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate
+                marketSettings.taxationRate,
+                marketSettings.gradientDenominator,
+                marketSettings.scaledShift
             )).wait()
 
             let secondMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -185,7 +195,9 @@ describe('Market Registry test', () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate
+                    marketSettings.taxationRate,
+                    marketSettings.gradientDenominator,
+                    marketSettings.scaledShift
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -200,7 +212,9 @@ describe('Market Registry test', () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate
+                marketSettings.taxationRate,
+                marketSettings.gradientDenominator,
+                marketSettings.scaledShift
             ));
         });
     });
@@ -212,7 +226,9 @@ describe('Market Registry test', () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate
+                marketSettings.taxationRate,
+                marketSettings.gradientDenominator,
+                marketSettings.scaledShift
             )).wait();
 
             const marketCreatedEvent = (await(txReceipt.events.filter(
@@ -270,7 +286,9 @@ describe('Market Registry test', () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate
+                    marketSettings.taxationRate,
+                    marketSettings.gradientDenominator,
+                    marketSettings.scaledShift
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -292,7 +310,9 @@ describe('Market Registry test', () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate
+                    marketSettings.taxationRate,
+                    marketSettings.gradientDenominator,
+                    marketSettings.scaledShift
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
