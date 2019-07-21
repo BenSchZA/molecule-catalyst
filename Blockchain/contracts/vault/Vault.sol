@@ -145,6 +145,7 @@ contract Vault is AdminManaged {
         balance = balance.sub(outstandingWithdraw_);
 
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
+            // TODO fix dates
             uint256 endOfPhase = BokkyPooBahsDateTimeLibrary.addMonths(fundingPhases_[currentPhase_].startDate, fundingPhases_[currentPhase_].phaseDuration);
             if(endOfPhase <= now){
                 // Setting active phase state to ended

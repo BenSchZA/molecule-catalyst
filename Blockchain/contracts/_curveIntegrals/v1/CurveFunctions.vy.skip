@@ -48,7 +48,6 @@ def inverseCurveIntegral(x_d: uint256, gradientDenominator: uint256, b: uint256)
     sqrt_arg: decimal = sqrt(arg)
 
     # Calculate result and return scaled uint
-    # TODO: UNDERFLOW ERROR - (-_b + sqrt_arg) always returns 0, division by 0 throws VM execution error
     result: decimal = (-_b + sqrt_arg)/_gradient
     return convert(result*SCALE, uint256)
 
