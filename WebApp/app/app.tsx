@@ -68,13 +68,6 @@ if (module.hot) {
 // We need the providers injected for the app to load
 window.addEventListener('load', () => render(), {once:true});
 
-// Install ServiceWorker and AppCache in the end since
-// it's not most important operation and if main code fails,
-// we do not want it installed
-// if (process.env.NODE_ENV === 'production') {
-//   require('offline-plugin/runtime').install();
-// }
-
 initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName: process.env.APM_SERVICE_NAME,
