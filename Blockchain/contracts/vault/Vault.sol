@@ -79,7 +79,7 @@ contract Vault is AdminManaged {
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
 
-        fundingPhases_[0].startDate = now;
+        fundingPhases_[0].startDate = block.timestamp;
         fundingPhases_[0].state = 1;
         currentPhase_ = 0;
     }
@@ -142,30 +142,30 @@ contract Vault is AdminManaged {
         require(fundingPhases_[currentPhase_].state == 1, "Funding inactive");
 
         uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
-        balance = balance.sub(outstandingWithdraw_);
+        // balance = balance.sub(outstandingWithdraw_);
+
+        uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
+        // TODO consider timestamp blocking attacks
+        if(endOfPhase <= block.timestamp){
+            return false;
+        }
 
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
-            uint256 endOfPhase = BokkyPooBahsDateTimeLibrary.addMonths(fundingPhases_[currentPhase_].startDate, fundingPhases_[currentPhase_].phaseDuration);
-            if(endOfPhase >= now){
-                // Setting active phase state to ended
-                fundingPhases_[currentPhase_].state = 2;
+            // Setting active phase state to ended
+            fundingPhases_[currentPhase_].state = 2;
 
-                outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
+            outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
-                currentPhase_ = currentPhase_ + 1;
-                // Here we check if this was the final round to
-                // Set the states apprpriately
-                if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
-                    // Setting active phase state to Started
-                    fundingPhases_[currentPhase_].state = 1;
-                    fundingPhases_[currentPhase_].startDate = now;
-                }
-
-                emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
-
-            }else{
-                return false;
+            currentPhase_ = currentPhase_ + 1;
+            // Here we check if this was the final round to
+            // Set the states apprpriately
+            if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
+                // Setting active phase state to Started
+                fundingPhases_[currentPhase_].state = 1;
+                fundingPhases_[currentPhase_].startDate = block.timestamp;
             }
+
+            // emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
         }
         return true;
     }

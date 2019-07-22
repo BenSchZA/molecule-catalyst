@@ -75,6 +75,10 @@ const simulatedCurve = {
     }
 }
 
+const constants = {
+    monthInSeconds: 2629743,
+}
+
 module.exports = { 
     ethers,
     etherlime,
@@ -92,5 +96,6 @@ module.exports = {
     defaultTokenVolume,
     purchasingSequences,
     moleculeVaultSettings,
-    simulatedCurve
+    simulatedCurve,
+    constants
 }
