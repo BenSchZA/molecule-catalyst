@@ -15,7 +15,7 @@ export const setNetworkId = createStandardAction(ActionTypes.SET_NETWORK_ID)<num
 
 export const setEthAddress = createStandardAction(ActionTypes.SET_ETH_ADDRESS)<{ethAddress: string}>();
 
-export const setUserType = createStandardAction(ActionTypes.SET_USER_TYPE)<number>();
+export const setUserRole = createStandardAction(ActionTypes.SET_USER_TYPE)<number>();
 
 export const connectWallet = createAsyncAction(
   ActionTypes.CONNECT_WALLET_REQUEST,

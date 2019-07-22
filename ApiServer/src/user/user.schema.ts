@@ -8,11 +8,11 @@ export enum UserType {
   Admin
 }
 
-export interface IUser extends User {
+export interface User extends IUser {
   id: string;
 }
 
-interface User {
+interface IUser {
   ethAddress: string;
   firstName?: string;
   lastName?: string;
@@ -25,7 +25,7 @@ interface User {
   blacklisted: Boolean;
 }
 
-export interface UserDocument extends User, Document { }
+export interface UserDocument extends IUser, Document { }
 
 export const UserSchema = new Schema({
   ethAddress: { type: String, required: true, unique: true },

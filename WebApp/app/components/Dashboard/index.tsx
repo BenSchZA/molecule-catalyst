@@ -12,13 +12,9 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const Dashboard: React.SFC<OwnProps> = (props: OwnProps) =>{
-  const { classes } = props;
-
   return (
     <Fragment>
-      <section className={classes.layout}>
         <Typography>Discover Content</Typography>
-      </section>
     </Fragment>
   );
 }

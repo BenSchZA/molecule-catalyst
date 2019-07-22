@@ -6,7 +6,7 @@ import {
 import { UserService } from '../user/user.service';
 import { ethers } from 'ethers';
 import { ConfigService } from 'src/config/config.service';
-import { UserType, IUser } from 'src/user/user.schema';
+import { UserType, User } from 'src/user/user.schema';
 
 export interface JwtPayload {
   userId: string;
@@ -64,7 +64,7 @@ export class AuthService {
     }
 
     const _user = await this.userService.getUserByEthAddress(ethAddress);
-    let user: IUser;
+    let user: User;
 
     if (_user) {
       user = _user;

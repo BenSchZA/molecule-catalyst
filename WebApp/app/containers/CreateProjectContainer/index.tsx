@@ -14,17 +14,20 @@ import { compose, Dispatch } from 'redux';
 // import reducer from './reducer';
 // import saga from './saga';
 import makeSelectCreateProjectContainer from './selectors';
+import { Typography } from '@material-ui/core';
 
-interface OwnProps {}
+interface OwnProps { }
 
-interface DispatchProps {}
+interface DispatchProps { }
 
-interface StateProps {}
+interface StateProps { }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const CreateProjectContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>CreateProjectContainer</Fragment>;
+  return <Fragment>
+    <Typography>Create Project</Typography>
+  </Fragment>;
 };
 
 const mapStateToProps = createStructuredSelector({

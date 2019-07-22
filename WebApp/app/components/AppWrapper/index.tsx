@@ -3,11 +3,12 @@ import { List, ListItem, Button, Menu, MenuItem, Avatar } from '@material-ui/cor
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import ReactSVG from 'react-svg';
 import { AppRoute } from 'containers/App/routes';
 import Blockies from 'react-blockies';
 import { colors } from 'theme';
+import { forwardTo } from 'utils/history';
 
 
 // import { appRoute } from 'containers/App/routes';
@@ -46,7 +47,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     display: 'flex',
     flexDirection: 'row',
     margin: 0,
-    padding: 0, 
+    padding: 0,
     '& > *': {
       margin: `0px ${spacing(4)}px 0px ${spacing(4)}px`,
       textAlign: 'center',
@@ -56,18 +57,26 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   avatar: {
     marginRight: spacing(3),
   },
+  connectButton: {
+    marginRight: spacing(3),
+  }
 });
 
-interface Props extends WithStyles<typeof styles> {
+interface OwnProps extends WithStyles<typeof styles> {
   children: React.ReactNode;
   onConnect(): void;
+  logOut():void;
   isLoggedIn: boolean;
+  userRole: number;
   walletUnlocked: boolean;
   ethAddress: string;
   selectedNetworkName: string;
   userDisplayName: string;
   navRoutes: Array<AppRoute>;
 }
+
+
+type Props = OwnProps & RouteComponentProps;
 
 const AppWrapper: React.SFC<Props> = ({
   classes,
@@ -76,24 +85,26 @@ const AppWrapper: React.SFC<Props> = ({
   isLoggedIn,
   onConnect,
   ethAddress,
-  walletUnlocked
+  walletUnlocked,
+  logOut,
+  location,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar} >
         <Toolbar disableGutters={true} className={classes.toolbar}>
-          <Link className={classes.appBarLogo} to="/dashboard">
+          <Link className={classes.appBarLogo} to="/discover">
             <ReactSVG src="molecule-logo.svg" />
           </Link>
           <div className={classes.navAccount}>
             <List className={classes.navList}>
               {navRoutes.map(r => (
-                <ListItem button key={r.path}>{r.name}</ListItem>
+                <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
               ))}
             </List>
             {!isLoggedIn ? (
-              <div>
+              <div className={classes.connectButton}>
                 <Button onClick={() => onConnect()} disabled={!walletUnlocked}>CONNECT</Button>
               </div>
             ) : (
@@ -114,11 +125,9 @@ const AppWrapper: React.SFC<Props> = ({
                     }}
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}>
-                    <Link to="/profile" style={{ textDecoration: 'none' }}>
-                      <MenuItem onClick={() => setAnchorEl(null)}>
-                        Profile
+                    <MenuItem onClick={() => {setAnchorEl(null); logOut()}}>
+                      Log Out
                     </MenuItem>
-                    </Link>
                   </Menu>
                 </Fragment>
               )}

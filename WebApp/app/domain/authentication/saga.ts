@@ -28,7 +28,7 @@ export function* getAccessToken(signedPermit, ethAddress) {
     const apiToken = yield call(login, signedPermit, ethAddress);
     yield put(authenticationActions.saveAccessToken(apiToken.data));
     const decodedToken = yield call(jwtDecode, apiToken.data.accessToken);
-    yield put(authenticationActions.setUserType(decodedToken.type))
+    yield put(authenticationActions.setUserRole(decodedToken.type))
     return apiToken.data;
   } catch (error) {
     if (error.message.includes('Authentication Error')) {
@@ -79,7 +79,7 @@ export function* loginFlow() {
       yield call(getAccessToken, response, signerAddress);
       // yield put(userProfileActions.getUserProfile.request());
       yield fork(refreshTokenPoller);
-      yield call(forwardTo, '/dashboard'); // TODO: have this only redirect when on log in
+      yield call(forwardTo, '/discover'); // TODO: have this only redirect when on log in
     } catch (error) {
       yield put(authenticationActions.authenticate.failure(error.message));
       console.error(error);

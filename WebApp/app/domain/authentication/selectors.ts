@@ -23,6 +23,10 @@ const selectIsLoggedIn = (state: ApplicationRootState) => {
   }
 };
 
+const selectUserRole = (state: ApplicationRootState) => {
+  return state.authentication.userRole;
+};
+
 const selectWalletUnlocked = (state: ApplicationRootState) => {
   return state.authentication.walletUnlocked;
 };
@@ -53,4 +57,8 @@ export const makeSelectNetworkId = createSelector(selectNetworkId, substate => {
 
 export const makeSelectNetworkName = createSelector(selectNetworkId, substate => {
   return substate && networkNames[substate];
+})
+
+export const makeSelectUserRole = createSelector(selectUserRole, substate => {
+  return substate;
 })

@@ -208,6 +208,7 @@
     "stylelint-processor-styled-components": "1.6.0",
     "svg-url-loader": "2.3.2",
     "terser-webpack-plugin": "1.2.3",
+    "ts-import-plugin": "^1.6.1",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.2",
     "ts-node": "^8.1.0",

@@ -10,7 +10,7 @@ export const initialState: DomainState = {
   signedPermit: '',
   accessToken: '',
   errorMessage: '',
-  type: 0,
+  userRole: 0,
 };
 
 function authenticationReducer(state: DomainState = initialState, action: DomainActions) {
@@ -49,10 +49,10 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
         ...state,
         ...{ ethAddress: action.payload.ethAddress }
       }
-    case getType(authenticationActions.setUserType):
+    case getType(authenticationActions.setUserRole):
       return {
         ...state,
-        ...{ type: action.payload }
+        ...{ userRole: action.payload }
       }
     default:
       return state;
