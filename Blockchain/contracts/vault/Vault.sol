@@ -165,7 +165,7 @@ contract Vault is AdminManaged {
                 fundingPhases_[currentPhase_].startDate = block.timestamp;
             }
 
-            // emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
+            emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
         }
         return true;
     }
