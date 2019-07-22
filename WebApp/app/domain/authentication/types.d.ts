@@ -1,6 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
+import { UserType } from 'containers/App/routes';
 
 /* --- STATE --- */
 interface AuthenticationState {
@@ -10,7 +11,7 @@ interface AuthenticationState {
   walletUnlocked: boolean,
   selectedNetworkId?: number,
   errorMessage: string,
-  type: number,
+  userRole: number,
 }
 
 

@@ -13,7 +13,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, withRouter } from 'react-router';
+import { Switch, withRouter, RouteComponentProps } from 'react-router';
 import { compose, Dispatch } from 'redux';
 import { Redirect, Route } from 'react-router-dom';
 
@@ -25,6 +25,8 @@ import * as authActions from '../../domain/authentication/actions'
 import routes from './routes';
 import saga from './saga';
 import selectApp from './selectors';
+import UnauthorizedPage from 'components/UnauthorizedPage';
+import NotFoundPage from 'components/NotFoundPage';
 
 interface OwnProps { }
 
@@ -34,22 +36,51 @@ export interface StateProps {
   ethAddress: string;
   selectedNetworkName: string;
   userDisplayName: string;
+  userRole: number;
 }
 
 export interface DispatchProps {
  onConnect(): void;
+ logOut(): void;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
-const App: React.SFC<Props> = (props: Props) => {
+type Props = StateProps & DispatchProps & OwnProps & RouteComponentProps;
+
+const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => {
   return (
-    <AppWrapper navRoutes={routes.filter(r => r.isNavRequired)} {...props}>
+    <Route
+      {...rest}
+      render={props => {
+        return isAuthorized ? (
+          <Component {...props} />
+        ) : (
+            <Redirect
+              to={{
+                pathname: '/unauthorized',
+                state: { from: props.location },
+              }}
+            />
+          );
+        }
+      }
+    />
+  );
+};
+
+const App: React.SFC<Props> = (props: Props) => {
+  const NotFoundRedirect = () => <Redirect to='/404' />
+  return (
+    <AppWrapper navRoutes={routes.filter(r => 
+        r.isNavRequired && 
+        props.userRole >= r.roleRequirement && 
+        r.showNavForRoles.includes(props.userRole))} {...props}>
       <Switch>
-        {routes.map(r => {
-          return (r.isProtected) ?
-            (<PrivateRoute path={r.path} exact component={r.component} isLoggedIn={props.isLoggedIn} key={r.path} />) :
-            (<PublicRoute path={r.path} exact component={r.component} isLoggedIn={props.isLoggedIn} key={r.path} />);
-        })}
+        {routes.map(r => (
+          <RoleRoute path={r.path} exact component={r.component} isAuthorized={props.userRole >= r.roleRequirement} key={r.path} />)
+        )}
+        <Route path='/unauthorized' exact component={UnauthorizedPage} />
+        <Route path='/404' exact component={NotFoundPage} />
+        <Route component={NotFoundRedirect} />
       </Switch>
     </AppWrapper>
   );
@@ -59,6 +90,7 @@ const mapStateToProps = state => selectApp(state);
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onConnect: () => dispatch(authActions.authenticate.request()),
+  logOut: () => dispatch(authActions.logOut()),
 });
 
 const withConnect = connect(
@@ -73,45 +105,3 @@ export default compose(
   withSaga,
   withConnect,
 )(App);
-
-const PrivateRoute: React.SFC<any> = ({ component: Component, isLoggedIn, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        return isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/',
-                state: { from: props.location },
-              }}
-            />
-          );
-      }
-      }
-    />
-  );
-};
-
-const PublicRoute: React.SFC<any> = ({ component: Component, isLoggedIn, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        return !isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/dashboard',
-                state: { from: props.location },
-              }}
-            />
-          );
-        }
-      }
-    />
-  );
-};
