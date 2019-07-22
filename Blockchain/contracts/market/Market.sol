@@ -229,7 +229,7 @@ contract Market is IERC20 {
         uint256 buyTax = (_colateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
         //Remaining collateral gets sent to vyper to work out amount of tokens
         uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
-        return inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax));
+        return inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
