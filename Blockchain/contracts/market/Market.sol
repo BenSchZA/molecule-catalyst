@@ -83,6 +83,8 @@ contract Market is IERC20 {
     function burn(uint256 _numTokens) external onlyActive() returns(bool) {
         require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
 
+        // TODO: We may want to consider having the burn function blocked via the same verification if the mint is blocked 
+
         uint256 rewardForBurn = rewardForBurn(_numTokens);
 
         totalSupply_ = totalSupply_.sub(_numTokens);
