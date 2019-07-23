@@ -106,17 +106,82 @@ describe('Molecule vault test', () => {
     });
 
     describe('Admin functions', () => {
-        it('Executes transfer correctly');
-        it('Executes approve correctly');
+        beforeEach(async () => {
+            let phaseData = await vaultInstance.fundingPhase(0);
+            let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
+
+            let balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            assert.ok(balanceOfMoleculeVault.eq(0), "Tokens already in the vault")
+
+            let estimateTokens = await marketInstance.colateralToTokenBuying(daiToSpendForPhase)
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed")
+
+            balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
+
+            assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
+        })
+        it('Executes transfer correctly', async () =>{
+            const user2BalanceBefore = await pseudoDaiInstance.balanceOf(user2.signer.address);
+           
+            const balanceOfMoleculeVaultBefore = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+
+            await assert.revert(moleculeVaultInstance.from(user2).transfer(user2.signer.address,balanceOfMoleculeVaultBefore), "Transfer incorrectly sent");
+           
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).transfer(user2.signer.address, balanceOfMoleculeVaultBefore), "Transfer failed to send");
+
+            const user2BalanceAfter = await pseudoDaiInstance.balanceOf(user2.signer.address);
+           
+            const balanceOfMoleculeVaultAfter = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+
+            assert.ok(user2BalanceBefore.lt(user2BalanceAfter), "Balance not increased");
+
+            assert.ok(balanceOfMoleculeVaultBefore.gt(balanceOfMoleculeVaultAfter), "Balance of vault not decreased");
+            assert.ok(balanceOfMoleculeVaultAfter.eq(0), "Not all funds were sent");
+
+        })
+        it('Executes approve correctly', async () =>{
+            await assert.revert(moleculeVaultInstance.from(creator).approve(creator.signer.address, ethers.constants.MaxUint256), "Unauthorised approve fired")
+            const approvalBefore = await pseudoDaiInstance.allowance(moleculeVaultInstance.contract.address, creator.signer.address)
+            assert.ok(approvalBefore.eq(0), "Approval already set");
+
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).approve(creator.signer.address, ethers.constants.MaxUint256), "Approve failed")
+            
+            const approvalAfter = await pseudoDaiInstance.allowance(moleculeVaultInstance.contract.address, creator.signer.address);
+
+            assert.ok(approvalAfter.eq(ethers.constants.MaxUint256), "Approval already set");
+        });
     });
 
     describe("Vault interactions", () => {
-        it("Receives tax from vault withdraws")
+        it("Receives tax from vault withdraws", async () =>{
+            let phaseData = await vaultInstance.fundingPhase(0);
+            let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
+
+            let balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            assert.ok(balanceOfMoleculeVault.eq(0), "Tokens already in the vault")
+
+            let estimateTokens = await marketInstance.colateralToTokenBuying(daiToSpendForPhase)
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed")
+
+            balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
+
+            assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
+        })
     })
 
     describe('Meta data', () =>{
-        it('Get collateralToken');
-        it('Get taxRate');
+        it('Get collateralToken', async () =>{
+            const collateralToken = await moleculeVaultInstance.collateralToken();
+            assert.equal(collateralToken, pseudoDaiInstance.contract.address, "Collateral token invalid")
+        });
+        it('Get taxRate', async () => {
+            const taxRate = await moleculeVaultInstance.taxRate();
+            assert.ok(taxRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
+        });
     })
 
     describe("Admin Managed Specific", () => {
