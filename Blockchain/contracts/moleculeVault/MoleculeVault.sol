@@ -9,6 +9,8 @@ contract MoleculeVault is AdminManaged{
     uint256 internal taxRate_;
 
     constructor(address _collateralToken, uint256 _taxRate, address _moleculeAdmin) public AdminManaged(_moleculeAdmin) {
+        require(_taxRate > 0, "Taxation rate too low")
+        require(_taxRate < 100, "Taxation rate too high")
         collateralToken_ = _collateralToken;
         taxRate_ = _taxRate;
     }
