@@ -1,38 +1,25 @@
-import { Paper, Theme, Typography } from '@material-ui/core';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
+import { compose } from 'redux';
+import { Theme, WithStyles, withWidth, Typography } from '@material-ui/core';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 
-const styles = ({ spacing, breakpoints }: Theme) => createStyles({
-  layout: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: spacing(3),
-    marginRight: spacing(3),
-    [breakpoints.up(400 + spacing(6))]: {
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${spacing(2)}px ${spacing(3)}px ${spacing(3)}px`,
-  },
+const styles = (theme: Theme) => createStyles({
+
 });
 
-function LandingPage(props) {
-  const { classes } = props;
+interface OwnProps extends WithStyles<typeof styles> {
+  classes: any;
+}
 
+const Dashboard: React.SFC<OwnProps> = (props: OwnProps) =>{
   return (
-  <Fragment>
-    <main className={classes.layout}>
-      <Paper className={classes.paper}>
-        <Typography variant="h4">Dashboard</Typography>
-      </Paper>
-    </main>
-  </Fragment>
+    <Fragment>
+        <Typography>Discover Content</Typography>
+    </Fragment>
   );
 }
 
-export default withStyles(styles, { withTheme: true })(LandingPage);
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  withWidth(),
+)(Dashboard);

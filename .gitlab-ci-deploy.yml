@@ -10,8 +10,10 @@ docker-build:
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
     - docker-compose -v
-    - docker-compose pull || true
-    - docker-compose build
+    # - docker-compose pull || true
+    - docker-compose build builder
+    - docker-compose build apiserver
+    - docker-compose build webapp
     - docker-compose up -d
     - docker-compose down
     - docker-compose push

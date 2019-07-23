@@ -11,111 +11,86 @@
  * the linting exception.
  */
 
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, withRouter } from 'react-router';
+import { Switch, withRouter, RouteComponentProps } from 'react-router';
+import { compose, Dispatch } from 'redux';
 import { Redirect, Route } from 'react-router-dom';
-import { compose } from 'redux';
+
 import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectIsLoggedIn, makeSelectCurrentlySending } from './selectors';
-import saga from './saga';
 import { DAEMON } from 'utils/constants';
-import AppWrapper from '../../components/AppWrapper';
-import reducer from './reducer'
-import { RootState } from './types';
+
+import AppWrapper from '../../components/AppWrapper/index';
+import * as authActions from '../../domain/authentication/actions'
 import routes from './routes';
-import * as authenticationActions from '../../domain/authentication/actions';
-
-function PrivateRoute({ component: Component, isLoggedIn, ...rest }) {
-  return (
-    <Route
-      exact
-      {...rest}
-      render={props => {
-        return isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: { from: props.location },
-              }}
-            />
-          );
-      }
-      }
-    />
-  );
-}
-
-function PublicRoute({ component: Component, isLoggedIn, ...rest }) {
-  return (
-    <Route
-      exact
-      {...rest}
-      render={props => {
-        return !isLoggedIn ? (
-          <Component {...props} />
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/dashboard',
-                state: { from: props.location },
-              }}
-            />
-          );
-      }
-      }
-    />
-  );
-}
+import saga from './saga';
+import selectApp from './selectors';
+import UnauthorizedPage from 'components/UnauthorizedPage';
+import NotFoundPage from 'components/NotFoundPage';
 
 interface OwnProps { }
 
-interface StateProps {
+export interface StateProps {
   isLoggedIn: boolean;
-  currentlySending: boolean;
+  walletUnlocked: boolean;
+  ethAddress: string;
+  selectedNetworkName: string;
+  userDisplayName: string;
+  userRole: number;
 }
 
-interface DispatchProps {
-  onLogout();
+export interface DispatchProps {
+ onConnect(): void;
+ logOut(): void;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
-function App(props: Props) {
-  const { isLoggedIn, onLogout, currentlySending } = props;
+type Props = StateProps & DispatchProps & OwnProps & RouteComponentProps;
 
-  // The PublicRoute and PrivateRoute components below should only be used for top level components
-  // that will be connected to the store, as no props can be passed down to the child components from here.
+const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => {
   return (
-    <AppWrapper 
-      isLoggedIn={isLoggedIn} 
-      onLogout={onLogout} 
-      currentlySending={currentlySending}
-      navLinks={routes.filter(r => r.isNavRequired)} >
+    <Route
+      {...rest}
+      render={props => {
+        return isAuthorized ? (
+          <Component {...props} />
+        ) : (
+            <Redirect
+              to={{
+                pathname: '/unauthorized',
+                state: { from: props.location },
+              }}
+            />
+          );
+        }
+      }
+    />
+  );
+};
+
+const App: React.SFC<Props> = (props: Props) => {
+  const NotFoundRedirect = () => <Redirect to='/404' />
+  return (
+    <AppWrapper navRoutes={routes.filter(r => 
+        r.isNavRequired && 
+        props.userRole >= r.roleRequirement && 
+        r.showNavForRoles.includes(props.userRole))} {...props}>
       <Switch>
-        {routes.map(r => {
-          const route = (r.isProtected) ?
-            (<PrivateRoute path={r.path} exact component={r.component} isLoggedIn={isLoggedIn} key={r.path} />) :
-            (<PublicRoute path={r.path} exact component={r.component} isLoggedIn={isLoggedIn} key={r.path} />);
-          return route;
-        })}
+        {routes.map(r => (
+          <RoleRoute path={r.path} exact component={r.component} isAuthorized={props.userRole >= r.roleRequirement} key={r.path} />)
+        )}
+        <Route path='/unauthorized' exact component={UnauthorizedPage} />
+        <Route path='/404' exact component={NotFoundPage} />
+        <Route component={NotFoundRedirect} />
       </Switch>
     </AppWrapper>
   );
-}
+};
 
-const mapStateToProps = createStructuredSelector<RootState, StateProps>({
-  isLoggedIn: makeSelectIsLoggedIn(),
-  currentlySending: makeSelectCurrentlySending(),
-});
+const mapStateToProps = state => selectApp(state);
 
-const mapDispatchToProps = (dispatch) => ({
-  onLogout: () => {
-    dispatch(authenticationActions.logout());
-  },
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  onConnect: () => dispatch(authActions.authenticate.request()),
+  logOut: () => dispatch(authActions.logOut()),
 });
 
 const withConnect = connect(
@@ -123,12 +98,10 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer<OwnProps>({key: 'app', reducer: reducer})
-const withSaga = injectSaga<OwnProps>({ key: 'app', saga: saga, mode: DAEMON });
+const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });
 
 export default compose(
   withRouter,
-  withReducer,
   withSaga,
   withConnect,
 )(App);

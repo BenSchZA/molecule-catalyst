@@ -1,37 +1,52 @@
-import { Dashboard } from '@material-ui/icons';
-import DashboardContainer from 'containers/DashboardPage';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import LoginPage from 'containers/LoginPage';
-import SignUpPage from 'containers/SignUpPage';
+import DiscoverContainer from 'containers/DiscoverContainer';
+import LandingPage from 'components/LandingPage';
+import CreateProjectContainer from 'containers/CreateProjectContainer';
+import AdminDashboardContainer from 'containers/AdminDashboardContainer';
+
+
+export enum UserType {
+  Standard,
+  ProjectCreator,
+  Admin
+}
 
 export interface AppRoute {
   name: string;
   path: string;
   component: React.ComponentType<any>;
-  isProtected: boolean;
+  roleRequirement: number;
   isNavRequired: boolean;
-  routeNavLinkIcon?: React.ComponentType<SvgIconProps>; // Should be provided if Nav is required
+  showNavForRoles: number[];
 }
 
 const routes: AppRoute[] = [{
-  name: 'Dashboard',
-  path: '/dashboard',
-  component: DashboardContainer,
-  isProtected: true,
+  name: 'Landing Page',
+  path: '/',
+  component: LandingPage,
+  roleRequirement: UserType.Standard,
+  isNavRequired: false,
+  showNavForRoles:[],
+}, {
+  name: 'Discover',
+  path: '/discover',
+  component: DiscoverContainer,
+  roleRequirement: UserType.Standard,
   isNavRequired: true,
-  routeNavLinkIcon: Dashboard,
+  showNavForRoles:[UserType.Standard, UserType.ProjectCreator, UserType.Admin],
 }, {
-  name: 'Login',
-  path: '/login',
-  component: LoginPage,
-  isProtected: false,
-  isNavRequired: false,
+  name: 'Create Project',
+  path: '/projects/create',
+  component: CreateProjectContainer,
+  roleRequirement: UserType.ProjectCreator,
+  isNavRequired: true,
+  showNavForRoles:[UserType.ProjectCreator, UserType.Admin],
 }, {
-  name: 'Sign Up',
-  path: '/signup',
-  component: SignUpPage,
-  isProtected: false,
-  isNavRequired: false,
+  name: 'Admin',
+  path: '/admin',
+  component: AdminDashboardContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: true,
+  showNavForRoles:[UserType.Admin],
 }];
 
 export default routes;

@@ -1,44 +1,32 @@
-import jwtDecode from 'jwt-decode';
-import { createSelector } from 'reselect';
-import { ApplicationRootState } from 'types';
 
+import { createStructuredSelector } from 'reselect';
+import { RootState } from './types';
+import { StateProps } from 'containers/App';
+import { makeSelectIsLoggedIn, makeSelectWalletUnlocked, makeSelectNetworkName, makeSelectEthAddress, makeSelectUserRole } from 'domain/authentication/selectors';
+import { makeSelectUserDisplayName } from '../../domain/userProfile/selectors';
 
 /**
  * Direct selector to the user state domain
  */
 
-const selectIsLoggedIn = (state: ApplicationRootState) => {
-  try {
-    const accessToken = state.authentication.accessToken;
-    const decodedToken = jwtDecode(accessToken);
-    const isLoggedIn = (Date.now() / 1000 < decodedToken.exp);
-    return isLoggedIn;
-  } catch (error) {
-    return false;
-  }
-};
-
-const selectCurrentlySending = (state: ApplicationRootState) => {
-  return state.app.currentlySending;
-};
 
 /**
  * Other specific selectors
  */
 
+
 /**
  * Default selector used by App
  */
 
-const makeSelectIsLoggedIn = () =>
-  createSelector(selectIsLoggedIn, substate => {
-    return substate;
-  });
+// Root
+const selectApp = createStructuredSelector<RootState, StateProps>({
+  isLoggedIn: makeSelectIsLoggedIn,
+  walletUnlocked: makeSelectWalletUnlocked,
+  selectedNetworkName: makeSelectNetworkName,
+  userDisplayName: makeSelectUserDisplayName,
+  ethAddress: makeSelectEthAddress,
+  userRole: makeSelectUserRole, 
+});
 
-const makeSelectCurrentlySending = () =>
-  createSelector(selectCurrentlySending, substate => {
-    return substate;
-  });
-
-// export default selectApp;
-export { makeSelectIsLoggedIn, makeSelectCurrentlySending };
+export default selectApp;

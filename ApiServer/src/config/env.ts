@@ -30,6 +30,9 @@ export const env = {
       port: toNumber(getOsEnv('MONGO_PORT')),
     }],
     database: getOsEnv('MONGO_DATABASE'),
+    options: {
+        authSource: getOsEnv('MONGO_AUTH_SOURCE'),
+    }
   },
   bcrypt: {
     saltRounds: toNumber(getOsEnv('BCRYPT_SALT_ROUND')),
@@ -42,5 +45,12 @@ export const env = {
     provider: getOsEnv('ETHERS_PROVIDER') || 'jsonRpcProvider',
     network: getOsEnv('ETHERS_NETWORK') || 'homestead',
     rpcUrl: getOsEnv('ETHERS_RPC_PROVIDER_URL') || 'http://localhost:8545',
+  },
+  serverWallet: {
+    privateKey: getOsEnv('APPLICATION_WALLET_PRIVATE_KEY'),
+    mnemonic: getOsEnv('APPLICATION_WALLET_MNEMONIC'),
+  },
+  contracts: {
+
   },
 };

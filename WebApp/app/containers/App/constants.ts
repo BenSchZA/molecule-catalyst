@@ -4,7 +4,6 @@
  */
 
 enum ActionTypes {
-  SET_API_SENDING_FLAG = 'molecule/app/SET_API_SENDING_FLAG',
 }
 
 export default ActionTypes;
