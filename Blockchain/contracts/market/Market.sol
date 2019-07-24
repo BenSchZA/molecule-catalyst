@@ -191,6 +191,8 @@ contract Market is IERC20 {
         balances[msg.sender] = balances[msg.sender].sub(_amount);
 
         uint256 poolBalance = IERC20(collateralToken_).balanceOf(address(this));
+
+        // TODO: Work out constant pay out value
         // This works out the value of 1 token then caculates what the whole amount is
         uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
         require(IERC20(collateralToken_).transfer(msg.sender, daiToTransfer), "Dai transfer failed");
