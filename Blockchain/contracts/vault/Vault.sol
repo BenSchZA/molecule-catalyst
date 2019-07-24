@@ -8,6 +8,10 @@ import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol"
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 
 // TODO: Consider a mapping with index instead of arrays
+/**
+  * @author Veronica & Ryan of Linum Labs
+  * @title Vault
+  */
 contract Vault is AdminManaged {
     using SafeMath for uint256;
     using BokkyPooBahsDateTimeLibrary for uint256;
@@ -26,27 +30,31 @@ contract Vault is AdminManaged {
     uint256 internal currentPhase_;
     // Offset for checking funding threashold
     uint256 internal outstandingWithdraw_;
+    
     // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
+
+    // States for each funding round
+    enum State { NOT_STARTED, STARTED, ENDED, PAID }
 
     // Information stored about each phase
     struct FundPhase{
         uint256 fundingThreshold;   // Collateral limit to trigger funding
         uint256 phaseDuration;      // Period of time from start of phase till end
         uint256 startDate;
-        uint8 state;                // 0: Not started, 1: Started, 2: Ended, 3: Paid
-    } // TODO: Change state to enum
+        State state;                // State enum
+    }
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
     event PhaseFinalised(uint256 phase, uint256 amount);
 
     /**
       * @dev                    Checks the range of funding rounds (1-9)
-      * @param _fundingGoals    The collateral goal for each funding round
-      * @param _phaseDurations  The time limit of each fundign round
-      * @param _creator         The address of the creator
-      * @param _collateralToken The address of the ERC20 collateral token
-      * @param _moleculeVault   The address of the molecule vault
+      * @param _fundingGoals    : uint256[] - The collateral goal for each funding round
+      * @param _phaseDurations  : uint256[] - The time limit of each fundign round
+      * @param _creator         : address - The creator
+      * @param _collateralToken : address - The ERC20 collateral token
+      * @param _moleculeVault   : address - The molecule vault
       */
     constructor(
         uint256[] memory _fundingGoals,
@@ -80,7 +88,7 @@ contract Vault is AdminManaged {
         }
 
         fundingPhases_[0].startDate = block.timestamp;
-        fundingPhases_[0].state = 1;
+        fundingPhases_[0].state = State.STARTED;
         currentPhase_ = 0;
     }
 
@@ -114,14 +122,14 @@ contract Vault is AdminManaged {
         require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
-        if(fundingPhases_[currentPhase_].state == 0){
+        if(fundingPhases_[currentPhase_].state == State.NOT_STARTED){
             if(IMarket(market_).active()){
                 terminateMarket(); // This triggers the fund transfer
             }
         }else{
             // This sends the funding for the specified round
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
-            fundingPhases_[_phase].state == 3;
+            fundingPhases_[_phase].state == State.PAID;
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
@@ -139,20 +147,20 @@ contract Vault is AdminManaged {
       *      and that the phase has not expired.
       */
     function validateFunding() external onlyMarket() returns(bool){
-        require(fundingPhases_[currentPhase_].state == 1, "Funding inactive");
+        require(fundingPhases_[currentPhase_].state == State.STARTED, "Funding inactive");
 
         uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
         // balance = balance.sub(outstandingWithdraw_);
 
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
         // TODO consider timestamp blocking attacks
-        if(endOfPhase <= block.timestamp){
+        if(endOfPhase <= block.timestamp) {
             return false;
         }
 
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
             // Setting active phase state to ended
-            fundingPhases_[currentPhase_].state = 2;
+            fundingPhases_[currentPhase_].state = State.ENDED;
 
             outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
@@ -161,7 +169,7 @@ contract Vault is AdminManaged {
             // Set the states apprpriately
             if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
                 // Setting active phase state to Started
-                fundingPhases_[currentPhase_].state = 1;
+                fundingPhases_[currentPhase_].state = State.STARTED;
                 fundingPhases_[currentPhase_].startDate = block.timestamp;
             }
 
@@ -186,7 +194,7 @@ contract Vault is AdminManaged {
 
         // This checks if all funding phases completed successfully
         // Checks if ended or paid for conclusion of phase
-        if(fundingPhases_[currentPhase_].state == 0 && (fundingPhases_[currentPhase_ - 1].state >= 2)) {
+        if(fundingPhases_[currentPhase_].state == State.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= State.ENDED)) {
             // Works out the molecule tax amount
             uint256 molTax = (remainingBalance.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             // Transfers amount to the molecule vault

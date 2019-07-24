@@ -6,32 +6,49 @@ import { IVault } from "../vault/IVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
 
-/// @author Veronica & Ryan of Linum Labs
-/// @title Market
+/**
+  * @author Veronica & Ryan of Linum Labs
+  * @title Market
+  */
 contract Market is IERC20 {
     using SafeMath for uint256;
 
+    //Allows market to be deactivated after funding
     bool internal active_ = true;
-
+    // Vault that recives taxation
     address internal creatorVault_;
+    // Percentage of vault taxation i.e 20
     uint256 internal taxationRate_;
+    // Address of curve function
     address internal curveLibrary_;
+    // Underlying collateral token
     address internal collateralToken_;
-
+    // Total minted tokens
     uint256 internal totalSupply_;
-
+    // Decimal acuracy of token
     uint256 internal decimals_ = 18;
+    // Price shift of curve
     uint256 internal scaledShift_;
+    // Demominator for curve
     uint256 internal gradientDenominator_;
-
+    
+    // Allowances for spenders
     mapping(address => mapping (address => uint256)) internal allowed;
+    // Balances of token holders
     mapping(address => uint256) internal balances;
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
-
     event MarketTerminated();
 
+    /**
+      * @param _taxationRate        : uint256 - The percentage for taxation i.e 20
+      * @param _creatorVault        : address - The vault for taxation to go to
+      * @param _curveLibrary        : address - Vyper math module
+      * @param _collateralToken     : address - The ERC20 collateral tokem
+      * @param _gradientDenominator : uint256 - TODO check if needed
+      * @param _scaledShift         : uint256 - Price shift of curve
+      */
     constructor(
         uint256 _taxationRate,
         address _creatorVault,
@@ -60,10 +77,12 @@ contract Market is IERC20 {
         _;
     }
 
-    /// @dev                Approves transfers for a given address
-    /// @param _spender     :address The account that will receive the funds.
-    /// @param _value       :uint256 The value of funds accessed.
-    /// @return             :boolean Indicating the action was successful.
+    /**
+      * @dev                Approves transfers for a given address
+      * @param _spender     : address - The account that will receive the funds.
+      * @param _value       : uint256 - The value of funds accessed.
+      * @return             : boolean - Indicating the action was successful.
+      */
     function approve(
         address _spender,
         uint256 _value
@@ -76,10 +95,10 @@ contract Market is IERC20 {
         return true;
     }
 
-    // [Bonding curve functions]
-
-    /// @dev                Selling tokens back to the bonding curve for collateral
-    /// @param _numTokens   The number of tokens that you want to burn
+    /**
+      * @dev                Selling tokens back to the bonding curve for collateral
+      * @param _numTokens   The number of tokens that you want to burn
+      */
     function burn(uint256 _numTokens) external onlyActive() returns(bool) {
         require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
 
