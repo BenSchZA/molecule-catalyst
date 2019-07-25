@@ -2,7 +2,8 @@
 DECIMALS: constant(int128) = 18
 SCALE: constant(decimal) = convert(10**DECIMALS, decimal)
 
-GRADIENT: constant(decimal) = 1/17500
+GRADIENT: constant(decimal) = 0.0000571428 # 1/17500 NB! max 10 decimal places, we're overflowing
+VERTICAL_SHIFT: constant(decimal) = 0.5
 
 # , gradientDenominator: uint256, b: uint256
 
@@ -11,8 +12,6 @@ GRADIENT: constant(decimal) = 1/17500
 def curveIntegral(x_t: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
     _x_t: decimal = convert(x_t, decimal)/SCALE
-
-    _b: decimal = convert(b, decimal)/SCALE
 
     # Convert to int128 type for exponentiation operation
     _i128_scale: int128 = convert(SCALE, int128)
@@ -23,7 +22,7 @@ def curveIntegral(x_t: uint256) -> uint256:
     _sqr: decimal = convert(_i128_sqr, decimal)
 
     # Calculate result and return scaled uint
-    result: decimal = (_sqr*GRADIENT)/2.0 + _b*_x_t
+    result: decimal = (_sqr*GRADIENT)/2.0 + VERTICAL_SHIFT*_x_t
     return convert(result*SCALE, uint256)
 
 @public
@@ -32,10 +31,8 @@ def inverseCurveIntegral(x_d: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
     _x_d: decimal = convert(x_d, decimal)/SCALE
 
-    _b: decimal = convert(b, decimal)/SCALE
-
     # Convert to int128 type for exponentiation operation
-    _i128_b: int128 = convert(b, int128)
+    _i128_b: int128 = convert(VERTICAL_SHIFT*SCALE, int128)
 
     # Only int128 & uint256 support exponentiation (a**b)
     _i128_sqr: int128 = _i128_b**2
@@ -46,7 +43,7 @@ def inverseCurveIntegral(x_d: uint256) -> uint256:
     sqrt_arg: decimal = sqrt(arg)
 
     # Calculate result and return scaled uint
-    result: decimal = (-_b + sqrt_arg)/GRADIENT
+    result: decimal = (-VERTICAL_SHIFT + sqrt_arg)/GRADIENT
     return convert(result*SCALE, uint256)
 
 
