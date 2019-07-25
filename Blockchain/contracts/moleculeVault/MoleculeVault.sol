@@ -4,7 +4,7 @@ import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 // TODO: Update to outline buisness logic
-contract MoleculeVault is AdminManaged{
+contract MoleculeVault is AdminManaged {
     address internal collateralToken_;
     uint256 internal taxRate_;
 

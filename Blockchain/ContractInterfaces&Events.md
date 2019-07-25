@@ -313,70 +313,142 @@ function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view 
 ---
 
 ##### Allowance
-
+Allows for the checking of spenders allowances
 ```
 function allowance(address _owner, address _spender) external view returns (uint256);
 ```
 
 ---
 
-##### 
-
+##### Balance Of
+Returns the balance of an address
 ```
 function balanceOf(address _owner) external view returns (uint256);
 ```
 
 ---
 
-##### 
-
+##### Total Supply
+Returns the number of tokens that are currently in circulation 
 ```
 function totalSupply() external view returns (uint256);
 ```
 
 ---
 
-##### 
-
+##### Pool Balance
+Returns the total collateral of the market
 ```
 function poolBalance() external view returns (uint256);
 ```
 
----
-
-##### 
-
+##### Taxation Rate
+The percentage tax paid when purchasing tokens
 ```
-function moleculeVault() external view returns(address);
+function taxationRate() external view returns(uint256);
 ```
 
 ---
 
-##### 
-
-```
-function contributionRate() external view returns(uint256);
-```
-
----
-
-##### 
-
+##### decimals
+Returns the decimal accuracy of the contract
 ```
 function decimals() external view returns(uint256);
 ```
 
 ---
 
-##### 
-
+##### Active
+Returns the state of the contract
 ```
 function active() external view returns(bool);
 ```
 
 # Vault 
 
-##### 
+##### Initialize
+Sets the address of the market. Notice: This function is protected so only an admin can call, and is called from the factory.
+```
+function initialize(address _market) external returns(bool);
+```
+
+---
+
+##### Withdraw
+Allows a creator to withdraw a specific rounds funds
+```
+function withdraw(uint256 _phase) external returns(bool);
+```
+emits `FundingWithdrawn(uint256 phase, uint256 amount);`
+
+---
+
+##### Validate Funding
+ Verifies that the phase passed in: has not been withdrawn, funding goal has been reached, and that the phase has not expired. Notice: Only emits phase finalize once the final phase has been finalized this function can only be called by the market, and is called when someone buys tokens. 
+```
+function validateFunding() external returns(bool);
+```
+emits `PhaseFinalised(uint256 phase, uint256 amount);`
+
+---
+
+##### Terminate Market
+This function is conditional, if the market has successfully finished (the previous rounds funding's state is `ENDED` and the next phases state is `NOT_STARTED`) then the function sends the Molecule vault it's tax and the creator their remaining collateral. If this condition is not met (the market has failed) then the remaining funds are sent to the market.
+Either way the market is finalized.
+The event is only emitted if the fundraiser successfully finished
+```
+function terminateMarket() external;
+```
+emits `FundingWithdrawn(uint256 phase, uint256 amount);`
+
+---
+
+##### Funding Phase
+Returns the funding information for a specific phase.
+```
+uint256 : fundingThreshold  (in collateral)
+uint256 : phaseDuration     (in months)
+uint256 : startDate         (block timestamp)
+uint8   : state             (emum)
+
+function fundingPhase(uint256 _phase) external view returns(uint256, uint256, uint256, uint8);
+```
+
+---
+
+##### Outstanding Withdraw
+Returns the amount of funds the creator has not yet withdrawn
+```
+function outstandingWithdraw() external view returns(uint256);
+```
+
+---
+
+##### Current Phase
+The current active fundraising round
+```
+function currentPhase() external view returns(uint256);
+```
+
+---
+
+##### Market
+Returns the address of the market
+```
+function market() external view returns(address);
+```
+
+---
+
+##### Creator
+Returns the address of the creator (funds receiving account)
+```
+function creator() external view returns(address);
+```
+
+---
+
+##### TODO update interface with Whitelistadmin from oppenzepplin along with Roles
 
 ```
 
@@ -385,6 +457,7 @@ function active() external view returns(bool);
 ---
 
 ##### 
+
 ```
 
 ```
@@ -409,10 +482,18 @@ function active() external view returns(bool);
 
 # Curve
 
+##### TODO get bens changes before making docs
+
+```
+function curveIntegral(uint256 x_t, uint256 gradientDenominator, uint256 b) external pure returns(uint256);
+```
+
+---
+
 ##### 
 
 ```
-
+function inverseCurveIntegral(uint256 x_d, uint256 gradientDenominator, uint256 b) external pure returns(uint256);
 ```
 
 ---
@@ -422,68 +503,42 @@ function active() external view returns(bool);
 ```
 
 ```
-
----
-
-##### 
-
-```
-
-```
-
----
-
-##### 
-
-```
-
-```
-
----
-
-##### 
-
-```
-
-```
-
----
 
 # Molecule Vault
 
-##### 
+##### Transfer
 
 ```
-
-```
-
----
-
-##### 
-
-```
-
+function transfer(address _to, uint256 _amount) external;
 ```
 
 ---
 
-##### 
+##### Approve
 
 ```
-
-```
-
----
-
-##### 
-
-```
-
+function approve(address _spender, uint256 _amount) external;
 ```
 
 ---
 
-##### 
+##### Collateral Token
+
+```
+function collateralToken() external view returns(address);
+```
+
+---
+
+##### Tax Rate
+
+```
+function taxRate() external view returns(uint256);
+```
+
+---
+
+##### TODO add admin managed white listed functions
 
 ```
 

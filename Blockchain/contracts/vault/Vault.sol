@@ -19,11 +19,11 @@ contract Vault is AdminManaged {
     // The vault benificiary
     address internal creator_;
     // Market feeds collateral to vault
-    address internal market_;
+    IMarket internal market_;
     // Underlying collateral token
-    address internal collateralToken_;
+    IERC20 internal collateralToken_;
     // Vault for molecule tax
-    address internal moleculeVault_;
+    IMoleculeVault internal moleculeVault_;
     // Tax percentage for molecule tax, i.e 50
     uint256 internal moleculeTaxRate_;
     // The funding round that is active
@@ -75,10 +75,10 @@ contract Vault is AdminManaged {
         outstandingWithdraw_ = 0;
 
         creator_ = _creator;
-        collateralToken_ = _collateralToken;
-        moleculeVault_ = _moleculeVault;
+        collateralToken_ = IERC20(_collateralToken);
+        moleculeVault_ = IMoleculeVault(_moleculeVault);
 
-        moleculeTaxRate_ = IMoleculeVault(moleculeVault_).taxRate();
+        moleculeTaxRate_ = moleculeVault_.taxRate();
 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
@@ -93,7 +93,7 @@ contract Vault is AdminManaged {
     }
 
     modifier onlyMarket(){
-        require(msg.sender == market_, "Invalid requesting account");
+        require(msg.sender == address(market_), "Invalid requesting account");
         _;
     }
 
@@ -106,14 +106,13 @@ contract Vault is AdminManaged {
     function initialize(address _market) external onlyAdmin() returns(bool){
         // TODO: get admin managed initialise function
         require(_market != address(0), "Contracts initalised");
-        market_ = _market;
+        market_ = IMarket(_market);
         admins_.remove(msg.sender);
         return true;
     }
 
     /**
-      * @dev            Allows the creator to withdraw this rounds funding. Checks that
-      *                 the phase is in the correct state (2).
+      * @dev            Allows a creator to withdraw a specific runds funds
       * @notice         The state of the currentPhase_ will not be 0 untill the last
       *                 phase, where the terminate function will be called.
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
@@ -123,19 +122,19 @@ contract Vault is AdminManaged {
 
         // This checks if we trigger the distribute on the Market
         if(fundingPhases_[currentPhase_].state == State.NOT_STARTED){
-            if(IMarket(market_).active()){
+            if(market_.active()) {
                 terminateMarket(); // This triggers the fund transfer
             }
-        }else{
+        } else {
             // This sends the funding for the specified round
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].state == State.PAID;
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
-            require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Tokens not transfer");
+            require(collateralToken_.transfer(address(moleculeVault_), molTax), "Tokens not transfer");
 
             uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold.sub(molTax);
-            require(IERC20(collateralToken_).transfer(msg.sender, creatorAmount), "Tokens not transfer");
+            require(collateralToken_.transfer(msg.sender, creatorAmount), "Tokens not transfer");
             emit FundingWithdrawn(_phase, creatorAmount);
 
         }
@@ -149,7 +148,7 @@ contract Vault is AdminManaged {
     function validateFunding() external onlyMarket() returns(bool){
         require(fundingPhases_[currentPhase_].state == State.STARTED, "Funding inactive");
 
-        uint256 balance = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 balance = collateralToken_.balanceOf(address(this));
         // balance = balance.sub(outstandingWithdraw_);
 
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
@@ -188,7 +187,7 @@ contract Vault is AdminManaged {
         public
         onlyAdmin()
     {
-        uint256 remainingBalance = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 remainingBalance = collateralToken_.balanceOf(address(this));
 
         outstandingWithdraw_ = 0;
 
@@ -198,21 +197,21 @@ contract Vault is AdminManaged {
             // Works out the molecule tax amount
             uint256 molTax = (remainingBalance.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             // Transfers amount to the molecule vault
-            require(IERC20(collateralToken_).transfer(moleculeVault_, molTax), "Transfering of funds failed");
+            require(collateralToken_.transfer(address(moleculeVault_), molTax), "Transfering of funds failed");
             // Works out the remaining balance after mol tax, which is fetched
                 // incase of remaining fractions from math
-            remainingBalance = IERC20(collateralToken_).balanceOf(address(this));
+            remainingBalance = collateralToken_.balanceOf(address(this));
             // Transfers the amount to the msg.sender
             // TODO: Change to admin address
-            require(IERC20(collateralToken_).transfer(msg.sender, remainingBalance), "Transfering of funds failed");
+            require(collateralToken_.transfer(msg.sender, remainingBalance), "Transfering of funds failed");
 
             emit FundingWithdrawn(currentPhase_, remainingBalance);
         } else {
             // Transferes remaining balance to the market
-            require(IERC20(collateralToken_).transfer(market_, remainingBalance), "Transfering of funds failed");
+            require(collateralToken_.transfer(address(market_), remainingBalance), "Transfering of funds failed");
         }
         // Finalizes market (stops buys/sells distributes collateral evenly)
-        require(IMarket(market_).finaliseMarket(), "Market termination error");
+        require(market_.finaliseMarket(), "Market termination error");
     }
 
     /**
@@ -247,6 +246,10 @@ contract Vault is AdminManaged {
       * @dev The address of the current market
       */
     function market() public view returns(address) {
-        return market_;
+        return address(market_);
+    }
+
+    function creator() external view returns(address) {
+        return creator_;
     }
 }
