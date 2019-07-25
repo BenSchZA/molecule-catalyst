@@ -22,6 +22,8 @@ variables:
   MOLECULE_BACKEND_CONTAINER_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/testing/molecule-backend:$CI_BUILD_REF_NAME
   MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/release/molecule-backend:$CI_BUILD_REF_NAME
   API_HOST: alpha-api-$CI_BUILD_REF_NAME.mol.ai/api
+  APM_SERVICE_NAME: molecule-frontend-alpha-$CI_BUILD_REF_NAME
+  APM_SERVER_ENDPOINT: https://apm.mol.ai
   GIT_SUBMODULE_STRATEGY: recursive
   # DOCKER_HOST: tcp://localhost:2375/
   NODE_OPTIONS: --max-old-space-size=4096
