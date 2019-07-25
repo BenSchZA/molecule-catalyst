@@ -10,9 +10,9 @@ contract MarketFactory is AdminManaged {
     //The molecule vault for molecule tax
     address internal moleculeVault_;
     //The registry of all created markets
-    address internal marketRegistry_;
+    IMarketRegistry internal marketRegistry_;
     //The registry of all curve types
-    address internal curveRegistry_;
+    ICurveRegistry internal curveRegistry_;
     //The ERC20 collateral token contract address
     address internal collateralToken_;
 
@@ -35,9 +35,9 @@ contract MarketFactory is AdminManaged {
         AdminManaged(msg.sender)
         public
     {
-        curveRegistry_ = _curveRegistry;
+        curveRegistry_ = ICurveRegistry(_curveRegistry);
         collateralToken_ = _collateralToken;
-        marketRegistry_ = _marketRegistry;
+        marketRegistry_ = IMarketRegistry(_marketRegistry);
         moleculeVault_ = _moleculeVault;
     }
 
@@ -68,7 +68,7 @@ contract MarketFactory is AdminManaged {
         external
         onlyAdmin()
     {
-        (address curveLibrary,, bool curveState) = ICurveRegistry(curveRegistry_).getCurveData(_curveType);
+        (address curveLibrary,, bool curveState) = curveRegistry_.getCurveData(_curveType);
 
         require(_taxationRate > 0, "Taxation rate too low");
         require(_taxationRate < 100, "Taxation rate too high");
@@ -94,15 +94,22 @@ contract MarketFactory is AdminManaged {
         ));
 
         require(Vault(newVault).initialize(newMarket), "Vault not initialised");
-        IMarketRegistry(marketRegistry_).registerMarket(newMarket, newVault, _creator);
+        marketRegistry_.registerMarket(newMarket, newVault, _creator);
     }
 
     function moleculeVault() public view returns(address) {
         return moleculeVault_;
     }
 
+    // TODO add functionality for the admin to change the mol vault address
+    //      also add to interface
+
     function marketRegistry() public view returns(address) {
-        return marketRegistry_;
+        return address(marketRegistry_);
+    }
+
+    function curveRegistry() public view returns(address) {
+        return address(curveRegistry_);
     }
 
     function collateralToken() public view returns(address) {

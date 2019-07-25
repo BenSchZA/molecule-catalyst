@@ -24,12 +24,14 @@ interface IMarketFactory {
         uint256 _taxationRate,
         uint256 _gradientDenominator,
         uint256 _scaledShift
-    )//todo add registry seporatly
+    )
         external;
 
     function moleculeVault() external view returns(address);
 
     function marketRegistry() external view returns(address);
+
+    function curveRegistry() public view returns(address);
 
     function collateralToken() external view returns(address);
 }

@@ -51,7 +51,8 @@ contract CurveRegistry is AdminManaged {
     }
 
     /**
-      * @dev    Sets the curve to active. 
+      * @dev            Sets the curve to active
+      * @param _index   : uint256 - The index of the curve
       */
     function reactivateCurve(uint256 _index) external onlyAdmin {
         require(curveContracts_[_index].active == false, "Curve already activated");
@@ -61,6 +62,12 @@ contract CurveRegistry is AdminManaged {
         emit CurveActivated(_index, curveContracts_[_index].libraryAddress);
     }
 
+    /**
+      * @dev            Sets the curve to inactive
+      * @notice         This function is for the case of an incorect
+      *                 curve module, or vunrability
+      * @param _index   : uint256 - The index of the curve
+      */
     function deactivateCurve(uint256 _index) external onlyAdmin {
         require(curveContracts_[_index].active == true, "Curve already deactivated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");

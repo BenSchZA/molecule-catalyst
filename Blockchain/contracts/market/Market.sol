@@ -16,13 +16,13 @@ contract Market is IERC20 {
     //Allows market to be deactivated after funding
     bool internal active_ = true;
     // Vault that recives taxation
-    address internal creatorVault_;
+    IVault internal creatorVault_;
     // Percentage of vault taxation i.e 20
     uint256 internal taxationRate_;
     // Address of curve function
-    address internal curveLibrary_;
+    ICurveFunctions internal curveLibrary_;
     // Underlying collateral token
-    address internal collateralToken_;
+    IERC20 internal collateralToken_;
     // Total minted tokens
     uint256 internal totalSupply_;
     // Decimal acuracy of token
@@ -39,6 +39,8 @@ contract Market is IERC20 {
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
+    // event Mint(address indexed to, uint256 amount, uint256 totalCost);
+    // event Burn(address indexed from, uint256 amount, uint256 reward);
     event MarketTerminated();
 
     /**
@@ -60,9 +62,9 @@ contract Market is IERC20 {
         public
     {
         taxationRate_ = _taxationRate;
-        creatorVault_ = _creatorVault;
-        curveLibrary_ = _curveLibrary;
-        collateralToken_ = _collateralToken;
+        creatorVault_ = IVault(_creatorVault);
+        curveLibrary_ = ICurveFunctions(_curveLibrary);
+        collateralToken_ = IERC20(_collateralToken);
         gradientDenominator_ = _gradientDenominator;
         scaledShift_ = _scaledShift;
     }
@@ -73,7 +75,7 @@ contract Market is IERC20 {
     }
 
     modifier onlyVault(){
-        require(msg.sender == creatorVault_, "Invalid requestor");
+        require(msg.sender == address(creatorVault_), "Invalid requestor");
         _;
     }
 
@@ -102,21 +104,20 @@ contract Market is IERC20 {
     function burn(uint256 _numTokens) external onlyActive() returns(bool) {
         require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
 
-        // TODO: We may want to consider having the burn function blocked via the same verification if the mint is blocked 
-
         uint256 rewardForBurn = rewardForBurn(_numTokens);
 
         totalSupply_ = totalSupply_.sub(_numTokens);
         balances[msg.sender] = balances[msg.sender].sub(_numTokens);
 
         require(
-            IERC20(collateralToken_).transfer(
+            collateralToken_.transfer(
                 msg.sender,
                 rewardForBurn
             ),
             "Tokens not sent"
         );
 
+        // emit Burn(msg.sender, _numTokens, rewardForBurn);
         emit Transfer(msg.sender, address(0), _numTokens);
 
         return true;
@@ -127,21 +128,21 @@ contract Market is IERC20 {
     /// @param _numTokens   :uint256 The number of tokens you want to mint
     /// @dev                We have modified the minting function to divert a portion of the purchase tokens
     function mint(address _to, uint256 _numTokens) external onlyActive() returns(bool) {
-        uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
 
         uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
 
-        IERC20(collateralToken_).transferFrom(
+        collateralToken_.transferFrom(
             msg.sender,
             address(this),
             untaxedDai.add(tax)
         );
 
         require(
-            IERC20(collateralToken_).transfer(
+            collateralToken_.transfer(
                 creatorVault_,
-                untaxedDai
+                tax
             ),
             "Vault portion not sent"
         );
@@ -149,7 +150,9 @@ contract Market is IERC20 {
         totalSupply_ = totalSupply_.add(_numTokens);
         balances[msg.sender] = balances[msg.sender].add(_numTokens); // Minus amount sent to Revenue target
 
-        require(IVault(creatorVault_).validateFunding(), "Funding validation failed");
+        require(creatorVault_.validateFunding(), "Funding validation failed");
+        
+        // emit Mint(_to, _numTokens, untaxedDai.add(tax));
         emit Transfer(address(0), _to, _numTokens);
         return true;
     }
@@ -194,7 +197,10 @@ contract Market is IERC20 {
         return true;
     }
 
-    // TODO: documentation
+    /**
+      * @dev    Allows the market to end once all funds have been raised.
+      *         Only the vault can end the market.
+      */
     function finaliseMarket() public onlyVault() returns(bool) {
         require(active_, "Market deactivated");
         active_ = false;
@@ -203,18 +209,20 @@ contract Market is IERC20 {
     }
 
     // TODO: documentation
-    function withdraw(uint256 _amount) public returns(bool){
+    function withdraw(uint256 _amount) public returns(bool) {
         require(active_ == false, "Market not finalised");
         require(_amount <= balances[msg.sender], "Insufficient funds");
 
         balances[msg.sender] = balances[msg.sender].sub(_amount);
 
-        uint256 poolBalance = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 poolBalance = collateralToken_.balanceOf(address(this));
 
         // TODO: Work out constant pay out value
         // This works out the value of 1 token then caculates what the whole amount is
         uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
-        require(IERC20(collateralToken_).transfer(msg.sender, daiToTransfer), "Dai transfer failed");
+        require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
+
+        emit Transfer(address(this), msg.sender, _amount);
     }
 
     // /// @dev                Returns the gradient for the market's curve
@@ -227,7 +235,7 @@ contract Market is IERC20 {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             :uint256 Required collateral corrected for decimals
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
-        uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
 
         uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
@@ -238,27 +246,27 @@ contract Market is IERC20 {
     /// @return             Potential return collateral corrected for decimals
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         // TODO: Update
-        uint256 poolBalanceFetched = IERC20(collateralToken_).balanceOf(address(this));
+        uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
 
     // [Inverse pricing functions]
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
     ///                     Including molecule & market contributions
-    /// @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
-    function colateralToTokenBuying(uint256 _colateralTokenOffered) external view returns(uint256) {
+    /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
+    function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
         //Gets the amount for vault
         // Incoming dai is 100% + taxation rate, implying dividing by 100+taxRate, will produce an accurate 1 percent to work with
-        uint256 buyTax = (_colateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
+        uint256 buyTax = (_collateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
         //Remaining collateral gets sent to vyper to work out amount of tokens
-        uint256 correctedForTax = _colateralTokenOffered.sub(buyTax);
+        uint256 correctedForTax = _collateralTokenOffered.sub(buyTax);
         return (inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax))).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
     ///                                 Including Molecule & market contributions
     /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
-    function colateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
+    function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
         // TODO: Update
         return uint256(
             totalSupply_.sub(
@@ -289,7 +297,7 @@ contract Market is IERC20 {
     /// @dev                Total collateral backing the curve
     /// @return             A uint256 representing the total collateral backing the curve
     function poolBalance() external view returns (uint256){
-        return IERC20(collateralToken_).balanceOf(address(this));
+        return collateralToken_.balanceOf(address(this));
     }
 
     /// @dev                Total number of tokens in existence
@@ -320,14 +328,13 @@ contract Market is IERC20 {
     /// @return             The total supply in tokens, not wei
     function curveIntegral(uint256 _x) internal view returns (uint256) {
         //todo: call vyper curve module for values
-        return ICurveFunctions(curveLibrary_).curveIntegral(_x, gradientDenominator_, scaledShift_);
+        return curveLibrary_.curveIntegral(_x, gradientDenominator_, scaledShift_);
     }
 
     /// @dev                Inverse integral to convert the incoming colateral value to token volume
     /// @param _x           :uint256 The volume to identify the root off
     function inverseCurveIntegral(uint256 _x) internal view returns(uint256){
         // return sqrt(2*_x*gradientDenominator_*(10**decimals_));
-        return ICurveFunctions(curveLibrary_).inverseCurveIntegral(_x, gradientDenominator_, scaledShift_);
-
+        return curveLibrary_.inverseCurveIntegral(_x, gradientDenominator_, scaledShift_);
     }
 }

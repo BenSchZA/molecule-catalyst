@@ -5,7 +5,6 @@ pragma solidity 0.5.9;
 interface IMarket {
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
-
     event Mint(address indexed to, uint256 amount, uint256 totalCost);
     event Burn(address indexed from, uint256 amount, uint256 reward);
 
@@ -30,7 +29,7 @@ interface IMarket {
     function finaliseMarket() external returns(bool);
 
     // TODO finish withdraw function
-    // function withdraw() external returns
+    function withdraw(uint256 _amount) public returns(bool);
 
     // [ERC20 functions]
     /// @dev                        Transfer ownership token from msg.sender to a specified address
@@ -43,10 +42,6 @@ interface IMarket {
     /// @param _to          :address The address which you want to transfer to
     /// @param _value       :uint256 the amount of tokens to be transferred
     function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
-
-    // /// @dev                Returns the gradient for the market's curve
-    // /// @return             :uint256 The gradient for the market's curve
-    // function gradientDenominator() external view returns(uint256);
 
     // [Pricing functions]
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
@@ -61,12 +56,12 @@ interface IMarket {
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
     ///                     Including molecule & market contributions
     /// @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
-    function colateralToTokenBuying(uint256 _colateralTokenOffered) external view returns(uint256);
+    function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256);
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
     ///                                 Including Molecule & market contributions
     /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
-    function colateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256);
+    function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256);
 
     /// @dev                Gets the value of the current allowance specifed for that account
     /// @param _owner       :address The account sending the funds.
