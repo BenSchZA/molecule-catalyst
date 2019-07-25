@@ -16,7 +16,6 @@ contract MarketRegistry is AdminManaged {
     }
 
     event MarketCreated(uint256 index, address indexed marketAddress, address indexed vault, address indexed creator);
-
     event DeployerAdded(address deployer, string version);
     event DeployerRemoved(address deployer, string reason);
 

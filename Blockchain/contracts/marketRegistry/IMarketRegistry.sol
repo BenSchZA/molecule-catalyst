@@ -2,20 +2,23 @@ pragma solidity 0.5.9;
 
 interface IMarketRegistry {
     event MarketCreated(uint256 index, address indexed marketAddress, address indexed vault, address indexed creator);
-
     event DeployerAdded(address deployer, string version);
     event DeployerRemoved(address deployer, string reason);
 
-    /// @dev                            Adds a new market deployer to the registry
-    /// @param _newDeployer             :address Address of the new market deployer
-    /// @param _version                 :string Log text for tracking purposes
-    /// @author Ryan
+    /**
+      * @dev                Adds a new market deployer to the registry
+      * @param _newDeployer : address - Address of the new market deployer
+      * @param _version     : string - Log text for tracking purposes
+      * @author Ryan
+      */
     function addMarketDeployer(address _newDeployer, string calldata _version) external;
 
-    /// @dev                            Removes a market deployer from the registry
-    /// @param _deployerToRemove        :address Address of the market deployer to remove
-    /// @param _reason                  :string Log text for tracking purposes
-    /// @author Ryan
+    /**
+      * @dev                        Removes a market deployer from the registry
+      * @param _deployerToRemove    : address - Address of the market deployer to remove
+      * @param _reason              : string - Log text for tracking purposes
+      * @author Ryan
+      */
     function removeMarketDeployer(address _deployerToRemove, string calldata _reason) external;
 
     /// @dev                            Logs the market into the registery
@@ -27,7 +30,8 @@ interface IMarketRegistry {
     function registerMarket(
         address _marketAddress,
         address _vault,
-        address _creator)
+        address _creator
+    )
         external
         returns(uint256);
 

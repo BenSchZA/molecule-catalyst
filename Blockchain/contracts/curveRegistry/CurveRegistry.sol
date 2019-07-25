@@ -15,6 +15,8 @@ contract CurveRegistry is AdminManaged {
     }
 
     event CurveRegisterd(uint256 index, address indexed libraryAddress, string curveFunction);
+    event CurveActivated(uint256 index, address indexed libraryAddress);
+    event CurveDeactivated(uint256 index, address indexed libraryAddress);
 
     constructor() public AdminManaged(msg.sender){
         publishedBlocknumber_ = block.number;
@@ -48,15 +50,23 @@ contract CurveRegistry is AdminManaged {
         return index;
     }
 
-    function reactivateCurve(uint256 _index) external onlyAdmin{
+    /**
+      * @dev    Sets the curve to active. 
+      */
+    function reactivateCurve(uint256 _index) external onlyAdmin {
         require(curveContracts_[_index].active == false, "Curve already activated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = true;
+        
+        emit CurveActivated(_index, curveContracts_[_index].libraryAddress);
     }
 
-    function deactivateCurve(uint256 _index) external onlyAdmin{
+    function deactivateCurve(uint256 _index) external onlyAdmin {
         require(curveContracts_[_index].active == true, "Curve already deactivated");
+        require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = false;
+
+        emit CurveDeactivated(_index, curveContracts_[_index].libraryAddress);
     }
 
     /// Fetching curve data
