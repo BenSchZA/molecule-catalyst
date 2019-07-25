@@ -2,14 +2,15 @@
 DECIMALS: constant(int128) = 18
 SCALE: constant(decimal) = convert(10**DECIMALS, decimal)
 
+GRADIENT: constant(decimal) = 1/17500
+
+# , gradientDenominator: uint256, b: uint256
+
 @public
 @constant
-def curveIntegral(x_t: uint256, gradientDenominator: uint256, b: uint256) -> uint256:
+def curveIntegral(x_t: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
     _x_t: decimal = convert(x_t, decimal)/SCALE
-    
-    _gradient_denominator: decimal = convert(gradientDenominator, decimal)
-    _gradient: decimal = (1.0/_gradient_denominator)
 
     _b: decimal = convert(b, decimal)/SCALE
 
@@ -22,17 +23,14 @@ def curveIntegral(x_t: uint256, gradientDenominator: uint256, b: uint256) -> uin
     _sqr: decimal = convert(_i128_sqr, decimal)
 
     # Calculate result and return scaled uint
-    result: decimal = (_sqr*_gradient)/2.0 + _b*_x_t
+    result: decimal = (_sqr*GRADIENT)/2.0 + _b*_x_t
     return convert(result*SCALE, uint256)
 
 @public
 @constant
-def inverseCurveIntegral(x_d: uint256, gradientDenominator: uint256, b: uint256) -> uint256:
+def inverseCurveIntegral(x_d: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
     _x_d: decimal = convert(x_d, decimal)/SCALE
-
-    _gradient_denominator: decimal = convert(gradientDenominator, decimal)
-    _gradient: decimal = (1.0/_gradient_denominator)
 
     _b: decimal = convert(b, decimal)/SCALE
 
@@ -44,11 +42,11 @@ def inverseCurveIntegral(x_d: uint256, gradientDenominator: uint256, b: uint256)
     _sqr: decimal = convert(_i128_sqr, decimal)/SCALE/SCALE
 
     # The sqrt() function only supports decimal type
-    arg: decimal = _sqr + 2.0*_gradient*_x_d
+    arg: decimal = _sqr + 2.0*GRADIENT*_x_d
     sqrt_arg: decimal = sqrt(arg)
 
     # Calculate result and return scaled uint
-    result: decimal = (-_b + sqrt_arg)/_gradient
+    result: decimal = (-_b + sqrt_arg)/GRADIENT
     return convert(result*SCALE, uint256)
 
 
