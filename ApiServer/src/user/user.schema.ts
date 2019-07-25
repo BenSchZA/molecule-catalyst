@@ -14,9 +14,9 @@ export interface User extends IUser {
 
 interface IUser {
   ethAddress: string;
-  firstName?: string;
-  lastName?: string;
-  fullName?: string;
+  // firstName?: string;
+  // lastName?: string;
+  // fullName?: string;
   // email?: string;
   profileImage?: { type: Schema.Types.ObjectId, ref: Schemas.Attachment },
   type: UserType;
@@ -29,9 +29,9 @@ export interface UserDocument extends IUser, Document { }
 
 export const UserSchema = new Schema({
   ethAddress: { type: String, required: true, unique: true },
-  firstName: { type: String, required: false },
-  lastName: { type: String, required: false },
-  // email: { type: String, required: false, unique: true },
+  // firstName: { type: String, required: false },
+  // lastName: { type: String, required: false },
+  // email: { type: String, required: false, unique: false },
   profileImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: false },
   type: { type: Number, required: true, enum:[...spreadEnumKeys(UserType)],  default: UserType.Standard },
   isValidated: { type: Boolean, default: false },
@@ -60,6 +60,6 @@ export const UserSchema = new Schema({
     },
   });
 
-UserSchema.virtual('fullName').get(function () {
-  return this.firstName + ' ' + this.lastName;
-});
+// UserSchema.virtual('fullName').get(function () {
+//   return this.firstName + ' ' + this.lastName;
+// });
