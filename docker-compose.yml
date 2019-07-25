@@ -10,9 +10,11 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args: 
-        - API_HOST # Passed from pipeline env
-        - API_SCHEMA # Passed from pipeline env
+      args:
+        - API_HOST
+        - API_SCHEMA
+        - APM_SERVICE_NAME
+        - APM_SERVER_ENDPOINT
     depends_on:
       - core
   mongo:
