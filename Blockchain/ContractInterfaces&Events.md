@@ -182,7 +182,7 @@ function deployMarket(
 
 ---
 
-##### Molecule Vault
+##### Molecule Vault function
 Gets the address of the molecule vault
 ```
 function moleculeVault() external view returns(address);
