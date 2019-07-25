@@ -27,6 +27,7 @@ import saga from './saga';
 import selectApp from './selectors';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
+import { forwardTo } from 'utils/history';
 
 interface OwnProps { }
 
@@ -72,6 +73,7 @@ const App: React.SFC<Props> = (props: Props) => {
   return (
     <AppWrapper navRoutes={routes.filter(r => 
         r.isNavRequired && 
+        (!r.requireAuth || r.requireAuth && props.isLoggedIn) && 
         props.userRole >= r.roleRequirement && 
         r.showNavForRoles.includes(props.userRole))} {...props}>
       <Switch>
@@ -90,7 +92,9 @@ const mapStateToProps = state => selectApp(state);
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onConnect: () => dispatch(authActions.authenticate.request()),
-  logOut: () => dispatch(authActions.logOut()),
+  logOut: () => {
+    forwardTo('/discover'),
+    dispatch(authActions.logOut())},
 });
 
 const withConnect = connect(
