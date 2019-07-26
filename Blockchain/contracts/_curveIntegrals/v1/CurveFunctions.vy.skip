@@ -2,20 +2,23 @@
 DECIMALS: constant(int128) = 18
 SCALE: constant(decimal) = convert(10**DECIMALS, decimal)
 
-GRADIENT: constant(decimal) = 0.0000571428 # 1/17500 NB! max 10 decimal places, we're overflowing
-VERTICAL_SHIFT: constant(decimal) = 0.5
+SCALE_10: constant(decimal) = convert(10**10, decimal)
+SCALE_8: constant(decimal) = convert(10**8, decimal)
 
-# , gradientDenominator: uint256, b: uint256
+# All decimal variables scaled by 8 decimal places
+GRADIENT: constant(decimal) = 5714.285 # 1/17500 NB! max 10 decimal places, we're overflowing
+VERTICAL_SHIFT: constant(decimal) = 50000000.0
+
+# All incoming uint256 variables are scaled by 18 decimal places. These need to be scalled back to 8, by diving by 1e10.
 
 @public
 @constant
 def curveIntegral(x_t: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
-    _x_t: decimal = convert(x_t, decimal)/SCALE
+    _x_t: decimal = convert(x_t, decimal)/SCALE_10
 
     # Convert to int128 type for exponentiation operation
-    _i128_scale: int128 = convert(SCALE, int128)
-    _i128_x_t: int128 = convert(x_t, int128)/_i128_scale
+    _i128_x_t: int128 = convert(x_t, int128)/convert(SCALE_10, int128)
 
     # Only int128 & uint256 support exponentiation (a**b)
     _i128_sqr: int128 = _i128_x_t**2
@@ -23,27 +26,27 @@ def curveIntegral(x_t: uint256) -> uint256:
 
     # Calculate result and return scaled uint
     result: decimal = (_sqr*GRADIENT)/2.0 + VERTICAL_SHIFT*_x_t
-    return convert(result*SCALE, uint256)
+    return convert(result*SCALE_10, uint256)
 
 @public
 @constant
 def inverseCurveIntegral(x_d: uint256) -> uint256:
     # Convert scaled uint256 values from Solidity to decimal point values
-    _x_d: decimal = convert(x_d, decimal)/SCALE
+    _x_d: decimal = convert(x_d, decimal)/SCALE_10
 
-    # Convert to int128 type for exponentiation operation
-    _i128_b: int128 = convert(VERTICAL_SHIFT*SCALE, int128)
+    # Convert to uint256 type for exponentiation operation
+    _uint_b: uint256 = convert(VERTICAL_SHIFT, uint256)
 
     # Only int128 & uint256 support exponentiation (a**b)
-    _i128_sqr: int128 = _i128_b**2
-    _sqr: decimal = convert(_i128_sqr, decimal)/SCALE/SCALE
+    _uint_sqr: uint256 = _uint_b**2
+    _sqr: decimal = convert(_uint_sqr, decimal)/SCALE_8
 
     # The sqrt() function only supports decimal type
-    arg: decimal = _sqr + 2.0*GRADIENT*_x_d
-    sqrt_arg: decimal = sqrt(arg)
+    arg: decimal = _sqr + 2.0*GRADIENT*_x_d/SCALE_8
+    sqrt_arg: decimal = sqrt(arg)/sqrt(SCALE_8)*SCALE_8
 
     # Calculate result and return scaled uint
     result: decimal = (-VERTICAL_SHIFT + sqrt_arg)/GRADIENT
-    return convert(result*SCALE, uint256)
+    return convert(2.0*5714.285*10000000000.0, uint256) #convert(result*SCALE_10, uint256)
 
 
