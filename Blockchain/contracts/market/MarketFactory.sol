@@ -110,9 +110,6 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         return moleculeVault_;
     }
 
-    // TODO add functionality for the admin to change the mol vault address
-    //      also add to interface
-
     function marketRegistry() public view returns(address) {
         return address(marketRegistry_);
     }

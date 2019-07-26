@@ -7,7 +7,6 @@ import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol"
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 import { IVault } from "./IVault.sol";
 
-// TODO: Consider a mapping with index instead of arrays
 /**
   * @author Veronica & Ryan of Linum Labs
   * @title Vault
@@ -70,7 +69,7 @@ contract Vault is IVault, WhitelistAdminRole {
         require(_fundingGoals.length < 10, "Too many phases defined");
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
 
-        super.addWhitelistAdmin(msg.sender);
+        super.addWhitelistAdmin(_creator);
 
         outstandingWithdraw_ = 0;
 
@@ -104,7 +103,6 @@ contract Vault is IVault, WhitelistAdminRole {
       *                 vault it'scollateral.
       */
     function initialize(address _market) external onlyWhitelistAdmin() returns(bool){
-        // TODO: get admin managed initialise function
         require(_market != address(0), "Contracts initalised");
         market_ = IMarket(_market);
         super.renounceWhitelistAdmin();
@@ -202,8 +200,7 @@ contract Vault is IVault, WhitelistAdminRole {
                 // incase of remaining fractions from math
             remainingBalance = collateralToken_.balanceOf(address(this));
             // Transfers the amount to the msg.sender
-            // TODO: Change to admin address
-            require(collateralToken_.transfer(msg.sender, remainingBalance), "Transfering of funds failed");
+            require(collateralToken_.transfer(creator_, remainingBalance), "Transfering of funds failed");
 
             emit FundingWithdrawn(currentPhase_, remainingBalance);
         } else {

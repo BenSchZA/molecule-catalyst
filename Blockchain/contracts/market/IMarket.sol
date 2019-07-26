@@ -5,7 +5,7 @@ pragma solidity 0.5.9;
   * @title Market
   */
 interface IMarket {
-  
+
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
 
@@ -38,7 +38,6 @@ interface IMarket {
       */
     function finaliseMarket() external returns(bool);
 
-    // TODO finish withdraw function
     /**
       * @dev              Allows token holders to withdraw collateral in return for tokens
       *                   after the market has been finalised.

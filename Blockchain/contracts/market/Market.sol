@@ -208,7 +208,10 @@ contract Market is IMarket, IERC20 {
         return true;
     }
 
-    // TODO: documentation
+    /**
+      * @dev Allows for a token holder to get collateral in return for
+      *      their tokens after the market has endedd.
+      */
     function withdraw(uint256 _amount) public returns(bool) {
         require(active_ == false, "Market not finalised");
         require(_amount <= balances[msg.sender], "Insufficient funds");
@@ -246,6 +249,7 @@ contract Market is IMarket, IERC20 {
     /// @return             Potential return collateral corrected for decimals
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         // TODO: Update
+        //       To what? This is the corerct way to get the reward for burn
         uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
@@ -267,7 +271,8 @@ contract Market is IMarket, IERC20 {
     ///                                 Including Molecule & market contributions
     /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
     function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
-        // TODO: Update
+        // TODO: Update 
+        //       Again, to what?
         return uint256(
             totalSupply_.sub(
                 inverseCurveIntegral(curveIntegral(totalSupply_).sub(_collateralTokenNeeded))
@@ -327,7 +332,6 @@ contract Market is IMarket, IERC20 {
     /// @param _x            The number of tokens supply to integrate to
     /// @return             The total supply in tokens, not wei
     function curveIntegral(uint256 _x) internal view returns (uint256) {
-        //todo: call vyper curve module for values
         return curveLibrary_.curveIntegral(_x, gradientDenominator_, scaledShift_);
     }
 
