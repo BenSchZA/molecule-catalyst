@@ -1,6 +1,5 @@
 pragma solidity 0.5.9;
 
-//TODO import Whitelistadmin & add control functions to interface, and add to interface docs
 interface IMoleculeVault {
     function transfer(address _to, uint256 _amount) external;
 
@@ -22,4 +21,19 @@ interface IMoleculeVault {
     /// @param _account         :address in question
     /// @return bool
     function isAdmin(address _account) external view returns(bool);
+
+    /**
+      * @notice checks admin status of an address
+      */
+    function isWhitelistAdmin(address account) public view returns (bool);
+
+    /**
+      * @dev Allows a whitelisted admin to add another admin
+      */
+    function addWhitelistAdmin(address account) public;
+
+    /**
+      * @dev Allows a whitlisted admin to renouce their role as admin
+      */
+    function renounceWhitelistAdmin() public;
 }

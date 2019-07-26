@@ -1,18 +1,22 @@
 pragma solidity 0.5.9;
 
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 
 // TODO: Update to outline buisness logic
-contract MoleculeVault is AdminManaged {
+contract MoleculeVault is WhitelistAdminRole {
     address internal collateralToken_;
     uint256 internal taxRate_;
 
-    constructor(address _collateralToken, uint256 _taxRate, address _moleculeAdmin) public AdminManaged(_moleculeAdmin) {
+    constructor(address _collateralToken, uint256 _taxRate, address _moleculeAdmin) public WhitelistAdminRole() {
         require(_taxRate > 0, "Taxation rate too low");
         require(_taxRate < 100, "Taxation rate too high");
         collateralToken_ = _collateralToken;
         taxRate_ = _taxRate;
+        // Adding the Molecule admin address as an admin
+        super.addWhitelistAdmin(_moleculeAdmin);
+        // Removing the contract from admin role
+        super.renounceWhitelistAdmin();
     }
 
     function transfer(address _to, uint256 _amount) public onlyAdmin() {
