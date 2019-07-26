@@ -1,6 +1,7 @@
 pragma solidity 0.5.9;
 
 interface IMarketRegistry {
+    
     event MarketCreated(uint256 index, address indexed marketAddress, address indexed vault, address indexed creator);
     event DeployerAdded(address deployer, string version);
     event DeployerRemoved(address deployer, string reason);

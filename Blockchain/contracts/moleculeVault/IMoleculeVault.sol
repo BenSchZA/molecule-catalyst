@@ -1,6 +1,7 @@
 pragma solidity 0.5.9;
 
 interface IMoleculeVault {
+    
     function transfer(address _to, uint256 _amount) external;
 
     function approve(address _spender, uint256 _amount) external;

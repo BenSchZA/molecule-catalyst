@@ -2,11 +2,11 @@ pragma solidity 0.5.9;
 
 import { Market } from "./Market.sol";
 import { Vault } from "../vault/Vault.sol";
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 
-contract MarketFactory is AdminManaged {
+contract MarketFactory is WhitelistAdminRole {
     //The molecule vault for molecule tax
     address internal moleculeVault_;
     //The registry of all created markets
@@ -32,7 +32,7 @@ contract MarketFactory is AdminManaged {
         address _marketRegistry,
         address _curveRegistry
     )
-        AdminManaged(msg.sender)
+        WhitelistAdminRole()
         public
     {
         curveRegistry_ = ICurveRegistry(_curveRegistry);
@@ -66,7 +66,7 @@ contract MarketFactory is AdminManaged {
         uint256 _scaledShift
     )
         external
-        onlyAdmin()
+        onlyWhitelistAdmin()
     {
         (address curveLibrary,, bool curveState) = curveRegistry_.getCurveData(_curveType);
 
@@ -95,6 +95,14 @@ contract MarketFactory is AdminManaged {
 
         require(Vault(newVault).initialize(newMarket), "Vault not initialised");
         marketRegistry_.registerMarket(newMarket, newVault, _creator);
+    }
+
+    /**
+      * @notice This function will only affect new markets, and will not update
+      *         already created markets.
+      */
+    function updateMoleculeVault(address _newMoleculeVault) public onlyWhitelistAdmin() {
+        moleculeVault_ = _newMoleculeVault;
     }
 
     function moleculeVault() public view returns(address) {

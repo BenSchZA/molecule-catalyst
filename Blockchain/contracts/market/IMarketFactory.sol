@@ -27,6 +27,12 @@ interface IMarketFactory {
     )
         external;
 
+    /**
+      * @notice This function will only affect new markets, and will not update
+      *         already created markets. This can only be called by an admin
+      */
+    function updateMoleculeVault(address _newMoleculeVault) public;
+
     function moleculeVault() external view returns(address);
 
     function marketRegistry() external view returns(address);
