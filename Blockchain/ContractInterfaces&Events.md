@@ -87,6 +87,30 @@ For log look up efficiently. The published block number
 function publishedBlocknumber() external view returns(uint256);
 ```
 
+##### Is Whitelist Admin
+Returns true if address is an admin
+```
+function isWhitelistAdmin(address account) public view returns (bool);
+```
+
+---
+
+##### Add Whitelist Admin
+Adds an address to the admins, notice: Can only be called by an admin
+```
+function addWhitelistAdmin(address account) public
+```
+emits `WhitelistAdminAdded(address indexed account);`
+
+---
+
+##### Renounce Whitelist Admin
+Allows an admin to renounce their administrative role
+```
+function renounceWhitelistAdmin() public
+```
+emits `WhitelistAdminRemoved(address indexed account);`
+
 ## Curve Registry
 
 ##### Register Curve
@@ -538,18 +562,26 @@ function taxRate() external view returns(uint256);
 
 ---
 
-##### TODO add admin managed white listed functions
-
+##### Is Whitelist Admin
+Returns true if address is an admin
 ```
-
-```
-
----
-
-##### 
-
-```
-
+function isWhitelistAdmin(address account) public view returns (bool);
 ```
 
 ---
+
+##### Add Whitelist Admin
+Adds an address to the admins, notice: Can only be called by an admin
+```
+function addWhitelistAdmin(address account) public
+```
+emits `WhitelistAdminAdded(address indexed account);`
+
+---
+
+##### Renounce Whitelist Admin
+Allows an admin to renounce their administrative role
+```
+function renounceWhitelistAdmin() public
+```
+emits `WhitelistAdminRemoved(address indexed account);`

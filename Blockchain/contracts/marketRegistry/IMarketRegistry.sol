@@ -66,4 +66,19 @@ interface IMarketRegistry {
     /// @return uint256                 The block when the contract was published
     /// @author Ryan
     function publishedBlocknumber() external view returns(uint256);
+
+    /**
+      * @notice checks admin status of an address
+      */
+    function isWhitelistAdmin(address account) public view returns (bool);
+
+    /**
+      * @dev Allows a whitelisted admin to add another admin
+      */
+    function addWhitelistAdmin(address account) public;
+
+    /**
+      * @dev Allows a whitlisted admin to renouce their role as admin
+      */
+    function renounceWhitelistAdmin() public;
 }

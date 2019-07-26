@@ -2,9 +2,9 @@ pragma solidity 0.5.9;
 
 import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+import { IMoleculeVault } from "./IMoleculeVault.sol";
 
-// TODO: Update to outline buisness logic
-contract MoleculeVault is WhitelistAdminRole {
+contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     address internal collateralToken_;
     uint256 internal taxRate_;
 
@@ -19,11 +19,11 @@ contract MoleculeVault is WhitelistAdminRole {
         super.renounceWhitelistAdmin();
     }
 
-    function transfer(address _to, uint256 _amount) public onlyAdmin() {
+    function transfer(address _to, uint256 _amount) public onlyWhitelistAdmin() {
         require(IERC20(collateralToken_).transfer(_to, _amount), "Transfer failed");
     }
 
-    function approve(address _spender, uint256 _amount) public onlyAdmin() {
+    function approve(address _spender, uint256 _amount) public onlyWhitelistAdmin() {
         require(IERC20(collateralToken_).approve(_spender, _amount), "Approve failed");
     }
 

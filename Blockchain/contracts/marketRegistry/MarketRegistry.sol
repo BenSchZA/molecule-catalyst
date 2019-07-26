@@ -1,8 +1,9 @@
 pragma solidity 0.5.9;
 
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
+import { IMarketRegistry } from "./IMarketRegistry.sol";
 
-contract MarketRegistry is AdminManaged {
+contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     mapping(uint256 => Market) internal markets_;
     mapping(address => bool) internal deployer_;
 
@@ -19,7 +20,7 @@ contract MarketRegistry is AdminManaged {
     event DeployerAdded(address deployer, string version);
     event DeployerRemoved(address deployer, string reason);
 
-    constructor() public AdminManaged(msg.sender){
+    constructor() public WhitelistAdminRole(){
         publishedBlocknumber_ = block.number;
     }
 
@@ -32,7 +33,13 @@ contract MarketRegistry is AdminManaged {
     /// @param _newDeployer             :address Address of the new market deployer
     /// @param _version                 :string Log text for tracking purposes
     /// @author Ryan
-    function addMarketDeployer(address _newDeployer, string calldata _version) external onlyAdmin(){
+    function addMarketDeployer(
+        address _newDeployer, 
+        string calldata _version
+    ) 
+        external 
+        onlyWhitelistAdmin() 
+    {
         require(deployer_[_newDeployer] != true, "Already approved");
         deployer_[_newDeployer] = true;
         emit DeployerAdded(_newDeployer, _version);
@@ -42,7 +49,13 @@ contract MarketRegistry is AdminManaged {
     /// @param _deployerToRemove        :address Address of the market deployer to remove
     /// @param _reason                  :string Log text for tracking purposes
     /// @author Ryan
-    function removeMarketDeployer(address _deployerToRemove, string calldata _reason) external onlyAdmin(){
+    function removeMarketDeployer(
+        address _deployerToRemove, 
+        string calldata _reason
+    ) 
+        external 
+        onlyWhitelistAdmin()
+    {
         require(deployer_[_deployerToRemove] != false, "Already inactive");
         deployer_[_deployerToRemove] = false;
         emit DeployerRemoved(_deployerToRemove, _reason);
