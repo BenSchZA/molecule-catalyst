@@ -300,7 +300,6 @@ emit `MarketTerminated();`
 
 ---
 
-
 ##### Withdraw
 Allows token holders to withdraw their tokens after the `finalization` of the market. Note this function will only work after the market has been finalized
 ```
@@ -496,49 +495,41 @@ function creator() external view returns(address);
 
 ---
 
-##### TODO update interface with Whitelistadmin from oppenzepplin along with Roles
-
+##### Is Whitelist Admin
+Returns true if address is an admin
 ```
-
-```
-
----
-
-##### 
-
-```
-
+function isWhitelistAdmin(address account) public view returns (bool);
 ```
 
 ---
 
-##### 
-
+##### Add Whitelist Admin
+Adds an address to the admins, notice: Can only be called by an admin
 ```
-
+function addWhitelistAdmin(address account) public
 ```
+emits `WhitelistAdminAdded(address indexed account);`
 
 ---
 
-##### 
-
+##### Renounce Whitelist Admin
+Allows an admin to renounce their administrative role
 ```
-
+function renounceWhitelistAdmin() public
 ```
-
----
+emits `WhitelistAdminRemoved(address indexed account);`
 
 # Curve
 
-##### TODO get bens changes before making docs
-
+##### Curve Integral 
+// TODO get bens changes before making docs
 ```
 function curveIntegral(uint256 x_t, uint256 gradientDenominator, uint256 b) external pure returns(uint256);
 ```
 
 ---
 
-##### 
+##### Inverse Curve Integral
 
 ```
 function inverseCurveIntegral(uint256 x_d, uint256 gradientDenominator, uint256 b) external pure returns(uint256);

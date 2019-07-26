@@ -1,12 +1,13 @@
 pragma solidity 0.5.9;
 
 import { Market } from "./Market.sol";
+import { IMarketFactory } from "./IMarketFactory.sol";
 import { Vault } from "../vault/Vault.sol";
 import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 
-contract MarketFactory is WhitelistAdminRole {
+contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     //The molecule vault for molecule tax
     address internal moleculeVault_;
     //The registry of all created markets

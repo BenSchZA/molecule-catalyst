@@ -1,6 +1,7 @@
 pragma solidity 0.5.9;
 
 interface IVault {
+  
     event FundingWithdrawn(uint256 phase, uint256 amount);
     event PhaseFinalised(uint256 phase, uint256 amount);
 

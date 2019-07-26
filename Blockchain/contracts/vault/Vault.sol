@@ -1,18 +1,18 @@
 pragma solidity 0.5.9;
 
-import { IMarket } from "../market/IMarket.sol";
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
+import { IVault } from "./IVault.sol";
 
 // TODO: Consider a mapping with index instead of arrays
 /**
   * @author Veronica & Ryan of Linum Labs
   * @title Vault
   */
-contract Vault is AdminManaged {
+contract Vault is IVault, WhitelistAdminRole {
     using SafeMath for uint256;
     using BokkyPooBahsDateTimeLibrary for uint256;
 
@@ -64,13 +64,13 @@ contract Vault is AdminManaged {
         address _moleculeVault
     )
         public
-        AdminManaged(_creator)
+        WhitelistAdminRole()
     {
         require(_fundingGoals.length > 0, "No funding goals specified");
         require(_fundingGoals.length < 10, "Too many phases defined");
         require(_fundingGoals.length == _phaseDurations.length, "Invalid phase configuration");
 
-        admins_.add(msg.sender);
+        super.addWhitelistAdmin(msg.sender);
 
         outstandingWithdraw_ = 0;
 
@@ -103,11 +103,11 @@ contract Vault is AdminManaged {
       * @param _market  : address - The market that will be sending this
       *                 vault it'scollateral.
       */
-    function initialize(address _market) external onlyAdmin() returns(bool){
+    function initialize(address _market) external onlyWhitelistAdmin() returns(bool){
         // TODO: get admin managed initialise function
         require(_market != address(0), "Contracts initalised");
         market_ = IMarket(_market);
-        admins_.remove(msg.sender);
+        super.renounceWhitelistAdmin();
         return true;
     }
 
@@ -117,7 +117,7 @@ contract Vault is AdminManaged {
       *                 phase, where the terminate function will be called.
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
-    function withdraw(uint256 _phase) external onlyAdmin() returns(bool){
+    function withdraw(uint256 _phase) external onlyWhitelistAdmin() returns(bool){
         require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
@@ -185,7 +185,7 @@ contract Vault is AdminManaged {
        */
     function terminateMarket()
         public
-        onlyAdmin()
+        onlyWhitelistAdmin()
     {
         uint256 remainingBalance = collateralToken_.balanceOf(address(this));
 

@@ -1,7 +1,7 @@
 pragma solidity 0.5.9;
 
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { IMarket } from "./IMarket.sol";
 import { IVault } from "../vault/IVault.sol";
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
@@ -10,7 +10,7 @@ import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
   * @author Veronica & Ryan of Linum Labs
   * @title Market
   */
-contract Market is IERC20 {
+contract Market is IMarket, IERC20 {
     using SafeMath for uint256;
 
     //Allows market to be deactivated after funding
