@@ -1,5 +1,6 @@
 pragma solidity 0.5.9;
 
+//TODO import Whitelistadmin & add control functions to interface, and add to interface docs
 interface IMoleculeVault {
     function transfer(address _to, uint256 _amount) external;
 
