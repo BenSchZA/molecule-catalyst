@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 /**
   * @author Veronica & Ryan of Linum Labs
@@ -78,7 +78,7 @@ interface IMarket {
     /**
       * @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
       *                     Including molecule & market contributions
-      * @param  _colateralTokenOffered  :uint256 Amount of reserve token offered for purchase
+      * @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
       */
     function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256);
 

@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 /// @author Veronica @ Protea
 /// @title Vyper bonding curve functions interface 

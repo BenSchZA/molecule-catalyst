@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 interface IMarketRegistry {
     
@@ -23,7 +23,6 @@ interface IMarketRegistry {
     function removeMarketDeployer(address _deployerToRemove, string calldata _reason) external;
 
     /// @dev                            Logs the market into the registery
-    /// @param _curve                   :address Curve integral library
     /// @param _vault                   :address Address of the vault
     /// @param _creator                 :address Creator of the market
     /// @return uint256                 Returns the index of market for looking up

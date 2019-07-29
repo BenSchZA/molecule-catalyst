@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 import { IMarket } from "./IMarket.sol";

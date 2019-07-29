@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 import { Roles } from "../../_resources/openzeppelin-solidity/access/Roles.sol";
 
 contract AdminManaged{

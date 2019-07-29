@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 import { Market } from "./Market.sol";
 import { IMarketFactory } from "./IMarketFactory.sol";

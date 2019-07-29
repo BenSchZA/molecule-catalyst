@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 contract ICurveRegistry {
     event CurveRegisterd(uint256 index, address indexed libraryAddress, string curveFunction);

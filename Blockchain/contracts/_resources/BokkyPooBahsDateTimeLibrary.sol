@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 // ----------------------------------------------------------------------------
 // BokkyPooBah's DateTime Library v1.00

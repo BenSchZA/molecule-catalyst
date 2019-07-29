@@ -1,4 +1,4 @@
-pragma solidity 0.5.9;
+pragma solidity 0.5.10;
 
 import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "./IMarketRegistry.sol";
@@ -62,7 +62,6 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     }
 
     /// @dev                            Logs the market into the registery
-    /// @param _curve                   :address Curve integral library
     /// @param _vault                   :address Address of the vault
     /// @param _creator                 :address Creator of the market
     /// @return uint256                 Returns the index of market for looking up
