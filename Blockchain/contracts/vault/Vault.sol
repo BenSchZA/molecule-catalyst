@@ -6,6 +6,7 @@ import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.s
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 import { IVault } from "./IVault.sol";
+import { IMarket } from "../market/IMarket.sol";
 
 /**
   * @author Veronica & Ryan of Linum Labs
