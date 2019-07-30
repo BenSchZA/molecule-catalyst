@@ -25,13 +25,9 @@ contract Market is IMarket, IERC20 {
     IERC20 internal collateralToken_;
     // Total minted tokens
     uint256 internal totalSupply_;
-    // Decimal acuracy of token
+    // Decimal accuracy of token
     uint256 internal decimals_ = 18;
-    // Price shift of curve
-    uint256 internal scaledShift_;
-    // Demominator for curve
-    uint256 internal gradientDenominator_;
-    
+
     // Allowances for spenders
     mapping(address => mapping (address => uint256)) internal allowed;
     // Balances of token holders
@@ -48,16 +44,12 @@ contract Market is IMarket, IERC20 {
       * @param _creatorVault        : address - The vault for taxation to go to
       * @param _curveLibrary        : address - Vyper math module
       * @param _collateralToken     : address - The ERC20 collateral tokem
-      * @param _gradientDenominator : uint256 - TODO check if needed
-      * @param _scaledShift         : uint256 - Price shift of curve
       */
     constructor(
         uint256 _taxationRate,
         address _creatorVault,
         address _curveLibrary,
-        address _collateralToken,
-        uint256 _gradientDenominator,
-        uint256 _scaledShift
+        address _collateralToken
     )
         public
     {
@@ -65,8 +57,6 @@ contract Market is IMarket, IERC20 {
         creatorVault_ = IVault(_creatorVault);
         curveLibrary_ = ICurveFunctions(_curveLibrary);
         collateralToken_ = IERC20(_collateralToken);
-        gradientDenominator_ = _gradientDenominator;
-        scaledShift_ = _scaledShift;
     }
 
     modifier onlyActive(){
@@ -151,7 +141,7 @@ contract Market is IMarket, IERC20 {
         balances[msg.sender] = balances[msg.sender].add(_numTokens); // Minus amount sent to Revenue target
 
         require(creatorVault_.validateFunding(), "Funding validation failed");
-        
+
         // emit Mint(_to, _numTokens, untaxedDai.add(tax));
         emit Transfer(address(0), _to, _numTokens);
         return true;
@@ -227,12 +217,6 @@ contract Market is IMarket, IERC20 {
 
         emit Transfer(address(this), msg.sender, _amount);
     }
-
-    // /// @dev                Returns the gradient for the market's curve
-    // /// @return             :uint256 The gradient for the market's curve
-    // function gradientDenominator() external view returns(uint256) {
-    //     return gradientDenominator_;
-    // }
 
     // [Pricing functions]
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
@@ -332,13 +316,12 @@ contract Market is IMarket, IERC20 {
     /// @param _x            The number of tokens supply to integrate to
     /// @return             The total supply in tokens, not wei
     function curveIntegral(uint256 _x) internal view returns (uint256) {
-        return curveLibrary_.curveIntegral(_x, gradientDenominator_, scaledShift_);
+        return curveLibrary_.curveIntegral(_x);
     }
 
     /// @dev                Inverse integral to convert the incoming colateral value to token volume
     /// @param _x           :uint256 The volume to identify the root off
     function inverseCurveIntegral(uint256 _x) internal view returns(uint256){
-        // return sqrt(2*_x*gradientDenominator_*(10**decimals_));
-        return curveLibrary_.inverseCurveIntegral(_x, gradientDenominator_, scaledShift_);
+        return curveLibrary_.inverseCurveIntegral(_x);
     }
 }

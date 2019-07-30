@@ -21,9 +21,7 @@ interface IMarketFactory {
         uint256[] calldata _phaseDurations,
         address _creator,
         uint256 _curveType,
-        uint256 _taxationRate,
-        uint256 _gradientDenominator,
-        uint256 _scaledShift
+        uint256 _taxationRate
     )
         external;
 
