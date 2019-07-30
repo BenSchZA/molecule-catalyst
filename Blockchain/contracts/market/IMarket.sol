@@ -43,7 +43,7 @@ interface IMarket {
       *                   after the market has been finalised.
       * @param _amount    : uint256 - The amount of tokens they want to withdraw
       */
-    function withdraw(uint256 _amount) public returns(bool);
+    function withdraw(uint256 _amount) external returns(bool);
 
     // [ERC20 functions]
     /**

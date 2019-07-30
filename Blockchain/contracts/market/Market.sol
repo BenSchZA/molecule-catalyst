@@ -133,7 +133,7 @@ contract Market is IMarket, IERC20 {
 
         require(
             collateralToken_.transfer(
-                creatorVault_,
+                address(creatorVault_),
                 tax
             ),
             "Vault portion not sent"

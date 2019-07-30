@@ -70,15 +70,15 @@ interface IMarketRegistry {
     /**
       * @notice checks admin status of an address
       */
-    function isWhitelistAdmin(address account) public view returns (bool);
+    function isWhitelistAdmin(address account) external view returns (bool);
 
     /**
       * @dev Allows a whitelisted admin to add another admin
       */
-    function addWhitelistAdmin(address account) public;
+    function addWhitelistAdmin(address account) external;
 
     /**
       * @dev Allows a whitlisted admin to renouce their role as admin
       */
-    function renounceWhitelistAdmin() public;
+    function renounceWhitelistAdmin() external;
 }

@@ -121,8 +121,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
     function withdraw(uint256 _phase) external onlyWhitelistAdmin() returns(bool){
-        // TODO: Fix enum check
-        require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
+        require(fundingPhases_[_phase].state == State.ENDED, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
         if(fundingPhases_[currentPhase_].state == State.NOT_STARTED){
@@ -221,8 +220,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase : uint256 - The phase that you want the information of
       * @return All stored information about the market.
       */
-    // TODO: Fix return types
-    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, uint8) {
+    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, State) {
         return (
             fundingPhases_[_phase].fundingThreshold,
             fundingPhases_[_phase].phaseDuration,
@@ -255,5 +253,24 @@ contract Vault is IVault, WhitelistAdminRole {
 
     function creator() external view returns(address) {
         return creator_;
+    }
+
+    /// @dev    Used to add an admin
+    /// @param _newAdmin        :address The address of the new admin
+    function addAdmin(address _newAdmin) external {
+        //TODO
+    }
+
+    /// @dev    Used to remove admins
+    /// @param _oldAdmin        :address The address of the previous admin
+    function removeAdmin(address _oldAdmin) external {
+        //TODO
+    }
+
+    /// @dev    Checking admin rights
+    /// @param _account         :address in question
+    /// @return bool
+    function isAdmin(address _account) external view returns(bool) {
+        //TODO
     }
 }

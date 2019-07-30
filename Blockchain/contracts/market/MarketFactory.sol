@@ -75,7 +75,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
 
         require(curveState == true, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
-
+        
         address newVault = address(new Vault(
             _fundingGoals,
             _phaseDurations,
