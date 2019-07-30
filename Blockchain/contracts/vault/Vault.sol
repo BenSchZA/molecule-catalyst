@@ -247,4 +247,23 @@ contract Vault is IVault, WhitelistAdminRole {
     function creator() external view returns(address) {
         return creator_;
     }
+
+    /// @dev    Used to add an admin
+    /// @param _newAdmin        :address The address of the new admin
+    function addAdmin(address _newAdmin) external {
+        //TODO
+    }
+
+    /// @dev    Used to remove admins
+    /// @param _oldAdmin        :address The address of the previous admin
+    function removeAdmin(address _oldAdmin) external {
+        //TODO
+    }
+
+    /// @dev    Checking admin rights
+    /// @param _account         :address in question
+    /// @return bool
+    function isAdmin(address _account) external view returns(bool) {
+        //TODO
+    }
 }
