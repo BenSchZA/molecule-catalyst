@@ -34,9 +34,6 @@ contract Vault is IVault, WhitelistAdminRole {
     // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
 
-    // States for each funding round
-    enum State { NOT_STARTED, STARTED, ENDED, PAID }
-
     // Information stored about each phase
     struct FundPhase{
         uint256 fundingThreshold;   // Collateral limit to trigger funding
@@ -117,7 +114,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
     function withdraw(uint256 _phase) external onlyWhitelistAdmin() returns(bool){
-        require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
+        require(fundingPhases_[_phase].state == State.ENDED, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
         if(fundingPhases_[currentPhase_].state == State.NOT_STARTED){
@@ -216,7 +213,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase : uint256 - The phase that you want the information of
       * @return All stored information about the market.
       */
-    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, uint8) {
+    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, State) {
         return (
             fundingPhases_[_phase].fundingThreshold,
             fundingPhases_[_phase].phaseDuration,
