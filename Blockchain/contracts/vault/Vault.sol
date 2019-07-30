@@ -1,8 +1,11 @@
 pragma solidity 0.5.10;
 
+// TODO: Gitmodules
 import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
+// TODO: Gitmodules
 import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+// TODO: Gitmodules
 import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 import { IVault } from "./IVault.sol";
@@ -35,6 +38,7 @@ contract Vault is IVault, WhitelistAdminRole {
     mapping(uint256 => FundPhase) internal fundingPhases_;
 
     // States for each funding round
+    // TODO: Consider more verbose title
     enum State { NOT_STARTED, STARTED, ENDED, PAID }
 
     // Information stored about each phase
@@ -117,6 +121,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
     function withdraw(uint256 _phase) external onlyWhitelistAdmin() returns(bool){
+        // TODO: Fix enum check
         require(fundingPhases_[_phase].state == 2, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
@@ -216,6 +221,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase : uint256 - The phase that you want the information of
       * @return All stored information about the market.
       */
+    // TODO: Fix return types
     function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, uint8) {
         return (
             fundingPhases_[_phase].fundingThreshold,

@@ -20,7 +20,7 @@
     "babel-polyfill": "6.26.0",
     "babel-register": "6.26.0",
     "dotenv": "8.0.0",
-    "etherlime": "^2.1.5",
+    "etherlime": "^2.1.7",
     "etherlime-lib": "^1.1.2",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",
