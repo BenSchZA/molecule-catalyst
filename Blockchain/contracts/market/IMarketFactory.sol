@@ -29,13 +29,13 @@ interface IMarketFactory {
       * @notice This function will only affect new markets, and will not update
       *         already created markets. This can only be called by an admin
       */
-    function updateMoleculeVault(address _newMoleculeVault) public;
+    function updateMoleculeVault(address _newMoleculeVault) external;
 
     function moleculeVault() external view returns(address);
 
     function marketRegistry() external view returns(address);
 
-    function curveRegistry() public view returns(address);
+    function curveRegistry() external view returns(address);
 
     function collateralToken() external view returns(address);
 }
