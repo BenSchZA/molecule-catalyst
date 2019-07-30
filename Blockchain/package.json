@@ -24,6 +24,6 @@
     "etherlime-lib": "^1.1.2",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",
-    "solc": "0.5.9"
+    "solc": "0.5.10"
   }
 }
