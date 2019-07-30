@@ -58,9 +58,7 @@ let marketSettings = {
         ethers.utils.parseUnits("6", 0)
     ],
     curveType: ethers.utils.parseUnits("0", 0),
-    taxationRate: ethers.utils.parseUnits("60", 0),
-    scaledShift: ethers.utils.parseUnits("500000000000000000", 0),
-    gradientDenominator: ethers.utils.parseUnits("17000", 0),
+    taxationRate: ethers.utils.parseUnits("60", 0)
 }
 
 const simulatedCurve = {

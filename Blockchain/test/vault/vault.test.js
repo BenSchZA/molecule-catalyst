@@ -84,9 +84,7 @@ describe('Vault test', () => {
             marketSettings.phaseDuration,
             creator.signer.address,
             marketSettings.curveType,
-            marketSettings.taxationRate,
-            marketSettings.gradientDenominator,
-            marketSettings.scaledShift
+            marketSettings.taxationRate
         )).wait()
 
         const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
