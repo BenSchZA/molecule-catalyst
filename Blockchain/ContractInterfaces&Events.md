@@ -522,31 +522,23 @@ emits `WhitelistAdminRemoved(address indexed account);`
 # Curve
 
 ##### Curve Integral 
-// TODO get bens changes before making docs
+Calculates the definite integral of the curve
 ```
-function curveIntegral(uint256 x_t, uint256 gradientDenominator, uint256 b) external pure returns(uint256);
+function curveIntegral(uint256 x_t) external pure returns(uint256);
 ```
 
 ---
 
 ##### Inverse Curve Integral
-
+Calculates the definite inverse integral of the curve
 ```
-function inverseCurveIntegral(uint256 x_d, uint256 gradientDenominator, uint256 b) external pure returns(uint256);
-```
-
----
-
-##### 
-
-```
-
+function inverseCurveIntegral(uint256 x_d) external pure returns(uint256);
 ```
 
 # Molecule Vault
 
 ##### Transfer
-
+Transfers funds from the vault to the `_to` address
 ```
 function transfer(address _to, uint256 _amount) external;
 ```
@@ -554,7 +546,7 @@ function transfer(address _to, uint256 _amount) external;
 ---
 
 ##### Approve
-
+Approves a spender. 
 ```
 function approve(address _spender, uint256 _amount) external;
 ```
@@ -562,7 +554,7 @@ function approve(address _spender, uint256 _amount) external;
 ---
 
 ##### Collateral Token
-
+Returns the address of the ERC20 collateral token
 ```
 function collateralToken() external view returns(address);
 ```
@@ -570,7 +562,7 @@ function collateralToken() external view returns(address);
 ---
 
 ##### Tax Rate
-
+Returns the tax rate (as a percentage, i.e 50)
 ```
 function taxRate() external view returns(uint256);
 ```
