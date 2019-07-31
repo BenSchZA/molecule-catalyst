@@ -48,8 +48,9 @@ const theme = createMuiTheme({
       },
       text:{
         paddingLeft: '16px',
+        paddingRight: '16px',
         paddingTop: '8px'
-      }
+      },
     },
     MuiPaper: {
       root: {
@@ -79,6 +80,11 @@ const theme = createMuiTheme({
       root:{
         paddingBottom: '8px',
         paddingLeft: '8px' 
+      }
+    },
+    MuiSvgIcon:{
+      root:{
+        paddingRight: '4px' 
       }
     }
   }
