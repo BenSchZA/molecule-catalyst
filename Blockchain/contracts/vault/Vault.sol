@@ -1,12 +1,9 @@
 pragma solidity 0.5.10;
 
-// TODO: Gitmodules
-import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
-// TODO: Gitmodules
-import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
-// TODO: Gitmodules
-import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
+import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 import { IVault } from "./IVault.sol";
 import { IMarket } from "../market/IMarket.sol";
@@ -38,15 +35,14 @@ contract Vault is IVault, WhitelistAdminRole {
     mapping(uint256 => FundPhase) internal fundingPhases_;
 
     // States for each funding round
-    // TODO: Consider more verbose title
-    enum State { NOT_STARTED, STARTED, ENDED, PAID }
+    enum FundingState { NOT_STARTED, STARTED, ENDED, PAID }
 
     // Information stored about each phase
     struct FundPhase{
         uint256 fundingThreshold;   // Collateral limit to trigger funding
         uint256 phaseDuration;      // Period of time from start of phase till end
         uint256 startDate;
-        State state;                // State enum
+        FundingState state;         // State enum
     }
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
@@ -92,7 +88,7 @@ contract Vault is IVault, WhitelistAdminRole {
         }
 
         fundingPhases_[0].startDate = block.timestamp;
-        fundingPhases_[0].state = State.STARTED;
+        fundingPhases_[0].state = FundingState.STARTED;
         currentPhase_ = 0;
     }
 
@@ -121,17 +117,17 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase   : uint256 - The phase the fund rasing is currently on.
       */
     function withdraw(uint256 _phase) external onlyWhitelistAdmin() returns(bool){
-        require(fundingPhases_[_phase].state == State.ENDED, "Fund phase incomplete");
+        require(fundingPhases_[_phase].state == FundingState.ENDED, "Fund phase incomplete");
 
         // This checks if we trigger the distribute on the Market
-        if(fundingPhases_[currentPhase_].state == State.NOT_STARTED){
+        if(fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED){
             if(market_.active()) {
                 terminateMarket(); // This triggers the fund transfer
             }
         } else {
             // This sends the funding for the specified round
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
-            fundingPhases_[_phase].state == State.PAID;
+            fundingPhases_[_phase].state == FundingState.PAID;
 
             uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             require(collateralToken_.transfer(address(moleculeVault_), molTax), "Tokens not transfer");
@@ -149,20 +145,19 @@ contract Vault is IVault, WhitelistAdminRole {
       *      and that the phase has not expired.
       */
     function validateFunding() external onlyMarket() returns(bool){
-        require(fundingPhases_[currentPhase_].state == State.STARTED, "Funding inactive");
+        require(fundingPhases_[currentPhase_].state == FundingState.STARTED, "Funding inactive");
 
         uint256 balance = collateralToken_.balanceOf(address(this));
         // balance = balance.sub(outstandingWithdraw_);
 
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
-        // TODO consider timestamp blocking attacks
         if(endOfPhase <= block.timestamp) {
             return false;
         }
 
         if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
             // Setting active phase state to ended
-            fundingPhases_[currentPhase_].state = State.ENDED;
+            fundingPhases_[currentPhase_].state = FundingState.ENDED;
 
             outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
@@ -171,7 +166,7 @@ contract Vault is IVault, WhitelistAdminRole {
             // Set the states apprpriately
             if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
                 // Setting active phase state to Started
-                fundingPhases_[currentPhase_].state = State.STARTED;
+                fundingPhases_[currentPhase_].state = FundingState.STARTED;
                 fundingPhases_[currentPhase_].startDate = block.timestamp;
             }
 
@@ -196,7 +191,7 @@ contract Vault is IVault, WhitelistAdminRole {
 
         // This checks if all funding phases completed successfully
         // Checks if ended or paid for conclusion of phase
-        if(fundingPhases_[currentPhase_].state == State.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= State.ENDED)) {
+        if(fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= FundingState.ENDED)) {
             // Works out the molecule tax amount
             uint256 molTax = (remainingBalance.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
             // Transfers amount to the molecule vault
@@ -220,7 +215,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase : uint256 - The phase that you want the information of
       * @return All stored information about the market.
       */
-    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, State) {
+    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, FundingState) {
         return (
             fundingPhases_[_phase].fundingThreshold,
             fundingPhases_[_phase].phaseDuration,
@@ -253,24 +248,5 @@ contract Vault is IVault, WhitelistAdminRole {
 
     function creator() external view returns(address) {
         return creator_;
-    }
-
-    /// @dev    Used to add an admin
-    /// @param _newAdmin        :address The address of the new admin
-    function addAdmin(address _newAdmin) external {
-        //TODO
-    }
-
-    /// @dev    Used to remove admins
-    /// @param _oldAdmin        :address The address of the previous admin
-    function removeAdmin(address _oldAdmin) external {
-        //TODO
-    }
-
-    /// @dev    Checking admin rights
-    /// @param _account         :address in question
-    /// @return bool
-    function isAdmin(address _account) external view returns(bool) {
-        //TODO
     }
 }

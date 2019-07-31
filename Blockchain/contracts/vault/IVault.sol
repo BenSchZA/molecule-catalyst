@@ -29,16 +29,21 @@ interface IVault {
 
     function creator() external view returns(address);
 
-    /// @dev    Used to add an admin
-    /// @param _newAdmin        :address The address of the new admin
-    function addAdmin(address _newAdmin) external;
+//----------------------------------------------
+//  The below functions are implemeted in and from the WhitelistAdminRole contract
+//  so cannot be abstract below, as this causes abstract function issues.
+//  These functions are available on the Vault contract.
+//----------------------------------------------
+    // /// @dev    Used to add an admin
+    // /// @param _newAdmin        :address The address of the new admin
+    // function addAdmin(address _newAdmin) external;
 
-    /// @dev    Used to remove admins
-    /// @param _oldAdmin        :address The address of the previous admin
-    function removeAdmin(address _oldAdmin) external;
+    // /// @dev    Used to remove admins
+    // /// @param _oldAdmin        :address The address of the previous admin
+    // function removeAdmin(address _oldAdmin) external;
 
-    /// @dev    Checking admin rights
-    /// @param _account         :address in question
-    /// @return bool
-    function isAdmin(address _account) external view returns(bool);
+    // /// @dev    Checking admin rights
+    // /// @param _account         :address in question
+    // /// @return bool
+    // function isAdmin(address _account) external view returns(bool);
 }

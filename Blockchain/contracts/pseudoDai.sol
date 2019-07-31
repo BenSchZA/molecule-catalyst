@@ -1,7 +1,7 @@
 pragma solidity 0.5.10;
 
-// TODO: Gitmodules
-import { ERC20, SafeMath } from "./_resources/openzeppelin-solidity/token/ERC20/ERC20.sol";
+import { ERC20 } from "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract PseudoDaiToken is ERC20 {
     using SafeMath for uint256;

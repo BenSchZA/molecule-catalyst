@@ -3,8 +3,7 @@ pragma solidity 0.5.10;
 import { Market } from "./Market.sol";
 import { IMarketFactory } from "./IMarketFactory.sol";
 import { Vault } from "../vault/Vault.sol";
-// TODO: Gitmodules
-import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 

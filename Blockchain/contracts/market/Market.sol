@@ -1,11 +1,9 @@
 pragma solidity 0.5.10;
 
-// TODO: Gitmodules
-import { SafeMath } from "../_resources/openzeppelin-solidity/math/SafeMath.sol";
+import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import { IMarket } from "./IMarket.sol";
 import { IVault } from "../vault/IVault.sol";
-// TODO: Gitmodules
-import { IERC20 } from "../_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
 
 /**
@@ -212,7 +210,6 @@ contract Market is IMarket, IERC20 {
 
         uint256 poolBalance = collateralToken_.balanceOf(address(this));
 
-        // TODO: Work out constant pay out value
         // This works out the value of 1 token then caculates what the whole amount is
         uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
@@ -234,8 +231,6 @@ contract Market is IMarket, IERC20 {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             Potential return collateral corrected for decimals
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
-        // TODO: Update
-        //       To what? This is the corerct way to get the reward for burn
         uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
@@ -257,8 +252,6 @@ contract Market is IMarket, IERC20 {
     ///                                 Including Molecule & market contributions
     /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
     function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
-        // TODO: Update 
-        //       Again, to what?
         return uint256(
             totalSupply_.sub(
                 inverseCurveIntegral(curveIntegral(totalSupply_).sub(_collateralTokenNeeded))

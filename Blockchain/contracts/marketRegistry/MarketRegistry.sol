@@ -1,7 +1,6 @@
 pragma solidity 0.5.10;
 
-// TODO: Gitmodules
-import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "./IMarketRegistry.sol";
 
 contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
@@ -35,11 +34,11 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     /// @param _version                 :string Log text for tracking purposes
     /// @author Ryan
     function addMarketDeployer(
-        address _newDeployer, 
+        address _newDeployer,
         string calldata _version
-    ) 
-        external 
-        onlyWhitelistAdmin() 
+    )
+        external
+        onlyWhitelistAdmin()
     {
         require(deployer_[_newDeployer] != true, "Already approved");
         deployer_[_newDeployer] = true;
