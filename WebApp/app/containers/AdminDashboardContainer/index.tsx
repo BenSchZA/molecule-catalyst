@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 
@@ -14,29 +14,40 @@ import reducer from './reducer';
 import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import selectAdminDashboard from './selectors';
+import { Container, Typography } from '@material-ui/core';
+import * as actions from './actions';
+import CreatorsAwaitingReview from 'components/CreatorsAwaitingReview';
 
-interface OwnProps {}
 
-interface DispatchProps {}
+interface OwnProps { }
 
-interface StateProps {}
+interface DispatchProps {
+  approveCreatorApplication(applicationId: string): void,
+}
+
+interface StateProps {
+  creatorsAwaitingApproval: []
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminDashboardContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>AdminDashboardContainer</Fragment>;
-};
+const AdminDashboardContainer: React.SFC<Props> = (props: Props) => (
+  <Container maxWidth='md'>
+    <Typography>User Management</Typography>
+
+    <CreatorsAwaitingReview approveCreatorApplication={props.approveCreatorApplication} creatorApplications={props.creatorsAwaitingApproval} />
+  </Container>
+);
 
 const mapStateToProps = (state) => selectAdminDashboard(state);
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
-): DispatchProps => {
-  return {
-    dispatch: dispatch,
-  };
-};
+): DispatchProps => ({
+  approveCreatorApplication: (applicationId: string) => dispatch(actions.approveCreatorApplication(applicationId)),
+});
+
 
 const withConnect = connect(
   mapStateToProps,

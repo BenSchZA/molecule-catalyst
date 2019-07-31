@@ -18,16 +18,17 @@ export enum CreatorApplicationStatus {
 }
 
 interface ICreatorApplication {
-  user: User | ObjectId;
+  user: User | ObjectId | String;
   firstName: string;
   lastName: string;
   fullName: string;
   email: string;
-  profileImage: Attachment | ObjectId,
+  profileImage: Attachment | ObjectId | String,
   biography: string,
   professionalTitle: string,
   affiliatedOrganisation: string,
   status: CreatorApplicationStatus,
+  reviewedBy: User | ObjectId | String,
 }
 
 export interface CreatorApplicationDocument extends ICreatorApplication, Document { }
@@ -41,7 +42,8 @@ export const CreatorApplicationSchema = new Schema({
   biography: { type: String, required: true },
   professionalTitle: { type: String, required: true },
   affiliatedOrganisation: { type: String, required: true },
-  status: { type: Number, required: true, default: CreatorApplicationStatus.created, enum: [...spreadEnumKeys(CreatorApplicationStatus)] }
+  status: { type: Number, required: true, default: CreatorApplicationStatus.created, enum: [...spreadEnumKeys(CreatorApplicationStatus)] },
+  reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false }
 }, {
     timestamps: true,
     toJSON: {

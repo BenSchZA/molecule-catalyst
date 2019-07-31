@@ -76,4 +76,11 @@ export class CreatorService {
     const result = await this.creatorRepository.findOne({user: userId});
     return (result) ? result.toObject() : undefined;
   }
+
+  async approveApplication(id: string, user: User) {
+    const application = await this.creatorRepository.findById(id);
+    application.status = CreatorApplicationStatus.accepted;
+    application.reviewedBy = user.id;
+    await application.save();
+  }
 }

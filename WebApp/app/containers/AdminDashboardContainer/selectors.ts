@@ -8,7 +8,7 @@ const selectCreatorsAwaitingApproval = (state: ApplicationRootState) => {
 };
 
 const makeSelectCreatorsAwaitingApproval = createSelector(selectCreatorsAwaitingApproval, substate => {
-  return substate;
+  return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
 })
 
 const selectAdminDashboard = createStructuredSelector<RootState, StateProps>({

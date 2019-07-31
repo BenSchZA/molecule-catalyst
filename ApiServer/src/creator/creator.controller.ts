@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, UseInterceptors, UploadedFile, Req, Get, Res, Query } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, UseInterceptors, UploadedFile, Req, Get, Res, Query, Param } from '@nestjs/common';
 import { CreatorService } from './creator.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatorApplicationDto } from './creatorApplication.dto';
@@ -47,5 +47,12 @@ export class CreatorController {
   async getApplication(@Req() request: Request & {user: User}) {
     const result = await this.creatorService.getCreatorApplication(request.user.id)
     return result;
+  }
+
+  @Get(':id/approve')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
+  async approveCreatorApplication(@Param('id') id, @Req() req: Request & {user: User}) {
+    const result = await this.creatorService.approveApplication(id, req.user);
   }
 }
