@@ -20,13 +20,15 @@ export const colors = {
   },
   white: '#FFFFFF',
   black: '#000000',
+  grey: '#E5E5E5',
+  lightGrey: '#f2f2f2'
 }
 
 const theme = createMuiTheme({
   palette: {
     background: {
-      default:'#E5E5E5',
-      paper: '#FFFFFF',
+      default: colors.grey,
+      paper: colors.white,
     },
     primary: {
       main: colors.moleculeBranding.primary
@@ -36,7 +38,18 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Montserrat, Arial, Sans Serif',
+    fontFamily:  [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
   },
   overrides: {
     MuiButton: {
@@ -65,6 +78,11 @@ const theme = createMuiTheme({
         paddingBottom: '16px',
         paddingLeft: '8px'
       },
+      h3:{
+        textAlign: 'center',
+        paddingTop: '32px',
+        paddingBottom: '32px'
+      },
       body1: {
         paddingBottom: '16px',
         paddingLeft: '8px'
@@ -72,15 +90,34 @@ const theme = createMuiTheme({
     },
     MuiInputLabel:{
       root:{
+        fontWeight: 'bold',
         paddingTop: '8px',
-        paddingBottom: '8px',
+        paddingBottom: '2px',
         paddingLeft: '8px'
       }
     },
     MuiTextField:{
       root:{
-        paddingBottom: '8px',
-        paddingLeft: '8px' 
+        marginTop: '8px',
+        marginBottom: '8px',
+        marginLeft: '8px',
+        marginRight: '8px',
+        backgroundColor: colors.grey
+      }
+    },
+    MuiFormControl: {
+        fullWidth:{
+          width: '90%'
+        }
+      
+    },
+    MuiFormHelperText:{
+      root:{
+        backgroundColor: colors.white,
+        margin: '0px'
+      },
+      contained:{
+        margin: '0px'
       }
     },
     MuiSvgIcon:{
