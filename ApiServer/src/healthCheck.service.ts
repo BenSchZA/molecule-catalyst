@@ -5,7 +5,8 @@ import {
     TerminusModuleOptions,
     MongooseHealthIndicator,
   } from '@nestjs/terminus';
-  import { Injectable } from '@nestjs/common';
+import { SendGridHealthIndicator } from '@anchan828/nest-sendgrid-terminus';
+import { Injectable } from '@nestjs/common';
 import { LoggerService } from './logger.service';
   
   @Injectable()
@@ -14,6 +15,7 @@ import { LoggerService } from './logger.service';
     constructor(
       private readonly dns: DNSHealthIndicator,
       private readonly mongo: MongooseHealthIndicator,
+      private readonly sendgrid: SendGridHealthIndicator,
     ) {}
   
     createTerminusOptions(): TerminusModuleOptions {
@@ -21,7 +23,8 @@ import { LoggerService } from './logger.service';
         url: '/health',
         healthIndicators: [
           async () => this.dns.pingCheck('DNS', 'https://google.com'),
-          async () => this.mongo.pingCheck('MongoDb')
+          async () => this.mongo.pingCheck('MongoDb'),
+          async () => this.sendgrid.isHealthy(),
         ],
       };
       return {

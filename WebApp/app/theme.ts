@@ -44,6 +44,12 @@ const theme = createMuiTheme({
         background: colors.moleculeBranding.primary,
         color: colors.white,
       }
+    },
+    MuiPaper: {
+      root: {
+        paddingLeft: '8px',
+        paddingRight: '8px',
+      }
     }
   }
 });

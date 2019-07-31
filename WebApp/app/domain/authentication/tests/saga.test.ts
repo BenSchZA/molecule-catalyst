@@ -4,7 +4,6 @@
 // import { expectSaga } from 'redux-saga-test-plan';
 // import * as matchers from 'redux-saga-test-plan/matchers';
 // import { throwError } from 'redux-saga-test-plan/providers';
-// import {  login } from '../../../api/api';
 // import { forwardTo } from '../../../utils/history';
 // import jwtDecode from 'jwt-decode';
 

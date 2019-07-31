@@ -18,6 +18,7 @@ export const env = {
     schema: getOsEnv('APP_SCHEMA') || 'http',
     routePrefix: getOsEnv('APP_ROUTE_PREFIX'),
     port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')),
+    webappUrl: getOsEnv('WEB_APP_URL'),
   },
   log: {
     level: getOsEnv('LOG_LEVEL') || 'info',
@@ -53,4 +54,7 @@ export const env = {
   contracts: {
 
   },
+  sendgrid: {
+    apiKey: getOsEnv('SENDGRID_API_KEY'),
+  }
 };
