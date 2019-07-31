@@ -3,6 +3,8 @@ export enum Schemas {
   Organization = 'Organization',
   Patent = 'Patent',
   Attachment = 'Attachment',
+  Creator = 'Creator',
+  Token = 'Token',
 }
 
 export enum Modules {

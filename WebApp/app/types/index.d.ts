@@ -3,6 +3,7 @@ import { ContainerState as GlobalState } from '../containers/App/types';
 import { ContainerState as DashboardState } from '../containers/DashboardContainer/types';
 import { DomainState as AuthenticationState } from '../domain/authentication/types';
 import { DomainState as UserProfileState } from '../domain/userProfile/types';
+import { ContainerState as CreatorApplicationState } from '../containers/CreatorApplicationContainer/types'
 
 
 export interface LifeStore extends Store<{}> {
@@ -27,7 +28,7 @@ export interface InjectSagaParams {
 export interface ApplicationRootState {
   readonly global: GlobalState;
   readonly dashboard: DashboardState;
-  // Domains
   readonly authentication: AuthenticationState;
   readonly userProfile: UserProfileState;
+  readonly creatorApplication: CreatorApplicationState;
 }

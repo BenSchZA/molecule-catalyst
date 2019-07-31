@@ -2,7 +2,7 @@ import DiscoverContainer from 'containers/DiscoverContainer';
 import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminDashboardContainer from 'containers/AdminDashboardContainer';
-import BecomeCreatorContainer from 'containers/BecomeCreatorContainer';
+import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
 
 
 export enum UserType {
@@ -12,12 +12,12 @@ export enum UserType {
 }
 
 export interface AppRoute {
-  name: string;
-  path: string;
-  component: React.ComponentType<any>;
-  roleRequirement: number;
-  isNavRequired: boolean;
-  showNavForRoles: number[];
+  name: string; // The name displayed in any Nav links
+  path: string; // The route path
+  component: React.ComponentType<any>; //The component to render
+  roleRequirement: number; // The minimum role required to access the route
+  isNavRequired: boolean; // Should a Nav link for the route be added to the main navigation
+  showNavForRoles: number[]; // The Roles for which the Nav link should be rendered
   requireAuth: boolean;
 }
 
@@ -48,7 +48,7 @@ const routes: AppRoute[] = [{
 }, {
   name: 'Create Project',
   path: '/projects/becomeCreator',
-  component: BecomeCreatorContainer,
+  component: CreatorApplicationContainer,
   roleRequirement: UserType.Standard,
   isNavRequired: true,
   showNavForRoles:[UserType.Standard],

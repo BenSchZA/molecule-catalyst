@@ -31,6 +31,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@anchan828/nest-sendgrid": "^0.1.9",
+    "@anchan828/nest-sendgrid-terminus": "^0.1.9",
     "@godaddy/terminus": "4.1.2",
     "@hapi/joi": "15.1.0",
     "@nestjs/common": "6.3.2",
