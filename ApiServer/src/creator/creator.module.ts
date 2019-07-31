@@ -8,6 +8,7 @@ import { AttachmentModule } from 'src/attachment/attachment.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from 'src/config/config.service';
 import { TokenSchema } from 'src/auth/token.schema';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Schemas.Creator, schema: CreatorApplicationSchema }]),
@@ -22,7 +23,8 @@ import { TokenSchema } from 'src/auth/token.schema';
     },
     inject: [ConfigService],
   }),
-  MongooseModule.forFeature([{ name: Schemas.Token, schema: TokenSchema }])],
+  MongooseModule.forFeature([{ name: Schemas.Token, schema: TokenSchema }]),
+  UserModule],
   controllers: [CreatorController],
   providers: [CreatorService]
 })
