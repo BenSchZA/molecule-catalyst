@@ -25,9 +25,7 @@ import 'file-loader?name=[name].[ext]!./.htaccess'; // eslint-disable-line impor
 import throttle from 'lodash/throttle';
 import configureStore from './configureStore';
 import history from './utils/history';
-import {loadState, saveState} from './utils/localStorage';
-
-// Import CSS reset and Global Styles
+import { loadState, saveState } from './utils/localStorage';
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { Router } from 'react-router';
@@ -66,7 +64,7 @@ if (module.hot) {
 }
 
 // We need the providers injected for the app to load
-window.addEventListener('load', () => render(), {once:true});
+window.addEventListener('load', () => render(), { once: true });
 
 initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)

@@ -1,5 +1,4 @@
 import { call, fork, put, take } from 'redux-saga/effects';
-// import { getUserProfile as getUserProfileApi, sendFeedback as sendFeedbackApi } from '../../api/api';
 // import * as userProfileActions from './actions';
 import ActionTypes from './constants';
 import { setPendingStateAction, sendFeedbackAction } from './actions';

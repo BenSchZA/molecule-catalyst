@@ -19,7 +19,6 @@ const apiRequest = async (method, url, body?, contentType?, authenticate = false
   }
 
   const response = await fetch(url, options);
-
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error('Authentication Error');
