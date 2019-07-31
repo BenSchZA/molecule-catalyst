@@ -1,8 +1,6 @@
-# README
 
 # Molecule Alpha Research Funding
 
----
 
 The Molecule Alpha implementation focuses on giving no strings attached funding to small research initiatives. This is done by gamifying the crowdfunding aspect by using bonding curves and a taxation on buy.
 
@@ -12,7 +10,6 @@ The fundraising amount is entirely kept separate, as each buy is taxed and the t
 
 ## How a funding campaign works
 
----
 
 - A researcher will fill out project specifics, detailing what the funding milestones are in dollar amounts and what the funds will be used for.
 - The Molecule Admin will vet this project proposal, and if approved, the Bonding Curve and Vault contracts will be created.
@@ -22,7 +19,6 @@ The fundraising amount is entirely kept separate, as each buy is taxed and the t
 
 ## Curve Parameters
 
----
 
 - Our implementation uses the Bancor Formula coded in Vyper, as solidity has some drawbacks when dealing with the curve mathematics.
 - Curve Type:
@@ -32,7 +28,6 @@ The fundraising amount is entirely kept separate, as each buy is taxed and the t
 
 # Implementation
 
----
 
 Our initial bonding curve implementation supports linear and Bancor-based curves, dividend distributions for bonded token holders, and a front-running guard via user-specified min and max prices.
 
@@ -51,7 +46,6 @@ Table to come
 
 ## Market Creation
 
----
 
 Bonding Curve and Vault contracts can be deployed by the administrator after a project has been vetted by the MarketFactory.
 
@@ -83,7 +77,6 @@ Listed below are the variables stored in each contract:
 
 ## Functions
 
----
 
 ### ***Bonding Curve Contract***
 
@@ -116,3 +109,91 @@ Listed below are the variables stored in each contract:
 **killCommand**: Sends all the collateralTokens within the Vault to the Bonding Curve and calls distribute() on the Bonding Curve. Both contracts are finalised after this event.
 
     function killCommand() public
+
+
+## Structure
+
+The project is built using our [full-stack boilerplate](https://gitlab.com/linumlabs/ethers-react-redux-typescript-mongo-boilerplate).
+This boilerplate provides a framework with the following features:
+
+* Database: MongoDb
+* API Server: NestJS
+* Web App: React + Redux
+ 
+## System Requirements
+
+* NodeJS >= v10
+* Yarn >= 1.0
+* MongoDB instance
+
+## Getting Started
+
+The stack is configured as a monorepo. After configuring the various components & environment variables, the project can be spun up from the root.
+
+1.  Clone the repo
+2.  Run `yarn` in the project root to install all dependancies
+
+### Starting Application
+After configuring the `ApiServer`, `WebApp`, and `Blockchain` following the steps below, run `yarn start:dev` from the root to spin up all the necessary components.
+
+## Configuring `ApiServer`
+1. Go to project root
+2. Run `cd ApiServer`
+3. Run `cp .env.example .env` - this is where you will configure all environment variables
+4. Input your MongoDb server details in the `MONGO-HOST=` field (this will be
+    localhost if you are running mongo locally or in a docker container with 
+    host networking)
+
+## Configuring `WebApp`
+1. Go to project root
+2. Run `cd WebApp`
+3. Make a copy of the `.env.example` file named `.env`
+4. Ensure the ApiServer details in the `API_HOST=` field are correct
+
+## Blockchain - Getting started
+
+### Dependencies 
+
+### Running tests
+
+* First install the required packages `yarn install`
+* Then initialise the ganache server with `yarn start`
+* To run the tests, execute `yarn test`
+
+## Outline of Architecture 
+
+### Overview
+
+The purpose of this architecture is to provide the means of creating, indexing and managing of bonding curve ERC20 markets with advanced integral caculations.
+
+Additionally the lifecycle of the markets is dictated by the means of a vault contract, this contract facilitates the management of funding goals for the compound the market was created for.
+
+In order to facilitate advanced integral math, the `integral` & `inverseIntegral` calculations are written in Vyper, conforming to a Solidty interface.
+
+These function libraries are vetted by our team internally for now, and are added to a curve registry once approved.
+
+### Vault Contract
+This Vault contract is a management contract for all the collateral collected in funding the compound, deployed along side the market, this contract assesses the state of each funding round and will dictate whether the compound's managing admin can withdraw funds created during a fund raise.
+
+### Market Contract
+This contract is a standard mintable ERC20 contract that utilises bonding curve integral math to calculate the required collateral for minting tokens.
+What is unique about this is that the integral math, in order to have complex pricing functions, is done via an external Vyper contract.
+
+Additionally, there is a requirement to calculate the amount of tokens a user could receive for any given amount of collateral tokens, in this case Dai, this is the reason we have an inverse integral function which will be dicussed further in it's overview.
+
+To facilitate funding, the market collects a percentage of incoming collateral to forward to the vault contract when a user executes a minting event.
+This could be, as an example, 60% of incoming Dai will be sent to the Vault, with the remaining 40% used to mint tokens into the users account.
+
+### Vyper bonding curve contract
+Vyper as a contracting language is pythonic and as such provides a better environment for creation of complex math functions.
+
+These contracts have an `integral` & `inverseIntegral` function which is called by the market to determine the mint & burn values.
+
+### Market Factory
+This factory allows a user to deploy a full compound market ecosystem atomically. This factory interfaces with a curve registry to get the address of the specified curve function as well as indexing all deployed markets in a market registry
+
+### Market Registry 
+This registry is external to the main market registry, the purpose of extending it out in this way is to allow for new factories to be registered later without risk of losing the history of all deployed markets, additionally the way factories can be registered & unregistered adds a security feature of being able to shut down and publish factories as needed.
+
+### Bonding curve math registry 
+This registry allows Molecule and potentially other authorised accounts to register curve contracts that have been audited easily, this allows the market factory to select a curve via configuration rather than addressing. 
