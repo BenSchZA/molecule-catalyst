@@ -20,8 +20,8 @@ import { AttachmentModule } from './attachment/attachment.module';
 @Module({
   imports: [ConfigModule,
     StatusMonitorModule.setUp({
-      pageTitle: 'Mol API Monitoring Page',
-      port: 3001,
+      pageTitle: 'Molecule API Monitoring Page',
+      port: 80,
       path: '/status',
       ignoreStartsWith: '/health/alive',
       spans: [

@@ -27,14 +27,6 @@ export class CreatorController {
     return result;
   }
 
-  @Get('verifyEmail')
-  async verifyEmail(@Res() response, @Query('token') token: string) {
-    const result = await this.creatorService.verifyEmail(token);
-    if (result) {
-      response.redirect('http://localhost:3000');
-    }
-  }
-
   @Post('verifyEmail')
   @UseGuards(AuthGuard('jwt'))
   async verifyEmailForUser(@Body() requestBody: {token: string}, @Req() request: Request & {user: User}) {

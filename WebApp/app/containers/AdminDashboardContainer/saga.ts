@@ -1,24 +1,23 @@
-// This file is just a stub showing a sample Api request saga.
-// For more information on Saga see: https://redux-saga.js.org/
+import { select, call, put } from "redux-saga/effects";
+import { ApplicationRootState } from "types";
+import {getCreatorApplicationsAwaitingApproval as getCreatorApplicationsAwaitingApprovalApi } from 'api';
+import * as AdminDashboardActions from './actions'
+import { normalize } from "normalizr";
+import creatorsAwaitingReview from "./schema";
 
-// import { take, call, put, select } from 'redux-saga/effects';
-
-// Individual exports for testing
-export function* getData() {
-  //  const username = yield
-  //  const requestURL = `http://api/getData`;
-  //
-  //  try {
-  //    // Call our request helper (see 'utils/request')
-  //    const data = yield call(request, requestURL);
-  //    //Dispatch the dataLoaded action
-  //    yield put(dataLoaded(data));
-  //  } catch (err) {
-  //    //Dispatch the dataLoadingError action
-  //    yield put(dataLoadingError(err));
-  //  }
+export function* getCreatorApplicationsAwaitingApproval(){
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  try {
+    const result = yield call(getCreatorApplicationsAwaitingApprovalApi, apiKey);
+    console.log(result.data);
+    const normalised = normalize(result.data, creatorsAwaitingReview);
+    console.log(normalised);
+    yield put(AdminDashboardActions.setCreatorsAwaitingApproval(normalised.entities));
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export default function* adminDashboardContainerWatcherSaga() {
-  // yield takeLatest(ActionType, getData);
+export default function* root() {
+  yield call(getCreatorApplicationsAwaitingApproval)
 }

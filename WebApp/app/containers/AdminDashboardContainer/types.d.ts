@@ -4,7 +4,7 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface AdminDashboardContainerState {
-  readonly default: any;
+  creatorsAwaitingApproval: any,
 }
 
 /* --- ACTIONS --- */

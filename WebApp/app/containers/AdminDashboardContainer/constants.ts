@@ -5,7 +5,7 @@
  */
 
 enum ActionTypes {
-  DEFAULT_ACTION = 'app/AdminDashboardContainer/DEFAULT_ACTION',
+  SET_CREATORS_AWAITING_APPROVAL = 'app/CreatorApplicationContainer/SET_CREATORS_AWAITING_APPROVAL',
 }
 
 export default ActionTypes;

@@ -1,30 +1,18 @@
-import { createSelector } from 'reselect';
+import { createSelector, createStructuredSelector } from 'reselect';
+import { RootState } from 'containers/App/types';
+import { StateProps } from 'containers/DiscoverContainer';
 import { ApplicationRootState } from 'types';
-import { initialState } from './reducer';
 
-/**
- * Direct selector to the adminDashboardContainer state domain
- */
-
-const selectAdminDashboardContainerDomain = (state: ApplicationRootState) => {
-  return state ? state : initialState;
+const selectCreatorsAwaitingApproval = (state: ApplicationRootState) => {
+  return state.adminDashboard.creatorsAwaitingApproval;
 };
 
-/**
- * Other specific selectors
- */
+const makeSelectCreatorsAwaitingApproval = createSelector(selectCreatorsAwaitingApproval, substate => {
+  return substate;
+})
 
-/**
- * Default selector used by AdminDashboardContainer
- */
+const selectAdminDashboard = createStructuredSelector<RootState, StateProps>({
+  creatorsAwaitingApproval: makeSelectCreatorsAwaitingApproval,
+});
 
-const selectAdminDashboardContainer = () =>
-  createSelector(
-    selectAdminDashboardContainerDomain,
-    substate => {
-      return substate;
-    },
-  );
-
-export default selectAdminDashboardContainer;
-export { selectAdminDashboardContainerDomain };
+export default selectAdminDashboard;

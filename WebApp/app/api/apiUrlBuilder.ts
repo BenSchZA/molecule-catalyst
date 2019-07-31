@@ -11,7 +11,8 @@ const apiUrlBuilder = {
   attachmentStream: (attachmentId: string) => generateUri(`attachment/${attachmentId}/stream`),
   submitCreatorApplication: generateUri('creator/apply'),
   getCreatorApplication: generateUri('creator'),
-  verifyEmail: generateUri('creator/verifyEmail')
+  verifyEmail: generateUri('creator/verifyEmail'),
+  getCreatorApplicationAwaitingApproval: generateUri('creator/awaitingApproval'),
   // getUserProfile: (ethAddress: string) => generateUri(`users/${ethAddress}`),
   // updateProfile: generateUri(`users`),
   // sendErrorReport: () => generateUri(`error/${blockchainResources.networkId}`),

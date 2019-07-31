@@ -68,7 +68,7 @@ export class CreatorService {
   }
 
   async getCreatorsAwaitingApproval(): Promise<CreatorApplication[]> {
-    const result = await this.creatorRepository.find({status: CreatorApplicationStatus.awaitingVerification, emailVerified: true})
+    const result = await this.creatorRepository.find({status: CreatorApplicationStatus.awaitingVerification}).populate(Schemas.User);
     return result.map(r => r.toObject())
   }
 
