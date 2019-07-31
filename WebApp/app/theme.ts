@@ -36,19 +36,49 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: '\'Montserrat\'',
+    fontFamily: 'Montserrat, Arial, Sans Serif',
   },
   overrides: {
     MuiButton: {
       root: {
         background: colors.moleculeBranding.primary,
         color: colors.white,
+        marginTop: '24px',
+        marginLeft: '8px',
+      },
+      text:{
+        paddingLeft: '16px',
+        paddingTop: '8px'
       }
     },
     MuiPaper: {
       root: {
         paddingLeft: '8px',
         paddingRight: '8px',
+      }
+    },
+    MuiTypography: {
+      h4:{
+        paddingTop: '8px',
+        paddingBottom: '16px',
+        paddingLeft: '8px'
+      },
+      body1: {
+        paddingBottom: '16px',
+        paddingLeft: '8px'
+      }
+    },
+    MuiInputLabel:{
+      root:{
+        paddingTop: '8px',
+        paddingBottom: '8px',
+        paddingLeft: '8px'
+      }
+    },
+    MuiTextField:{
+      root:{
+        paddingBottom: '8px',
+        paddingLeft: '8px' 
       }
     }
   }

@@ -13,14 +13,16 @@ import UploadImageField from 'components/UploadImageField';
 
 const styles = (theme: Theme) =>
   createStyles({
-    // JSS in CSS goes here
+    root:{
+      marginTop: '24px'
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> { }
 
 const CreatorApplicationForm: React.SFC<OwnProps> = (props: OwnProps) => (
   <Container maxWidth='md'>
-    <Paper>
+    <Paper className={props.classes.root}>
       <Typography variant='h4'>Add Profile Details</Typography>
       <Typography variant='body1'>
         Before you can apply for funding for your scientific experiment on the Molecule platform you need to provide us with some more details about yourself and your research background. We will contact you directly after internal review.
