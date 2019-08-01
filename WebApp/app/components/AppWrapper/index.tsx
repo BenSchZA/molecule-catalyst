@@ -31,6 +31,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     paddingTop: spacing(8),
     paddingLeft: spacing(2),
     paddingRight: spacing(2),
+    backgroundColor: colors.lightGrey
   },
   navAccount: {
     display: 'flex',

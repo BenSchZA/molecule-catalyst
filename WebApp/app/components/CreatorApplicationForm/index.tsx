@@ -10,21 +10,38 @@ import { Save } from '@material-ui/icons';
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import UploadImageField from 'components/UploadImageField';
+import {colors} from 'theme';
 
 const styles = (theme: Theme) =>
   createStyles({
-    // JSS in CSS goes here
+    root:{
+      marginTop: '24px',
+      
+    },
+    banner:{
+      marginBottom: '16px',
+      backgroundColor: colors.lightGrey
+
+    },
+    heading:{
+      textAlign: 'center',
+
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> { }
 
 const CreatorApplicationForm: React.SFC<OwnProps> = (props: OwnProps) => (
-  <Container maxWidth='md'>
-    <Paper>
-      <Typography variant='h4'>Add Profile Details</Typography>
-      <Typography variant='body1'>
+  
+  <Container>
+    <Paper className={props.classes.banner} square={true} elevation={0}>
+    <Typography variant='h3' className={props.classes.heading}>Add Profile Details</Typography>
+      <Typography variant='body1' className={props.classes.heading}>
         Before you can apply for funding for your scientific experiment on the Molecule platform you need to provide us with some more details about yourself and your research background. We will contact you directly after internal review.
       </Typography>
+    </Paper>
+    <Container maxWidth='md'>
+    <Paper className={props.classes.root} square={true}>
       <Form>
         <InputLabel htmlFor='email'>Email</InputLabel>
         <Field
@@ -90,6 +107,7 @@ const CreatorApplicationForm: React.SFC<OwnProps> = (props: OwnProps) => (
           </Button>
       </Form>
     </Paper>
+  </Container>
   </Container>
 );
 
