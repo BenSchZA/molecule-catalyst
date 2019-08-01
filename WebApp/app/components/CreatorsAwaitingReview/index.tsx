@@ -23,7 +23,11 @@ const styles = (theme: Theme) =>
       marginTop: '12px',
       marginBottom: '12px',
       float: 'right'
+    },
+    emptyRow: {
+      height: '71px',
     }
+    
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -53,7 +57,7 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
         <TableCell></TableCell>
       </TableHead>
       <TableBody>
-        {props.creatorApplications.map(ca => (
+        {props.creatorApplications.length > 0 ? props.creatorApplications.map(ca => (
           <TableRow key={ca.id}>
             <TableCell>{ca.fullName}</TableCell>
             <TableCell>{ca.email}</TableCell>
@@ -64,7 +68,10 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
               <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Reject</Button>
             </TableCell>
           </TableRow>
-        ))}
+        )) : <TableRow className={props.classes.emptyRow}>
+        <TableCell>No awaiting approvals</TableCell>
+      </TableRow>}
+        
       </TableBody>
     </Table>
     </Paper>

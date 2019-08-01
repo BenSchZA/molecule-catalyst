@@ -22,6 +22,9 @@ const styles = (theme: Theme) =>
     actionButton: {
       marginTop: '12px',
       marginBottom: '12px'
+    },
+    emptyRow: {
+      height: '71px',
     }
   });
 
@@ -49,16 +52,18 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
         <TableCell></TableCell>
       </TableHead>
       <TableBody>
-        {props.users.map(ca => (
+        {props.users.length > 1 ? props.users.map(ca => (
           <TableRow key={ca.id}>
             <TableCell>{ca.ethAddress}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.type}</TableCell>
+            <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
             <TableCell>
               <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
             </TableCell>
           </TableRow>
-        ))}
+        )) : <TableRow className={props.classes.emptyRow}>
+        <TableCell>No users</TableCell>
+      </TableRow>}
       </TableBody>
     </Table>
     </Paper>
