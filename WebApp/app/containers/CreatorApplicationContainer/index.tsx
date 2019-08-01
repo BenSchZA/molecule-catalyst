@@ -97,7 +97,11 @@ const CreatorApplicationContainer: React.FunctionComponent<Props> = ({ onSubmitC
         const parsed = qs.parse(location.search) as {token: string};
         return (
           <Fragment>
-            <Button onClick={() => verifyEmail(parsed.token)}>Click here to verify email</Button>
+            <Typography variant='h2'>
+            Almost there...
+            </Typography>
+            <Button variant='contained' onClick={() => verifyEmail(parsed.token)} >Click here to verify email</Button>
+            <Divider variant='middle'/>
           </Fragment>
            
         )

@@ -65,6 +65,11 @@ const theme = (createMuiTheme as any)({
         paddingRight: '16px',
         paddingTop: '8px'
       },
+      contained:{
+        backgroundColor: colors.moleculeBranding.primary,
+        color: colors.white,
+        marginLeft: '44%'
+      }
     },
     MuiPaper: {
       root: {

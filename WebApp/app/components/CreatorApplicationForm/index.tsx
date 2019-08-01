@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Button, Container } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Button, Container, Divider } from '@material-ui/core';
 import { Save } from '@material-ui/icons';
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
@@ -21,11 +21,14 @@ const styles = (theme: Theme) =>
     },
     banner:{
       marginBottom: '16px',
-      backgroundColor: colors.lightGrey
-
+      backgroundColor: colors.lightGrey,
+      alignItems: 'center'
     },
     heading:{
       textAlign: 'center',
+
+    },
+    divider: {
 
     }
   });
@@ -40,6 +43,7 @@ const CreatorApplicationForm: React.SFC<OwnProps> = (props: OwnProps) => (
       <Typography variant='body1' className={props.classes.heading}>
         Before you can apply for funding for your scientific experiment on the Molecule platform you need to provide us with some more details about yourself and your research background. We will contact you directly after internal review.
       </Typography>
+      <Divider className={props.classes.divider} variant='middle'/>
     </Paper>
     <Container maxWidth='md'>
     <Paper className={props.classes.root} square={true}>
