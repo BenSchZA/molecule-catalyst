@@ -15,7 +15,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 export const colors = {
   moleculeBranding:{
-    primary: '#01B6BD',
+    primary: '#37B4A4',
     secondary: '#12999D',
   },
   white: '#FFFFFF',
@@ -24,7 +24,7 @@ export const colors = {
   lightGrey: '#f2f2f2'
 }
 
-const theme = createMuiTheme({
+const theme = (createMuiTheme as any)({
   palette: {
     background: {
       default: colors.grey,
@@ -42,7 +42,7 @@ const theme = createMuiTheme({
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
-      'Roboto',
+      'Montserrat',
       '"Helvetica Neue"',
       'Arial',
       'sans-serif',
@@ -68,8 +68,8 @@ const theme = createMuiTheme({
     },
     MuiPaper: {
       root: {
-        paddingLeft: '8px',
-        paddingRight: '8px',
+        // paddingLeft: '8px',
+        // paddingRight: '8px',
       }
     },
     MuiTypography: {
@@ -87,6 +87,10 @@ const theme = createMuiTheme({
         textAlign: 'center',
         paddingTop: '32px',
         paddingBottom: '32px'
+      },
+      h5: {
+        paddingTop: '32px',
+        paddingBottom: '16px'
       },
       body1: {
         paddingBottom: '16px',
@@ -129,7 +133,38 @@ const theme = createMuiTheme({
       root:{
         paddingRight: '4px' 
       }
-    }
+    },
+    MuiContainer:{
+      maxWidthXl:{
+        width:'1200px'
+      }
+    },
+    MuiTable:{
+      root:{
+
+      }
+    },
+    MuiTableHead:{
+      root:{
+        backgroundColor: colors.grey
+      }
+    },
+    MuiTableRow: {
+      root: {
+        height: '4px'
+      }
+    },
+    MuiTableCell:{
+      root:{
+      },
+      body:{
+        paddingTop: '4px',
+        paddingBottom: '4px',
+      },
+      head: {
+        fontSize: '1rem'
+      }
+    },
   }
 });
 
