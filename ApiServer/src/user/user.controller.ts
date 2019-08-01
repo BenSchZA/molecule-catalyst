@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('all')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
   async getAllUsers(): Promise<User[]> {
