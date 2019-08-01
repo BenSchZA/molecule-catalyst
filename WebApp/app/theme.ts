@@ -65,6 +65,11 @@ const theme = (createMuiTheme as any)({
         paddingRight: '16px',
         paddingTop: '8px'
       },
+      contained:{
+        backgroundColor: colors.moleculeBranding.primary,
+        color: colors.white,
+        marginLeft: '44%'
+      }
     },
     MuiPaper: {
       root: {
@@ -75,6 +80,11 @@ const theme = (createMuiTheme as any)({
     MuiTypography: {
       h1: {
         paddingTop: '32px',
+        paddingBottom: '32px',
+        textAlign: 'center'
+      },
+      h2: {
+        paddingTop: '64px',
         paddingBottom: '32px',
         textAlign: 'center'
       },
@@ -165,6 +175,16 @@ const theme = (createMuiTheme as any)({
         fontSize: '1rem'
       }
     },
+    MuiDivider:{
+      root:{
+      },
+      middle:{
+        marginTop: "32px",
+        backgroundColor: colors.moleculeBranding.primary,
+        alignSelf: 'center',
+        verticalAlign: 'middle',
+      }
+    }
   }
 });
 

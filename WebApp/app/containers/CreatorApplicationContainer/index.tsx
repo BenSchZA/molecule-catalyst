@@ -14,7 +14,7 @@ import { CreatorApplicationData } from './types';
 import CreatorApplicationForm from 'components/CreatorApplicationForm';
 import creatorApplicationState from './selectors';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, Divider } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router-dom';
 import * as qs from 'query-string';
 
@@ -97,23 +97,41 @@ const CreatorApplicationContainer: React.FunctionComponent<Props> = ({ onSubmitC
         const parsed = qs.parse(location.search) as {token: string};
         return (
           <Fragment>
-            <Button onClick={() => verifyEmail(parsed.token)}>Click here to verify email</Button>
+            <Typography variant='h2'>
+            Almost there...
+            </Typography>
+            <Button variant='contained' onClick={() => verifyEmail(parsed.token)} >Click here to verify email</Button>
+            <Divider variant='middle'/>
           </Fragment>
+           
         )
       } else {
         return (
-          <Typography>
+          <div>
+          <Typography variant='h2'>
             Please check your email for a verification link
           </Typography>
+           <Divider variant='middle'/>
+           </div>
         )
       }
     } else if (application.status === 2) {
       return (
-        <Typography>Your request is being reviewed.</Typography>
+        <div>
+          <Typography variant='h2'>
+          Your request is being reviewed.
+          </Typography>
+           <Divider variant='middle' />
+           </div>
       )
     } else if (application.status === 4) {
-      return (
-        <Typography>We have reviewed your request and unfortunately are unable to approve it.</Typography>
+      return (  
+        <div>  
+          <Typography variant='h2'>
+          We have reviewed your request and unfortunately are unable to approve it.
+          </Typography>
+        <Divider variant='middle' />
+        </div>
       )
     } else {
       return null;
