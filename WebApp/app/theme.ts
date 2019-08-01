@@ -73,6 +73,11 @@ const theme = createMuiTheme({
       }
     },
     MuiTypography: {
+      h1: {
+        paddingTop: '32px',
+        paddingBottom: '32px',
+        textAlign: 'center'
+      },
       h4:{
         paddingTop: '8px',
         paddingBottom: '16px',
