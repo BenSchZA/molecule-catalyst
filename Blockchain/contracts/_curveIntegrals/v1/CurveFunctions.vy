@@ -26,10 +26,9 @@ def curveIntegral(_x_t: uint256) -> uint256:
 
     # Only int128 & uint256 support exponentiation (a**b)
     uint_sqr: uint256 = convert(x_t, uint256)**2
-    sqr: decimal = convert(uint_sqr, decimal)/SCALE_8
 
     # Calculate result and return scaled uint
-    result: decimal = (sqr*GRADIENT)/(2.0*SCALE_8) + (VERTICAL_SHIFT*x_t)/SCALE_8
+    result: decimal = ((convert(uint_sqr, decimal)/SCALE_8)*GRADIENT)/(2.0*SCALE_8) + (VERTICAL_SHIFT*x_t)/SCALE_8
     return convert(result*SCALE_10, uint256)
 
 @public
@@ -42,14 +41,11 @@ def inverseCurveIntegral(_x_c: uint256) -> uint256:
 
     # Only int128 & uint256 support exponentiation (a**b)
     uint_sqr: uint256 = convert(VERTICAL_SHIFT, uint256)**2
-    sqr: decimal = convert(uint_sqr, decimal)/SCALE_8
 
     # The sqrt() function only supports decimal type
-    arg: decimal = sqr + (2.0*GRADIENT*x_c)/SCALE_8
-    sqrt_arg: decimal = sqrt(arg)*sqrt(SCALE_8)
+    arg: decimal = convert(uint_sqr, decimal) + (2.0*GRADIENT*x_c)
+    sqrt_arg: decimal = sqrt(arg)
 
     # Calculate result and return scaled uint
-    result: decimal = (-VERTICAL_SHIFT + sqrt_arg)/GRADIENT*SCALE_8
+    result: decimal = ((-VERTICAL_SHIFT + sqrt_arg)*SCALE_8)/GRADIENT
     return convert(result*SCALE_10, uint256)
-
-
