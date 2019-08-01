@@ -78,6 +78,11 @@ const theme = (createMuiTheme as any)({
         paddingBottom: '32px',
         textAlign: 'center'
       },
+      h2: {
+        paddingTop: '64px',
+        paddingBottom: '32px',
+        textAlign: 'center'
+      },
       h4:{
         paddingTop: '8px',
         paddingBottom: '16px',
@@ -165,6 +170,16 @@ const theme = (createMuiTheme as any)({
         fontSize: '1rem'
       }
     },
+    MuiDivider:{
+      root:{
+      },
+      middle:{
+        marginTop: "32px",
+        backgroundColor: colors.moleculeBranding.primary,
+        alignSelf: 'center',
+        verticalAlign: 'middle',
+      }
+    }
   }
 });
 

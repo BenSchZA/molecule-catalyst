@@ -16,6 +16,7 @@ const styles = (theme: Theme) =>
   createStyles({
     root:{
       marginTop: '24px',
+      paddingLeft: '8px'
       
     },
     banner:{
