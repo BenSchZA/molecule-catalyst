@@ -32,6 +32,10 @@ export async function getCreatorApplicationsAwaitingApproval(apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.getCreatorApplicationAwaitingApproval, undefined, 'application/json', true, apiToken)
 }
 
+export async function getAllUsers(apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.getAllUsers, undefined, 'application/json', true, apiToken)
+}
+
 export async function verifyEmail(token: string, apiToken: string) {
   const body = JSON.stringify({token: token});
   return apiRequest('POST', apiUrlBuilder.verifyEmail, body, 'application/json', true, apiToken);
