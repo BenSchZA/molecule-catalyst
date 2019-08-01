@@ -28,7 +28,15 @@ export async function getCreatorApplication(apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.getCreatorApplication, undefined, 'application/json', true, apiToken)
 }
 
+export async function getCreatorApplicationsAwaitingApproval(apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.getCreatorApplicationAwaitingApproval, undefined, 'application/json', true, apiToken)
+}
+
 export async function verifyEmail(token: string, apiToken: string) {
   const body = JSON.stringify({token: token});
   return apiRequest('POST', apiUrlBuilder.verifyEmail, body, 'application/json', true, apiToken);
+}
+
+export async function approveCreatorApplication(applicationId: string, apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.approveCreatorApplication(applicationId), undefined, 'application/json', true, apiToken);
 }

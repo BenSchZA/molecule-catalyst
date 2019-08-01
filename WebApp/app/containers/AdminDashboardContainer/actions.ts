@@ -1,12 +1,5 @@
-/*
- *
- * AdminDashboardContainer actions
- *
- */
+import { createStandardAction } from "typesafe-actions";
+import ActionTypes from "containers/AdminDashboardContainer/constants";
 
-import { action } from 'typesafe-actions';
-import {} from './types';
-
-import ActionTypes from './constants';
-
-export const defaultAction = () => action(ActionTypes.DEFAULT_ACTION);
+export const setCreatorsAwaitingApproval = createStandardAction(ActionTypes.SET_CREATORS_AWAITING_APPROVAL)<any>();
+export const approveCreatorApplication = createStandardAction(ActionTypes.APPROVE_CREATOR_APPLICATION)<string>();
