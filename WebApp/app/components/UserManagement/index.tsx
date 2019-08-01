@@ -54,7 +54,7 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
       <TableBody>
         {props.users.length > 1 ? props.users.map(ca => (
           <TableRow key={ca.id}>
-            <TableCell>{ca.ethAddress}</TableCell>
+            <TableCell>{ca.ethAddress.toUpperCase()}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
             <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
             <TableCell>
