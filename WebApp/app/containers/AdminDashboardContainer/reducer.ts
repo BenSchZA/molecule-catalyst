@@ -4,33 +4,24 @@
  *
  */
 
-import { combineReducers } from 'redux';
-
-import ActionTypes from './constants';
 import { ContainerState, ContainerActions } from './types';
+import * as actions from './actions';
+import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
-  default: null,
+  creatorsAwaitingApproval: {},
 };
 
-// function adminDashboardContainerReducer(state: ContainerState = initialState, action: ContainerActions ) {
-//   switch (action.type) {
-//     case ActionTypes.DEFAULT_ACTION:
-//       return state;
-//     default:
-//       return state;
-//   }
-// }
+function adminDashboardContainerReducer(state: ContainerState = initialState, action: ContainerActions ) {
+  switch (action.type) {
+    case getType(actions.setCreatorsAwaitingApproval):
+      return {
+        ...state,
+        creatorsAwaitingApproval: action.payload.creators,
+      }
+    default:
+      return state;
+  }
+}
 
-// export default adminDashboardContainerReducer;
-
-export default combineReducers<ContainerState, ContainerActions>({
-  default: (state = initialState, action) => {
-    switch (action.type) {
-      case ActionTypes.DEFAULT_ACTION:
-        return state;
-      default:
-        return state;
-    }
-  },
-});
+export default adminDashboardContainerReducer;

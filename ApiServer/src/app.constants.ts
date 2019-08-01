@@ -1,10 +1,8 @@
 export enum Schemas {
-  User = 'User',
-  Organization = 'Organization',
-  Patent = 'Patent',
-  Attachment = 'Attachment',
-  Creator = 'Creator',
-  Token = 'Token',
+  User = 'user',
+  Attachment = 'attachment',
+  Creator = 'creator',
+  Token = 'token',
 }
 
 export enum Modules {

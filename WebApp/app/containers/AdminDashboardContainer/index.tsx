@@ -4,61 +4,68 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
 
-// import injectSaga from 'utils/injectSaga';
-// import injectReducer from 'utils/injectReducer';
-// import reducer from './reducer';
-// import saga from './saga';
-import makeSelectAdminDashboardContainer from './selectors';
+import injectSaga from 'utils/injectSaga';
+import injectReducer from 'utils/injectReducer';
+import reducer from './reducer';
+import saga from './saga';
+import { RESTART_ON_REMOUNT } from 'utils/constants';
+import selectAdminDashboard from './selectors';
+import { Container, Typography } from '@material-ui/core';
+import * as actions from './actions';
+import CreatorsAwaitingReview from 'components/CreatorsAwaitingReview';
 
-interface OwnProps {}
 
-interface DispatchProps {}
+interface OwnProps { }
 
-interface StateProps {}
+interface DispatchProps {
+  approveCreatorApplication(applicationId: string): void,
+}
+
+interface StateProps {
+  creatorsAwaitingApproval: []
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminDashboardContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>AdminDashboardContainer</Fragment>;
-};
+const AdminDashboardContainer: React.SFC<Props> = (props: Props) => (
+  <Container maxWidth='md'>
+    <Typography>User Management</Typography>
 
-const mapStateToProps = createStructuredSelector({
-  adminDashboardContainer: makeSelectAdminDashboardContainer(),
-});
+    <CreatorsAwaitingReview approveCreatorApplication={props.approveCreatorApplication} creatorApplications={props.creatorsAwaitingApproval} />
+  </Container>
+);
+
+const mapStateToProps = (state) => selectAdminDashboard(state);
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
-): DispatchProps => {
-  return {
-    dispatch: dispatch,
-  };
-};
+): DispatchProps => ({
+  approveCreatorApplication: (applicationId: string) => dispatch(actions.approveCreatorApplication(applicationId)),
+});
+
 
 const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
 );
 
-// Remember to add the key to ./app/types/index.d.ts ApplicationRootState
-// <OwnProps> restricts access to the HOC's other props. This component must not do anything with reducer hoc
-// const withReducer = injectReducer<OwnProps>({
-//   key: 'adminDashboardContainer',
-//   reducer: reducer,
-// });
-// // <OwnProps> restricts access to the HOC's other props. This component must not do anything with saga hoc
-// const withSaga = injectSaga<OwnProps>({
-//   key: 'adminDashboardContainer',
-//   saga: saga,
-// });
+const withReducer = injectReducer<OwnProps>({
+  key: 'adminDashboard',
+  reducer: reducer,
+});
+const withSaga = injectSaga<OwnProps>({
+  key: 'adminDashboard',
+  saga: saga,
+  mode: RESTART_ON_REMOUNT
+});
 
 export default compose(
-  // withReducer,
-  // withSaga,
+  withReducer,
+  withSaga,
   withConnect,
 )(AdminDashboardContainer);
