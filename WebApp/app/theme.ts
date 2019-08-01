@@ -15,7 +15,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 export const colors = {
   moleculeBranding:{
-    primary: '#01B6BD',
+    primary: '#37B4A4',
     secondary: '#12999D',
   },
   white: '#FFFFFF',
@@ -42,7 +42,7 @@ const theme = (createMuiTheme as any)({
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
-      'Roboto',
+      'Montserrat',
       '"Helvetica Neue"',
       'Arial',
       'sans-serif',
