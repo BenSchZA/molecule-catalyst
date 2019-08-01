@@ -16,7 +16,7 @@ const styles = ({spacing}: Theme) => createStyles({
   },
   buttons: {
     paddingTop: spacing(4),
-    padding: '33%',
+    paddingLeft: '36%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

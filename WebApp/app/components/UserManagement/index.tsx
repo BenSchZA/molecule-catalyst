@@ -1,6 +1,6 @@
 /**
  *
- * CreatorsAwaitingReview
+ * UserManagement
  *
  */
 
@@ -21,47 +21,44 @@ const styles = (theme: Theme) =>
     },
     actionButton: {
       marginTop: '12px',
-      marginBottom: '12px',
-      float: 'right'
+      marginBottom: '12px'
     }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  creatorApplications: Array<{
+  users: Array<{
     id: string,
     fullName: string,
     email: string,
     createdAt: Date,
     affiliatedOrganisation: string,
-  }>,
-  approveCreatorApplication(applicationId: string): void,
+  }>
+  
 }
 
-const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
+const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
  
   <Fragment>
      <Paper className={props.classes.banner} elevation={0}>
-    <Typography variant='h5'>Awaiting Approval</Typography>
+    <Typography variant='h5'>User Management</Typography>
     <Paper>
     <Table>
       <TableHead>
+        <TableCell>User Address</TableCell>
         <TableCell>Full Name</TableCell>
-        <TableCell>Email</TableCell>
-        <TableCell>Application Date</TableCell>
-        <TableCell>Associated Organisation</TableCell>
-        <TableCell></TableCell>
+        <TableCell>Created</TableCell>
+        <TableCell>Type</TableCell>
         <TableCell></TableCell>
       </TableHead>
       <TableBody>
-        {props.creatorApplications.map(ca => (
+        {props.users.map(ca => (
           <TableRow key={ca.id}>
+            <TableCell>0xBF39CCeA0E5E305103D838966C0258dbA311247A</TableCell>
             <TableCell>{ca.fullName}</TableCell>
-            <TableCell>{ca.email}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.affiliatedOrganisation}</TableCell>
+            <TableCell>{ca.email}</TableCell>
             <TableCell>
-              <Button className={props.classes.actionButton} onClick={() => props.approveCreatorApplication(ca.id)}>Approve</Button>
-              <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Reject</Button>
+              <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
             </TableCell>
           </TableRow>
         ))}
@@ -75,4 +72,4 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
 );
 
 
-export default withStyles(styles, { withTheme: true })(CreatorsAwaitingReview);
+export default withStyles(styles, { withTheme: true })(UserManagement);

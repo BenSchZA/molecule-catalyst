@@ -14,9 +14,10 @@ import reducer from './reducer';
 import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import selectAdminDashboard from './selectors';
-import { Container, Typography } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import * as actions from './actions';
 import CreatorsAwaitingReview from 'components/CreatorsAwaitingReview';
+import UserManagement from 'components/UserManagement';
 
 
 interface OwnProps { }
@@ -32,9 +33,8 @@ interface StateProps {
 type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminDashboardContainer: React.SFC<Props> = (props: Props) => (
-  <Container maxWidth='md'>
-    <Typography>User Management</Typography>
-
+  <Container maxWidth='xl'>
+    <UserManagement users={props.creatorsAwaitingApproval} />
     <CreatorsAwaitingReview approveCreatorApplication={props.approveCreatorApplication} creatorApplications={props.creatorsAwaitingApproval} />
   </Container>
 );

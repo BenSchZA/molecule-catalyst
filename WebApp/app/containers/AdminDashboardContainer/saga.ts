@@ -20,6 +20,17 @@ export function* getCreatorApplicationsAwaitingApproval() {
   }
 }
 
+export function* getAllUsers() {
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  try {
+    const result = yield call(getCreatorApplicationsAwaitingApprovalApi, apiKey);
+    const normalised = normalize(result.data, creatorsAwaitingReview);
+    yield put(AdminDashboardActions.setCreatorsAwaitingApproval(normalised.entities));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function* approveCreatorApplication(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
