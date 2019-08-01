@@ -10,6 +10,7 @@ import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
   creatorsAwaitingApproval: {},
+  allUsers: {}
 };
 
 function adminDashboardContainerReducer(state: ContainerState = initialState, action: ContainerActions ) {
@@ -19,6 +20,11 @@ function adminDashboardContainerReducer(state: ContainerState = initialState, ac
         ...state,
         creatorsAwaitingApproval: action.payload.creators,
       }
+    case getType(actions.setAllUsers):
+        return {
+          ...state,
+          allUsers: action.payload.users,
+    }
     default:
       return state;
   }

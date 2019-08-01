@@ -28,10 +28,9 @@ const styles = (theme: Theme) =>
 interface OwnProps extends WithStyles<typeof styles> {
   users: Array<{
     id: string,
-    fullName: string,
-    email: string,
+    ethAddress: string,
+    type: any,
     createdAt: Date,
-    affiliatedOrganisation: string,
   }>
   
 }
@@ -45,7 +44,6 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
     <Table>
       <TableHead>
         <TableCell>User Address</TableCell>
-        <TableCell>Full Name</TableCell>
         <TableCell>Created</TableCell>
         <TableCell>Type</TableCell>
         <TableCell></TableCell>
@@ -53,10 +51,9 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
       <TableBody>
         {props.users.map(ca => (
           <TableRow key={ca.id}>
-            <TableCell>0xBF39CCeA0E5E305103D838966C0258dbA311247A</TableCell>
-            <TableCell>{ca.fullName}</TableCell>
+            <TableCell>{ca.ethAddress}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.email}</TableCell>
+            <TableCell>{ca.type}</TableCell>
             <TableCell>
               <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
             </TableCell>

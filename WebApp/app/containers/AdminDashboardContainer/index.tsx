@@ -27,14 +27,15 @@ interface DispatchProps {
 }
 
 interface StateProps {
-  creatorsAwaitingApproval: []
+  creatorsAwaitingApproval: [],
+  allUsers: []
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminDashboardContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
-    <UserManagement users={props.creatorsAwaitingApproval} />
+    <UserManagement users={props.allUsers} />
     <CreatorsAwaitingReview approveCreatorApplication={props.approveCreatorApplication} creatorApplications={props.creatorsAwaitingApproval} />
   </Container>
 );
