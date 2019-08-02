@@ -55,4 +55,11 @@ export class CreatorController {
   async approveCreatorApplication(@Param('id') id, @Req() req: Request & {user: User}) {
     const result = await this.creatorService.approveApplication(id, req.user);
   }
+
+  @Get(':id/reject')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
+  async rejectCreatorApplication(@Param('id') id, @Req() req: Request & {user: User}) {
+    const result = await this.creatorService.approveApplication(id, req.user);
+  }
 }

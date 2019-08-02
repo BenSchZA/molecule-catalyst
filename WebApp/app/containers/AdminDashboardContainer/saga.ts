@@ -3,6 +3,7 @@ import { ApplicationRootState } from "types";
 import {
   getCreatorApplicationsAwaitingApproval as getCreatorApplicationsAwaitingApprovalApi,
   approveCreatorApplication as approveCreatorApplicationApi,
+  rejectCreatorApplication as rejectCreatorApplicationApi,
   getAllUsers as getAllUsersApi
 } from 'api';
 import * as AdminDashboardActions from './actions'
@@ -39,6 +40,20 @@ export function* approveCreatorApplication(action) {
     const result = yield call(approveCreatorApplicationApi, action.payload, apiKey);
     if (result.response.ok) {
       yield call(getCreatorApplicationsAwaitingApproval);
+      yield call(getAllUsers);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* rejectCreatorApplication(action) {
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  try {
+    const result = yield call(rejectCreatorApplicationApi, action.payload, apiKey);
+    if (result.response.ok) {
+      yield call(getCreatorApplicationsAwaitingApproval);
+      yield call(getAllUsers);
     }
   } catch (error) {
     console.log(error);

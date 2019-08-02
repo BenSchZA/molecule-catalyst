@@ -14,7 +14,8 @@ const apiUrlBuilder = {
   verifyEmail: generateUri('creator/verifyEmail'),
   getCreatorApplicationAwaitingApproval: generateUri('creator/awaitingApproval'),
   getAllUsers: generateUri('users/all'),
-  approveCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/approve`)
+  approveCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/approve`),
+  rejectCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/reject`),
   // getUserProfile: (ethAddress: string) => generateUri(`users/${ethAddress}`),
   // updateProfile: generateUri(`users`),
   // sendErrorReport: () => generateUri(`error/${blockchainResources.networkId}`),

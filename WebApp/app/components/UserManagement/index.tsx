@@ -56,7 +56,7 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
           <TableRow key={ca.id}>
             <TableCell>{ca.ethAddress}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
+            <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator') }</TableCell>
             <TableCell>
               <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
             </TableCell>

@@ -10,6 +10,7 @@ import { SendGridService } from '@anchan828/nest-sendgrid';
 import { JwtService } from '@nestjs/jwt';
 import { TokenDocument } from 'src/auth/token.schema';
 import { ConfigService } from 'src/config/config.service';
+import { UserDocument } from '../user/user.schema';
 
 @Injectable()
 export class CreatorService {
@@ -18,6 +19,7 @@ export class CreatorService {
               private readonly sendgridService: SendGridService,
               private readonly jwtService: JwtService,
               @InjectModel(Schemas.Token) private readonly tokenRepository: Model<TokenDocument>,
+              @InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
               private readonly configService: ConfigService) { }
 
   async addApplication(applicationData: CreatorApplicationDto, file: any, user: User): Promise<CreatorApplication> {
@@ -77,10 +79,20 @@ export class CreatorService {
     return (result) ? result.toObject() : undefined;
   }
 
-  async approveApplication(id: string, user: User) {
+  async rejectApplication(id: string, user: User) {
     const application = await this.creatorRepository.findById(id);
-    application.status = CreatorApplicationStatus.accepted;
+    application.status = CreatorApplicationStatus.rejected;
     application.reviewedBy = user.id;
     await application.save();
+  }
+  
+  async approveApplication(id: string, user: User) {
+    const application = await this.creatorRepository.findById(id);
+    const applicationUser = await this.userRepository.findById(application.user.toString());
+    application.status = CreatorApplicationStatus.accepted;
+    application.reviewedBy = user.id;
+    applicationUser.type = 1;
+    await application.save();
+    await applicationUser.save();
   }
 }
