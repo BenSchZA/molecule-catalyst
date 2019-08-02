@@ -100,16 +100,17 @@ class ProjectCreationForm_Background extends React.Component<Props> {
                       collaborators.map((collaborator, index) => (
                         <div>
                           {index == 0 && collaborators.length <= 4 ?
-                            <div>
-                              <Button size="small" onClick={() => {
-                                arrayHelpers.insert(index, {
-                                  fullName: '',
-                                  professionalTitle: '',
-                                  affiliatedOrganisation: ''
-                                })
-                              }}><Add/></Button>
-                              <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button>
-                            </div> : <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button>
+                            <Button size="small" onClick={() => {
+                              arrayHelpers.insert(index, {
+                                fullName: '',
+                                professionalTitle: '',
+                                affiliatedOrganisation: ''
+                              })
+                            }}><Add/></Button> : <div/>
+                          }
+                          {
+                            collaborators.length > 1 ?
+                            <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button> : <div/>
                           }
                           <Grid container key={index}>
                             <Grid item xs={6}>
