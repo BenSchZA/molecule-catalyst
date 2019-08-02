@@ -14,7 +14,9 @@ import { compose, Dispatch } from 'redux';
 // import reducer from './reducer';
 // import saga from './saga';
 import makeSelectCreateProjectContainer from './selectors';
-import { Typography } from '@material-ui/core';
+import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
+import { Formik } from 'formik';
+import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
 
 interface OwnProps { }
 
@@ -24,10 +26,49 @@ interface StateProps { }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const CreateProjectContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>
-    <Typography>Create Project</Typography>
-  </Fragment>;
+class CreateProjectContainer extends React.Component<Props> {
+  public render() {
+    const { } = this.props;
+
+    return (
+      <Fragment>
+        <Formik
+          initialValues={{
+            title: '',
+            abstract: '',
+            featuredImage: ''
+          }}
+          // validationSchema={CreatorApplicationSchema}
+          onSubmit={(values, actions) => {
+            // onSubmitCreatorApplication(values);
+          }}
+          render={() =>
+            <ProjectCreationForm_About></ProjectCreationForm_About>
+          }
+        />
+        <Formik
+          initialValues={{
+            context: '',
+            approach: '',
+            collaborators: [
+              {
+                fullName: '',
+                professionalTitle: '',
+                affiliatedOrganisation: ''
+              }
+            ],
+          }}
+          // validationSchema={CreatorApplicationSchema}
+          onSubmit={(values, actions) => {
+            // onSubmitCreatorApplication(values);
+          }}
+          render={({ values }) =>
+            <ProjectCreationForm_Background collaborators={values.collaborators}></ProjectCreationForm_Background>
+          }
+        />
+      </Fragment>
+    );
+  }
 };
 
 const mapStateToProps = createStructuredSelector({
