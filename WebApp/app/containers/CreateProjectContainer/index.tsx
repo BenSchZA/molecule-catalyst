@@ -17,6 +17,7 @@ import makeSelectCreateProjectContainer from './selectors';
 import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
 import { Formik } from 'formik';
 import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
+import ProjectCreationForm_Campaign from 'components/ProjectCreationForm_Campaign';
 
 interface OwnProps { }
 
@@ -64,6 +65,26 @@ class CreateProjectContainer extends React.Component<Props> {
           }}
           render={({ values }) =>
             <ProjectCreationForm_Background collaborators={values.collaborators}></ProjectCreationForm_Background>
+          }
+        />
+                <Formik
+          initialValues={{
+            context: '',
+            approach: '',
+            researchPhases: [
+              {
+                fullName: '',
+                professionalTitle: '',
+                affiliatedOrganisation: ''
+              }
+            ],
+          }}
+          // validationSchema={CreatorApplicationSchema}
+          onSubmit={(values, actions) => {
+            // onSubmitCreatorApplication(values);
+          }}
+          render={({ values }) =>
+            <ProjectCreationForm_Campaign researchPhases={values.researchPhases}></ProjectCreationForm_Campaign>
           }
         />
       </Fragment>

@@ -27,6 +27,9 @@ const styles = (theme: Theme) =>
     },
     heading:{
       textAlign: 'center',
+      maxWidth: '40vw',
+      minWidth: '300px',
+      margin: 'auto'
     },
     divider: {}
   });
