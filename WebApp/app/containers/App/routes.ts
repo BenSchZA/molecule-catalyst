@@ -64,7 +64,7 @@ const routes: AppRoute[] = [{
   requireAuth: true,
 },{
   name: 'Admin User View',
-  path: '/admin/user',
+  path: '/admin/user/:userId',
   component: AdminUserViewContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: false,

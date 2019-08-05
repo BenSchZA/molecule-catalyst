@@ -64,4 +64,5 @@ export default function* root() {
   yield call(getCreatorApplicationsAwaitingApproval);
   yield call(getAllUsers);
   yield takeEvery(getType(AdminDashboardActions.approveCreatorApplication), approveCreatorApplication)
+  yield takeEvery(getType(AdminDashboardActions.rejectCreatorApplication), rejectCreatorApplication)
 }

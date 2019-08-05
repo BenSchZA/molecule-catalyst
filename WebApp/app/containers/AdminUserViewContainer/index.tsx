@@ -15,22 +15,27 @@ import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import selectAdminViewUser from './selectors';
 import { Container } from '@material-ui/core';
+import { RouteComponentProps } from 'react-router-dom';
 
+interface RouteParams {
+  userId: string; // must be type string since route params
+}
 
-interface OwnProps { }
+interface OwnProps extends RouteComponentProps<RouteParams>,
+React.Props<RouteParams> { }
 
 interface DispatchProps {
 }
 
 interface StateProps {
   user: {},
-  creator: {},
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminUserViewContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
+    hi there
   </Container>
 );
 
@@ -40,6 +45,7 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
+
 });
 
 
