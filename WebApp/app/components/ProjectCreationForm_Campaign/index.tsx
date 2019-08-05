@@ -65,79 +65,106 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
         <Container maxWidth='md'>
           <Paper className={classes.root} square={true}>
             <Typography variant='h5'>Research Phases and Campaign Settings</Typography>
-            <Typography variant='h4' color='primary'>Phase 01</Typography>
-            <Form>
-              <InputLabel htmlFor='title'>Title</InputLabel>
-              <InputLabel htmlFor='title' shrink>
-                Write a brief title for this specific research phase.
-              </InputLabel>
-              <Field
-                name='title'
-                type='text'
-                placeholder='Enter a project title.'
-                component={TextField}
-                variant='filled'
-                fullWidth
-                margin="dense" />
-              <InputLabel htmlFor='description'>Description</InputLabel>
-              <InputLabel htmlFor='description' shrink>
-                Write a brief description of the steps that are part of this specific research phase.
-              </InputLabel>
-              <Field
-                name='description'
-                type='text'
-                placeholder='Enter a description.'
-                component={TextField}
-                variant='filled'
-                multiline
-                rows='5'
-                rowsMax='5'
-                fullWidth
-                margin="dense" />
-              <InputLabel htmlFor='result'>Result</InputLabel>
-              <InputLabel htmlFor='result' shrink>
-                What can you show to your backers after this phase has been completed? 
-                (e.g. experimental data, report, ...)
-              </InputLabel>
-              <Field
-                name='result'
-                type='text'
-                placeholder='Enter a result.'
-                component={TextField}
-                variant='filled'
-                fullWidth
-                margin="dense" />
-              <Grid container>
-                <Grid item xs={6} className={classes.gridItem}>
-                  <InputLabel htmlFor='fundingGoal'>Funding Goal</InputLabel>
-                  <InputLabel htmlFor='fundingGoal' shrink>
-                    Amount of funding needed to complete this phase.
-                  </InputLabel>
-                  <Field
-                    name='fundingGoal'
-                    type='text'
-                    placeholder='e.g. $10,000'
-                    component={TextField}
-                    variant='filled'
-                    fullWidth
-                    margin="dense" />
-                </Grid>
-                <Grid item xs={6} className={classes.gridItem}>
-                  <InputLabel htmlFor='duration'>Duration</InputLabel>
-                  <InputLabel htmlFor='duration' shrink>
-                    Time needed to finish this phase.
-                  </InputLabel>
-                  <Field
-                    name='duration'
-                    type='text'
-                    placeholder='(max. of 4 months)'
-                    component={TextField}
-                    variant='filled'
-                    fullWidth
-                    margin="dense" />
-                </Grid>
-              </Grid>
-            </Form>
+            <FieldArray
+               name="researchPhases"
+               render={arrayHelpers => (
+                  <div>
+                    {researchPhases && researchPhases.length > 0 ? (
+                      researchPhases.map((researchPhase, index) => (
+                        <div>
+                          {index == 0 && researchPhases.length <= 4 ?
+                            <Button size="small" onClick={() => {
+                              arrayHelpers.insert(index, {
+                                title: '',
+                                description: '',
+                                result: '',
+                                fundingGoal: '',
+                                duration: ''
+                              })
+                            }}><Add/></Button> : <div/>
+                          }
+                          {
+                            researchPhases.length > 1 ?
+                            <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button> : <div/>
+                          }
+                          <div key={index}>
+                            <Typography variant='h4' color='primary'>Phase 0{index + 1}</Typography>
+                            <InputLabel htmlFor='title'>Title</InputLabel>
+                            <InputLabel htmlFor='title' shrink>
+                              Write a brief title for this specific research phase.
+                            </InputLabel>
+                            <Field
+                              name={`researchPhases[${index}.title]`}
+                              type='text'
+                              placeholder='Enter a project title.'
+                              component={TextField}
+                              variant='filled'
+                              fullWidth
+                              margin="dense" />
+                            <InputLabel htmlFor='description'>Description</InputLabel>
+                            <InputLabel htmlFor='description' shrink>
+                              Write a brief description of the steps that are part of this specific research phase.
+                            </InputLabel>
+                            <Field
+                              name={`researchPhases[${index}.description]`}
+                              type='text'
+                              placeholder='Enter a description.'
+                              component={TextField}
+                              variant='filled'
+                              multiline
+                              rows='5'
+                              rowsMax='5'
+                              fullWidth
+                              margin="dense" />
+                            <InputLabel htmlFor='result'>Result</InputLabel>
+                            <InputLabel htmlFor='result' shrink>
+                              What can you show to your backers after this phase has been completed? 
+                              (e.g. experimental data, report, ...)
+                            </InputLabel>
+                            <Field
+                              name={`researchPhases[${index}.result]`}
+                              type='text'
+                              placeholder='Enter a result.'
+                              component={TextField}
+                              variant='filled'
+                              fullWidth
+                              margin="dense" />
+                            <Grid container>
+                              <Grid item xs={6} className={classes.gridItem}>
+                                <InputLabel htmlFor='fundingGoal'>Funding Goal</InputLabel>
+                                <InputLabel htmlFor='fundingGoal' shrink>
+                                  Amount of funding needed to complete this phase.
+                                </InputLabel>
+                                <Field
+                                  name={`researchPhases[${index}.fundingGoal]`}
+                                  type='text'
+                                  placeholder='e.g. $10,000'
+                                  component={TextField}
+                                  variant='filled'
+                                  fullWidth
+                                  margin="dense" />
+                              </Grid>
+                              <Grid item xs={6} className={classes.gridItem}>
+                                <InputLabel htmlFor='duration'>Duration</InputLabel>
+                                <InputLabel htmlFor='duration' shrink>
+                                  Time needed to finish this phase.
+                                </InputLabel>
+                                <Field
+                                  name={`researchPhases[${index}.duration]`}
+                                  type='text'
+                                  placeholder='(max. of 4 months)'
+                                  component={TextField}
+                                  variant='filled'
+                                  fullWidth
+                                  margin="dense" />
+                              </Grid>
+                            </Grid>
+                          </div>
+                        </div>  
+                      ))
+                    ): <div/>}
+                  </div>
+               )}/>
           </Paper>
         </Container>
       </Container>
