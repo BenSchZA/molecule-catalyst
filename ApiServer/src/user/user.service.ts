@@ -15,6 +15,11 @@ export class UserService {
     return newUser.toObject();
   }
 
+  async getAllUsers(): Promise<User[]> {
+    const result = await this.userRepository.find({}).populate(Schemas.User);
+    return result.map(r => r.toObject())
+  }
+
   async getUserByEthAddress(ethAddress: string): Promise<User> {
     const user = await this.userRepository.findOne({ethAddress: ethAddress.toLowerCase()});
     return user ? user.toObject() : false;
