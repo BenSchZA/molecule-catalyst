@@ -4,6 +4,8 @@ import { User, UserType } from './user.schema';
 import { Model } from 'mongoose';
 import { UserDocument } from './user.schema';
 import { Schemas } from '../app.constants';
+import { ObjectId } from 'mongodb';
+import { Attachment } from 'src/attachment/attachment.schema';
 
 @Injectable()
 export class UserService {
@@ -33,6 +35,28 @@ export class UserService {
   async setUserType(userId: string, userType: UserType) {
     const user = await this.userRepository.findById(userId);
     user.type = userType;
+    await user.save();
+  }
+
+  async setUserDetails(userId: string, details: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImage?: string | ObjectId | Attachment,
+    biography: string,
+    professionalTitle: string,
+    affiliatedOrganisation: string,
+  }) {
+    const user = await this.userRepository.findById(userId);
+    user.firstName = details.firstName;
+    user.lastName = details.lastName;
+    user.email = details.email;
+    user.profileImage = details.profileImage;
+    user.biography = details.biography;
+    user.professionalTitle = details.professionalTitle;
+    user.affiliatedOrganisation = details.affiliatedOrganisation;
+    user.type = UserType.ProjectCreator;
+    user.valid = true;
     await user.save();
   }
 }

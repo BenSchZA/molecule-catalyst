@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Container, TableBody, Table, TableRow, TableCell, Button, Typography } from '@material-ui/core';
 import { colors } from 'theme';
 import { UserType } from 'containers/App/routes';
 
@@ -29,27 +29,30 @@ const styles = (theme: Theme) =>
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  user: {
+  application: {
     id: string,
-    type: number,
-    ethAddress: string,
+    fullName: string,
+    user: any,
+    email: string,
     createdAt: Date,
-    fullName?: string,
-    email?: string,
-    affiliatedOrganisation?: string,
-    biography?: string,
-    professionalTitle?: string,
-    profileImage?: any
+    affiliatedOrganisation: string,
+    biography: string,
+    professionalTitle: string,
+    profileImage: any
   },
+  approveCreatorApplication(applicationId: string): void,
+  rejectCreatorApplication(applicationId: string): void,
 }
 
-const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorApplicationDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
   <Container>
     <Table>
       <TableBody>
         <TableRow>
           <TableCell>
             <Typography className={props.classes.heading}>User Details</Typography>
+            <Button className={props.classes.actionButton} onClick={() => props.approveCreatorApplication(props.application.id)}>Approve</Button>
+            <Button className={props.classes.actionButton} onClick={() => props.rejectCreatorApplication(props.application.id)}>Reject</Button>
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -59,7 +62,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.ethAddress.toUpperCase()}
+            {props.application.user.ethAddress.toUpperCase()}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -69,7 +72,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {UserType[props.user.type]}
+            {UserType[props.application.user.type]}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -79,7 +82,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.email}
+            {props.application.email}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -89,7 +92,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.fullName}
+            {props.application.fullName}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -109,7 +112,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.biography}
+            {props.application.biography}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -119,7 +122,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.professionalTitle}
+            {props.application.professionalTitle}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -129,7 +132,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.affiliatedOrganisation}
+            {props.application.affiliatedOrganisation}
           </TableCell>
         </TableRow>
       </TableBody>
@@ -137,4 +140,5 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
   </Container>
 );
 
-export default withStyles(styles, { withTheme: true })(UserDetailsView);
+
+export default withStyles(styles, { withTheme: true })(CreatorApplicationDetailsView);

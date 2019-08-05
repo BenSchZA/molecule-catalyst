@@ -7,7 +7,7 @@
 import React, { Fragment } from 'react';
 import {colors} from 'theme';
 import { Theme, createStyles, withStyles, WithStyles, Typography, Paper, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
-import UserDetailsView from 'components/UserDetailsView';
+import CreatorApplicationDetailsView from 'components/CreatorApplicationDetailsView';
 import { ExpandMore } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
@@ -71,7 +71,10 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
             <Typography className={props.classes.secondaryHeading}>{ca.email}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails> 
-            <UserDetailsView rejectCreatorApplication={props.rejectCreatorApplication} approveCreatorApplication={props.approveCreatorApplication} userCreator={ca}></UserDetailsView> 
+            <CreatorApplicationDetailsView 
+              rejectCreatorApplication={props.rejectCreatorApplication} 
+              approveCreatorApplication={props.approveCreatorApplication} 
+              application={ca}></CreatorApplicationDetailsView> 
           </ExpansionPanelDetails>
         </ExpansionPanel>
         )) : 

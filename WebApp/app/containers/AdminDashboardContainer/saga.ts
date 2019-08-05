@@ -27,6 +27,7 @@ export function* getAllUsers() {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     const result = yield call(getAllUsersApi, apiKey);
+    
     const normalised = normalize(result.data, users);
     yield put(AdminDashboardActions.setAllUsers(normalised.entities));
   } catch (error) {

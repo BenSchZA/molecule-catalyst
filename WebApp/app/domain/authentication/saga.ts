@@ -111,7 +111,7 @@ export const addressChangeEventChannel = eventChannel(emit => {
     });
   }
   catch (e) {
-    emit("Error")
+    console.log(e)
   }
   return () => { };
 });

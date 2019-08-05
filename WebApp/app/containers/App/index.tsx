@@ -36,7 +36,6 @@ export interface StateProps {
   walletUnlocked: boolean;
   ethAddress: string;
   selectedNetworkName: string;
-  userDisplayName: string;
   userRole: number;
 }
 
@@ -111,7 +110,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });
+const withSaga = injectSaga<OwnProps>({ key: 'app', saga: saga, mode: DAEMON });
 
 export default compose(
   withRouter,

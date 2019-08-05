@@ -29,11 +29,10 @@ export interface InjectSagaParams {
 
 // Your root reducer type, which is your redux state types also
 export interface ApplicationRootState {
-  readonly global: GlobalState;
+  readonly app: any;
   readonly dashboard: DashboardState;
   readonly authentication: AuthenticationState;
-  readonly userProfile: UserProfileState;
   readonly creatorApplication: CreatorApplicationState;
-  readonly adminUserView: AdminUserViewState;
+
   readonly adminDashboard: AdminDashboardState;
 }

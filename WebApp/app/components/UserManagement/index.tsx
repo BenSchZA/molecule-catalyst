@@ -8,7 +8,6 @@ import React, { Fragment } from 'react';
 import { colors } from 'theme';
 import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper } from '@material-ui/core';
 import dayjs from 'dayjs'
-import { UserType } from 'containers/App/routes';
 import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) =>
@@ -37,7 +36,6 @@ interface OwnProps extends WithStyles<typeof styles> {
     type: any,
     createdAt: Date,
   }>
-
 }
 
 const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
@@ -53,18 +51,19 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
         <TableCell></TableCell>
       </TableHead>
       <TableBody>
-        {props.users.length > 1 ? props.users.map(ca => (
+        {props.users && props.users.length > 0 ? props.users.map(ca => (
           <TableRow key={ca.id}>
             <TableCell>{ca.ethAddress.toUpperCase()}</TableCell>
             <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
             <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
             <TableCell>
-              <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
+              <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/user/${ca.id}`)}>Details</Button>
             </TableCell>
           </TableRow>
-        )) : <TableRow className={props.classes.emptyRow}>
-        <TableCell>No users</TableCell>
-      </TableRow>}
+        )) : 
+        <TableRow className={props.classes.emptyRow}>
+          <TableCell>No users</TableCell>
+        </TableRow>}
       </TableBody>
     </Table>
     </Paper>

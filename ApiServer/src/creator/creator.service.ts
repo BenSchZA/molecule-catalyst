@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { TokenDocument } from 'src/auth/token.schema';
 import { ConfigService } from 'src/config/config.service';
 import { UserService } from 'src/user/user.service';
-import { ObjectId } from 'bson';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class CreatorService {
@@ -83,7 +83,7 @@ export class CreatorService {
   async approveApplication(id: string | ObjectId, user: User) {
     const application = await this.creatorRepository.findById(id);
     
-    await this.userService.setUserType(application.user as string, UserType.ProjectCreator);
+    await this.userService.setUserDetails(application.user as string, application);
     application.status = CreatorApplicationStatus.accepted;
     application.reviewedBy = user.id;
     await application.save();
