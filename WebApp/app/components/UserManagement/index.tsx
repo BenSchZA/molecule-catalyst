@@ -42,32 +42,31 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
   <Fragment>
-    <Paper className={props.classes.banner} elevation={0}>
-      <Typography variant='h5'>User Management</Typography>
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableCell>User Address</TableCell>
-            <TableCell>Created</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell></TableCell>
-          </TableHead>
-          <TableBody>
-            {props.users.length > 0 ? props.users.map(user => (
-              <TableRow key={user.id}>
-                <TableCell>{user.ethAddress}</TableCell>
-                <TableCell>{dayjs(user.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-                <TableCell>{UserType[user.type]}</TableCell>
-                <TableCell>
-                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`/admin/user/${user.id}`)}>Details</Button>
-                </TableCell>
-              </TableRow>
-            )) : <TableRow className={props.classes.emptyRow}>
-                <TableCell>No users</TableCell>
-              </TableRow>}
-          </TableBody>
-        </Table>
-      </Paper>
+     <Paper className={props.classes.banner} elevation={0}>
+    <Typography variant='h5'>User Management</Typography>
+    <Paper>
+    <Table>
+      <TableHead>
+        <TableCell>User Address</TableCell>
+        <TableCell>Created</TableCell>
+        <TableCell>Type</TableCell>
+        <TableCell></TableCell>
+      </TableHead>
+      <TableBody>
+        {props.users.length > 1 ? props.users.map(ca => (
+          <TableRow key={ca.id}>
+            <TableCell>{ca.ethAddress.toUpperCase()}</TableCell>
+            <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
+            <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
+            <TableCell>
+              <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Details</Button>
+            </TableCell>
+          </TableRow>
+        )) : <TableRow className={props.classes.emptyRow}>
+        <TableCell>No users</TableCell>
+      </TableRow>}
+      </TableBody>
+    </Table>
     </Paper>
   </Fragment>
 
