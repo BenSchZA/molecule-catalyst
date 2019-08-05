@@ -68,6 +68,7 @@ const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
       </TableBody>
     </Table>
     </Paper>
+    </Paper>
   </Fragment>
 
 
