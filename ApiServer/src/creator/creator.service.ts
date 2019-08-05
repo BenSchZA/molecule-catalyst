@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { CreatorApplicationDto } from "./creatorApplication.dto";
-import { User } from 'src/user/user.schema';
+import { User, UserType } from 'src/user/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Schemas } from 'src/app.constants';
 import { Model } from 'mongoose';
@@ -10,7 +10,8 @@ import { SendGridService } from '@anchan828/nest-sendgrid';
 import { JwtService } from '@nestjs/jwt';
 import { TokenDocument } from 'src/auth/token.schema';
 import { ConfigService } from 'src/config/config.service';
-import { UserDocument } from '../user/user.schema';
+import { UserService } from 'src/user/user.service';
+import { ObjectId } from 'bson';
 
 @Injectable()
 export class CreatorService {
@@ -19,8 +20,8 @@ export class CreatorService {
               private readonly sendgridService: SendGridService,
               private readonly jwtService: JwtService,
               @InjectModel(Schemas.Token) private readonly tokenRepository: Model<TokenDocument>,
-              @InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
-              private readonly configService: ConfigService) { }
+              private readonly configService: ConfigService,
+              private readonly userService: UserService) { }
 
   async addApplication(applicationData: CreatorApplicationDto, file: any, user: User): Promise<CreatorApplication> {
     console.log('saving application');
@@ -79,20 +80,19 @@ export class CreatorService {
     return (result) ? result.toObject() : undefined;
   }
 
+  async approveApplication(id: string | ObjectId, user: User) {
+    const application = await this.creatorRepository.findById(id);
+    
+    await this.userService.setUserType(application.user as string, UserType.ProjectCreator);
+    application.status = CreatorApplicationStatus.accepted;
+    application.reviewedBy = user.id;
+    await application.save();
+  }
+
   async rejectApplication(id: string, user: User) {
     const application = await this.creatorRepository.findById(id);
     application.status = CreatorApplicationStatus.rejected;
     application.reviewedBy = user.id;
     await application.save();
-  }
-  
-  async approveApplication(id: string, user: User) {
-    const application = await this.creatorRepository.findById(id);
-    const applicationUser = await this.userRepository.findById(application.user.toString());
-    application.status = CreatorApplicationStatus.accepted;
-    application.reviewedBy = user.id;
-    applicationUser.type = 1;
-    await application.save();
-    await applicationUser.save();
   }
 }

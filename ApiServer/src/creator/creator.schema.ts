@@ -18,17 +18,17 @@ export enum CreatorApplicationStatus {
 }
 
 interface ICreatorApplication {
-  user: User | ObjectId | String;
+  user: User | ObjectId | string;
   firstName: string;
   lastName: string;
   fullName: string;
   email: string;
-  profileImage: Attachment | ObjectId | String,
+  profileImage: Attachment | ObjectId | string,
   biography: string,
   professionalTitle: string,
   affiliatedOrganisation: string,
   status: CreatorApplicationStatus,
-  reviewedBy: User | ObjectId | String,
+  reviewedBy: User | ObjectId | string,
 }
 
 export interface CreatorApplicationDocument extends ICreatorApplication, Document { }

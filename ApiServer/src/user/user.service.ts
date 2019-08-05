@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user.schema';
+import { User, UserType } from './user.schema';
 import { Model } from 'mongoose';
 import { UserDocument } from './user.schema';
 import { Schemas } from '../app.constants';
@@ -25,12 +25,14 @@ export class UserService {
     return user ? user.toObject() : false;
   }
 
-  // async findByEmail(email: string): Promise<UserDocument> {
-  //   return await this.userRepository.findOne({ email }).select('password');
-  // }
-
   async findById(userId: string): Promise<User> {
     const user = await this.userRepository.findById(userId);
     return user ? user.toObject() : false;
+  }
+
+  async setUserType(userId: string, userType: UserType) {
+    const user = await this.userRepository.findById(userId);
+    user.type = userType;
+    await user.save();
   }
 }
