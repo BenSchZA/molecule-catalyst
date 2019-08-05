@@ -9,23 +9,23 @@ import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLa
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import UploadImageField from 'components/UploadImageField';
-import {colors} from 'theme';
+import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
   createStyles({
-    root:{
+    root: {
       padding: '8px',
       marginTop: '16px',
     },
     containerRoot: {
       paddingBottom: '24px'
     },
-    banner:{
+    banner: {
       paddingBottom: '18px',
       backgroundColor: colors.lightGrey,
       alignItems: 'center'
     },
-    heading:{
+    heading: {
       textAlign: 'center',
       maxWidth: '40vw',
       minWidth: '300px',
@@ -43,7 +43,7 @@ const ProjectCreationForm_About: React.SFC<OwnProps> = (props: OwnProps) => (
       <Typography variant='body1' className={props.classes.heading}>
         Here you can provide a basic overview about the scientific research you want to get funding for.
       </Typography>
-      <Divider className={props.classes.divider} variant='middle'/>
+      <Divider className={props.classes.divider} variant='middle' />
     </Paper>
     <Container maxWidth='md'>
       <Paper className={props.classes.root} square={true}>

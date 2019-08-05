@@ -8,11 +8,6 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
-
-// import injectSaga from 'utils/injectSaga';
-// import injectReducer from 'utils/injectReducer';
-// import reducer from './reducer';
-// import saga from './saga';
 import makeSelectCreateProjectContainer from './selectors';
 import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
 import { Formik } from 'formik';
@@ -39,10 +34,7 @@ class CreateProjectContainer extends React.Component<Props> {
             abstract: '',
             featuredImage: ''
           }}
-          // validationSchema={CreatorApplicationSchema}
-          onSubmit={(values, actions) => {
-            // onSubmitCreatorApplication(values);
-          }}
+          onSubmit={(values, actions) => {}}
           render={() =>
             <ProjectCreationForm_About></ProjectCreationForm_About>
           }
@@ -59,30 +51,27 @@ class CreateProjectContainer extends React.Component<Props> {
               }
             ],
           }}
-          // validationSchema={CreatorApplicationSchema}
           onSubmit={(values, actions) => {
-            // onSubmitCreatorApplication(values);
           }}
           render={({ values }) =>
             <ProjectCreationForm_Background collaborators={values.collaborators}></ProjectCreationForm_Background>
           }
         />
-                <Formik
+        <Formik
           initialValues={{
             context: '',
             approach: '',
             researchPhases: [
               {
-                fullName: '',
-                professionalTitle: '',
-                affiliatedOrganisation: ''
+                title: '',
+                description: '',
+                result: '',
+                fundingGoal: '',
+                duration: ''
               }
             ],
           }}
-          // validationSchema={CreatorApplicationSchema}
-          onSubmit={(values, actions) => {
-            // onSubmitCreatorApplication(values);
-          }}
+          onSubmit={(values, actions) => {}}
           render={({ values }) =>
             <ProjectCreationForm_Campaign researchPhases={values.researchPhases}></ProjectCreationForm_Campaign>
           }

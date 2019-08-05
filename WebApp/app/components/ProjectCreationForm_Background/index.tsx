@@ -8,24 +8,24 @@ import React from 'react';
 import { Theme, createStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button, withStyles } from '@material-ui/core';
 import { Form, Field, FieldArray } from 'formik';
 import { TextField } from 'formik-material-ui';
-import {colors} from 'theme';
+import { colors } from 'theme';
 import { Add, Remove } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
   createStyles({
-    root:{
+    root: {
       padding: '8px',
       marginTop: '16px',
     },
     containerRoot: {
       paddingBottom: '24px'
     },
-    banner:{
+    banner: {
       paddingBottom: '18px',
       backgroundColor: colors.lightGrey,
       alignItems: 'center'
     },
-    heading:{
+    heading: {
       textAlign: 'center',
       maxWidth: '40vw',
       minWidth: '300px',
@@ -47,21 +47,21 @@ class ProjectCreationForm_Background extends React.Component<Props> {
         <Paper className={classes.banner} square={true} elevation={0}>
           <Typography variant='h3' className={classes.heading}>Background</Typography>
           <Typography variant='body1' className={classes.heading}>
-            Describe your research project in more detail. 
+            Describe your research project in more detail.
             Why it is worth pursuing, and what you are planning for your project as a whole.
           </Typography>
           <Typography variant='body2' className={classes.heading}>
-            Try keep your explanations as simple as possible. <br/>
+            Try keep your explanations as simple as possible. <br />
             Include interesting pictures and links to relevant academic publications.
           </Typography>
-          <Divider className={classes.divider} variant='middle'/>
+          <Divider className={classes.divider} variant='middle' />
         </Paper>
         <Container maxWidth='md'>
           <Paper className={classes.root} square={true}>
             <Form>
               <InputLabel htmlFor='context'>Context and Significance</InputLabel>
               <InputLabel htmlFor='context' shrink>
-                Explain the origins of this research idea and what inspired you to pursue it. 
+                Explain the origins of this research idea and what inspired you to pursue it.
                 Describe why it is worth working on, and why people should donate money for your initiative.
               </InputLabel>
               <Field
@@ -77,7 +77,7 @@ class ProjectCreationForm_Background extends React.Component<Props> {
                 margin="dense" />
               <InputLabel htmlFor='approach'>Approach</InputLabel>
               <InputLabel htmlFor='approach' shrink>
-                Describe the theory behind your approach, the design of your studies/experiments, and how you plan to gather 
+                Describe the theory behind your approach, the design of your studies/experiments, and how you plan to gather
                 and evaluate all data and results.
               </InputLabel>
               <Field
@@ -96,8 +96,8 @@ class ProjectCreationForm_Background extends React.Component<Props> {
                 Add up to 5 people who support your research project.
               </InputLabel>
               <FieldArray
-               name="collaborators"
-               render={arrayHelpers => (
+                name="collaborators"
+                render={arrayHelpers => (
                   <div>
                     {collaborators && collaborators.length > 0 ? (
                       collaborators.map((collaborator, index) => (
@@ -109,11 +109,10 @@ class ProjectCreationForm_Background extends React.Component<Props> {
                                 professionalTitle: '',
                                 affiliatedOrganisation: ''
                               })
-                            }}><Add/></Button> : <div/>
+                            }}><Add /></Button> : <div />
                           }
-                          {
-                            collaborators.length > 1 ?
-                            <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button> : <div/>
+                          {collaborators.length > 1 ?
+                              <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove /></Button> : <div />
                           }
                           <Grid container key={index}>
                             <Grid item xs={6}>
@@ -147,11 +146,11 @@ class ProjectCreationForm_Background extends React.Component<Props> {
                                 margin="dense" />
                             </Grid>
                           </Grid>
-                        </div>  
+                        </div>
                       ))
-                    ): <div/>}
+                    ) : <div />}
                   </div>
-               )}/>
+                )} />
             </Form>
           </Paper>
         </Container>

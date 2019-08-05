@@ -8,24 +8,24 @@ import React from 'react';
 import { Theme, createStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button, withStyles } from '@material-ui/core';
 import { Form, Field, FieldArray } from 'formik';
 import { TextField } from 'formik-material-ui';
-import {colors} from 'theme';
+import { colors } from 'theme';
 import { Add, Remove } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
   createStyles({
-    root:{
+    root: {
       padding: '8px',
       marginTop: '16px',
     },
     containerRoot: {
       paddingBottom: '24px'
     },
-    banner:{
+    banner: {
       paddingBottom: '18px',
       backgroundColor: colors.lightGrey,
       alignItems: 'center'
     },
-    heading:{
+    heading: {
       textAlign: 'center',
       maxWidth: '40vw',
       minWidth: '300px',
@@ -52,22 +52,23 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
         <Paper className={classes.banner} square={true} elevation={0}>
           <Typography variant='h3' className={classes.heading}>Campaign</Typography>
           <Typography variant='body1' className={classes.heading}>
-            Now you can add your consecutive project phases that make up your campaign. 
-            Define your expected results, goal dates, and the amount of funding you need 
+            Now you can add your consecutive project phases that make up your campaign.
+            Define your expected results, goal dates, and the amount of funding you need
             for each phase.
           </Typography>
           <Typography variant='body2' className={classes.heading}>
-            We can assist you when choosing these parameters. 
+            We can assist you when choosing these parameters.
             For more information about fundraising campaigns on Molecule, <a href="">click here.</a>
           </Typography>
-          <Divider className={classes.divider} variant='middle'/>
+          <Divider className={classes.divider} variant='middle' />
         </Paper>
         <Container maxWidth='md'>
           <Paper className={classes.root} square={true}>
-            <Typography variant='h5'>Research Phases and Campaign Settings</Typography>
-            <FieldArray
-               name="researchPhases"
-               render={arrayHelpers => (
+            <Form>
+              <Typography variant='h5'>Research Phases and Campaign Settings</Typography>
+              <FieldArray
+                name="researchPhases"
+                render={arrayHelpers => (
                   <div>
                     {researchPhases && researchPhases.length > 0 ? (
                       researchPhases.map((researchPhase, index) => (
@@ -81,18 +82,17 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                                 fundingGoal: '',
                                 duration: ''
                               })
-                            }}><Add/></Button> : <div/>
+                            }}><Add /></Button> : <div />
                           }
-                          {
-                            researchPhases.length > 1 ?
-                            <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove/></Button> : <div/>
+                          {researchPhases.length > 1 ?
+                            <Button size="small" onClick={() => arrayHelpers.remove(index)}><Remove /></Button> : <div />
                           }
                           <div key={index}>
                             <Typography variant='h4' color='primary'>Phase 0{index + 1}</Typography>
                             <InputLabel htmlFor='title'>Title</InputLabel>
                             <InputLabel htmlFor='title' shrink>
                               Write a brief title for this specific research phase.
-                            </InputLabel>
+                              </InputLabel>
                             <Field
                               name={`researchPhases[${index}.title]`}
                               type='text'
@@ -104,7 +104,7 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                             <InputLabel htmlFor='description'>Description</InputLabel>
                             <InputLabel htmlFor='description' shrink>
                               Write a brief description of the steps that are part of this specific research phase.
-                            </InputLabel>
+                              </InputLabel>
                             <Field
                               name={`researchPhases[${index}.description]`}
                               type='text'
@@ -118,9 +118,9 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                               margin="dense" />
                             <InputLabel htmlFor='result'>Result</InputLabel>
                             <InputLabel htmlFor='result' shrink>
-                              What can you show to your backers after this phase has been completed? 
+                              What can you show to your backers after this phase has been completed?
                               (e.g. experimental data, report, ...)
-                            </InputLabel>
+                              </InputLabel>
                             <Field
                               name={`researchPhases[${index}.result]`}
                               type='text'
@@ -134,7 +134,7 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                                 <InputLabel htmlFor='fundingGoal'>Funding Goal</InputLabel>
                                 <InputLabel htmlFor='fundingGoal' shrink>
                                   Amount of funding needed to complete this phase.
-                                </InputLabel>
+                                  </InputLabel>
                                 <Field
                                   name={`researchPhases[${index}.fundingGoal]`}
                                   type='text'
@@ -148,7 +148,7 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                                 <InputLabel htmlFor='duration'>Duration</InputLabel>
                                 <InputLabel htmlFor='duration' shrink>
                                   Time needed to finish this phase.
-                                </InputLabel>
+                                  </InputLabel>
                                 <Field
                                   name={`researchPhases[${index}.duration]`}
                                   type='text'
@@ -160,11 +160,12 @@ class ProjectCreationForm_Campaign extends React.Component<Props> {
                               </Grid>
                             </Grid>
                           </div>
-                        </div>  
+                        </div>
                       ))
-                    ): <div/>}
+                    ) : <div />}
                   </div>
-               )}/>
+                )} />
+            </Form>
           </Paper>
         </Container>
       </Container>
