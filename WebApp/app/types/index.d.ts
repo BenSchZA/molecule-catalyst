@@ -5,6 +5,7 @@ import { DomainState as AuthenticationState } from '../domain/authentication/typ
 import { DomainState as UserProfileState } from '../domain/userProfile/types';
 import { ContainerState as CreatorApplicationState } from '../containers/CreatorApplicationContainer/types'
 import { ContainerState as AdminDashboardState } from '../containers/AdminDashboardContainer/types'
+import { ContainerState as AdminUserViewState } from '../containers/AdminUserViewContainer/types'
 
 
 
@@ -33,5 +34,6 @@ export interface ApplicationRootState {
   readonly authentication: AuthenticationState;
   readonly userProfile: UserProfileState;
   readonly creatorApplication: CreatorApplicationState;
+  readonly adminUserView: AdminUserViewState;
   readonly adminDashboard: AdminDashboardState;
 }

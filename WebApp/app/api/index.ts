@@ -48,3 +48,11 @@ export async function approveCreatorApplication(applicationId: string, apiToken:
 export async function rejectCreatorApplication(applicationId: string, apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.rejectCreatorApplication(applicationId), undefined, 'application/json', true, apiToken);
 }
+
+export async function getUser(id: string, apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.getUser(id), undefined, 'application/json', true, apiToken);
+}
+
+export async function getCreator(id: string, apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.getCreator(id), undefined, 'application/json', true, apiToken);
+}
