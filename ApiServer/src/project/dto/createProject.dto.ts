@@ -11,13 +11,13 @@ export class CreateProjectDTO {
   @IsString()
   approach: string;
   @IsArray()
-  collaborators: Collaborator[];
+  collaborators: Array<Collaborator>;
   @IsString()
   campaignTitle: string;
   @IsString()
   campaignDescription: string;
   @IsArray()
-  researchPhases: ResearchPhase[];
+  researchPhases: Array<ResearchPhase>;
 }
 
 interface Collaborator {

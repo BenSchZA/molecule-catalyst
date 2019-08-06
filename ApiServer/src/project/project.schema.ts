@@ -25,26 +25,26 @@ interface Collaborator {
   affiliatedOrganisation: string
 }
 
-let CollaboratorSchema = new Schema({
-  fullName: String,
-  professionalTitle: String,
-  affiliatedOrganisation: String
-});
-
 interface ResearchPhase {
   title: string,
   description: string,
   result: string,
   fundingGoal: number,
-  duration: number
+  duration: number,
 }
 
+let CollaboratorSchema = new Schema({
+  fullName: { type: String, required: true },
+  professionalTitle: { type: String, required: true },
+  affiliatedOrganisation: { type: String, required: true },
+});
+
 let ResearchPhaseSchema = new Schema({
-  title: String,
-  description: String,
-  result: String,
-  fundingGoal: Number,
-  duration: Number
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  result: { type: String, required: true },
+  fundingGoal: { type: Number, required: true },
+  duration: { type: Number, required: true },
 });
 
 export interface ProjectDocument extends IProject, Document { }
