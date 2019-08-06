@@ -1,35 +1,23 @@
-import { IsString, IsEmail, MinLength, IsInstance, IsArray } from 'class-validator';
-import { isArray } from 'util';
-
-class ProjectAboutDTO {
-  title: string;
-  abstract: string;
-  featuredImage: string;
-  context: string;
-  approach: string;
-  @IsArray()
-  collaborators: Collaborator[]
-}
+import { IsString, IsArray } from 'class-validator';
 
 export class CreateProjectDTO {
   @IsString()
-  readonly firstName: string;
-
+  title: string;
   @IsString()
-  readonly lastName: string;
-
-  @IsEmail()
-  readonly email: string;
-
-  @MinLength(5)
-  readonly password: string;
-}
-
-
-interface ProjectAbout {
-  title: string,
-  abstract: string,
-  featuredImage: string,
+  abstract: string;
+  // featuredImage: string;
+  @IsString()
+  context: string;
+  @IsString()
+  approach: string;
+  @IsArray()
+  collaborators: Collaborator[];
+  @IsString()
+  campaignTitle: string;
+  @IsString()
+  campaignDescription: string;
+  @IsArray()
+  researchPhases: ResearchPhase[];
 }
 
 interface Collaborator {
@@ -38,22 +26,10 @@ interface Collaborator {
   affiliatedOrganisation: string
 }
 
-interface ProjectBackground {
-  context: string,
-  approach: string,
-  collaborators: Collaborator[]
-}
-
 interface ResearchPhase {
   title: string,
   description: string,
   result: string,
   fundingGoal: number,
   duration: number
-}
-
-interface ProjectCampaign {
-  title: string,
-  description: string,
-  researchPhases: ResearchPhase[]
 }
