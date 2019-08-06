@@ -3,6 +3,7 @@ import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminDashboardContainer from 'containers/AdminDashboardContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
+import AdminUserViewContainer from 'containers/AdminUserViewContainer';
 
 
 export enum UserType {
@@ -54,11 +55,19 @@ const routes: AppRoute[] = [{
   showNavForRoles:[UserType.Standard],
   requireAuth: true,
 }, {
-  name: 'Admin',
+  name: 'Users',
   path: '/admin',
   component: AdminDashboardContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: true,
+  showNavForRoles:[UserType.Admin],
+  requireAuth: true,
+},{
+  name: 'Admin User View',
+  path: '/admin/user/:userId',
+  component: AdminUserViewContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: false,
   showNavForRoles:[UserType.Admin],
   requireAuth: true,
 }];

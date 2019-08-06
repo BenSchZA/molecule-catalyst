@@ -5,6 +5,7 @@ import { DomainState as AuthenticationState } from '../domain/authentication/typ
 import { DomainState as UserProfileState } from '../domain/userProfile/types';
 import { ContainerState as CreatorApplicationState } from '../containers/CreatorApplicationContainer/types'
 import { ContainerState as AdminDashboardState } from '../containers/AdminDashboardContainer/types'
+import { ContainerState as AdminUserViewState } from '../containers/AdminUserViewContainer/types'
 
 
 
@@ -28,10 +29,10 @@ export interface InjectSagaParams {
 
 // Your root reducer type, which is your redux state types also
 export interface ApplicationRootState {
-  readonly global: GlobalState;
+  readonly app: any;
   readonly dashboard: DashboardState;
   readonly authentication: AuthenticationState;
-  readonly userProfile: UserProfileState;
   readonly creatorApplication: CreatorApplicationState;
+
   readonly adminDashboard: AdminDashboardState;
 }
