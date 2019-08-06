@@ -8,26 +8,103 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
-
-// import injectSaga from 'utils/injectSaga';
-// import injectReducer from 'utils/injectReducer';
-// import reducer from './reducer';
-// import saga from './saga';
 import makeSelectCreateProjectContainer from './selectors';
-import { Typography } from '@material-ui/core';
+import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
+import { Formik } from 'formik';
+import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
+import ProjectCreationForm_Campaign from 'components/ProjectCreationForm_Campaign';
 
 interface OwnProps { }
-
 interface DispatchProps { }
-
 interface StateProps { }
+
+interface ProjectAbout {
+  title: string,
+  abstract: string,
+  featuredImage: string,
+}
+
+interface Collaborator {
+  fullName: string,
+  professionalTitle: string,
+  affiliatedOrganisation: string
+}
+
+interface ProjectBackground {
+  context: string,
+  approach: string,
+  collaborators: Collaborator[]
+}
+
+interface ResearchPhase {
+  title: string,
+  description: string,
+  result: string,
+  fundingGoal: number,
+  duration: number
+}
+
+interface ProjectCampaign {
+  title: string,
+  description: string,
+  researchPhases: ResearchPhase[]
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const CreateProjectContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>
-    <Typography>Create Project</Typography>
-  </Fragment>;
+const CreateProjectContainer: React.FunctionComponent<Props> = ({}: Props) => {
+  return (
+    <Fragment>
+      <Formik
+        initialValues={{
+          title: '',
+          abstract: '',
+          featuredImage: ''
+        }}
+        onSubmit={(values, actions) => {}}
+        render={() =>
+          <ProjectCreationForm_About></ProjectCreationForm_About>
+        }
+      />
+      <Formik
+        initialValues={{
+          context: '',
+          approach: '',
+          collaborators: [
+            {
+              fullName: '',
+              professionalTitle: '',
+              affiliatedOrganisation: ''
+            }
+          ],
+        }}
+        onSubmit={(values, actions) => {
+        }}
+        render={({ values }) =>
+          <ProjectCreationForm_Background collaborators={values.collaborators}></ProjectCreationForm_Background>
+        }
+      />
+      <Formik
+        initialValues={{
+          title: '',
+          description: '',
+          researchPhases: [
+            {
+              title: '',
+              description: '',
+              result: '',
+              fundingGoal: '',
+              duration: ''
+            }
+          ],
+        }}
+        onSubmit={(values, actions) => {}}
+        render={({ values }) =>
+          <ProjectCreationForm_Campaign researchPhases={values.researchPhases}></ProjectCreationForm_Campaign>
+        }
+      />
+    </Fragment>
+  );
 };
 
 const mapStateToProps = createStructuredSelector({
