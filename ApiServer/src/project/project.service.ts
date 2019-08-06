@@ -6,14 +6,17 @@ import { ProjectDocument } from './project.schema';
 import { Schemas } from '../app.constants';
 import { CreateProjectDTO } from './dto/createProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class ProjectService {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
-              private readonly attachmentService: AttachmentService) {}
+              private readonly attachmentService: AttachmentService,
+              private readonly userService: UserService) {}
 
-  async create(projectData: CreateProjectDTO, file: any): Promise<Project> {
-    const project = await new this.projectRepository({...projectData});
+  async create(projectData: CreateProjectDTO, file: any, user: User): Promise<Project> {
+    const project = await new this.projectRepository({...projectData, user: user.id});
     if (file) {
       const attachment = await this.attachmentService.create({
         filename: `${project.id}-${file.originalname}`,

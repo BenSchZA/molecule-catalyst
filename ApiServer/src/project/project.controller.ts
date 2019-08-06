@@ -2,7 +2,7 @@ import { Controller, UseGuards, Get, Post, UseInterceptors, Req, Body, UploadedF
 import { ProjectService } from './project.service';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
-import { UserType } from '../user/user.schema';
+import { UserType, User } from '../user/user.schema';
 import { Project } from './project.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptorHelper, FileOptions } from 'src/helpers/fileInterceptorHelper';
@@ -27,10 +27,10 @@ export class ProjectController {
     maxCount: 1,
     type: FileOptions.PICTURE,
   }))
-  async createProject(@Req() req: Request & { project: Project },
+  async createProject(@Req() req: Request & { user: User },
     @Body() reqBody: CreateProjectDTO,
     @UploadedFile() file) {
-    const result = await this.projectService.create(reqBody, file);
+    const result = await this.projectService.create(reqBody, file, req.user);
     return result;
   }
 }

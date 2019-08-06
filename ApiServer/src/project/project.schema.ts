@@ -2,12 +2,14 @@ import { Schema, Document } from 'mongoose';
 import { Schemas } from 'src/app.constants';
 import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
+import { User } from 'src/user/user.schema';
 
 export interface Project extends IProject {
   id: string;
 }
 
 interface IProject {
+  user: User | ObjectId | string;
   title: string,
   abstract: string,
   featuredImage: Attachment | ObjectId | String,
@@ -50,6 +52,7 @@ let ResearchPhaseSchema = new Schema({
 export interface ProjectDocument extends IProject, Document { }
 
 export const ProjectSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: Schemas.User, required: true, unique: true},
   title: { type: String, required: true },
   abstract: { type: String, required: true },
   featuredImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: true },
