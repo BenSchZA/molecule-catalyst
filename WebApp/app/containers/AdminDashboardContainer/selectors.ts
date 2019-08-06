@@ -8,7 +8,7 @@ const selectCreatorsAwaitingApproval = (state: ApplicationRootState) => {
 };
 
 const selectAllUsers = (state: ApplicationRootState) => {
-  return state.adminDashboard.allUsers;
+  return state.adminDashboard.users;
 };
 
 const makeSelectCreatorsAwaitingApproval = createSelector(selectCreatorsAwaitingApproval, substate => {
@@ -21,7 +21,7 @@ const makeSelectAllUsers = createSelector(selectAllUsers, substate => {
 
 const selectAdminDashboard = createStructuredSelector<RootState, StateProps>({
   creatorsAwaitingApproval: makeSelectCreatorsAwaitingApproval,
-  allUsers: makeSelectAllUsers
+  users: makeSelectAllUsers
 });
 
 

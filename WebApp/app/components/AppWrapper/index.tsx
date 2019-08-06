@@ -73,7 +73,6 @@ interface OwnProps extends WithStyles<typeof styles> {
   walletUnlocked: boolean;
   ethAddress: string;
   selectedNetworkName: string;
-  userDisplayName: string;
   navRoutes: Array<AppRoute>;
 }
 
