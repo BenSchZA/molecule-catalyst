@@ -25,6 +25,12 @@ interface Collaborator {
   affiliatedOrganisation: string
 }
 
+let CollaboratorSchema = new Schema({
+  fullName: String,
+  professionalTitle: String,
+  affiliatedOrganisation: String
+});
+
 interface ResearchPhase {
   title: string,
   description: string,
@@ -32,6 +38,14 @@ interface ResearchPhase {
   fundingGoal: number,
   duration: number
 }
+
+let ResearchPhaseSchema = new Schema({
+  title: String,
+  description: String,
+  result: String,
+  fundingGoal: Number,
+  duration: Number
+});
 
 export interface ProjectDocument extends IProject, Document { }
 
@@ -41,10 +55,10 @@ export const ProjectSchema = new Schema({
   featuredImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: true },
   context: { type: String, required: true },
   approach: { type: String, required: true },
-  collaborators: Collaborator[],
+  collaborators: [CollaboratorSchema],
   campaignTitle: { type: String, required: true },
   campaignDescription: { type: String, required: true },
-  researchPhases: ResearchPhase[]
+  researchPhases: [ResearchPhaseSchema]
 }, {
     timestamps: true,
     toJSON: {
