@@ -37,9 +37,6 @@ const styles = (theme: Theme) =>
       justifyContent: 'space-between',
       flexDirection: 'column',
     },
-    submitButton: {
-      align: ''
-    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -310,7 +307,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                 ) : <div />}
               </div>
             )} />
-          <Button type='submit' className={classes.submitButton}>Submit</Button>
+          <Button type='submit'>Submit</Button>
         </Paper>
       </Container>
     </Form>
