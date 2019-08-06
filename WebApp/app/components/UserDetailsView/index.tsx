@@ -79,7 +79,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.email}
+            {(props.user.email) ? props.user.email : 'N/A'}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -89,7 +89,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.fullName}
+          {(props.user.fullName) ? props.user.fullName : 'N/A'}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -109,7 +109,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.biography}
+            {(props.user.biography) ? props.user.biography : 'N/A'}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -119,7 +119,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.professionalTitle}
+            {(props.user.professionalTitle) ? props.user.professionalTitle : 'N/A'}
           </TableCell>
         </TableRow>
         <TableRow className={props.classes.altRow}>
@@ -129,7 +129,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
         <TableRow>
           <TableCell>
-            {props.user.affiliatedOrganisation}
+            {(props.user.affiliatedOrganisation) ? props.user.affiliatedOrganisation : 'N/A'}
           </TableCell>
         </TableRow>
       </TableBody>
