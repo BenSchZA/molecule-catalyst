@@ -12,8 +12,7 @@ import { User } from 'src/user/user.schema';
 @Injectable()
 export class ProjectService {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
-              private readonly attachmentService: AttachmentService,
-              private readonly userService: UserService) {}
+              private readonly attachmentService: AttachmentService) {}
 
   async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
     const project = await new this.projectRepository({...projectData, user: user.id});
@@ -30,7 +29,7 @@ export class ProjectService {
   }
 
   async getAllProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find({}).populate(Schemas.Project);
+    const result = await this.projectRepository.find()
     return result.map(r => r.toObject())
   }
 

@@ -13,15 +13,14 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Get('all')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserType.Standard)
   async getAllProjects(): Promise<Project[]> {
     const result = await this.projectService.getAllProjects();
     return result;
   }
 
   @Post('submit')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.ProjectCreator)
   @UseInterceptors(FileInterceptorHelper({
     name: 'featuredImage',
     maxCount: 1,
