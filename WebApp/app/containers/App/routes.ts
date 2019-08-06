@@ -55,7 +55,7 @@ const routes: AppRoute[] = [{
   showNavForRoles:[UserType.Standard],
   requireAuth: true,
 }, {
-  name: 'Admin',
+  name: 'Users',
   path: '/admin',
   component: AdminDashboardContainer,
   roleRequirement: UserType.Admin,
