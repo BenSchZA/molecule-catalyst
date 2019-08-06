@@ -3,6 +3,7 @@ export enum Schemas {
   Attachment = 'attachment',
   Creator = 'creator',
   Token = 'token',
+  Project = 'project'
 }
 
 export enum Modules {
