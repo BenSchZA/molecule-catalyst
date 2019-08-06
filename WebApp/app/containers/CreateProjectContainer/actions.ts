@@ -4,9 +4,9 @@
  *
  */
 
-import { action } from 'typesafe-actions';
+import { createStandardAction } from 'typesafe-actions';
 import {} from './types';
 
 import ActionTypes from './constants';
 
-export const defaultAction = () => action(ActionTypes.DEFAULT_ACTION);
+export const submitProject = createStandardAction(ActionTypes.SUBMIT_PROJECT)<any>();

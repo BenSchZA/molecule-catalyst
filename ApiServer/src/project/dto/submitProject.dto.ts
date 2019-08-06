@@ -5,17 +5,12 @@ export class SubmitProjectDTO {
   title: string;
   @IsString()
   abstract: string;
-  // featuredImage: string;
   @IsString()
   context: string;
   @IsString()
   approach: string;
   @IsArray()
   collaborators: Array<Collaborator>;
-  @IsString()
-  campaignTitle: string;
-  @IsString()
-  campaignDescription: string;
   @IsArray()
   researchPhases: Array<ResearchPhase>;
 }

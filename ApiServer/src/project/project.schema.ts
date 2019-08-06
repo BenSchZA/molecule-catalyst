@@ -25,8 +25,6 @@ interface IProject {
   context: string,
   approach: string,
   collaborators: Collaborator[],
-  campaignTitle: string,
-  campaignDescription: string,
   researchPhases: ResearchPhase[],
   status: ProjectSubmissionStatus,
   reviewedBy: User | ObjectId | string,
@@ -50,7 +48,10 @@ let CollaboratorSchema = new Schema({
   fullName: { type: String, required: true },
   professionalTitle: { type: String, required: true },
   affiliatedOrganisation: { type: String, required: true },
-});
+}, {
+    _id: false,
+    id: false
+  });
 
 let ResearchPhaseSchema = new Schema({
   title: { type: String, required: true },
@@ -58,20 +59,21 @@ let ResearchPhaseSchema = new Schema({
   result: { type: String, required: true },
   fundingGoal: { type: Number, required: true },
   duration: { type: Number, required: true },
-});
+}, {
+    _id: false,
+    id: false
+  });
 
 export interface ProjectDocument extends IProject, Document { }
 
 export const ProjectSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: Schemas.User, required: true, unique: true},
+  user: { type: Schema.Types.ObjectId, ref: Schemas.User, required: true },
   title: { type: String, required: true },
   abstract: { type: String, required: true },
   featuredImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: true },
   context: { type: String, required: true },
   approach: { type: String, required: true },
   collaborators: { type: [CollaboratorSchema], required: true },
-  campaignTitle: { type: String, required: true },
-  campaignDescription: { type: String, required: true },
   researchPhases: { type: [ResearchPhaseSchema], required: true },
   status: { type: Number, required: true, default: ProjectSubmissionStatus.created, enum: [...spreadEnumKeys(ProjectSubmissionStatus)] },
   reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false }
