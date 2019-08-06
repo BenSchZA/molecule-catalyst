@@ -32,6 +32,10 @@ export async function getCreatorApplicationsAwaitingApproval(apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.getCreatorApplicationAwaitingApproval, undefined, 'application/json', true, apiToken)
 }
 
+export async function getProjectApplicationsAwaitingApproval(apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.getProjectsApplicationAwaitingApproval, undefined, 'application/json', true, apiToken)
+}
+
 export async function getAllUsers(apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.getAllUsers, undefined, 'application/json', true, apiToken)
 }

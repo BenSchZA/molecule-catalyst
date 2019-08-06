@@ -4,6 +4,7 @@ import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminDashboardContainer from 'containers/AdminDashboardContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
 
+import AdminProjectApprovalListingContainer from 'containers/AdminProjectApprovalListingContainer';
 
 export enum UserType {
   Standard,
@@ -57,6 +58,14 @@ const routes: AppRoute[] = [{
   name: 'Admin',
   path: '/admin',
   component: AdminDashboardContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: true,
+  showNavForRoles:[UserType.Admin],
+  requireAuth: true,
+}, {
+  name: 'Admin Projects',
+  path: '/admin/projects',
+  component: AdminProjectApprovalListingContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: true,
   showNavForRoles:[UserType.Admin],
