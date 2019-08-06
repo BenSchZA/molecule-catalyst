@@ -13,10 +13,24 @@ import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
 import { Formik } from 'formik';
 import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
 import ProjectCreationForm_Campaign from 'components/ProjectCreationForm_Campaign';
+import { Collaborator, ResearchPhase } from './types';
 
 interface OwnProps { }
 interface DispatchProps { }
-interface StateProps { }
+interface StateProps { 
+  application: {
+    title?: string,
+    abstract?: string,
+    featuredImage?: string,
+    context?: string,
+    approach?: string,
+    collaborators?: Collaborator[],
+    campaignTitle?: string,
+    campaignDescription?: string,
+    researchPhases?: ResearchPhase[],
+    status?: number,
+  } | undefined
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 

@@ -2,6 +2,14 @@ import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
+export enum ProjectSubmissionStatus {
+  created,
+  accepted,
+  rejected,
+  started,
+  ended
+}
+
 export interface ProjectData {
   title: string,
   abstract: string,
@@ -14,13 +22,13 @@ export interface ProjectData {
   researchPhases: ResearchPhase[]
 }
 
-interface Collaborator {
+export interface Collaborator {
   fullName: string,
   professionalTitle: string,
   affiliatedOrganisation: string
 }
 
-interface ResearchPhase {
+export interface ResearchPhase {
   title: string,
   description: string,
   result: string,
@@ -30,7 +38,16 @@ interface ResearchPhase {
 
 /* --- STATE --- */
 interface CreateProjectContainerState {
-  readonly default: any;
+  title?: string,
+  abstract?: string,
+  featuredImage?: ObjectId | string,
+  context?: string,
+  approach?: string,
+  collaborators?: Collaborator[],
+  campaignTitle?: string,
+  campaignDescription?: string,
+  researchPhases?: ResearchPhase[],
+  status?: ProjectSubmissionStatus,
 }
 
 /* --- ACTIONS --- */
