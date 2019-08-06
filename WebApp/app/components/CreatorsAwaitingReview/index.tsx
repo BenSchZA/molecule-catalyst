@@ -6,8 +6,9 @@
 
 import React, { Fragment } from 'react';
 import {colors} from 'theme';
-import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper } from '@material-ui/core';
-import dayjs from 'dayjs'
+import { Theme, createStyles, withStyles, WithStyles, Typography, Paper, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import CreatorApplicationDetailsView from 'components/CreatorApplicationDetailsView';
+import { ExpandMore } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -19,14 +20,22 @@ const styles = (theme: Theme) =>
     maxWidth:{
       width: '1200px!important'
     },
-    actionButton: {
-      marginTop: '12px',
-      marginBottom: '12px',
-      float: 'right'
-    },
     emptyRow: {
       height: '71px',
-    }
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      flexBasis: '33.33%',
+      flexShrink: 0,
+      paddingTop: '12px',
+      paddingLeft: '16px',
+    },
+    secondaryHeading: {
+      fontSize: theme.typography.pxToRem(15),
+      color: theme.palette.text.secondary,
+      paddingTop: '12px',
+      paddingLeft: '16px',
+    },
     
   });
 
@@ -34,51 +43,48 @@ interface OwnProps extends WithStyles<typeof styles> {
   creatorApplications: Array<{
     id: string,
     fullName: string,
+    user: any,
     email: string,
     createdAt: Date,
     affiliatedOrganisation: string,
+    biography: string,
+    professionalTitle: string,
+    profileImage: any
   }>,
   approveCreatorApplication(applicationId: string): void,
+  rejectCreatorApplication(applicationId: string): void,
 }
 
 const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
- 
   <Fragment>
      <Paper className={props.classes.banner} elevation={0}>
     <Typography variant='h5'>Awaiting Approval</Typography>
     <Paper>
-    <Table>
-      <TableHead>
-        <TableCell>Full Name</TableCell>
-        <TableCell>Email</TableCell>
-        <TableCell>Application Date</TableCell>
-        <TableCell>Associated Organisation</TableCell>
-        <TableCell></TableCell>
-        <TableCell></TableCell>
-      </TableHead>
-      <TableBody>
         {props.creatorApplications.length > 0 ? props.creatorApplications.map(ca => (
-          <TableRow key={ca.id}>
-            <TableCell>{ca.fullName}</TableCell>
-            <TableCell>{ca.email}</TableCell>
-            <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.affiliatedOrganisation}</TableCell>
-            <TableCell>
-              <Button className={props.classes.actionButton} onClick={() => props.approveCreatorApplication(ca.id)}>Approve</Button>
-              <Button className={props.classes.actionButton} onClick={() => console.log(ca.id)}>Reject</Button>
-            </TableCell>
-          </TableRow>
-        )) : <TableRow className={props.classes.emptyRow}>
-        <TableCell>No awaiting approvals</TableCell>
-      </TableRow>}
-        
-      </TableBody>
-    </Table>
+          <ExpansionPanel>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+          >
+            <Typography className={props.classes.heading}>{ca.fullName}</Typography>
+            <Typography className={props.classes.secondaryHeading}>{ca.email}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails> 
+            <CreatorApplicationDetailsView 
+              rejectCreatorApplication={props.rejectCreatorApplication} 
+              approveCreatorApplication={props.approveCreatorApplication} 
+              application={ca}></CreatorApplicationDetailsView> 
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        )) : 
+        <ExpansionPanel>
+         <Typography className={props.classes.heading}>No awaiting creator applications</Typography>
+      </ExpansionPanel>
+      }
     </Paper>
     </Paper>
   </Fragment>
-
-
 );
 
 
