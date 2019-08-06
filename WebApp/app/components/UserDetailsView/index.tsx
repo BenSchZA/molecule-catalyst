@@ -5,9 +5,10 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button } from '@material-ui/core';
 import { colors } from 'theme';
 import { UserType } from 'containers/App/routes';
+import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -22,10 +23,14 @@ const styles = (theme: Theme) =>
       marginBottom: '12px',
       float: 'right'
     },
-    heading: {
-      float: 'left',
-      marginTop: '24px',
-    }
+     banner: {
+      marginBottom: '16px',
+      backgroundColor: colors.lightGrey,
+      width: '100%'
+    },
+    backButton: {
+     float: 'right'
+   },
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -45,13 +50,13 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
   <Container>
+      <Paper className={props.classes.banner} elevation={0}>
+      <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin`)}>Back</Button>
+      <Typography variant='h5'>User Details</Typography>
+      </Paper>
+      <Paper>
     <Table>
       <TableBody>
-        <TableRow>
-          <TableCell>
-            <Typography className={props.classes.heading}>User Details</Typography>
-          </TableCell>
-        </TableRow>
         <TableRow className={props.classes.altRow}>
           <TableCell className={props.classes.altRowCell}>
             User Address
@@ -134,6 +139,7 @@ const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
         </TableRow>
       </TableBody>
     </Table>
+    </Paper>
   </Container>
 );
 
