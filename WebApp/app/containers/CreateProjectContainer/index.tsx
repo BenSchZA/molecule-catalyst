@@ -15,7 +15,8 @@ import injectSaga from 'utils/injectSaga';
 import saga from './saga';
 import { ProjectData } from './types';
 import * as actions from './actions';
-
+import * as Yup from 'yup';
+import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'fileManagement';
 
 interface OwnProps { }
 interface DispatchProps {
@@ -26,6 +27,32 @@ interface StateProps { }
 type Props = StateProps & DispatchProps & OwnProps;
 
 const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProject }: Props) => {
+  const CreateProjectSchema = Yup.object().shape({
+    title: Yup.string().required(),
+    abstract: Yup.string().required(),
+    featuredImage: Yup.mixed()
+      .test('fileSize', 'Maximum file size of 10MB exceeded', file => fileSizeValidation(file, MAX_FILE_SIZE))
+      .test('fileType', 'Please supply an image file', file => fileTypeValidation(file, SUPPORTED_IMAGE_FORMATS)),
+    researchPhases: Yup.array().of(
+      Yup.object().shape({
+        title: Yup.string().required(),
+        description: Yup.string().required(),
+        result: Yup.string().required(),
+        fundingGoal: Yup.number().required(),
+        duration: Yup.number().required(),
+      })
+    ),
+    context: Yup.string().required(),
+    approach: Yup.string().required(),
+    collaborators: Yup.array().of(
+      Yup.object().shape({
+        fullName: Yup.string().required(),
+        professionalTitle: Yup.string().required(),
+        affiliatedOrganisation: Yup.string().required(),
+      }),
+    ),
+  });
+
   return (
     <Formik
       initialValues={{
@@ -47,6 +74,7 @@ const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProjec
           affiliatedOrganisation: ''
         }],
       }}
+      validationSchema={CreateProjectSchema}
       onSubmit={(values, actions) => {
         onSubmitProject(values);
       }}

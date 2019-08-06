@@ -276,7 +276,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             <InputLabel htmlFor='fundingGoal'>Funding Goal</InputLabel>
                             <InputLabel htmlFor='fundingGoal' shrink>
                               Amount of funding needed to complete this phase.
-                              </InputLabel>
+                            </InputLabel>
                             <Field
                               name={`researchPhases[${index}.fundingGoal]`}
                               type='text'

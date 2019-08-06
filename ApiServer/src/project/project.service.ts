@@ -6,7 +6,6 @@ import { ProjectDocument } from './project.schema';
 import { Schemas } from '../app.constants';
 import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
-import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.schema';
 
 @Injectable()
