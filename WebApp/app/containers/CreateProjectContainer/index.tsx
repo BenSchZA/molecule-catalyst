@@ -18,38 +18,6 @@ interface OwnProps { }
 interface DispatchProps { }
 interface StateProps { }
 
-interface ProjectAbout {
-  title: string,
-  abstract: string,
-  featuredImage: string,
-}
-
-interface Collaborator {
-  fullName: string,
-  professionalTitle: string,
-  affiliatedOrganisation: string
-}
-
-interface ProjectBackground {
-  context: string,
-  approach: string,
-  collaborators: Collaborator[]
-}
-
-interface ResearchPhase {
-  title: string,
-  description: string,
-  result: string,
-  fundingGoal: number,
-  duration: number
-}
-
-interface ProjectCampaign {
-  title: string,
-  description: string,
-  researchPhases: ResearchPhase[]
-}
-
 type Props = StateProps & DispatchProps & OwnProps;
 
 const CreateProjectContainer: React.FunctionComponent<Props> = ({}: Props) => {
@@ -86,8 +54,8 @@ const CreateProjectContainer: React.FunctionComponent<Props> = ({}: Props) => {
       />
       <Formik
         initialValues={{
-          title: '',
-          description: '',
+          campaignTitle: '',
+          campaignDescription: '',
           researchPhases: [
             {
               title: '',

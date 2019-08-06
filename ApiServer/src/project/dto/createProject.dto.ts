@@ -1,6 +1,6 @@
 import { IsString, IsArray } from 'class-validator';
 
-export class CreateProjectDTO {
+export class SubmitProjectDTO {
   @IsString()
   title: string;
   @IsString()

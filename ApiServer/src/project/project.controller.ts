@@ -20,17 +20,17 @@ export class ProjectController {
     return result;
   }
 
-  @Post('create')
+  @Post('submit')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptorHelper({
     name: 'featuredImage',
     maxCount: 1,
     type: FileOptions.PICTURE,
   }))
-  async createProject(@Req() req: Request & { user: User },
+  async submitProject(@Req() req: Request & { user: User },
     @Body() reqBody: CreateProjectDTO,
     @UploadedFile() file) {
-    const result = await this.projectService.create(reqBody, file, req.user);
+    const result = await this.projectService.submit(reqBody, file, req.user);
     return result;
   }
 }

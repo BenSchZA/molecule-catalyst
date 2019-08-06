@@ -15,7 +15,7 @@ export class ProjectService {
               private readonly attachmentService: AttachmentService,
               private readonly userService: UserService) {}
 
-  async create(projectData: CreateProjectDTO, file: any, user: User): Promise<Project> {
+  async submit(projectData: CreateProjectDTO, file: any, user: User): Promise<Project> {
     const project = await new this.projectRepository({...projectData, user: user.id});
     if (file) {
       const attachment = await this.attachmentService.create({
