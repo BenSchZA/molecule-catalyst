@@ -8,13 +8,13 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('projects')
 export class ProjectController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly projectService: ProjectService) {}
 
   @Get('all')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Standard)
   async getAllProjects(): Promise<Project[]> {
-    const result = await this.userService.getAllUsers();
+    const result = await this.projectService.getAllProjects();
     return result;
   }
 }
