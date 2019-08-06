@@ -6,7 +6,7 @@ import { UserType, User } from '../user/user.schema';
 import { Project } from './project.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptorHelper, FileOptions } from 'src/helpers/fileInterceptorHelper';
-import { CreateProjectDTO } from './dto/createProject.dto';
+import { SubmitProjectDTO } from './dto/submitProject.dto'
 
 @Controller('projects')
 export class ProjectController {
@@ -28,7 +28,7 @@ export class ProjectController {
     type: FileOptions.PICTURE,
   }))
   async submitProject(@Req() req: Request & { user: User },
-    @Body() reqBody: CreateProjectDTO,
+    @Body() reqBody: SubmitProjectDTO,
     @UploadedFile() file) {
     const result = await this.projectService.submit(reqBody, file, req.user);
     return result;

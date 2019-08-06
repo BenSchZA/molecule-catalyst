@@ -3,9 +3,18 @@ import { Schemas } from 'src/app.constants';
 import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
 import { User } from 'src/user/user.schema';
+import { spreadEnumKeys } from 'src/helpers/spreadEnum';
 
 export interface Project extends IProject {
   id: string;
+}
+
+export enum ProjectSubmissionStatus {
+  created,
+  accepted,
+  rejected,
+  started,
+  ended
 }
 
 interface IProject {
@@ -18,7 +27,9 @@ interface IProject {
   collaborators: Collaborator[],
   campaignTitle: string,
   campaignDescription: string,
-  researchPhases: ResearchPhase[]
+  researchPhases: ResearchPhase[],
+  status: ProjectSubmissionStatus,
+  reviewedBy: User | ObjectId | string,
 }
 
 interface Collaborator {
@@ -62,6 +73,8 @@ export const ProjectSchema = new Schema({
   campaignTitle: { type: String, required: true },
   campaignDescription: { type: String, required: true },
   researchPhases: { type: [ResearchPhaseSchema], required: true },
+  status: { type: Number, required: true, default: ProjectSubmissionStatus.created, enum: [...spreadEnumKeys(ProjectSubmissionStatus)] },
+  reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false }
 }, {
     timestamps: true,
     toJSON: {

@@ -4,7 +4,7 @@ import { Project } from './project.schema';
 import { Model } from 'mongoose';
 import { ProjectDocument } from './project.schema';
 import { Schemas } from '../app.constants';
-import { CreateProjectDTO } from './dto/createProject.dto';
+import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.schema';
@@ -15,7 +15,7 @@ export class ProjectService {
               private readonly attachmentService: AttachmentService,
               private readonly userService: UserService) {}
 
-  async submit(projectData: CreateProjectDTO, file: any, user: User): Promise<Project> {
+  async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
     const project = await new this.projectRepository({...projectData, user: user.id});
     if (file) {
       const attachment = await this.attachmentService.create({
