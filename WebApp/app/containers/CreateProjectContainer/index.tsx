@@ -16,7 +16,8 @@ import saga from './saga';
 import { ProjectData } from './types';
 import * as actions from './actions';
 import * as Yup from 'yup';
-import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'fileManagement';
+import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'utils/fileValidationHelpers';
+
 
 interface OwnProps { }
 interface DispatchProps {

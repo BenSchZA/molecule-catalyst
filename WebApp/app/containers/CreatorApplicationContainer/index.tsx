@@ -16,7 +16,7 @@ import { CreatorApplicationData } from './types';
 import CreatorApplicationForm from 'components/CreatorApplicationForm';
 import creatorApplicationState from './selectors';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
-import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'fileManagement';
+import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'utils/fileValidationHelpers';
 
 interface OwnProps extends RouteComponentProps { }
 
