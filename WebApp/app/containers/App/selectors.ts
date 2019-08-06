@@ -3,7 +3,6 @@ import { createStructuredSelector } from 'reselect';
 import { RootState } from './types';
 import { StateProps } from 'containers/App';
 import { makeSelectIsLoggedIn, makeSelectWalletUnlocked, makeSelectNetworkName, makeSelectEthAddress, makeSelectUserRole } from 'domain/authentication/selectors';
-import { makeSelectUserDisplayName } from '../../domain/userProfile/selectors';
 
 /**
  * Direct selector to the user state domain
@@ -24,7 +23,6 @@ const selectApp = createStructuredSelector<RootState, StateProps>({
   isLoggedIn: makeSelectIsLoggedIn,
   walletUnlocked: makeSelectWalletUnlocked,
   selectedNetworkName: makeSelectNetworkName,
-  userDisplayName: makeSelectUserDisplayName,
   ethAddress: makeSelectEthAddress,
   userRole: makeSelectUserRole, 
 });
