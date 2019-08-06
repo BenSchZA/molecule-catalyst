@@ -15,6 +15,7 @@ import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import selectAdminProjectListing from './selectors';
 import { Container } from '@material-ui/core';
+import AdminProjectListing from 'components/AdminProjectListing';
 
 
 interface OwnProps { }
@@ -31,7 +32,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminProjectApprovalListingContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
-    SOME STUFF
+    <AdminProjectListing projects={props.projectsAwaitingApproval}></AdminProjectListing>
   </Container>
 );
 
@@ -51,11 +52,11 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer<OwnProps>({
-  key: 'adminDashboard',
+  key: 'adminProjectListing',
   reducer: reducer,
 });
 const withSaga = injectSaga<OwnProps>({
-  key: 'adminDashboard',
+  key: 'adminProjectListing',
   saga: saga,
   mode: RESTART_ON_REMOUNT
 });

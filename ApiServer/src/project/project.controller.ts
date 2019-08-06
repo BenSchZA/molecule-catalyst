@@ -20,6 +20,14 @@ export class ProjectController {
     return result;
   }
 
+  @Get('awaitingApproval')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Standard)
+  async getAllAwaitingApprovalProjects(): Promise<Project[]> {
+    const result = await this.projectService.getAllProjects();
+    return result;
+  }
+
   @Post('create')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptorHelper({

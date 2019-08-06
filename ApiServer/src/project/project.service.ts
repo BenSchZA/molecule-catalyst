@@ -52,6 +52,11 @@ export class ProjectService {
     return result.map(r => r.toObject())
   }
 
+  async getAwaitingApprovalProjects(): Promise<Project[]> {
+    const result = await this.projectRepository.find({status: 1}).populate(Schemas.Project);
+    return result.map(r => r.toObject());
+  }
+
   async findById(projectId: string): Promise<Project> {
     const project = await this.projectRepository.findById(projectId);
     return project ? project.toObject() : false;

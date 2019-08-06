@@ -3,16 +3,18 @@ import { RootState } from 'containers/App/types';
 import { StateProps } from 'containers/DiscoverContainer';
 import { ApplicationRootState } from 'types';
 
-const selectUser = (state: ApplicationRootState, props) => {
+const selectProjectsAwaitingApproval = (state: ApplicationRootState) => {
   return state.adminProjectListing.projectsAwaitingApproval;
 };
 
-const makeSelectUser = createSelector(selectUser, substate => {
+const makeSelectProjectsAwaitingApproval = createSelector(selectProjectsAwaitingApproval, substate => {
   return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
 })
 
-const selectAdminViewUser = createStructuredSelector<RootState, StateProps>({
-  user: makeSelectUser,
+const selectAdminProjectListing = createStructuredSelector<RootState, StateProps>({
+  projectsWaitingApproval: makeSelectProjectsAwaitingApproval
 });
 
-export default selectAdminViewUser;
+
+
+export default selectAdminProjectListing;

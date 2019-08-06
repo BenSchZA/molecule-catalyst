@@ -1,7 +1,7 @@
 import { Schema, Document } from 'mongoose';
 import { Schemas } from 'src/app.constants';
 import { ObjectId } from 'mongodb';
-import { Attachment } from 'src/attachment/attachment.schema';
+import { Attachment }  from 'src/attachment/attachment.schema';
 
 export interface Project extends IProject {
   id: string;
