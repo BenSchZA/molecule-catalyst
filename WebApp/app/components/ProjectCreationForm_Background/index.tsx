@@ -100,7 +100,7 @@ const ProjectCreationForm_Background: React.SFC<OwnProps> = ({classes, collabora
                     <div>
                       {index == 0 && collaborators.length <= 4 ?
                         <Button size="small" onClick={() => {
-                          arrayHelpers.insert(index, {
+                          arrayHelpers.insert(collaborators.length, {
                             fullName: '',
                             professionalTitle: '',
                             affiliatedOrganisation: ''

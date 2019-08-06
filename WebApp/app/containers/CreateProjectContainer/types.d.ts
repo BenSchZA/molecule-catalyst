@@ -17,8 +17,6 @@ export interface ProjectData {
   context: string,
   approach: string,
   collaborators: Collaborator[],
-  campaignTitle: string,
-  campaignDescription: string,
   researchPhases: ResearchPhase[]
 }
 

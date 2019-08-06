@@ -71,7 +71,7 @@ const ProjectCreationForm_Campaign: React.SFC<OwnProps> = ({classes, researchPha
                     <div>
                       {index == 0 && researchPhases.length <= 4 ?
                         <Button size="small" onClick={() => {
-                          arrayHelpers.insert(index, {
+                          arrayHelpers.insert(researchPhases.length, {
                             title: '',
                             description: '',
                             result: '',
