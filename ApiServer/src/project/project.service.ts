@@ -29,7 +29,7 @@ export class ProjectService {
   }
 
   async getAllProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find()
+    const result = await this.projectRepository.find().populate(Schemas.User);
     return result.map(r => r.toObject())
   }
 

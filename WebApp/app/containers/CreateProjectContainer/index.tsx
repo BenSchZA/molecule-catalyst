@@ -9,15 +9,12 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
 import makeSelectCreateProjectContainer from './selectors';
-import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
-import { Formik, Form } from 'formik';
-import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
-import ProjectCreationForm_Campaign from 'components/ProjectCreationForm_Campaign';
+import ProjectCreationForm from 'components/ProjectCreationForm';
+import { Formik } from 'formik';
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
 import { ProjectData } from './types';
 import * as actions from './actions';
-import { Button } from '@material-ui/core';
 
 
 interface OwnProps { }
@@ -35,35 +32,26 @@ const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProjec
         title: '',
         abstract: '',
         featuredImage: '',
-        researchPhases: [
-          {
-            title: '',
-            description: '',
-            result: '',
-            fundingGoal: 0,
-            duration: 0
-          }
-        ],
+        researchPhases: [{
+          title: '',
+          description: '',
+          result: '',
+          fundingGoal: 0,
+          duration: 0
+        }],
         context: '',
         approach: '',
-        collaborators: [
-          {
-            fullName: '',
-            professionalTitle: '',
-            affiliatedOrganisation: ''
-          }
-        ],
+        collaborators: [{
+          fullName: '',
+          professionalTitle: '',
+          affiliatedOrganisation: ''
+        }],
       }}
       onSubmit={(values, actions) => {
         onSubmitProject(values);
       }}
       render={({ values }) =>
-        <Form>
-          <ProjectCreationForm_About />
-          <ProjectCreationForm_Background collaborators={values.collaborators} />
-          <ProjectCreationForm_Campaign researchPhases={values.researchPhases} />
-          <Button type='submit'>Submit</Button>
-        </Form>
+        <ProjectCreationForm values={values} />
       }
     />
   );
