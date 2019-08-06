@@ -30,7 +30,7 @@ export class ProjectController {
   async createProject(@Req() req: Request & { project: Project },
     @Body() reqBody: CreateProjectDTO,
     @UploadedFile() file) {
-    const result = await this.projectService.create(reqBody, file, req.project);
+    const result = await this.projectService.create(reqBody, file);
     return result;
   }
 }

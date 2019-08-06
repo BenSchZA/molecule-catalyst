@@ -55,10 +55,10 @@ export const ProjectSchema = new Schema({
   featuredImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: true },
   context: { type: String, required: true },
   approach: { type: String, required: true },
-  collaborators: [CollaboratorSchema],
+  collaborators: { type: [CollaboratorSchema], required: true },
   campaignTitle: { type: String, required: true },
   campaignDescription: { type: String, required: true },
-  researchPhases: [ResearchPhaseSchema]
+  researchPhases: { type: [ResearchPhaseSchema], required: true },
 }, {
     timestamps: true,
     toJSON: {

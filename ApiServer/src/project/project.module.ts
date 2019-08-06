@@ -4,9 +4,13 @@ import { ProjectController } from './project.controller';
 import { ProjectService } from './project.service';
 import { ProjectSchema } from './project.schema';
 import { Schemas } from '../app.constants';
+import { AttachmentModule } from 'src/attachment/attachment.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Schemas.Project, schema: ProjectSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: Schemas.Project, schema: ProjectSchema }]),
+    AttachmentModule,
+  ],
   controllers: [ProjectController],
   providers: [ProjectService],
   exports: [ProjectService],
