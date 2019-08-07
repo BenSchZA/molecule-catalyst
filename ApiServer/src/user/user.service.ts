@@ -9,6 +9,7 @@ import { Attachment } from 'src/attachment/attachment.schema';
 
 @Injectable()
 export class UserService {
+
   constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>) {}
 
   async create(ethAddress: string): Promise<User> {
@@ -58,5 +59,12 @@ export class UserService {
     user.type = UserType.ProjectCreator;
     user.valid = true;
     await user.save();
+  }
+
+  async promoteToAdmin(userId: string): Promise<User> {
+    const user = await this.userRepository.findById(userId);
+    user.type = UserType.Admin;
+    user.save();
+    return user.toObject();
   }
 }
