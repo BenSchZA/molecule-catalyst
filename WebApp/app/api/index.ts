@@ -2,6 +2,7 @@ import apiRequest from './apiRequest';
 import apiUrlBuilder from './apiUrlBuilder';
 import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
+import { ProjectData } from 'containers/CreateProjectContainer/types';
 
 export function login(signedPermit: string, ethAddress: string): Promise<any> {
   const body = JSON.stringify({ signedPermit: signedPermit, ethAddress: ethAddress});
@@ -55,4 +56,15 @@ export async function getUser(id: string, apiToken: string) {
 
 export async function getCreator(id: string, apiToken: string) {
   return apiRequest('GET', apiUrlBuilder.getCreator(id), undefined, 'application/json', true, apiToken);
+}
+
+export async function submitProject(projectData: ProjectData, apiToken: string) {
+  const requestData = formDataHelper(projectData);
+  return apiRequest(
+    'POST',
+    apiUrlBuilder.submitProject,
+    requestData,
+    undefined, // The Content-Type header is set automatically via the FormData object.
+    true,
+    apiToken);
 }

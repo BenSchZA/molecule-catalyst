@@ -33,6 +33,6 @@ export interface ApplicationRootState {
   readonly dashboard: DashboardState;
   readonly authentication: AuthenticationState;
   readonly creatorApplication: CreatorApplicationState;
-
   readonly adminDashboard: AdminDashboardState;
+  readonly createProjectContainer: any;
 }

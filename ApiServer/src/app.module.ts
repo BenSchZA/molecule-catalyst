@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { EthersProviderModule } from './ethers/ethersProvider.module';
 import { SendGridHealthModule } from '@anchan828/nest-sendgrid-terminus';
 import { AttachmentModule } from './attachment/attachment.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [ConfigModule,
@@ -95,6 +96,7 @@ import { AttachmentModule } from './attachment/attachment.module';
     AttachmentModule,
     AuthModule,
     CreatorModule,
+    ProjectModule
   ],
   controllers: [AppController],
   providers: [ConfigService, AppService],
