@@ -19,8 +19,10 @@ export class ProjectController {
   }
 
   @Get('awaitingApproval')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
   async getAwaitingApprovalProjects(): Promise<Project[]> {
-    const result = await this.projectService.getAllProjects();
+    const result = await this.projectService.getAwaitingApprovalProjects();
     return result;
   }
 
