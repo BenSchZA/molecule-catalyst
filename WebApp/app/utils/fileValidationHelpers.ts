@@ -24,10 +24,10 @@ export const fileSizeValidation = (file: File | string, maxSize: number): boolea
 export const fileTypeValidation = (file: File | string, types: Array<string>): boolean => {
   try {
     if (file === undefined) { return true; }
-    if (typeof file === "string") {
+    if (typeof file === 'string') {
       return isMongoId(file);
     } else {
-      return (types.includes(file.type));;
+      return (types.includes(file.type));
     }
   } catch (error) {
     return true;

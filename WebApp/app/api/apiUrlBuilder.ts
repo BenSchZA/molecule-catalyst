@@ -22,6 +22,7 @@ const apiUrlBuilder = {
   // updateProfile: generateUri(`users`),
   // sendErrorReport: () => generateUri(`error/${blockchainResources.networkId}`),
   // sendFeedback: () => generateUri(`feedback/${blockchainResources.networkId}`),
+  submitProject: generateUri('projects/submit'),
 };
 
 export default apiUrlBuilder;

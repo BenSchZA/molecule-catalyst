@@ -21,7 +21,9 @@ export const colors = {
   white: '#FFFFFF',
   black: '#000000',
   grey: '#E5E5E5',
-  lightGrey: '#f2f2f2'
+  lightGrey: '#f2f2f2',
+  textBlack: 'rgba(0, 0, 0, 0.87)',
+  textGrey: 'rgba(0, 0, 0, 0.60)'
 }
 
 const theme = (createMuiTheme as any)({
@@ -91,7 +93,8 @@ const theme = (createMuiTheme as any)({
       h4:{
         paddingTop: '8px',
         paddingBottom: '16px',
-        paddingLeft: '8px'
+        paddingLeft: '8px',
+        paddingRight: '8px'
       },
       h3:{
         textAlign: 'center',
@@ -103,16 +106,55 @@ const theme = (createMuiTheme as any)({
         paddingBottom: '16px'
       },
       body1: {
+        fontWeight: 'bold',
+        color: colors.textBlack,
         paddingBottom: '16px',
-        paddingLeft: '8px'
+        paddingLeft: '8px',
+        paddingRight: '8px'
+      }
+    },
+    MuiFormLabel: {
+      root: {
+        color: colors.textBlack
       }
     },
     MuiInputLabel:{
-      root:{
+      root: {
         fontWeight: 'bold',
         paddingTop: '8px',
         paddingBottom: '2px',
-        paddingLeft: '8px'
+        paddingLeft: '8px',
+        paddingRight: '8px'
+      },
+      shrink: {
+        color: colors.textGrey,
+        paddingTop: '8px',
+        paddingBottom: '2px',
+        paddingLeft: '8px',
+        paddingRight: '8px',
+        transform: 'scale(0.75)'
+      }
+    },
+    MuiInputBase: {
+      input: {
+        fontSize: '0.75rem',
+        lineHeight: '1rem'
+      }
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: '#ececec',
+      },
+      multiline: {
+        padding: '0px!important',
+      },
+      inputMarginDense: {
+        padding: '8px!important',
+      },
+      underline: {
+        '&:before': {
+          borderBottom: '0px'
+        },
       }
     },
     MuiTextField:{
@@ -125,10 +167,10 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiFormControl: {
-        fullWidth:{
-          width: '90%'
-        }
-      
+      fullWidth: {
+        width: 'auto',
+        display: 'block'
+      }
     },
     MuiFormHelperText:{
       root:{

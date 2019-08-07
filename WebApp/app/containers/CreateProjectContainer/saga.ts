@@ -1,24 +1,19 @@
-// This file is just a stub showing a sample Api request saga.
-// For more information on Saga see: https://redux-saga.js.org/
+import * as createProjectActions from './actions'
+import { takeEvery, select, call } from 'redux-saga/effects';
+import { getType } from 'typesafe-actions';
+import { ApplicationRootState } from 'types';
+import { submitProject as submitProjectApi } from '../../api'
 
-// import { take, call, put, select } from 'redux-saga/effects';
-
-// Individual exports for testing
-export function* getData() {
-  //  const username = yield
-  //  const requestURL = `http://api/getData`;
-  //
-  //  try {
-  //    // Call our request helper (see 'utils/request')
-  //    const data = yield call(request, requestURL);
-  //    //Dispatch the dataLoaded action
-  //    yield put(dataLoaded(data));
-  //  } catch (err) {
-  //    //Dispatch the dataLoadingError action
-  //    yield put(dataLoadingError(err));
-  //  }
+export function* submitProject(action) {
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  try {
+    const response = yield call(submitProjectApi, action.payload, apiKey);
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function* createProjectContainerWatcherSaga() {
-  // yield takeLatest(ActionType, getData);
+  yield takeEvery(getType(createProjectActions.submitProject), submitProject)
 }
