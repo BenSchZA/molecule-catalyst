@@ -7,7 +7,7 @@
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button } from '@material-ui/core';
 import { colors } from 'theme';
-import { UserType } from 'containers/App/routes';
+import { UserType } from 'containers/App/types';
 import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) =>

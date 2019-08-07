@@ -8,6 +8,8 @@ import React, { Fragment } from 'react';
 import { colors } from 'theme';
 import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper } from '@material-ui/core';
 import { forwardTo } from 'utils/history';
+import { ProjectSubmissionStatus } from 'containers/AdminProjectListingContainer/types';
+import dayjs from 'dayjs'
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -39,22 +41,23 @@ const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
       <Paper>
         <Table>
           <TableHead>
-            <TableCell>Project Title</TableCell>
-            <TableCell>Full Name</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Created</TableCell>
-            <TableCell></TableCell>
+            <TableRow>
+              <TableCell>Project Title</TableCell>
+              <TableCell>Full Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Created</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
             {props.projects && props.projects.length > 0 ? props.projects.map(project => (
               <TableRow key={project.id}>
                 <TableCell>{project.title}</TableCell>
-                <TableCell>user</TableCell>
-                <TableCell>status</TableCell>
-                <TableCell>TIME</TableCell>
+                <TableCell>{project.user.fullName || project.user.ethAddress}</TableCell>
+                <TableCell>{ProjectSubmissionStatus[project.status]}</TableCell>
+                <TableCell>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                 <TableCell>
-                  <Button className={props.classes.actionButton} onClick={() => { console.log(project.id)
-                    forwardTo(`/admin/project/${project.id}`)}}>Details</Button>
+                  <Button className={props.classes.actionButton} onClick={() => {forwardTo(`/admin/project/${project.id}`)}}>Details</Button>
                 </TableCell>
               </TableRow>
             )) :
@@ -66,8 +69,6 @@ const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
       </Paper>
     </Paper>
   </Fragment>
-
-
 );
 
 

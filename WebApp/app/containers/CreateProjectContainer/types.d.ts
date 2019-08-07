@@ -3,14 +3,6 @@ import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 
 
-export enum ProjectSubmissionStatus {
-  created,
-  accepted,
-  rejected,
-  started,
-  ended
-}
-
 export interface ProjectData {
   title: string,
   abstract: string,
@@ -46,7 +38,6 @@ interface CreateProjectContainerState {
   campaignTitle?: string,
   campaignDescription?: string,
   researchPhases?: ResearchPhase[],
-  status?: ProjectSubmissionStatus,
 }
 
 /* --- ACTIONS --- */

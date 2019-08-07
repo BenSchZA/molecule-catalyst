@@ -1,6 +1,6 @@
 import { createSelector, createStructuredSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
-import { StateProps } from './';
+import { StateProps } from '.';
 import { ApplicationRootState } from 'types';
 
 const selectProjects = (state: ApplicationRootState) => {

@@ -4,14 +4,11 @@ import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminDashboardContainer from 'containers/AdminDashboardContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
 import AdminUserViewContainer from 'containers/AdminUserViewContainer';
-import AdminProjectApprovalListingContainer from 'containers/AdminProjectApprovalListingContainer';
+import AdminProjectListingContainer from 'containers/AdminProjectListingContainer';
 import AdminProjectReviewContainer from 'containers/AdminProjectReviewContainer';
+import { UserType } from './types';
 
-export enum UserType {
-  Standard,
-  ProjectCreator,
-  Admin
-}
+
 
 export interface AppRoute {
   name: string; // The name displayed in any Nav links
@@ -66,7 +63,7 @@ const routes: AppRoute[] = [{
 }, {
   name: 'Admin Projects',
   path: '/admin/projects',
-  component: AdminProjectApprovalListingContainer,
+  component: AdminProjectListingContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: true,
   showNavForRoles:[UserType.Admin],

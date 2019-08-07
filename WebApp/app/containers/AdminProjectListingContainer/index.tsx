@@ -30,7 +30,7 @@ export interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminProjectApprovalListingContainer: React.SFC<Props> = (props: Props) => (
+const AdminProjectListingContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <AdminProjectListing projects={props.projects}></AdminProjectListing>
   </Container>
@@ -65,4 +65,4 @@ export default compose(
   withReducer,
   withSaga,
   withConnect,
-)(AdminProjectApprovalListingContainer);
+)(AdminProjectListingContainer);
