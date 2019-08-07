@@ -53,7 +53,8 @@ const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
                 <TableCell>status</TableCell>
                 <TableCell>TIME</TableCell>
                 <TableCell>
-                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/project/${project.id}`)}>Details</Button>
+                  <Button className={props.classes.actionButton} onClick={() => { console.log(project.id)
+                    forwardTo(`/admin/project/${project.id}`)}}>Details</Button>
                 </TableCell>
               </TableRow>
             )) :
