@@ -4,51 +4,31 @@ import { Project } from './project.schema';
 import { Model } from 'mongoose';
 import { ProjectDocument } from './project.schema';
 import { Schemas } from '../app.constants';
-import { CreateProjectDTO } from './dto/createProject.dto';
+import { SubmitProjectDTO } from './dto/submitProject.dto';
+import { AttachmentService } from 'src/attachment/attachment.service';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class ProjectService {
-  constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>) {}
+  constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
+              private readonly attachmentService: AttachmentService) {}
 
-  async create(projectData: CreateProjectDTO, file: any, project: Project): Promise<Project> {
-    const newProject = await new this.projectRepository({});
-    await newProject.save();
-    return newProject.toObject();
-    // console.log('saving application');
-    // const creator = await new this.creatorRepository({...applicationData, user: user.id});
-    // if (file) {
-    //   const attachment = await this.attachmentService.create({
-    //     filename: `${creator.id}-${file.originalname}`,
-    //     contentType: file.mimetype
-    //   }, file);
-    //   creator.profileImage = attachment;
-    // }
+  async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
+    const project = await new this.projectRepository({...projectData, user: user.id});
+    if (file) {
+      const attachment = await this.attachmentService.create({
+        filename: `${project.id}-${file.originalname}`,
+        contentType: file.mimetype
+      }, file);
+      project.featuredImage = attachment;
+    }
 
-    // await creator.save();
-
-    // const token = await this.jwtService.signAsync({ userId: user.id }, { notBefore: Date.now(), expiresIn: 43200 });
-    // await this.tokenRepository.create({userId: user.id, token});
-
-    // try {
-    //   const appConfig = this.configService.get('app');
-    //   await this.sendgridService.send({
-    //     to: creator.email,
-    //     from: 'verify@mol.ai',
-    //     subject: 'Mol.ai Please verify email',
-    //     text: `Your email verification token is ${token}`,
-    //     html: `<strong>Click <a href="${appConfig.webappUrl}/projects/becomeCreator?token=${token}">here</a> to verify your email</strong>`
-    //   })
-
-    //   creator.status = CreatorApplicationStatus.awaitingEmailVerification;
-    //   creator.save()
-    // } catch (error) {
-    //   console.log('Error sending verification email to user');
-    // }    
-    // return creator.toObject();
+    await project.save();
+    return project.toObject();
   }
 
   async getAllProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find({}).populate(Schemas.Project);
+    const result = await this.projectRepository.find().populate(Schemas.User);
     return result.map(r => r.toObject())
   }
 

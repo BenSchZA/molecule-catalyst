@@ -1,22 +1,33 @@
 import { Schema, Document } from 'mongoose';
 import { Schemas } from 'src/app.constants';
 import { ObjectId } from 'mongodb';
-import { Attachment }  from 'src/attachment/attachment.schema';
+import { Attachment } from 'src/attachment/attachment.schema';
+import { User } from 'src/user/user.schema';
+import { spreadEnumKeys } from 'src/helpers/spreadEnum';
 
 export interface Project extends IProject {
   id: string;
 }
 
+export enum ProjectSubmissionStatus {
+  created,
+  accepted,
+  rejected,
+  started,
+  ended
+}
+
 interface IProject {
+  user: User | ObjectId | string;
   title: string,
   abstract: string,
   featuredImage: Attachment | ObjectId | String,
   context: string,
   approach: string,
   collaborators: Collaborator[],
-  campaignTitle: string,
-  campaignDescription: string,
-  researchPhases: ResearchPhase[]
+  researchPhases: ResearchPhase[],
+  status: ProjectSubmissionStatus,
+  reviewedBy: User | ObjectId | string,
 }
 
 interface Collaborator {
@@ -25,40 +36,47 @@ interface Collaborator {
   affiliatedOrganisation: string
 }
 
-let CollaboratorSchema = new Schema({
-  fullName: String,
-  professionalTitle: String,
-  affiliatedOrganisation: String
-});
-
 interface ResearchPhase {
   title: string,
   description: string,
   result: string,
   fundingGoal: number,
-  duration: number
+  duration: number,
 }
 
+let CollaboratorSchema = new Schema({
+  fullName: { type: String, required: true },
+  professionalTitle: { type: String, required: true },
+  affiliatedOrganisation: { type: String, required: true },
+}, {
+    _id: false,
+    id: false
+  });
+
 let ResearchPhaseSchema = new Schema({
-  title: String,
-  description: String,
-  result: String,
-  fundingGoal: Number,
-  duration: Number
-});
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  result: { type: String, required: true },
+  fundingGoal: { type: Number, required: true },
+  duration: { type: Number, required: true },
+}, {
+    _id: false,
+    id: false
+  });
 
 export interface ProjectDocument extends IProject, Document { }
 
 export const ProjectSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: Schemas.User, required: true },
   title: { type: String, required: true },
   abstract: { type: String, required: true },
   featuredImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: true },
   context: { type: String, required: true },
   approach: { type: String, required: true },
-  collaborators: [CollaboratorSchema],
-  campaignTitle: { type: String, required: true },
-  campaignDescription: { type: String, required: true },
-  researchPhases: [ResearchPhaseSchema]
+  collaborators: { type: [CollaboratorSchema], required: true },
+  researchPhases: { type: [ResearchPhaseSchema], required: true },
+  status: { type: Number, required: true, default: ProjectSubmissionStatus.created, enum: [...spreadEnumKeys(ProjectSubmissionStatus)] },
+  reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false }
 }, {
     timestamps: true,
     toJSON: {

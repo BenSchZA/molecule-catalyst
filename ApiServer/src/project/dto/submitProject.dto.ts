@@ -1,23 +1,18 @@
 import { IsString, IsArray } from 'class-validator';
 
-export class CreateProjectDTO {
+export class SubmitProjectDTO {
   @IsString()
   title: string;
   @IsString()
   abstract: string;
-  // featuredImage: string;
   @IsString()
   context: string;
   @IsString()
   approach: string;
   @IsArray()
-  collaborators: Collaborator[];
-  @IsString()
-  campaignTitle: string;
-  @IsString()
-  campaignDescription: string;
+  collaborators: Array<Collaborator>;
   @IsArray()
-  researchPhases: ResearchPhase[];
+  researchPhases: Array<ResearchPhase>;
 }
 
 interface Collaborator {

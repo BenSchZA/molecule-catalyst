@@ -4,76 +4,85 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
 import makeSelectCreateProjectContainer from './selectors';
-import ProjectCreationForm_About from 'components/ProjectCreationForm_About';
+import ProjectCreationForm from 'components/ProjectCreationForm';
 import { Formik } from 'formik';
-import ProjectCreationForm_Background from 'components/ProjectCreationForm_Background';
-import ProjectCreationForm_Campaign from 'components/ProjectCreationForm_Campaign';
+import injectSaga from 'utils/injectSaga';
+import saga from './saga';
+import { ProjectData } from './types';
+import * as actions from './actions';
+import * as Yup from 'yup';
+import { fileSizeValidation, MAX_FILE_SIZE, fileTypeValidation, SUPPORTED_IMAGE_FORMATS } from 'utils/fileValidationHelpers';
+
 
 interface OwnProps { }
-interface DispatchProps { }
+interface DispatchProps {
+  onSubmitProject(data: ProjectData): void;
+}
 interface StateProps { }
-
-
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const CreateProjectContainer: React.FunctionComponent<Props> = ({}: Props) => {
+const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProject }: Props) => {
+  const CreateProjectSchema = Yup.object().shape({
+    title: Yup.string().required(),
+    abstract: Yup.string().required(),
+    featuredImage: Yup.mixed()
+      .test('fileSize', 'Maximum file size of 10MB exceeded', file => fileSizeValidation(file, MAX_FILE_SIZE))
+      .test('fileType', 'Please supply an image file', file => fileTypeValidation(file, SUPPORTED_IMAGE_FORMATS)),
+    researchPhases: Yup.array().of(
+      Yup.object().shape({
+        title: Yup.string().required(),
+        description: Yup.string().required(),
+        result: Yup.string().required(),
+        fundingGoal: Yup.number().required(),
+        duration: Yup.number().required(),
+      })
+    ),
+    context: Yup.string().required(),
+    approach: Yup.string().required(),
+    collaborators: Yup.array().of(
+      Yup.object().shape({
+        fullName: Yup.string().required(),
+        professionalTitle: Yup.string().required(),
+        affiliatedOrganisation: Yup.string().required(),
+      }),
+    ),
+  });
+
   return (
-    <Fragment>
-      <Formik
-        initialValues={{
-          title: '',
-          abstract: '',
-          featuredImage: ''
-        }}
-        onSubmit={(values, actions) => {}}
-        render={() =>
-          <ProjectCreationForm_About></ProjectCreationForm_About>
-        }
-      />
-      <Formik
-        initialValues={{
-          context: '',
-          approach: '',
-          collaborators: [
-            {
-              fullName: '',
-              professionalTitle: '',
-              affiliatedOrganisation: ''
-            }
-          ],
-        }}
-        onSubmit={(values, actions) => {
-        }}
-        render={({ values }) =>
-          <ProjectCreationForm_Background collaborators={values.collaborators}></ProjectCreationForm_Background>
-        }
-      />
-      <Formik
-        initialValues={{
+    <Formik
+      initialValues={{
+        title: '',
+        abstract: '',
+        featuredImage: '',
+        researchPhases: [{
           title: '',
           description: '',
-          researchPhases: [
-            {
-              title: '',
-              description: '',
-              result: '',
-              fundingGoal: '',
-              duration: ''
-            }
-          ],
-        }}
-        onSubmit={(values, actions) => {}}
-        render={({ values }) =>
-          <ProjectCreationForm_Campaign researchPhases={values.researchPhases}></ProjectCreationForm_Campaign>
-        }
-      />
-    </Fragment>
+          result: '',
+          fundingGoal: 0,
+          duration: 0
+        }],
+        context: '',
+        approach: '',
+        collaborators: [{
+          fullName: '',
+          professionalTitle: '',
+          affiliatedOrganisation: ''
+        }],
+      }}
+      validationSchema={CreateProjectSchema}
+      onSubmit={(values, actions) => {
+        onSubmitProject(values);
+      }}
+      render={({ values }) =>
+        <ProjectCreationForm values={values} />
+      }
+    />
   );
 };
 
@@ -84,31 +93,21 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
-): DispatchProps => {
-  return {
-    dispatch: dispatch,
-  };
-};
+): DispatchProps => ({
+  onSubmitProject: (data: ProjectData) => dispatch(actions.submitProject(data)),
+})
 
 const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
 );
 
-// Remember to add the key to ./app/types/index.d.ts ApplicationRootState
-// <OwnProps> restricts access to the HOC's other props. This component must not do anything with reducer hoc
-// const withReducer = injectReducer<OwnProps>({
-//   key: 'createProjectContainer',
-//   reducer: reducer,
-// });
-// // <OwnProps> restricts access to the HOC's other props. This component must not do anything with saga hoc
-// const withSaga = injectSaga<OwnProps>({
-//   key: 'createProjectContainer',
-//   saga: saga,
-// });
+const withSaga = injectSaga<OwnProps>({
+  key: 'createProjectContainer',
+  saga: saga,
+});
 
 export default compose(
-  // withReducer,
-  // withSaga,
+  withSaga,
   withConnect,
 )(CreateProjectContainer);
