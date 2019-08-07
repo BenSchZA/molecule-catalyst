@@ -5,7 +5,7 @@
  */
 
 import React, { Fragment } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button, Grid } from '@material-ui/core';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
 import { ProjectSubmissionStatus } from 'containers/AdminProjectListingContainer/types';
@@ -31,13 +31,19 @@ const styles = (theme: Theme) =>
     backButton: {
       float: 'right'
     },
+    buttonBar: {
+      textAlign: 'right',
+      paddingRight: 0,
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: any,
+  approveProject(): void;
+  rejectProject(): void;
 }
 
-const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes }: OwnProps) => (
+const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProject, rejectProject }: OwnProps) => (
   <Container>
     <Paper className={classes.banner} elevation={0}>
       <Button className={classes.backButton} onClick={() => forwardTo(`/admin/projects`)}>Back</Button>
@@ -139,7 +145,7 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes }: OwnProps)
             <Fragment>
               <TableRow className={classes.altRow}>
                 <TableCell className={classes.altRowCell}>
-                  {`Phase ${i+1} - ${rp.title}`}
+                  {`Phase ${i + 1} - ${rp.title}`}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -170,6 +176,13 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes }: OwnProps)
         </TableBody>
       </Table>
     </Paper>
+    <Grid className={classes.buttonBar}>
+      {(project.status === ProjectSubmissionStatus.created) &&
+        <Fragment>
+          <Button onClick={() => console.log('approving')}>Approve</Button>
+          <Button onClick={() => console.log('declining')}>Decline</Button>
+        </Fragment>}
+    </Grid>
   </Container>
 );
 

@@ -73,3 +73,7 @@ export async function submitProject(projectData: ProjectData, apiToken: string) 
     true,
     apiToken);
 }
+
+export async function promoteToAdmin(userId: string, apiToken: string) {
+  return apiRequest('GET', apiUrlBuilder.promoteToAdmin(userId), undefined, 'application/json', true, apiToken);
+}
