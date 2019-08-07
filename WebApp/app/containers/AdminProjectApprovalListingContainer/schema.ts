@@ -1,6 +1,6 @@
 import { schema } from 'normalizr';
 
 const project = new schema.Entity('projects');
-const projectsAwaitingApproval = [project];
+const projects = [project];
 
-export default projectsAwaitingApproval;
+export default projects;

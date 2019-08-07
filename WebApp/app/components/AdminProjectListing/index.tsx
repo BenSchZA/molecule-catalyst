@@ -29,7 +29,7 @@ const styles = (theme: Theme) =>
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  projects: Array<any>
+  projects: Array<any>,
 }
 
 const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (

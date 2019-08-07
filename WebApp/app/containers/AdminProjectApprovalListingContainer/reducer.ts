@@ -21,8 +21,7 @@ function adminProjectApprovalListingContainerReducer(state: ContainerState = ini
       }
     default:
       return {
-        ...state,
-        projectsAwaitingApproval: [],
+        ...state
       }
   }
 }

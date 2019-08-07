@@ -18,6 +18,12 @@ export class ProjectController {
     return result;
   }
 
+  @Get('awaitingApproval')
+  async getAwaitingApprovalProjects(): Promise<Project[]> {
+    const result = await this.projectService.getAllProjects();
+    return result;
+  }
+
   @Post('submit')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.ProjectCreator)
@@ -26,6 +32,7 @@ export class ProjectController {
     maxCount: 1,
     type: FileOptions.PICTURE,
   }))
+  
   async submitProject(@Req() req: Request & { user: User },
     @Body() reqBody: SubmitProjectDTO,
     @UploadedFile() file) {

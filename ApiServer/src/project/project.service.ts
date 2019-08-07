@@ -7,6 +7,7 @@ import { Schemas } from '../app.constants';
 import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { User } from 'src/user/user.schema';
+import { ProjectSubmissionStatus } from './project.schema';
 
 @Injectable()
 export class ProjectService {
@@ -33,7 +34,7 @@ export class ProjectService {
   }
 
   async getAwaitingApprovalProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find({status: 1}).populate(Schemas.Project);
+    const result = await this.projectRepository.find({status: ProjectSubmissionStatus.created}).populate(Schemas.Project);
     return result.map(r => r.toObject());
   }
 
