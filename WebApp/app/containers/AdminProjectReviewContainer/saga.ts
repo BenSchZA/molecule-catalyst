@@ -5,16 +5,16 @@ import { ApplicationRootState } from 'types';
 import { promoteToAdmin as promoteToAdminApi } from '../../api'
 import { forwardTo } from 'utils/history';
 
-export function* promoteToAdmin(action) {
+export function* approveProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-  try {
-    yield call(promoteToAdminApi, action.payload, apiKey);
-    yield call(forwardTo, '/admin');
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   yield call(promoteToAdminApi, action.payload, apiKey);
+  //   yield call(forwardTo, '/admin');
+  // } catch (error) {
+  //   console.log(error);
+  // }
 }
 
 export default function* createProjectContainerWatcherSaga() {
-  yield takeEvery(getType(adminUserActions.promoteToAdmin), promoteToAdmin)
+  yield takeEvery(getType(adminUserActions.approveProject), approveProject)
 }

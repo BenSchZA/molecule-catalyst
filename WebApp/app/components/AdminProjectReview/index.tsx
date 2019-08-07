@@ -179,8 +179,8 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProj
     <Grid className={classes.buttonBar}>
       {(project.status === ProjectSubmissionStatus.created) &&
         <Fragment>
-          <Button onClick={() => console.log('approving')}>Approve</Button>
-          <Button onClick={() => console.log('declining')}>Decline</Button>
+          <Button onClick={() => approveProject()}>Approve</Button>
+          <Button onClick={() => rejectProject()}>Decline</Button>
         </Fragment>}
     </Grid>
   </Container>

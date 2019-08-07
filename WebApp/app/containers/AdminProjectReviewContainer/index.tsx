@@ -22,6 +22,7 @@ React.Props<RouteParams> { }
 
 interface DispatchProps {
   approveProject(): void
+  rejectProject(): void
 }
 
 interface StateProps {
@@ -32,7 +33,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminProjectReviewContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
-    <AdminProjectReview project={props.project} approveProject={props.approveProject}/>
+    <AdminProjectReview {...props}/>
   </Container>
 );
 
@@ -45,6 +46,7 @@ const mapDispatchToProps = (
   ownProps: OwnProps,
 ): DispatchProps => ({
   approveProject: () => dispatch(actions.approveProject(ownProps.match.params.projectId)),
+  rejectProject: () => dispatch(actions.rejectProject(ownProps.match.params.projectId)),
 })
 
 
