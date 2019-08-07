@@ -24,15 +24,15 @@ interface DispatchProps {
 
 }
 
-interface StateProps {
-  projectsAwaitingApproval: [],
+export interface StateProps {
+  projects: Array<any>,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminProjectApprovalListingContainer: React.SFC<Props> = (props: Props) => (
   <Container maxWidth='xl'>
-    <AdminProjectListing projects={props.projectsAwaitingApproval}></AdminProjectListing>
+    <AdminProjectListing projects={props.projects}></AdminProjectListing>
   </Container>
 );
 

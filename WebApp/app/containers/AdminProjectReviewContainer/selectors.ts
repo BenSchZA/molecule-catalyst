@@ -4,7 +4,7 @@ import { StateProps } from 'containers/DiscoverContainer';
 import { ApplicationRootState } from 'types';
 
 const selectProjectsAwaitingApproval = (state: ApplicationRootState) => {
-  return state.adminProjectListing.projectsAwaitingApproval;
+  return state.adminProjectListing.projects;
 };
 
 const makeSelectProjectsAwaitingApproval = createSelector(selectProjectsAwaitingApproval, substate => {

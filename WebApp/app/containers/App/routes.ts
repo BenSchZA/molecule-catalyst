@@ -81,7 +81,7 @@ const routes: AppRoute[] = [{
   requireAuth: true,
 },{
   name: 'Admin Project View',
-  path: '/admin/projects/:projectId',
+  path: '/admin/project/:projectId',
   component: AdminProjectReviewContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: false,

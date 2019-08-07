@@ -34,7 +34,7 @@ const AdminProjectReviewContainer: React.SFC<Props> = (props: Props) => (
 );
 
 const mapStateToProps = (state, props) => ({
-  user: state.adminProjectListing.projects[props.match.params.projectId],
+  project: state.adminProjectListing.projects[props.match.params.projectId],
 })
 
 const withConnect = connect(

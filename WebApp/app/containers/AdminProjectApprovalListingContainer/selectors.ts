@@ -1,18 +1,18 @@
 import { createSelector, createStructuredSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
-import { StateProps } from 'containers/DiscoverContainer';
+import { StateProps } from './';
 import { ApplicationRootState } from 'types';
 
-const selectProjectsAwaitingApproval = (state: ApplicationRootState) => {
-  return state.adminProjectListing.projectsAwaitingApproval;
+const selectProjects = (state: ApplicationRootState) => {
+  return state.adminProjectListing.projects;
 };
 
-const makeSelectProjectsAwaitingApproval = createSelector(selectProjectsAwaitingApproval, substate => {
+const makeSelectProjects = createSelector(selectProjects, substate => {
   return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
 })
 
 const selectAdminProjectListing = createStructuredSelector<RootState, StateProps>({
-  projectsWaitingApproval: makeSelectProjectsAwaitingApproval
+  projects: makeSelectProjects
 });
 
 

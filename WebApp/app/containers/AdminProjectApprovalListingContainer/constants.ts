@@ -5,7 +5,7 @@
  */
 
 enum ActionTypes {
-  SET_PROJECTS_AWAITING_APPROVAL = 'app/AdminProjectApprovalListingContainer/SET_PROJECTS_AWAITING_APPROVAL',
+  SET_PROJECTS = 'app/AdminProjectApprovalListingContainer/SET_PROJECTS',
  
 }
 

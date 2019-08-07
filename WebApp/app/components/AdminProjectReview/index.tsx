@@ -39,8 +39,8 @@ interface OwnProps extends WithStyles<typeof styles> {
 const AdminProjectReview: React.SFC<OwnProps> = (props: OwnProps) => (
   <Container>
       <Paper className={props.classes.banner} elevation={0}>
-      <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin`)}>Back</Button>
-      <Typography variant='h5'>User Details</Typography>
+      <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin/projects`)}>Back</Button>
+      <Typography variant='h5'>Project Details</Typography>
       </Paper>
       <Paper>
     <Table>

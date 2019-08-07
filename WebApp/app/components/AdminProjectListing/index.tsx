@@ -34,35 +34,35 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
   <Fragment>
-     <Paper className={props.classes.banner} elevation={0}>
-    <Typography variant='h5'>Projects</Typography>
-    <Paper>
-    <Table>
-      <TableHead>
-        <TableCell>Project Title</TableCell>
-        <TableCell>Full Name</TableCell>
-        <TableCell>Status</TableCell>
-        <TableCell>Created</TableCell>
-        <TableCell></TableCell>
-      </TableHead>
-      <TableBody>
-        {props.projects && props.projects.length > 0 ? props.projects.map(project => (
-          <TableRow key={project.id}>
-            <TableCell>{project.title}</TableCell>
-            <TableCell>user</TableCell>
-            <TableCell>status</TableCell>
-            <TableCell>TIME</TableCell>
-            <TableCell>
-              <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/project/${project.id}`)}>Details</Button>
-            </TableCell>
-          </TableRow>
-        )) : 
-        <TableRow className={props.classes.emptyRow}>
-          <TableCell>No projects</TableCell>
-        </TableRow>}
-      </TableBody>
-    </Table>
-    </Paper>
+    <Paper className={props.classes.banner} elevation={0}>
+      <Typography variant='h5'>Projects</Typography>
+      <Paper>
+        <Table>
+          <TableHead>
+            <TableCell>Project Title</TableCell>
+            <TableCell>Full Name</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Created</TableCell>
+            <TableCell></TableCell>
+          </TableHead>
+          <TableBody>
+            {props.projects && props.projects.length > 0 ? props.projects.map(project => (
+              <TableRow key={project.id}>
+                <TableCell>{project.title}</TableCell>
+                <TableCell>user</TableCell>
+                <TableCell>status</TableCell>
+                <TableCell>TIME</TableCell>
+                <TableCell>
+                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/project/${project.id}`)}>Details</Button>
+                </TableCell>
+              </TableRow>
+            )) :
+              <TableRow className={props.classes.emptyRow}>
+                <TableCell>No projects</TableCell>
+              </TableRow>}
+          </TableBody>
+        </Table>
+      </Paper>
     </Paper>
   </Fragment>
 

@@ -4,7 +4,7 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface AdminProjectApprovalListingContainerState {
-  projectsAwaitingApproval: any,
+  projects: any,
 }
 
 /* --- ACTIONS --- */

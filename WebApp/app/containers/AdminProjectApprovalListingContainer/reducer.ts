@@ -9,15 +9,15 @@ import * as actions from './actions';
 import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
-  projectsAwaitingApproval: {},
+  projects: {},
 };
 
 function adminProjectApprovalListingContainerReducer(state: ContainerState = initialState, action: ContainerActions ) {
   switch (action.type) {
-    case getType(actions.setProjectsAwaitingApproval):
+    case getType(actions.setProjects):
       return {
         ...state,
-        projectsAwaitingApproval: action.payload.projects,
+        projects: action.payload.projects,
       }
     default:
       return {
