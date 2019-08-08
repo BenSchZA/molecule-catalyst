@@ -16,13 +16,10 @@ const apiUrlBuilder = {
   getAllUsers: generateUri('users/all'),
   approveCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/approve`),
   rejectCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/reject`),
-  getUser: (id: string) => generateUri(`user/${id}`),
+  getUser: (id: string) => generateUri(`users/${id}`),
   getCreator: (id: string) => generateUri(`creator/${id}`),
-  // getUserProfile: (ethAddress: string) => generateUri(`users/${ethAddress}`),
-  // updateProfile: generateUri(`users`),
-  // sendErrorReport: () => generateUri(`error/${blockchainResources.networkId}`),
-  // sendFeedback: () => generateUri(`feedback/${blockchainResources.networkId}`),
   submitProject: generateUri('projects/submit'),
+  promoteToAdmin: (userId: string) => generateUri(`users/${userId}/promoteToAdmin`),
 };
 
 export default apiUrlBuilder;
