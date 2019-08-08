@@ -59,7 +59,7 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProj
           </TableRow>
           <TableRow>
             <TableCell>
-              {project.user.fullName || project.user.ethAddress}
+              {project.user.fullName || project.user.ethAddress.toUpperCase()}
             </TableCell>
           </TableRow>
           <TableRow className={classes.altRow}>
@@ -69,7 +69,7 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProj
           </TableRow>
           <TableRow>
             <TableCell>
-              {ProjectSubmissionStatus[project.status]}
+              {ProjectSubmissionStatus[project.status].toUpperCase()}
             </TableCell>
           </TableRow>
           <TableRow className={classes.altRow}>
@@ -145,13 +145,17 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProj
             <Fragment>
               <TableRow className={classes.altRow}>
                 <TableCell className={classes.altRowCell}>
-                  {`Phase ${i + 1} - ${rp.title}`}
+                  {`Phase ${i + 1}`}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>
                   <Table>
                     <TableBody>
+                    <TableRow>
+                        <TableCell>Title: </TableCell>
+                        <TableCell>{rp.title}</TableCell>
+                      </TableRow>
                       <TableRow>
                         <TableCell>Description: </TableCell>
                         <TableCell>{rp.description}</TableCell>
@@ -166,7 +170,7 @@ const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProj
                       </TableRow>
                       <TableRow>
                         <TableCell>Duration:</TableCell>
-                        <TableCell>{rp.duration}</TableCell>
+                        <TableCell>{rp.duration + (rp.duration > 1 ? ' months': ' month')}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

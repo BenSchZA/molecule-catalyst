@@ -82,6 +82,6 @@ export async function approveProject(projectId: string, apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.approveCreatorApplication(projectId), undefined, 'application/json', true, apiToken);
 }
 
-export async function rejectreject(projectId: string, apiToken: string) {
+export async function rejectProject(projectId: string, apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.rejectCreatorApplication(projectId), undefined, 'application/json', true, apiToken);
 }

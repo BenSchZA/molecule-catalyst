@@ -27,6 +27,9 @@ const styles = (theme: Theme) =>
     },
     emptyRow: {
       height: '71px',
+    },
+    rowText: {
+      fontSize:  theme.typography.pxToRem(10),
     }
   });
 
@@ -51,11 +54,11 @@ const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
           </TableHead>
           <TableBody>
             {props.projects && props.projects.length > 0 ? props.projects.map(project => (
-              <TableRow key={project.id}>
-                <TableCell>{project.title}</TableCell>
-                <TableCell>{project.user.fullName || project.user.ethAddress}</TableCell>
-                <TableCell>{ProjectSubmissionStatus[project.status]}</TableCell>
-                <TableCell>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
+              <TableRow key={project.id} >
+                <TableCell className={props.classes.rowText}>{project.title}</TableCell>
+                <TableCell className={props.classes.rowText}>{project.user.fullName || project.user.ethAddress.toUpperCase()}</TableCell>
+                <TableCell className={props.classes.rowText}>{ProjectSubmissionStatus[project.status].toUpperCase()}</TableCell>
+                <TableCell className={props.classes.rowText}>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                 <TableCell>
                   <Button className={props.classes.actionButton} onClick={() => {forwardTo(`/admin/project/${project.id}`)}}>Details</Button>
                 </TableCell>
