@@ -52,7 +52,7 @@ export class ProjectController {
   @Get(':projectId/reject')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
-  async rejectProject(@Param('projectId') projectId, req: Request & { user: User }) {
+  async rejectProject(@Param('projectId') projectId, @Req() req: Request & { user: User }) {
     const result = await this.projectService.rejectProject(projectId, req.user);
     return result;
   }
