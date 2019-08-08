@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
-import { Theme, WithStyles, withWidth, Typography } from '@material-ui/core';
+import { Theme, WithStyles, withWidth } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
+import ProjectCard from 'components/ProjectCard';
 
 const styles = (theme: Theme) => createStyles({
 
@@ -14,7 +15,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 const Dashboard: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
   return (
     <Fragment>
-        <Typography>Discover Content</Typography>
+        <ProjectCard project={{}}/>
     </Fragment>
   );
 }
