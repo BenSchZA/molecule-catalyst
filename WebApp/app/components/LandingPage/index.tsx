@@ -36,7 +36,7 @@ interface Props extends WithStyles<typeof styles> {
 
 }
 
-const LandingPage: React.SFC<Props> = ({ classes }: Props) => {
+const LandingPage: React.FunctionComponent<Props> = ({ classes }: Props) => {
   const [dense] = React.useState(false);
   const [secondary] = React.useState(false);
   return (

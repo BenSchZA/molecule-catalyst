@@ -1,14 +1,7 @@
+import { ApplicationRootState } from 'types';
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
-import { ApplicationRootState } from 'types';
 
-export enum ProjectSubmissionStatus {
-  created,
-  accepted,
-  rejected,
-  started,
-  ended
-}
 
 export interface ProjectData {
   title: string,
@@ -38,14 +31,13 @@ export interface ResearchPhase {
 interface CreateProjectContainerState {
   title?: string,
   abstract?: string,
-  featuredImage?: ObjectId | string,
+  featuredImage?: string,
   context?: string,
   approach?: string,
   collaborators?: Collaborator[],
   campaignTitle?: string,
   campaignDescription?: string,
   researchPhases?: ResearchPhase[],
-  status?: ProjectSubmissionStatus,
 }
 
 /* --- ACTIONS --- */

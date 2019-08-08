@@ -11,7 +11,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   classes: any;
 }
 
-const Dashboard: React.SFC<OwnProps> = (props: OwnProps) =>{
+const Dashboard: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
   return (
     <Fragment>
         <Typography>Discover Content</Typography>

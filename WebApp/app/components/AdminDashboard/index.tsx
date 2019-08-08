@@ -14,7 +14,7 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {}
 
-const AdminDashboard: React.SFC<OwnProps> = (props: OwnProps) => {
+const AdminDashboard: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
   return <Fragment>AdminDashboard</Fragment>;
 };
 

@@ -1,4 +1,12 @@
-const apiRequest = async (method, url, body?, contentType?, authenticate = false, token?) => {
+export enum RequestMethod {
+  GET = 'GET',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+  POST = 'POST',
+  PUT = 'PUT',
+}
+
+const apiRequest = async (method: RequestMethod, url: string, body?: any, contentType?, authenticate = false, token?) => {
   const options = {
     method: method,
     body: body,

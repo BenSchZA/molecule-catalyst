@@ -25,7 +25,7 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {}
 
-const UnauthorizedPage: React.SFC<OwnProps> = (props: OwnProps) => {
+const UnauthorizedPage: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
   return <Fragment>
    <Typography variant='h2'>
    Your experiment failed...

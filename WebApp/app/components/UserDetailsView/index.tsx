@@ -7,7 +7,7 @@
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button, Grid } from '@material-ui/core';
 import { colors } from 'theme';
-import { UserType } from 'containers/App/routes';
+import { UserType } from 'containers/App/types';
 import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) =>
@@ -52,7 +52,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   promoteToAdmin(): void;
 }
 
-const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
+const UserDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Container>
     <Paper className={props.classes.banner} elevation={0}>
       <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin`)}>Back</Button>

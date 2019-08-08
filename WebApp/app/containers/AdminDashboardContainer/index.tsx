@@ -34,7 +34,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminDashboardContainer: React.SFC<Props> = (props: Props) => (
+const AdminDashboardContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <UserManagement users={props.users} />
     <CreatorsAwaitingReview 
