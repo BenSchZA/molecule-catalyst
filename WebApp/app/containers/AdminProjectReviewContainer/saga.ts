@@ -5,7 +5,7 @@ import { ApplicationRootState } from 'types';
 import { 
   approveProject as approveProjectApi,
   rejectProject as rejectProjectApi,
- } from '../../api'
+} from '../../api'
 import { forwardTo } from 'utils/history';
 
 export function* approveProject(action) {
