@@ -42,7 +42,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   networkId: number;
 }
 
-const NetworkState: React.SFC<OwnProps> = (props: OwnProps) => {
+const NetworkState: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
   const {classes, ready, networkId} = props;
   let networkName: string = "";
   if(networkId == 1){

@@ -43,7 +43,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminUserViewContainer: React.SFC<Props> = (props: Props) => (
+const AdminUserViewContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <UserDetailsView user={props.user} promoteToAdmin={props.promoteToAdmin}/>
   </Container>

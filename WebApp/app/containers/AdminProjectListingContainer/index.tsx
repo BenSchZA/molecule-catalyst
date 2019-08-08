@@ -30,7 +30,7 @@ export interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminProjectListingContainer: React.SFC<Props> = (props: Props) => (
+const AdminProjectListingContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <AdminProjectListing projects={props.projects}></AdminProjectListing>
   </Container>

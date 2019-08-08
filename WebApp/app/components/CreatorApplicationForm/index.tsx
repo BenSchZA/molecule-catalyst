@@ -30,7 +30,7 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> { }
 
-const CreatorApplicationForm: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorApplicationForm: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
 
   <Container>
     <Paper className={props.classes.banner} square={true} elevation={0}>

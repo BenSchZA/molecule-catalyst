@@ -55,7 +55,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorsAwaitingReview: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Fragment>
      <Paper className={props.classes.banner} elevation={0}>
     <Typography variant='h5'>Awaiting Approval</Typography>

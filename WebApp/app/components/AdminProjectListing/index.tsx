@@ -37,7 +37,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   projects: Array<any>,
 }
 
-const AdminProjectListing: React.SFC<OwnProps> = (props: OwnProps) => (
+const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Fragment>
     <Paper className={props.classes.banner} elevation={0}>
       <Typography variant='h5'>Projects</Typography>

@@ -43,7 +43,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   rejectProject(): void;
 }
 
-const AdminProjectReview: React.SFC<OwnProps> = ({ project, classes, approveProject, rejectProject }: OwnProps) => (
+const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classes, approveProject, rejectProject }: OwnProps) => (
   <Container>
     <Paper className={classes.banner} elevation={0}>
       <Button className={classes.backButton} onClick={() => forwardTo(`/admin/projects`)}>Back</Button>

@@ -11,7 +11,8 @@ import { Container } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router-dom';
 import AdminProjectReview from 'components/AdminProjectReview';
 import * as actions from './actions';
-
+import injectSaga from 'utils/injectSaga';
+import saga from './saga';
 
 interface RouteParams {
   projectId: string;
@@ -31,7 +32,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminProjectReviewContainer: React.SFC<Props> = (props: Props) => (
+const AdminProjectReviewContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <AdminProjectReview {...props}/>
   </Container>
@@ -54,7 +55,12 @@ const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps
 );
+const withSaga = injectSaga<OwnProps>({
+  key: 'adminProjectReviewContainer',
+  saga: saga,
+});
 
 export default compose(
+  withSaga,
   withConnect,
 )(AdminProjectReviewContainer);

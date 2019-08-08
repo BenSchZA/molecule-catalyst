@@ -23,7 +23,7 @@ interface StateProps {}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.SFC<Props> = (props: Props) => {
+const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
   return <Fragment>ProjectDetailsContainer</Fragment>;
 };
 
