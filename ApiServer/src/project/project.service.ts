@@ -46,7 +46,7 @@ export class ProjectService {
   async approveProject(projectId: any, user: User) {
     const project = await this.projectRepository.findById(projectId);
     project.status = ProjectSubmissionStatus.accepted;
-    project.reviewedBy = user;
+    project.reviewedBy = user.id;
     await project.save();
     return project.toObject();
   }
@@ -54,7 +54,7 @@ export class ProjectService {
   async rejectProject(projectId: any, user: User) {
     const project = await this.projectRepository.findById(projectId);
     project.status = ProjectSubmissionStatus.rejected;
-    project.reviewedBy = user;
+    project.reviewedBy = user.id;
     await project.save();
     return project.toObject();
   }
