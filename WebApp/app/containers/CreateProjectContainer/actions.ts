@@ -5,7 +5,6 @@
  */
 
 import { createStandardAction } from 'typesafe-actions';
-import {} from './types';
 
 import ActionTypes from './constants';
 

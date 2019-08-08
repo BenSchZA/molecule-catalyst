@@ -7,7 +7,7 @@
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, TableBody, Table, TableRow, TableCell, Button, Typography } from '@material-ui/core';
 import { colors } from 'theme';
-import { UserType } from 'containers/App/routes';
+import { UserType } from 'containers/App/types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -44,7 +44,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-const CreatorApplicationDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorApplicationDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Container>
     <Table>
       <TableBody>

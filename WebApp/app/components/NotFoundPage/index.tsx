@@ -14,7 +14,7 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {}
 
-const NotFoundPage: React.SFC<OwnProps> = (props: OwnProps) => {
+const NotFoundPage: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
   return <Fragment>
     <Typography>
       These are not the droids you are looking for

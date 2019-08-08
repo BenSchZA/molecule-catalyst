@@ -67,7 +67,7 @@ const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAutho
   );
 };
 
-const App: React.SFC<Props> = (props: Props) => {
+const App: React.FunctionComponent<Props> = (props: Props) => {
   const NotFoundRedirect = () => <Redirect to='/404' />
   return (
     <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} 

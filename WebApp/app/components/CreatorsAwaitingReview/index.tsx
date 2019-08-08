@@ -55,7 +55,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorsAwaitingReview: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Fragment>
      <Paper className={props.classes.banner} elevation={0}>
     <Typography variant='h5'>Awaiting Approval</Typography>
@@ -65,8 +65,7 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
           <ExpansionPanelSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1bh-content"
-            id="panel1bh-header"
-          >
+            id="panel1bh-header">
             <Typography className={props.classes.heading}>{ca.fullName}</Typography>
             <Typography className={props.classes.secondaryHeading}>{ca.email}</Typography>
           </ExpansionPanelSummary>
@@ -74,13 +73,13 @@ const CreatorsAwaitingReview: React.SFC<OwnProps> = (props: OwnProps) => (
             <CreatorApplicationDetailsView 
               rejectCreatorApplication={props.rejectCreatorApplication} 
               approveCreatorApplication={props.approveCreatorApplication} 
-              application={ca}></CreatorApplicationDetailsView> 
+              application={ca} /> 
           </ExpansionPanelDetails>
         </ExpansionPanel>
         )) : 
         <ExpansionPanel>
          <Typography className={props.classes.heading}>No awaiting creator applications</Typography>
-      </ExpansionPanel>
+        </ExpansionPanel>
       }
     </Paper>
     </Paper>
