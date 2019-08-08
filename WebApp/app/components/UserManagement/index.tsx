@@ -38,35 +38,37 @@ interface OwnProps extends WithStyles<typeof styles> {
   }>
 }
 
-const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
+const UserManagement: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Fragment>
-     <Paper className={props.classes.banner} elevation={0}>
-    <Typography variant='h5'>User Management</Typography>
-    <Paper>
-    <Table>
-      <TableHead>
-        <TableCell>User Address</TableCell>
-        <TableCell>Created</TableCell>
-        <TableCell>Type</TableCell>
-        <TableCell></TableCell>
-      </TableHead>
-      <TableBody>
-        {props.users && props.users.length > 0 ? props.users.map(ca => (
-          <TableRow key={ca.id}>
-            <TableCell>{ca.ethAddress.toUpperCase()}</TableCell>
-            <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
-            <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')  }</TableCell>
-            <TableCell>
-              <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/user/${ca.id}`)}>Details</Button>
-            </TableCell>
-          </TableRow>
-        )) : 
-        <TableRow className={props.classes.emptyRow}>
-          <TableCell>No users</TableCell>
-        </TableRow>}
-      </TableBody>
-    </Table>
-    </Paper>
+    <Paper className={props.classes.banner} elevation={0}>
+      <Typography variant='h5'>User Management</Typography>
+      <Paper>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>User Address</TableCell>
+              <TableCell>Created</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.users && props.users.length > 0 ? props.users.map(ca => (
+              <TableRow key={ca.id}>
+                <TableCell>{ca.ethAddress.toUpperCase()}</TableCell>
+                <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
+                <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')}</TableCell>
+                <TableCell>
+                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/user/${ca.id}`)}>Details</Button>
+                </TableCell>
+              </TableRow>
+            )) :
+              <TableRow className={props.classes.emptyRow}>
+                <TableCell>No users</TableCell>
+              </TableRow>}
+          </TableBody>
+        </Table>
+      </Paper>
     </Paper>
   </Fragment>
 

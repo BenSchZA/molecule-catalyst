@@ -97,7 +97,7 @@ interface OwnProps extends FieldProps, WithStyles<typeof styles> {
   disabled?: boolean;
 }
 
-const UploadImageField: React.SFC<OwnProps> = (props: OwnProps) => {
+const UploadImageField: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
   const { classes, field, form: { touched, errors, isSubmitting, setFieldValue, setFieldTouched }, disabled } = props;
   const error = getIn(touched, field.name) && getIn(errors, field.name);
 

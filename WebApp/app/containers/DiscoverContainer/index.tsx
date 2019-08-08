@@ -24,7 +24,7 @@ export interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const DiscoverContainer: React.SFC<Props> = (props: Props) => {
+const DiscoverContainer: React.FunctionComponent<Props> = (props: Props) => {
   return <Dashboard />;
 };
 
