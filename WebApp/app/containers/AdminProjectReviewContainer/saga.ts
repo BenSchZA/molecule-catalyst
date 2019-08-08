@@ -15,6 +15,17 @@ export function* approveProject(action) {
   // }
 }
 
+export function* rejectProject(action) {
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  // try {
+  //   yield call(promoteToAdminApi, action.payload, apiKey);
+  //   yield call(forwardTo, '/admin');
+  // } catch (error) {
+  //   console.log(error);
+  // }
+}
+
 export default function* createProjectContainerWatcherSaga() {
   yield takeEvery(getType(adminUserActions.approveProject), approveProject)
+  yield takeEvery(getType(adminUserActions.rejectProject), rejectProject)
 }

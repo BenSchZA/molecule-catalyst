@@ -75,5 +75,13 @@ export async function submitProject(projectData: ProjectData, apiToken: string) 
 }
 
 export async function promoteToAdmin(userId: string, apiToken: string) {
-  return apiRequest('GET', apiUrlBuilder.promoteToAdmin(userId), undefined, 'application/json', true, apiToken);
+  return apiRequest(RequestMethod.GET, apiUrlBuilder.promoteToAdmin(userId), undefined, 'application/json', true, apiToken);
+}
+
+export async function approveProject(projectId: string, apiToken: string) {
+  return apiRequest(RequestMethod.GET, apiUrlBuilder.approveCreatorApplication(projectId), undefined, 'application/json', true, apiToken);
+}
+
+export async function rejectreject(projectId: string, apiToken: string) {
+  return apiRequest(RequestMethod.GET, apiUrlBuilder.rejectCreatorApplication(projectId), undefined, 'application/json', true, apiToken);
 }
