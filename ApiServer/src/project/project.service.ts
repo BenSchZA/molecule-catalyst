@@ -42,4 +42,20 @@ export class ProjectService {
     const project = await this.projectRepository.findById(projectId);
     return project ? project.toObject() : false;
   }
+
+  async approveProject(projectId: any, user: User) {
+    const project = await this.projectRepository.findById(projectId);
+    project.status = ProjectSubmissionStatus.accepted;
+    project.reviewedBy = user;
+    await project.save();
+    return project.toObject();
+  }
+
+  async rejectProject(projectId: any, user: User) {
+    const project = await this.projectRepository.findById(projectId);
+    project.status = ProjectSubmissionStatus.rejected;
+    project.reviewedBy = user;
+    await project.save();
+    return project.toObject();
+  }
 }
