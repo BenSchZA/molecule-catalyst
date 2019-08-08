@@ -52,7 +52,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   promoteToAdmin(): void;
 }
 
-const UserDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
+const UserDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Container>
     <Paper className={props.classes.banner} elevation={0}>
       <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin`)}>Back</Button>

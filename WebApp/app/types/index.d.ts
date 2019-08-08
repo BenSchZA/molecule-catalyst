@@ -38,4 +38,5 @@ export interface ApplicationRootState {
   readonly adminProjectListing: AdminProjectApprovalListingState;
   readonly createProjectContainer: never;
   readonly adminUserViewContainer: never;
+  readonly adminProjectReviewContainer: never;
 }

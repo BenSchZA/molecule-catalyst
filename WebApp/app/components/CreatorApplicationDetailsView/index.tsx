@@ -44,7 +44,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-const CreatorApplicationDetailsView: React.SFC<OwnProps> = (props: OwnProps) => (
+const CreatorApplicationDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Container>
     <Table>
       <TableBody>

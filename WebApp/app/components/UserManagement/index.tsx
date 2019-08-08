@@ -38,7 +38,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   }>
 }
 
-const UserManagement: React.SFC<OwnProps> = (props: OwnProps) => (
+const UserManagement: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Fragment>
     <Paper className={props.classes.banner} elevation={0}>
       <Typography variant='h5'>User Management</Typography>

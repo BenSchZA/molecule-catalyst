@@ -79,7 +79,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 type Props = OwnProps & RouteComponentProps;
 
-const AppWrapper: React.SFC<Props> = ({
+const AppWrapper: React.FunctionComponent<Props> = ({
   classes,
   children,
   navRoutes,
