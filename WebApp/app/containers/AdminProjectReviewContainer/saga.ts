@@ -12,7 +12,7 @@ export function* approveProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     yield call(approveProjectApi, action.payload, apiKey);
-    yield call(forwardTo, '/admin/project');
+    yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);
   }
@@ -22,7 +22,7 @@ export function* rejectProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     yield call(rejectProjectApi, action.payload, apiKey);
-    yield call(forwardTo, '/admin/project');
+    yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);
   }

@@ -44,7 +44,7 @@ export class ProjectController {
   @Get(':projectId/approve')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
-  async approveProject(@Param('projectId') projectId, req: Request & { user: User }) {
+  async approveProject(@Param('projectId') projectId, @Req() req: Request & { user: User }) {
     const result = await this.projectService.approveProject(projectId, req.user);
     return result;
   }
