@@ -4,6 +4,7 @@ import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminDashboardContainer from 'containers/AdminDashboardContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
 import AdminUserViewContainer from 'containers/AdminUserViewContainer';
+import ProjectCreationConfirmation from 'components/ProjectCreationConfirmation';
 
 
 export enum UserType {
@@ -69,6 +70,14 @@ const routes: AppRoute[] = [{
   roleRequirement: UserType.Admin,
   isNavRequired: false,
   showNavForRoles:[UserType.Admin],
+  requireAuth: true,
+}, {
+  name: 'Project Creation Confirmation',
+  path: '/projects/confirmCreated',
+  component: ProjectCreationConfirmation,
+  roleRequirement: UserType.ProjectCreator,
+  isNavRequired: false,
+  showNavForRoles:[],
   requireAuth: true,
 }];
 

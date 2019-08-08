@@ -37,6 +37,9 @@ const styles = (theme: Theme) =>
       justifyContent: 'space-between',
       flexDirection: 'column',
     },
+    buttonBar: {
+      textAlign: 'right',
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -63,7 +66,8 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             placeholder='Enter a project title'
             component={TextField}
             variant='filled'
-            margin="dense" />
+            margin="dense"
+            fullWidth />
           <InputLabel htmlFor='abstract'>Abstract</InputLabel>
           <InputLabel htmlFor='abstract' shrink>Provide a short summary of your research project.</InputLabel>
           <Field
@@ -279,12 +283,17 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             </InputLabel>
                             <Field
                               name={`researchPhases[${index}.fundingGoal]`}
-                              type='text'
+                              type='number'
                               placeholder='e.g. $10,000'
                               component={TextField}
                               variant='filled'
                               fullWidth
-                              margin="dense" />
+                              margin="dense"
+                              InputProps={{
+                                inputProps: {
+                                  min: 0,
+                                },
+                              }} />
                           </Grid>
                           <Grid item xs={6} className={classes.gridItem}>
                             <InputLabel htmlFor='duration'>Duration</InputLabel>
@@ -293,12 +302,18 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                               </InputLabel>
                             <Field
                               name={`researchPhases[${index}.duration]`}
-                              type='text'
+                              type='number'
                               placeholder='(max. of 4 months)'
                               component={TextField}
                               variant='filled'
                               fullWidth
-                              margin="dense" />
+                              margin='dense'
+                              InputProps={{
+                                inputProps: {
+                                  min: 0,
+                                  max: 4
+                                },
+                              }} />
                           </Grid>
                         </Grid>
                       </div>
@@ -307,8 +322,10 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                 ) : <div />}
               </div>
             )} />
-          <Button type='submit'>Submit</Button>
         </Paper>
+      </Container>
+      <Container maxWidth='md' className={classes.buttonBar}>
+        <Button type='submit'>Create</Button>
       </Container>
     </Form>
   </Container>
