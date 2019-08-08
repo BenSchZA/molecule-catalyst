@@ -29,7 +29,7 @@ const styles = (theme: Theme) =>
       height: '71px',
     },
     rowText: {
-      fontSize:  theme.typography.pxToRem(10),
+      fontSize:  theme.typography.pxToRem(12),
     }
   });
 
