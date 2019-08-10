@@ -8,7 +8,7 @@ import React, { Fragment } from 'react';
 import { colors } from 'theme';
 import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper } from '@material-ui/core';
 import { forwardTo } from 'utils/history';
-import { ProjectSubmissionStatus } from 'containers/AdminProjectListingContainer/types';
+import { ProjectSubmissionStatus } from '../../domain/projects/types';
 import dayjs from 'dayjs'
 
 const styles = (theme: Theme) =>

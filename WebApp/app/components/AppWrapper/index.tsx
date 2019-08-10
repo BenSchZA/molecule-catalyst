@@ -126,9 +126,8 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                     }}
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}>
-                    <MenuItem onClick={() => {setAnchorEl(null); logOut()}}>
-                      Log Out
-                    </MenuItem>
+                    <MenuItem onClick={() => forwardTo('/projects/myProjects')}>My Projects</MenuItem>
+                    <MenuItem onClick={() => {setAnchorEl(null); logOut()}}>Log Out</MenuItem>
                   </Menu>
                 </Fragment>
               )}

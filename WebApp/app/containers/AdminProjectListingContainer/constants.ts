@@ -5,7 +5,6 @@
  */
 
 enum ActionTypes {
-  SET_PROJECTS = 'app/AdminProjectApprovalListingContainer/SET_PROJECTS',
  
 }
 

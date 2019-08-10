@@ -12,7 +12,7 @@ import { ProjectSubmissionStatus } from './project.schema';
 @Injectable()
 export class ProjectService {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
-              private readonly attachmentService: AttachmentService) {}
+  private readonly attachmentService: AttachmentService) {}
 
   async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
     const project = await new this.projectRepository({...projectData, user: user.id});
@@ -23,21 +23,21 @@ export class ProjectService {
       }, file);
       project.featuredImage = attachment;
     }
-
+    
     await project.save();
     return project.toObject();
   }
-
+  
   async getAllProjects(): Promise<Project[]> {
     const result = await this.projectRepository.find().populate(Schemas.User);
     return result.map(r => r.toObject())
   }
 
-  async getAwaitingApprovalProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find({status: ProjectSubmissionStatus.created}).populate(Schemas.Project);
+  async getMyProjects(userId: string) {
+    const result = await this.projectRepository.find({user: userId}).populate(Schemas.User);
     return result.map(r => r.toObject());
   }
-
+  
   async findById(projectId: string): Promise<Project> {
     const project = await this.projectRepository.findById(projectId);
     return project ? project.toObject() : false;

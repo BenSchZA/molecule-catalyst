@@ -1,18 +1,10 @@
-import { createSelector, createStructuredSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
-import { ApplicationRootState } from 'types';
-
-const selectProjects = (state: ApplicationRootState) => {
-  return state.adminProjectListing.projects;
-};
-
-const makeSelectProjects = createSelector(selectProjects, substate => {
-  return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
-})
+import { selectAllProjects } from 'domain/projects/selectors';
 
 const selectAdminProjectListing = createStructuredSelector<RootState, StateProps>({
-  projects: makeSelectProjects
+  projects: selectAllProjects
 });
 
 

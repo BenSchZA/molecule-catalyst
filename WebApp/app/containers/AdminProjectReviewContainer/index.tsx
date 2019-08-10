@@ -39,7 +39,7 @@ const AdminProjectReviewContainer: React.FunctionComponent<Props> = (props: Prop
 );
 
 const mapStateToProps = (state, props) => ({
-  project: state.adminProjectListing.projects[props.match.params.projectId],
+  project: state.projects[props.match.params.projectId],
 })
 
 const mapDispatchToProps = (

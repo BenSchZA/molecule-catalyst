@@ -3,5 +3,5 @@ import * as ProjectActions from '../../domain/projects/actions';
 
 
 export default function* root() {
-  yield put(ProjectActions.getAllProjects());
+  yield put(ProjectActions.getMyProjects());
 }

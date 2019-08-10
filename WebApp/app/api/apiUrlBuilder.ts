@@ -14,6 +14,7 @@ const apiUrlBuilder = {
   verifyEmail: generateUri('creator/verifyEmail'),
   getCreatorApplicationAwaitingApproval: generateUri('creator/awaitingApproval'),
   getAllProjects : generateUri('project/all'),
+  getMyProjects : generateUri('project/my'),
   getAllUsers: generateUri('users/all'),
   approveCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/approve`),
   rejectCreatorApplication: (applicationId: string) => generateUri(`creator/${applicationId}/reject`),

@@ -8,6 +8,7 @@ import AdminProjectListingContainer from 'containers/AdminProjectListingContaine
 import AdminProjectReviewContainer from 'containers/AdminProjectReviewContainer';
 import ProjectCreationConfirmation from 'components/ProjectCreationConfirmation';
 import { UserType } from './types';
+import MyProjectsContainer from 'containers/MyProjectsContainer';
 
 
 
@@ -89,6 +90,14 @@ const routes: AppRoute[] = [{
   name: 'Project Creation Confirmation',
   path: '/projects/confirmCreated',
   component: ProjectCreationConfirmation,
+  roleRequirement: UserType.ProjectCreator,
+  isNavRequired: false,
+  showNavForRoles:[],
+  requireAuth: true,
+}, {
+  name: 'My Projects',
+  path: '/projects/myProjects',
+  component: MyProjectsContainer,
   roleRequirement: UserType.ProjectCreator,
   isNavRequired: false,
   showNavForRoles:[],

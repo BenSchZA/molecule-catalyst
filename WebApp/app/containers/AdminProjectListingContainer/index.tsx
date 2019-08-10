@@ -9,8 +9,8 @@ import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 
 import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import reducer from './reducer';
+// import injectReducer from 'utils/injectReducer';
+// import reducer from './reducer';
 import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import selectAdminProjectListing from './selectors';
@@ -51,10 +51,10 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer<OwnProps>({
-  key: 'adminProjectListing',
-  reducer: reducer,
-});
+// const withReducer = injectReducer<OwnProps>({
+//   key: 'adminProjectListing',
+//   reducer: reducer,
+// });
 const withSaga = injectSaga<OwnProps>({
   key: 'adminProjectListing',
   saga: saga,
@@ -62,7 +62,7 @@ const withSaga = injectSaga<OwnProps>({
 });
 
 export default compose(
-  withReducer,
+  // withReducer,
   withSaga,
   withConnect,
 )(AdminProjectListingContainer);
