@@ -32,6 +32,15 @@ export function* getMyProjects() {
   }
 }
 
+export function* launchProject(action) {
+  try {
+    console.log('Launch project', action.payload);
+    // TODO Call market factory and update the project on the API.
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function* getProjects() {
   try {
     const result = yield call(getProjectsApi);
@@ -45,4 +54,6 @@ export function* getProjects() {
 export default function* root() {
   yield takeLatest(getType(ProjectActions.getAllProjects), getAllProjects);
   yield takeLatest(getType(ProjectActions.getMyProjects), getMyProjects);
+  yield takeLatest(getType(ProjectActions.getProjects), getProjects);
+  yield takeLatest(getType(ProjectActions.launchProject.request), launchProject)
 }
