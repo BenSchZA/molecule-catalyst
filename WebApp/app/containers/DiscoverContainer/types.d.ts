@@ -3,17 +3,20 @@ import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
-interface DashboardContainerState {
-
+interface DiscoverContainerState {
+  filter: {
+    text: string,
+    projectStatus?: number,
+  }
 }
 
 /* --- ACTIONS --- */
-type DashboardContainerActions = ActionType<typeof actions>;
+type DiscoverContainerActions = ActionType<typeof actions>;
 
 /* --- EXPORTS --- */
 
 type RootState = ApplicationRootState;
-type ContainerState = DashboardContainerState;
-type ContainerActions = DashboardContainerActions;
+type ContainerState = DiscoverContainerState;
+type ContainerActions = DiscoverContainerActions;
 
 export { RootState, ContainerState, ContainerActions };

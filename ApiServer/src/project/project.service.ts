@@ -30,7 +30,7 @@ export class ProjectService {
   
   async getProjects() {
     const result = await this.projectRepository
-      .find({status: ProjectSubmissionStatus.started})
+      .find().or([{status: ProjectSubmissionStatus.started}, {status: ProjectSubmissionStatus.ended}])
       .populate(Schemas.User, 'fullName profileImage biography professionalTitle affiliatedOrganisation');
     return result.map(r => r.toObject())
   }

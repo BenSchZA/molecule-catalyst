@@ -11,15 +11,13 @@ interface OwnProps extends WithStyles<typeof styles> {
   classes: any;
 }
 
-const Dashboard: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
-  return (
-    <Fragment>
-        <Typography>Discover Content</Typography>
-    </Fragment>
-  );
-}
+const ProjectGrid: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
+  <Fragment>
+    <Typography>Project Grid</Typography>
+  </Fragment>
+);
 
 export default compose(
   withStyles(styles, { withTheme: true }),
   withWidth(),
-)(Dashboard);
+)(ProjectGrid);
