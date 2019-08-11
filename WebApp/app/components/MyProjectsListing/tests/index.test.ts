@@ -1,8 +1,8 @@
 // import React from 'react';
 // import { mount } from 'enzyme';
 
-// import AdminProjectListing from '../index';
+// import MyProjectsListing from '../index';
 
-describe('<AdminProjectListing />', () => {
+describe('<MyProjectsListing />', () => {
   test.todo('Expect to have unit tests specified')
 });
