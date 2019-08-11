@@ -13,6 +13,7 @@ const apiUrlBuilder = {
   getCreatorApplication: generateUri('creator'),
   verifyEmail: generateUri('creator/verifyEmail'),
   getCreatorApplicationAwaitingApproval: generateUri('creator/awaitingApproval'),
+  getProjects : generateUri('project/'),
   getAllProjects : generateUri('project/all'),
   getMyProjects : generateUri('project/my'),
   getAllUsers: generateUri('users/all'),

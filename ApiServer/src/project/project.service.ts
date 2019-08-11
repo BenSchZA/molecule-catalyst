@@ -13,7 +13,7 @@ import { ProjectSubmissionStatus } from './project.schema';
 export class ProjectService {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
   private readonly attachmentService: AttachmentService) {}
-
+  
   async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
     const project = await new this.projectRepository({...projectData, user: user.id});
     if (file) {
@@ -28,12 +28,19 @@ export class ProjectService {
     return project.toObject();
   }
   
+  async getProjects() {
+    const result = await this.projectRepository
+      .find({status: ProjectSubmissionStatus.started})
+      .populate(Schemas.User, 'fullName profileImage biography professionalTitle affiliatedOrganisation');
+    return result.map(r => r.toObject())
+  }
+
   async getAllProjects(): Promise<Project[]> {
     const result = await this.projectRepository.find().populate(Schemas.User);
     return result.map(r => r.toObject())
   }
 
-  async getMyProjects(userId: string) {
+  async getUserProjects(userId: string) {
     const result = await this.projectRepository.find({user: userId}).populate(Schemas.User);
     return result.map(r => r.toObject());
   }

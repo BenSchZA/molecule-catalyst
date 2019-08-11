@@ -16,6 +16,7 @@ interface IProject {
     id: string
   };
   title: string,
+  createdAt: string,
   abstract: string,
   featuredImage: string,
   context: string,

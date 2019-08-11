@@ -13,6 +13,13 @@ import { Request } from 'express';
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  // Public getter provides filtered list of projects that are displayed to all users.
+  @Get()
+  async getProjects(): Promise<Project[]> {
+    const result = await this.projectService.getProjects();
+    return result;
+  }
+
   @Get('all')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
@@ -24,8 +31,8 @@ export class ProjectController {
   @Get('my')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.ProjectCreator)
-  async getMyProjects(@Req() req: Request & {user: User}): Promise<Project[]> {
-    const result = await this.projectService.getMyProjects(req.user.id);
+  async getUserProjects(@Req() req: Request & {user: User}): Promise<Project[]> {
+    const result = await this.projectService.getUserProjects(req.user.id);
     return result;
   }
 
