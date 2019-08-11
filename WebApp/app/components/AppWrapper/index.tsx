@@ -9,6 +9,7 @@ import { AppRoute } from 'containers/App/routes';
 import Blockies from 'react-blockies';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
+import { UserType } from 'containers/App/types';
 
 
 // import { appRoute } from 'containers/App/routes';
@@ -88,6 +89,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   ethAddress,
   walletUnlocked,
   logOut,
+  userRole,
   location,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
@@ -127,7 +129,8 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                     }}
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}>
-                    <MenuItem onClick={() => { setAnchorEl(null); forwardTo('/projects/myProjects') }}>My Projects</MenuItem>
+                    {userRole >= UserType.ProjectCreator && 
+                      <MenuItem onClick={() => { setAnchorEl(null); forwardTo('/projects/myProjects') }}>My Projects</MenuItem>}
                     <MenuItem onClick={() => { setAnchorEl(null); logOut() }}>Log Out</MenuItem>
                   </Menu>
                 </Fragment>
