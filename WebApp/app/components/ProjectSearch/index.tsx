@@ -11,7 +11,15 @@ import { Search } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
   createStyles({
-    // JSS in CSS goes here
+    searchBarContainer: {
+      textAlign: 'center',
+    },
+    textInput: {
+      width: 400
+    },
+    projectStatus: {
+      width: 200
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -22,30 +30,39 @@ interface OwnProps extends WithStyles<typeof styles> {
   }
 }
 
-const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter}: OwnProps) => {
+const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, classes}: OwnProps) => {
   const filterStatuses = [{
     label: 'All Statuses',
     value: -1
   }, {
-    label: ProjectSubmissionStatus[ProjectSubmissionStatus.started],
-    value: 'Ongoing',
+    label: 'Ongoing',
+    value: ProjectSubmissionStatus.started,
   }, {
-    label: ProjectSubmissionStatus[ProjectSubmissionStatus.ended],
-    value: 'Ended',
+    label: 'Ended',
+    value: ProjectSubmissionStatus.ended,
   }]
   
+  function updateFilter(e) {
+    setFilter({[e.target.name]: e.target.value})
+  }
+
   return (
-  <Container maxWidth='md'>
+  <Container maxWidth='md' className={classes.searchBarContainer}>
     <Typography variant='h1'>Discover</Typography>
     <TextField 
       name='text'
+      value={filter.text}
+      onChange={updateFilter}
       InputProps={{
         endAdornment: <Search />
-      }}/>
+      }}
+      className={classes.textInput}/>
     <TextField 
+      name='projectStatus'
       select
       value={filter.projectStatus}
-      onChange={(e) => console.log(e.target.value)} >
+      onChange={updateFilter} 
+      className={classes.projectStatus}>
       {filterStatuses.map(option => (
         <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
       ))}
