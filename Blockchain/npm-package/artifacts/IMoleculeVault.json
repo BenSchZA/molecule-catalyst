@@ -1,0 +1,1507 @@
+{
+  "contractName": "IMoleculeVault",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_spender",
+          "type": "address"
+        },
+        {
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "collateralToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "taxRate",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "addAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_oldAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "removeAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "isAdmin",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isWhitelistAdmin",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "addWhitelistAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceWhitelistAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity 0.5.10;\n\ninterface IMoleculeVault {\n    \n    function transfer(address _to, uint256 _amount) external;\n\n    function approve(address _spender, uint256 _amount) external;\n\n    function collateralToken() external view returns(address);\n\n    function taxRate() external view returns(uint256);\n\n    /// @dev    Used to add an admin\n    /// @param _newAdmin        :address The address of the new admin\n    function addAdmin(address _newAdmin) external;\n\n    /// @dev    Used to remove admins\n    /// @param _oldAdmin        :address The address of the previous admin\n    function removeAdmin(address _oldAdmin) external;\n\n    /// @dev    Checking admin rights\n    /// @param _account         :address in question\n    /// @return bool\n    function isAdmin(address _account) external view returns(bool);\n\n    /**\n      * @notice checks admin status of an address\n      */\n    function isWhitelistAdmin(address account) external view returns (bool);\n\n    /**\n      * @dev Allows a whitelisted admin to add another admin\n      */\n    function addWhitelistAdmin(address account) external;\n\n    /**\n      * @dev Allows a whitlisted admin to renouce their role as admin\n      */\n    function renounceWhitelistAdmin() external;\n}",
+  "sourcePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/moleculeVault/IMoleculeVault.sol",
+  "ast": {
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/moleculeVault/IMoleculeVault.sol",
+    "exportedSymbols": {
+      "IMoleculeVault": [
+        5808
+      ]
+    },
+    "id": 5809,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5751,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:33"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 5808,
+        "linearizedBaseContracts": [
+          5808
+        ],
+        "name": "IMoleculeVault",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5758,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "transfer",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5756,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5753,
+                  "name": "_to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5758,
+                  "src": "79:11:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5752,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "79:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5755,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5758,
+                  "src": "92:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5754,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "92:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "78:30:33"
+            },
+            "returnParameters": {
+              "id": 5757,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "117:0:33"
+            },
+            "scope": 5808,
+            "src": "61:57:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5765,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "approve",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5763,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5760,
+                  "name": "_spender",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5765,
+                  "src": "141:16:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5759,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "141:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5762,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5765,
+                  "src": "159:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5761,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "159:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "140:35:33"
+            },
+            "returnParameters": {
+              "id": 5764,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "184:0:33"
+            },
+            "scope": 5808,
+            "src": "124:61:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5770,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "collateralToken",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "215:2:33"
+            },
+            "returnParameters": {
+              "id": 5769,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5768,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5770,
+                  "src": "240:7:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5767,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "240:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "239:9:33"
+            },
+            "scope": 5808,
+            "src": "191:58:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5775,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "taxRate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5771,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "271:2:33"
+            },
+            "returnParameters": {
+              "id": 5774,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5773,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5775,
+                  "src": "296:7:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5772,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "296:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "295:9:33"
+            },
+            "scope": 5808,
+            "src": "255:50:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Used to add an admin\n @param _newAdmin        :address The address of the new admin",
+            "id": 5780,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5778,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5777,
+                  "name": "_newAdmin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5780,
+                  "src": "436:17:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5776,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "436:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "435:19:33"
+            },
+            "returnParameters": {
+              "id": 5779,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "463:0:33"
+            },
+            "scope": 5808,
+            "src": "418:46:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Used to remove admins\n @param _oldAdmin        :address The address of the previous admin",
+            "id": 5785,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5783,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5782,
+                  "name": "_oldAdmin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5785,
+                  "src": "604:17:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5781,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "604:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "603:19:33"
+            },
+            "returnParameters": {
+              "id": 5784,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "631:0:33"
+            },
+            "scope": 5808,
+            "src": "583:49:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Checking admin rights\n @param _account         :address in question\n @return bool",
+            "id": 5792,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5788,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5787,
+                  "name": "_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5792,
+                  "src": "767:16:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5786,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "766:18:33"
+            },
+            "returnParameters": {
+              "id": 5791,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5790,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5792,
+                  "src": "807:4:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5789,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "807:4:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "806:6:33"
+            },
+            "scope": 5808,
+            "src": "750:63:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@notice checks admin status of an address",
+            "id": 5799,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5795,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5794,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5799,
+                  "src": "912:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5793,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "912:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "911:17:33"
+            },
+            "returnParameters": {
+              "id": 5798,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5797,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5799,
+                  "src": "952:4:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5796,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "952:4:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "951:6:33"
+            },
+            "scope": 5808,
+            "src": "886:72:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Allows a whitelisted admin to add another admin",
+            "id": 5804,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5802,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5801,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5804,
+                  "src": "1069:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5800,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1069:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1068:17:33"
+            },
+            "returnParameters": {
+              "id": 5803,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1094:0:33"
+            },
+            "scope": 5808,
+            "src": "1042:53:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Allows a whitlisted admin to renouce their role as admin",
+            "id": 5807,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5805,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1219:2:33"
+            },
+            "returnParameters": {
+              "id": 5806,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1230:0:33"
+            },
+            "scope": 5808,
+            "src": "1188:43:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5809,
+        "src": "25:1208:33"
+      }
+    ],
+    "src": "0:1233:33"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/moleculeVault/IMoleculeVault.sol",
+    "exportedSymbols": {
+      "IMoleculeVault": [
+        5808
+      ]
+    },
+    "id": 5809,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5751,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:33"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 5808,
+        "linearizedBaseContracts": [
+          5808
+        ],
+        "name": "IMoleculeVault",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5758,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "transfer",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5756,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5753,
+                  "name": "_to",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5758,
+                  "src": "79:11:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5752,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "79:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5755,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5758,
+                  "src": "92:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5754,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "92:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "78:30:33"
+            },
+            "returnParameters": {
+              "id": 5757,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "117:0:33"
+            },
+            "scope": 5808,
+            "src": "61:57:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5765,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "approve",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5763,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5760,
+                  "name": "_spender",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5765,
+                  "src": "141:16:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5759,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "141:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5762,
+                  "name": "_amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5765,
+                  "src": "159:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5761,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "159:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "140:35:33"
+            },
+            "returnParameters": {
+              "id": 5764,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "184:0:33"
+            },
+            "scope": 5808,
+            "src": "124:61:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5770,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "collateralToken",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5766,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "215:2:33"
+            },
+            "returnParameters": {
+              "id": 5769,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5768,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5770,
+                  "src": "240:7:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5767,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "240:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "239:9:33"
+            },
+            "scope": 5808,
+            "src": "191:58:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 5775,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "taxRate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5771,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "271:2:33"
+            },
+            "returnParameters": {
+              "id": 5774,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5773,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5775,
+                  "src": "296:7:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5772,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "296:7:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "295:9:33"
+            },
+            "scope": 5808,
+            "src": "255:50:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Used to add an admin\n @param _newAdmin        :address The address of the new admin",
+            "id": 5780,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5778,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5777,
+                  "name": "_newAdmin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5780,
+                  "src": "436:17:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5776,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "436:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "435:19:33"
+            },
+            "returnParameters": {
+              "id": 5779,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "463:0:33"
+            },
+            "scope": 5808,
+            "src": "418:46:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Used to remove admins\n @param _oldAdmin        :address The address of the previous admin",
+            "id": 5785,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5783,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5782,
+                  "name": "_oldAdmin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5785,
+                  "src": "604:17:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5781,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "604:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "603:19:33"
+            },
+            "returnParameters": {
+              "id": 5784,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "631:0:33"
+            },
+            "scope": 5808,
+            "src": "583:49:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev    Checking admin rights\n @param _account         :address in question\n @return bool",
+            "id": 5792,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5788,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5787,
+                  "name": "_account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5792,
+                  "src": "767:16:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5786,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "767:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "766:18:33"
+            },
+            "returnParameters": {
+              "id": 5791,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5790,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5792,
+                  "src": "807:4:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5789,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "807:4:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "806:6:33"
+            },
+            "scope": 5808,
+            "src": "750:63:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@notice checks admin status of an address",
+            "id": 5799,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5795,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5794,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5799,
+                  "src": "912:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5793,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "912:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "911:17:33"
+            },
+            "returnParameters": {
+              "id": 5798,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5797,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5799,
+                  "src": "952:4:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5796,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "952:4:33",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "951:6:33"
+            },
+            "scope": 5808,
+            "src": "886:72:33",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Allows a whitelisted admin to add another admin",
+            "id": 5804,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5802,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5801,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5804,
+                  "src": "1069:15:33",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5800,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1069:7:33",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1068:17:33"
+            },
+            "returnParameters": {
+              "id": 5803,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1094:0:33"
+            },
+            "scope": 5808,
+            "src": "1042:53:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Allows a whitlisted admin to renouce their role as admin",
+            "id": 5807,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5805,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1219:2:33"
+            },
+            "returnParameters": {
+              "id": 5806,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1230:0:33"
+            },
+            "scope": 5808,
+            "src": "1188:43:33",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5809,
+        "src": "25:1208:33"
+      }
+    ],
+    "src": "0:1233:33"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.10+commit.5a6ea5b1.Emscripten.clang",
+    "optimizer": true,
+    "runs": 500
+  },
+  "networks": {},
+  "schemaVersion": "2.1.7",
+  "updatedAt": "2019-08-12T11:56:49.015Z"
+}
