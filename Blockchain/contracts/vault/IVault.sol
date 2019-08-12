@@ -2,7 +2,7 @@ pragma solidity 0.5.10;
 
 interface IVault {
     // States for each funding round
-    enum State { NOT_STARTED, STARTED, ENDED, PAID }
+    enum FundingState { NOT_STARTED, STARTED, ENDED, PAID }
 
     event FundingWithdrawn(uint256 phase, uint256 amount);
     event PhaseFinalised(uint256 phase, uint256 amount);
@@ -19,7 +19,7 @@ interface IVault {
 
     function terminateMarket() external;
 
-    function fundingPhase(uint256 _phase) external view returns(uint256, uint256, uint256, State);
+    function fundingPhase(uint256 _phase) external view returns(uint256, uint256, uint256, FundingState);
 
     function outstandingWithdraw() external view returns(uint256);
 

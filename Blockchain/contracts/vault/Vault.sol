@@ -34,9 +34,6 @@ contract Vault is IVault, WhitelistAdminRole {
     // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
 
-    // States for each funding round
-    enum FundingState { NOT_STARTED, STARTED, ENDED, PAID }
-
     // Information stored about each phase
     struct FundPhase{
         uint256 fundingThreshold;   // Collateral limit to trigger funding
