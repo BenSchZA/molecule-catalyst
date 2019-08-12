@@ -16,22 +16,29 @@ import { ApplicationRootState } from 'types';
 import ProjectSearch from 'components/ProjectSearch';
 import ProjectGrid from 'components/ProjectGrid';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
+import { setFilter } from './actions';
+import { Project } from 'domain/projects/types';
 
 interface OwnProps {}
 
 interface DispatchProps {
+  setFilter: (filter) => void
 }
 
 export interface StateProps {
-
+  filter: {
+    text: string,
+    projectStatus: number,
+  }
+  projects: Array<Project>
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const DiscoverContainer: React.FunctionComponent<Props> = (props: Props) => (
+const DiscoverContainer: React.FunctionComponent<Props> = ({filter, setFilter, projects}: Props) => (
   <Fragment>
-    <ProjectSearch />
-    <ProjectGrid />
+    <ProjectSearch setFilter={setFilter} filter={filter} />
+    <ProjectGrid projects={projects} />
   </Fragment>
 )
 
@@ -39,7 +46,7 @@ const mapStateToProps = (state: ApplicationRootState) => selectDiscoverContainer
 
 function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return {
-    dispatch: dispatch,
+    setFilter: (filter) => dispatch(setFilter(filter)),
   };
 }
 

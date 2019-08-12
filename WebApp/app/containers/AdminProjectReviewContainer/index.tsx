@@ -13,6 +13,7 @@ import AdminProjectReview from 'components/AdminProjectReview';
 import * as actions from './actions';
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
+import { Project } from 'domain/projects/types';
 
 interface RouteParams {
   projectId: string;
@@ -26,8 +27,8 @@ interface DispatchProps {
   rejectProject(): void
 }
 
-interface StateProps {
-  project: any
+export interface StateProps {
+  project: Project
 }
 
 type Props = StateProps & DispatchProps & OwnProps;

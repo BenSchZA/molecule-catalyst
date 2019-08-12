@@ -1,6 +1,6 @@
 import { createSelector, createStructuredSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
-import { StateProps } from 'containers/DiscoverContainer';
+import { StateProps } from '.';
 import { ApplicationRootState } from 'types';
 
 const selectCreatorsAwaitingApproval = (state: ApplicationRootState) => {
@@ -12,11 +12,11 @@ const selectAllUsers = (state: ApplicationRootState) => {
 };
 
 const makeSelectCreatorsAwaitingApproval = createSelector(selectCreatorsAwaitingApproval, substate => {
-  return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
+  return (substate) ? Object.values(substate) : [];
 })
 
 const makeSelectAllUsers = createSelector(selectAllUsers, substate => {
-  return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
+  return (substate) ? Object.values(substate) : [];
 })
 
 const selectAdminDashboard = createStructuredSelector<RootState, StateProps>({

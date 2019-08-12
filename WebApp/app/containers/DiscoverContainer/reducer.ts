@@ -11,7 +11,7 @@ import { getType } from 'typesafe-actions';
 export const initialState: ContainerState = {
   filter: {
     text: '',
-    projectStatus: undefined,
+    projectStatus: -1,
   }
 };
 

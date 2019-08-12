@@ -27,9 +27,9 @@ interface DispatchProps {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-interface StateProps {
-  creatorsAwaitingApproval: [],
-  users: []
+export interface StateProps {
+  creatorsAwaitingApproval: any[],
+  users: any[]
 }
 
 type Props = StateProps & DispatchProps & OwnProps;

@@ -191,11 +191,6 @@ const theme = (createMuiTheme as any)({
         width:'1200px'
       }
     },
-    MuiTable:{
-      root:{
-
-      }
-    },
     MuiTableHead:{
       root:{
         backgroundColor: colors.grey
@@ -218,13 +213,16 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider:{
-      root:{
-      },
       middle:{
         marginTop: "32px",
         backgroundColor: colors.moleculeBranding.primary,
         alignSelf: 'center',
         verticalAlign: 'middle',
+      }
+    },
+    MuiSelect: {
+      selectMenu: {
+        height: '1.1875em'
       }
     }
   }

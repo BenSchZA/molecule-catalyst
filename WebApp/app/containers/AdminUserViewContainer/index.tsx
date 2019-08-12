@@ -26,7 +26,7 @@ interface DispatchProps {
   promoteToAdmin(): void
 }
 
-interface StateProps {
+export interface StateProps {
   user: {
     id: string,
     type: number,

@@ -1,5 +1,4 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { makeSelectIsLoggedIn, makeSelectWalletUnlocked } from 'domain/authentication/selectors';
 import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
 import { selectAllProjects } from 'domain/projects/selectors';
@@ -10,7 +9,10 @@ import { ApplicationRootState } from 'types';
  */
 
 const selectFilter = (state: ApplicationRootState) => {
-  return state ? state.discover.filter : {};
+  return state ? state.discover.filter : {
+    text: '',
+    projectStatus: -1,
+  };
 };
 
 const makeSelectFilter = createSelector(
@@ -33,9 +35,8 @@ const makeSelectFilter = createSelector(
  */
 
 const selectDiscoverContainer = createStructuredSelector<RootState, StateProps>({
-  isLoggedIn: makeSelectIsLoggedIn,
-  walletUnlocked: makeSelectWalletUnlocked,
-  projects: makeSelectDiscoverProjects
+  projects: makeSelectDiscoverProjects,
+  filter: makeSelectFilter,
 });
 
 export default selectDiscoverContainer;

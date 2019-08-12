@@ -6,7 +6,7 @@ import { ApplicationRootState } from 'types';
 interface DiscoverContainerState {
   filter: {
     text: string,
-    projectStatus?: number,
+    projectStatus: number,
   }
 }
 

@@ -9,8 +9,8 @@ import * as actions from './actions';
 import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
-  creatorsAwaitingApproval: {},
-  users: {}
+  creatorsAwaitingApproval: [],
+  users: []
 };
 
 function adminDashboardContainerReducer(state: ContainerState = initialState, action: ContainerActions) {
