@@ -17,7 +17,7 @@ const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects}: OwnProps) =>
   <Container maxWidth='lg'>
     <Typography>Project Grid</Typography>
     {projects && projects.length > 0 && projects.map(p =>
-      <Typography>{p.title}</Typography>
+      <Typography key={p.id}>{p.title}</Typography>
     )}
   </Container>
 );
