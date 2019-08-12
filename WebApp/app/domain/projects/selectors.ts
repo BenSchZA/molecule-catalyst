@@ -22,7 +22,7 @@ const allProjects = (state: ApplicationRootState) => {
 const selectAllProjects = createSelector(
   allProjects,
   (allProjects) => {
-    return (allProjects) ? Object.values(allProjects) : [];
+    return Object.values(allProjects) as Array<Project>;
   },
 );
 

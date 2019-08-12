@@ -12,9 +12,7 @@ enum ProjectSubmissionStatus {
 
 interface IProject {
   id: string;
-  user: {
-    id: string
-  };
+  user: User
   title: string,
   createdAt: string,
   abstract: string,
@@ -39,6 +37,17 @@ interface ResearchPhase {
   result: string,
   fundingGoal: number,
   duration: number,
+}
+
+interface User {
+  id: string,
+  ethAddress?: string,
+  biography?: string,
+  affiliatedOrganisation?: string,
+  firstName?: string,
+  lastName?: string,
+  professionalTitle?: string,
+  fullName?: string
 }
 
 /* --- STATE --- */
