@@ -55,22 +55,6 @@ const routes: AppRoute[] = [{
   showNavForRoles:[UserType.Standard],
   requireAuth: true,
 }, {
-  name: 'Users',
-  path: '/admin',
-  component: AdminDashboardContainer,
-  roleRequirement: UserType.Admin,
-  isNavRequired: true,
-  showNavForRoles:[UserType.Admin],
-  requireAuth: true,
-}, {
-  name: 'Admin Projects',
-  path: '/admin/projects',
-  component: AdminProjectListingContainer,
-  roleRequirement: UserType.Admin,
-  isNavRequired: true,
-  showNavForRoles:[UserType.Admin],
-  requireAuth: true,
-}, {
   name: 'Admin User View',
   path: '/admin/user/:userId',
   component: AdminUserViewContainer,
@@ -99,8 +83,24 @@ const routes: AppRoute[] = [{
   path: '/projects/myProjects',
   component: MyProjectsContainer,
   roleRequirement: UserType.ProjectCreator,
+  isNavRequired: true,
+  showNavForRoles:[UserType.ProjectCreator],
+  requireAuth: true,
+}, {
+  name: 'Users',
+  path: '/admin/users',
+  component: AdminDashboardContainer,
+  roleRequirement: UserType.Admin,
   isNavRequired: false,
-  showNavForRoles:[],
+  showNavForRoles:[UserType.Admin],
+  requireAuth: true,
+}, {
+  name: 'Projects',
+  path: '/admin/projects',
+  component: AdminProjectListingContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: false,
+  showNavForRoles:[UserType.Admin],
   requireAuth: true,
 }];
 
