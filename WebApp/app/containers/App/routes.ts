@@ -1,7 +1,7 @@
 import DiscoverContainer from 'containers/DiscoverContainer';
 import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
-import AdminDashboardContainer from 'containers/AdminDashboardContainer';
+import AdminUserListingContainer from 'containers/AdminUserListingContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
 import AdminUserViewContainer from 'containers/AdminUserViewContainer';
 import AdminProjectListingContainer from 'containers/AdminProjectListingContainer';
@@ -89,7 +89,7 @@ const routes: AppRoute[] = [{
 }, {
   name: 'Users',
   path: '/admin/users',
-  component: AdminDashboardContainer,
+  component: AdminUserListingContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: false,
   showNavForRoles:[UserType.Admin],

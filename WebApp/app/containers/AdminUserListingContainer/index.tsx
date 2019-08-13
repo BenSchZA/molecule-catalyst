@@ -34,7 +34,7 @@ export interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminDashboardContainer: React.FunctionComponent<Props> = (props: Props) => (
+const AdminUserListingContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <UserManagement users={props.users} />
     <CreatorsAwaitingReview 
@@ -74,4 +74,4 @@ export default compose(
   withReducer,
   withSaga,
   withConnect,
-)(AdminDashboardContainer);
+)(AdminUserListingContainer);

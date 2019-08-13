@@ -13,7 +13,7 @@ export const initialState: ContainerState = {
   users: []
 };
 
-function adminDashboardContainerReducer(state: ContainerState = initialState, action: ContainerActions) {
+function AdminUserListingContainer(state: ContainerState = initialState, action: ContainerActions) {
   switch (action.type) {
     case getType(actions.setCreatorsAwaitingApproval):
       return {
@@ -30,4 +30,4 @@ function adminDashboardContainerReducer(state: ContainerState = initialState, ac
   }
 }
 
-export default adminDashboardContainerReducer;
+export default AdminUserListingContainer;

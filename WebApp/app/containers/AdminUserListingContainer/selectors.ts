@@ -19,11 +19,11 @@ const makeSelectAllUsers = createSelector(selectAllUsers, substate => {
   return (substate) ? Object.values(substate) : [];
 })
 
-const selectAdminDashboard = createStructuredSelector<RootState, StateProps>({
+const selectAdminUserListing = createStructuredSelector<RootState, StateProps>({
   creatorsAwaitingApproval: makeSelectCreatorsAwaitingApproval,
   users: makeSelectAllUsers
 });
 
 
 
-export default selectAdminDashboard;
+export default selectAdminUserListing;

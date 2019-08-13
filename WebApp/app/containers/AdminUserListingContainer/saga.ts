@@ -8,8 +8,7 @@ import {
 } from 'api';
 import * as AdminDashboardActions from './actions'
 import { normalize } from "normalizr";
-import creatorsAwaitingReview from "./schema";
-import { users } from "./schema";
+import { creatorsAwaitingReview, users } from "./schema";
 import { getType } from "typesafe-actions";
 
 export function* getCreatorApplicationsAwaitingApproval() {
