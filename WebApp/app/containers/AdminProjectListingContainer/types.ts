@@ -1,18 +1,19 @@
-// import { ActionType } from 'typesafe-actions';
-// import * as actions from './actions';
+import { ActionType } from 'typesafe-actions';
+import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface AdminProjectListingContainerState {
+  statusFilter: number,
 }
 
 /* --- ACTIONS --- */
-// type AdminProjectListingContainerActions = ActionType<typeof actions>;
+type AdminProjectListingContainerActions = ActionType<typeof actions>;
 
 /* --- EXPORTS --- */
 
 type RootState = ApplicationRootState;
 type ContainerState = AdminProjectListingContainerState;
-// type ContainerActions = AdminProjectListingContainerActions;
+type ContainerActions = AdminProjectListingContainerActions;
 
-export { RootState, ContainerState };
+export { RootState, ContainerState, ContainerActions };
