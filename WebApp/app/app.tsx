@@ -35,7 +35,8 @@ const persistedState = loadState();
 const store = configureStore(persistedState);
 
 store.subscribe(throttle(() => {
-  saveState(store.getState());
+  saveState({
+    authentication: store.getState().authentication});
 }, 1000));
 
 const MOUNT_NODE = document.getElementById('app') as HTMLElement;

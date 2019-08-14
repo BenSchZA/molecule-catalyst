@@ -27,14 +27,14 @@ interface DispatchProps {
   rejectCreatorApplication(applicationId: string): void,
 }
 
-interface StateProps {
-  creatorsAwaitingApproval: [],
-  users: []
+export interface StateProps {
+  creatorsAwaitingApproval: any[],
+  users: any[]
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminDashboardContainer: React.FunctionComponent<Props> = (props: Props) => (
+const AdminUserListingContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
     <UserManagement users={props.users} />
     <CreatorsAwaitingReview 
@@ -74,4 +74,4 @@ export default compose(
   withReducer,
   withSaga,
   withConnect,
-)(AdminDashboardContainer);
+)(AdminUserListingContainer);

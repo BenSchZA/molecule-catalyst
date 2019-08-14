@@ -69,12 +69,12 @@ const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAutho
 
 const App: React.FunctionComponent<Props> = (props: Props) => {
   const NotFoundRedirect = () => <Redirect to='/404' />
+
   return (
-    <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} 
-        {...props}>
+    <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
       <Switch>
         {routes.map(r => (
-          <RoleRoute path={r.path} exact 
+          <RoleRoute path={r.path} exact
             component={r.component} 
             isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)} 
             key={r.path} />)

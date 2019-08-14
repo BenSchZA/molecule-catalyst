@@ -9,11 +9,13 @@ export const authenticate = createAsyncAction(
 
 export const saveAccessPermit = createStandardAction(ActionTypes.SAVE_ACCESS_PERMIT)<string>();
 
-export const saveAccessToken = createStandardAction(ActionTypes.SAVE_ACCESS_TOKEN)<{accessToken: string}>();
+export const saveAccessToken = createStandardAction(ActionTypes.SAVE_ACCESS_TOKEN)<string>();
 
 export const setNetworkId = createStandardAction(ActionTypes.SET_NETWORK_ID)<number>();
 
-export const setEthAddress = createStandardAction(ActionTypes.SET_ETH_ADDRESS)<{ethAddress: string}>();
+export const setEthAddress = createStandardAction(ActionTypes.SET_ETH_ADDRESS)<string>();
+
+export const setUserId = createStandardAction(ActionTypes.SET_USER_ID)<string>();
 
 export const setUserRole = createStandardAction(ActionTypes.SET_USER_TYPE)<number>();
 

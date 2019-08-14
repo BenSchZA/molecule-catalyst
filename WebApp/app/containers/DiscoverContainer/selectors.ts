@@ -1,23 +1,53 @@
-import { createStructuredSelector } from 'reselect';
-import { makeSelectIsLoggedIn, makeSelectWalletUnlocked } from 'domain/authentication/selectors';
+import { createStructuredSelector, createSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
+import { selectAllProjects } from 'domain/projects/selectors';
+import { ApplicationRootState } from 'types';
+import { ProjectSubmissionStatus } from 'domain/projects/types';
 
 /**
  * Direct selector to the dashboardContainer state domain
  */
 
-/**
- * Other specific selectors
- */
+const selectFilter = (state: ApplicationRootState) => {
+  return state ? state.discover.filter : {
+    text: '',
+    projectStatus: -1,
+  };
+};
+
+const makeSelectFilter = createSelector(
+  selectFilter,
+  (filter) => {
+    return filter;
+  },
+);
+
+const makeSelectDiscoverProjects = createSelector(
+  selectAllProjects,
+  makeSelectFilter,
+  (allProjects, filter) => {
+    const allDashboardProjects = allProjects.filter(p => p.status === ProjectSubmissionStatus.started || p.status === ProjectSubmissionStatus.ended);
+    if (!filter.text && filter.projectStatus === -1) {
+      return allDashboardProjects
+    } else {
+      let filteredProjects = allDashboardProjects.filter(p => p.title.includes(filter.text) || p.user.fullName && p.user.fullName.includes(filter.text))
+      if (filter.projectStatus !== -1) {
+        filteredProjects = filteredProjects.filter(p => p.status === filter.projectStatus);
+      }
+      return filteredProjects;
+    }
+    
+  },
+);
 
 /**
  * Default selector used by DashboardContainer
  */
 
-const selectDashboardContainer = createStructuredSelector<RootState, StateProps>({
-  isLoggedIn: makeSelectIsLoggedIn,
-  walletUnlocked: makeSelectWalletUnlocked,
+const selectDiscoverContainer = createStructuredSelector<RootState, StateProps>({
+  projects: makeSelectDiscoverProjects,
+  filter: makeSelectFilter,
 });
 
-export default selectDashboardContainer;
+export default selectDiscoverContainer;

@@ -6,9 +6,9 @@
 
 import React, { Fragment } from 'react';
 import { colors } from 'theme';
-import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, TextField, MenuItem } from '@material-ui/core';
 import { forwardTo } from 'utils/history';
-import { ProjectSubmissionStatus } from 'containers/AdminProjectListingContainer/types';
+import { ProjectSubmissionStatus } from '../../domain/projects/types';
 import dayjs from 'dayjs'
 
 const styles = (theme: Theme) =>
@@ -29,18 +29,48 @@ const styles = (theme: Theme) =>
       height: '71px',
     },
     rowText: {
-      fontSize:  theme.typography.pxToRem(12),
+      fontSize: theme.typography.pxToRem(12),
     }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
   projects: Array<any>,
+  statusFilter: number,
+  setStatusfilter(value: number) : void
 }
 
-const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
+const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
+  const filterStatuses = [{
+    label: 'All Statuses',
+    value: -1
+  }, {
+    label: 'In Review',
+    value: ProjectSubmissionStatus.created,
+  }, {
+    label: 'Ongoing',
+    value: ProjectSubmissionStatus.started,
+  }, {
+    label: 'Ended',
+    value: ProjectSubmissionStatus.ended,
+  }, {
+    label: 'Declined',
+    value: ProjectSubmissionStatus.rejected,
+  }]
+
+  return (
   <Fragment>
     <Paper className={props.classes.banner} elevation={0}>
       <Typography variant='h5'>Projects</Typography>
+      <Typography variant='body1'>Status</Typography>
+      <TextField
+        name='projectStatus'
+        select
+        value={props.statusFilter}
+        onChange={(e) => props.setStatusfilter(Number(e.target.value))}>
+        {filterStatuses.map(option => (
+          <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+        ))}
+      </TextField>
       <Paper>
         <Table>
           <TableHead>
@@ -60,7 +90,7 @@ const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps)
                 <TableCell className={props.classes.rowText}>{ProjectSubmissionStatus[project.status].toUpperCase()}</TableCell>
                 <TableCell className={props.classes.rowText}>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                 <TableCell>
-                  <Button className={props.classes.actionButton} onClick={() => {forwardTo(`/admin/project/${project.id}`)}}>Details</Button>
+                  <Button className={props.classes.actionButton} onClick={() => { forwardTo(`/admin/project/${project.id}`) }}>Details</Button>
                 </TableCell>
               </TableRow>
             )) :
@@ -72,7 +102,7 @@ const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps)
       </Paper>
     </Paper>
   </Fragment>
-);
+)};
 
 
 export default withStyles(styles, { withTheme: true })(AdminProjectListing);

@@ -25,7 +25,8 @@ export function* getPermit() {
 export function* getAccessToken(signedPermit, ethAddress) {
   try {
     const apiToken = yield call(login, signedPermit, ethAddress);
-    yield put(authenticationActions.saveAccessToken(apiToken.data));
+    yield put(authenticationActions.saveAccessToken(apiToken.data.accessToken));
+    yield put(authenticationActions.setUserId(apiToken.data.userId))
     const decodedToken = yield call(jwtDecode, apiToken.data.accessToken);
     yield put(authenticationActions.setUserRole(decodedToken.type))
     return apiToken.data;
@@ -90,7 +91,7 @@ export function* connectWallet() {
   try {
     const { signerAddress, provider } = yield call(getBlockchainObjects);
     if (provider) {
-      yield put(authenticationActions.setEthAddress({ ethAddress: signerAddress }));
+      yield put(authenticationActions.setEthAddress(signerAddress));
       const network = yield call([provider, provider.getNetwork]);
       yield put(authenticationActions.setNetworkId(network.chainId))
       yield put(authenticationActions.connectWallet.success());
@@ -121,7 +122,7 @@ export function* addressChangeListener() {
     const newAddress = yield take(addressChangeEventChannel);
     localStorage.clear();
     yield put(authenticationActions.logOut());
-    yield put(authenticationActions.setEthAddress({ ethAddress: newAddress[0] }));
+    yield put(authenticationActions.setEthAddress(newAddress[0]));
     yield fork(connectWallet)
   }
 }
