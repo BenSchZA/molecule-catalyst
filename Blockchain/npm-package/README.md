@@ -1,5 +1,15 @@
 # Molecule Protocol Contracts
 
+## Building
+
+To build the contracts, in the context of Molecule:
+
+1. `yarn prePublish` - compiles contracts and copies output to `artifacts/` folder
+2. `yarn compileIndex` - runs bash script to compile `index.js` static file exports
+3. `yarn publish` - publishes package to NPM registry
+
+## Installation and Use
+
 To use this package, import the specific contract as follows:
 
 ```

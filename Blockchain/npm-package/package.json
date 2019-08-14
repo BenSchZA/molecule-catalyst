@@ -4,7 +4,8 @@
   "description": "Molecule protocol contracts",
   "main": "index.js",
   "scripts": {
-    "prePublish": "etherlime compile --workingDirectory=../contracts --buildDirectory=artifacts"
+    "prePublish": "etherlime compile --workingDirectory=../contracts --buildDirectory=artifacts",
+    "compileIndex": "./compile-index.sh"
   },
   "author": "Benjamin Scholtz - Linum Labs",
   "license": "ISC",
