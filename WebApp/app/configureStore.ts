@@ -14,7 +14,7 @@ declare interface IWindow extends Window {
 }
 declare const window: IWindow;
 
-export default function configureStore(initialState = {}) {
+export default function configureStore(initialState) {
   const middlewares = [sagaMiddleware];
 
   const enhancers = [applyMiddleware(...middlewares)];

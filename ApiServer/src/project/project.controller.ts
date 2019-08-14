@@ -7,22 +7,32 @@ import { Project } from './project.schema';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptorHelper, FileOptions } from 'src/helpers/fileInterceptorHelper';
 import { SubmitProjectDTO } from './dto/submitProject.dto'
+import { Request } from 'express';
 
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  // Public getter provides filtered list of projects that are displayed to all users.
+  @Get()
+  async getProjects(): Promise<Project[]> {
+    const result = await this.projectService.getProjects();
+    return result;
+  }
+
   @Get('all')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
   async getAllProjects(): Promise<Project[]> {
     const result = await this.projectService.getAllProjects();
     return result;
   }
 
-  @Get('awaitingApproval')
+  @Get('my')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserType.Admin)
-  async getAwaitingApprovalProjects(): Promise<Project[]> {
-    const result = await this.projectService.getAwaitingApprovalProjects();
+  @Roles(UserType.ProjectCreator)
+  async getUserProjects(@Req() req: Request & {user: User}): Promise<Project[]> {
+    const result = await this.projectService.getUserProjects(req.user.id);
     return result;
   }
 

@@ -18,6 +18,7 @@ enum ActionTypes {
   BROWSER_SIGNING_ERROR = 'molecule/authentication/BROWSER_SIGNING_ERROR',
   SET_NETWORK_ID = 'molecule/authentication/SET_NETWORK_ID',
   SET_USER_TYPE = 'molecule/authentication/SET_USER_TYPE',
+  SET_USER_ID = 'molecule/authentication/SET_USER_ID',
 }
 
 export default ActionTypes;

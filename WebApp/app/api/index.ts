@@ -38,6 +38,14 @@ export async function getAllProjects(apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.getAllProjects, undefined, 'application/json', true, apiToken)
 }
 
+export async function getProjects() {
+  return apiRequest(RequestMethod.GET, apiUrlBuilder.getProjects, undefined, 'application/json')
+}
+
+export async function getMyProjects(apiToken: string) {
+  return apiRequest(RequestMethod.GET, apiUrlBuilder.getMyProjects, undefined, 'application/json', true, apiToken)
+}
+
 export async function getAllUsers(apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.getAllUsers, undefined, 'application/json', true, apiToken)
 }

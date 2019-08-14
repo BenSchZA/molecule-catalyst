@@ -9,6 +9,7 @@ import { AppRoute } from 'containers/App/routes';
 import Blockies from 'react-blockies';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
+import { UserType } from 'containers/App/types';
 
 
 // import { appRoute } from 'containers/App/routes';
@@ -67,7 +68,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
 interface OwnProps extends WithStyles<typeof styles> {
   children: React.ReactNode;
   onConnect(): void;
-  logOut():void;
+  logOut(): void;
   isLoggedIn: boolean;
   userRole: number;
   walletUnlocked: boolean;
@@ -88,9 +89,13 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   ethAddress,
   walletUnlocked,
   logOut,
+  userRole,
   location,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
+  const [adminMenuAnchorEl, setAdminMenuAnchorEl] = useState<EventTarget | null>(null);
+
+
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar} >
@@ -103,6 +108,26 @@ const AppWrapper: React.FunctionComponent<Props> = ({
               {navRoutes.map(r => (
                 <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
               ))}
+              {(userRole === UserType.Admin) &&
+                <Fragment>
+                  <ListItem button onClick={(e) => setAdminMenuAnchorEl(e.currentTarget)}>Admin</ListItem>
+                  <Menu
+                    anchorEl={adminMenuAnchorEl as Element}
+                    getContentAnchorEl={null}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(adminMenuAnchorEl)}
+                    onClose={() => setAdminMenuAnchorEl(null)}>
+                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/users')}}>Users</MenuItem>
+                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/projects')}}>Projects</MenuItem>
+                  </Menu>
+                </Fragment>}
             </List>
             {!isLoggedIn ? (
               <div className={classes.connectButton}>
@@ -116,8 +141,9 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                   <Menu
                     id="menu-appbar"
                     anchorEl={anchorEl as Element}
+                    getContentAnchorEl={null}
                     anchorOrigin={{
-                      vertical: 'top',
+                      vertical: 'bottom',
                       horizontal: 'right',
                     }}
                     transformOrigin={{
@@ -126,9 +152,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                     }}
                     open={Boolean(anchorEl)}
                     onClose={() => setAnchorEl(null)}>
-                    <MenuItem onClick={() => {setAnchorEl(null); logOut()}}>
-                      Log Out
-                    </MenuItem>
+                    <MenuItem onClick={() => { setAnchorEl(null); logOut() }}>Log Out</MenuItem>
                   </Menu>
                 </Fragment>
               )}

@@ -1,29 +1,26 @@
 /*
  *
- * AdminProjectApprovalListingContainer reducer
+ * MyProjectsContainer reducer
  *
  */
 
 import { ContainerState, ContainerActions } from './types';
-import * as actions from './actions';
+import * as AdminProjectListingContainerActions from './actions';
 import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
-  projects: {},
+  statusFilter: -1,
 };
 
-function adminProjectApprovalListingContainerReducer(state: ContainerState = initialState, action: ContainerActions ) {
+function projectReducer(state: ContainerState = initialState, action: ContainerActions ) {
   switch (action.type) {
-    case getType(actions.setProjects):
-      return {
-        ...state,
-        projects: action.payload.projects,
-      }
+    case getType(AdminProjectListingContainerActions.setStatusFilter):
+      return {...state,
+        statusFilter: action.payload,
+      };
     default:
-      return {
-        ...state
-      }
+      return state;
   }
 }
 
-export default adminProjectApprovalListingContainerReducer;
+export default projectReducer;

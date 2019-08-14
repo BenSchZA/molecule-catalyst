@@ -3,18 +3,18 @@ import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
-interface AdminDashboardContainerState {
-  creatorsAwaitingApproval: any,
-  users: any,
+interface AdminUserListingContainerState {
+  users: any[],
+  creatorsAwaitingApproval: any[],
 }
 
 /* --- ACTIONS --- */
-type AdminDashboardContainerActions = ActionType<typeof actions>;
+type AdminUserListingContainerActions = ActionType<typeof actions>;
 
 /* --- EXPORTS --- */
 
 type RootState = ApplicationRootState;
-type ContainerState = AdminDashboardContainerState;
-type ContainerActions = AdminDashboardContainerActions;
+type ContainerState = AdminUserListingContainerState;
+type ContainerActions = AdminUserListingContainerActions;
 
 export { RootState, ContainerState, ContainerActions };
