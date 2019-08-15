@@ -9,6 +9,7 @@ import AdminProjectReviewContainer from 'containers/AdminProjectReviewContainer'
 import ProjectCreationConfirmation from 'components/ProjectCreationConfirmation';
 import { UserType } from './types';
 import MyProjectsContainer from 'containers/MyProjectsContainer';
+import ProjectDetailsContainer from 'containers/ProjectDetailsContainer';
 
 
 
@@ -54,6 +55,14 @@ const routes: AppRoute[] = [{
   isNavRequired: true,
   showNavForRoles:[UserType.Standard],
   requireAuth: true,
+}, {
+  name: 'Project Details',
+  path: '/project/:projectId',
+  component: ProjectDetailsContainer,
+  roleRequirement: UserType.Standard,
+  isNavRequired: false,
+  showNavForRoles:[],
+  requireAuth: false,
 }, {
   name: 'Admin User View',
   path: '/admin/user/:userId',
