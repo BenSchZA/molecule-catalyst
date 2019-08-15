@@ -28,6 +28,7 @@ import selectApp from './selectors';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
 import { forwardTo } from 'utils/history';
+import ErrorBoundary from 'containers/ErrorBoundary';
 
 interface OwnProps { }
 
@@ -40,18 +41,21 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
- onConnect(): void;
- logOut(): void;
+  onConnect(): void;
+  logOut(): void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps & RouteComponentProps;
 
-const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => {
-  return (
+
+
+const App: React.FunctionComponent<Props> = (props: Props) => {
+  const NotFoundRedirect = () => <Redirect to='/404' />
+  const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => (
     <Route
       {...rest}
-      render={props => {
-        return isAuthorized ? (
+      render={props => (
+        isAuthorized ? (
           <Component {...props} />
         ) : (
             <Redirect
@@ -60,23 +64,20 @@ const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAutho
                 state: { from: props.location },
               }}
             />
-          );
-        }
-      }
-    />
-  );
-};
+          )
+      )
+    }
+  />
+);
 
-const App: React.FunctionComponent<Props> = (props: Props) => {
-  const NotFoundRedirect = () => <Redirect to='/404' />
-
-  return (
+return (
+  <ErrorBoundary>
     <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
       <Switch>
         {routes.map(r => (
           <RoleRoute path={r.path} exact
-            component={r.component} 
-            isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)} 
+            component={r.component}
+            isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
             key={r.path} />)
         )}
         <Route path='/unauthorized' exact component={UnauthorizedPage} />
@@ -84,11 +85,12 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
         <Route component={NotFoundRedirect} />
       </Switch>
     </AppWrapper>
-  );
+  </ErrorBoundary>
+);
 };
 
 function getNavRoutesForCurrentUser(routes: AppRoute[], userRole: number, isLoggedIn: boolean) {
-  return routes.filter(r => 
+  return routes.filter(r =>
     r.isNavRequired &&  // Exlude any routes that do not require Nav
     (!r.requireAuth || r.requireAuth && isLoggedIn) && // Exclude routes that require Auth, if the user is not logged in 
     userRole >= r.roleRequirement && // Exclude routes that require role priveledges greater than the user
@@ -102,7 +104,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onConnect: () => dispatch(authActions.authenticate.request()),
   logOut: () => {
     forwardTo('/discover'),
-    dispatch(authActions.logOut())},
+      dispatch(authActions.logOut())
+  },
 });
 
 const withConnect = connect(

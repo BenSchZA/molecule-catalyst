@@ -4,13 +4,15 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
 import { RouteComponentProps } from 'react-router-dom';
+import ProjectDetails from 'components/ProjectDetails';
+import { Project } from 'domain/projects/types';
 
 interface RouteParams {
   projectId: string;
@@ -21,12 +23,14 @@ React.Props<RouteParams> { }
 
 interface DispatchProps {}
 
-interface StateProps {}
+interface StateProps {
+  project: Project
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
-  return <Fragment>ProjectDetailsContainer</Fragment>;
+  return <ProjectDetails project={props.project} />;
 };
 
 const mapStateToProps = (state, props) => ({
