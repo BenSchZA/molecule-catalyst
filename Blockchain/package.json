@@ -16,8 +16,6 @@
   "author": "Linum Labs",
   "license": "MIT",
   "dependencies": {
-    "babel-polyfill": "6.26.0",
-    "babel-register": "6.26.0",
     "dotenv": "8.0.0",
     "etherlime": "^2.2.0",
     "etherlime-lib": "^1.1.2",

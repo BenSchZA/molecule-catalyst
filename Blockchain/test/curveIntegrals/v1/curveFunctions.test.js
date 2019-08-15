@@ -18,7 +18,7 @@ const {
   simulatedCurve
 } = require("../../testing.settings.js");
 
-describe('Curve Integral test', () => {
+describe('Curve Functions test', () => {
   let molAdmin = accounts[1];
   let creator = accounts[2];
   let user1 = accounts[3];
@@ -36,28 +36,26 @@ describe('Curve Integral test', () => {
 
   });
 
-  describe('Curve checks', () => {
-    it('Curve Integral functions as expected', async () => {
-      const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
-        .curveIntegral(simulatedCurve.defaultPurchaseAmount)
-      assert.equal(
-        ethers.utils.formatUnits(rawDaiBN, 18),
-        50.285714285714285,
-        "Calculation incorrect"
-      )
-    });
+  it('Curve Integral functions as expected', async () => {
+    console.log("\tCurve checks");
+    const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
+      .curveIntegral(simulatedCurve.defaultPurchaseAmount)
+    assert.equal(
+      ethers.utils.formatUnits(rawDaiBN, 18),
+      50.285714285714285,
+      "Calculation incorrect"
+    )
+  });
 
-    it('Inverse Curve Integral functions as expected', async () => {
-      const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
-        .curveIntegral(simulatedCurve.defaultPurchaseAmount)
-      const rawTokenBN = await curveFunctionsInstance.from(molAdmin)
-        .inverseCurveIntegral(rawDaiBN)
-      assert.equal(
-        ethers.utils.formatUnits(rawTokenBN, 18),
-        99.999999999999982499,
-        "Calculation incorrect"
-      )
-    });
-
+  it('Inverse Curve Integral functions as expected', async () => {
+    const rawDaiBN = await curveFunctionsInstance.from(molAdmin)
+      .curveIntegral(simulatedCurve.defaultPurchaseAmount)
+    const rawTokenBN = await curveFunctionsInstance.from(molAdmin)
+      .inverseCurveIntegral(rawDaiBN)
+    assert.equal(
+      ethers.utils.formatUnits(rawTokenBN, 18),
+      99.999999999999982499,
+      "Calculation incorrect"
+    )
   });
 })

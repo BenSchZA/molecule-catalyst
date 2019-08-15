@@ -76,80 +76,81 @@ describe('Market Factory test', () => {
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
     });
 
-    describe('Admin functions', () => {
-        it('Deploys a compound ecosystem', async () => {
-            let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
-            assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
-            assert.equal(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
-            assert.equal(firstMarketDataObj[2], ethers.constants.AddressZero, "Contract registry creator incorrect")
-
-            await (await marketFactoryInstance.from(molAdmin).deployMarket(
-                    marketSettings.fundingGoals,
-                    marketSettings.phaseDuration,
-                    creator.signer.address,
-                    marketSettings.curveType,
-                    marketSettings.taxationRate,
-                    marketSettings.gradientDenominator,
-                    marketSettings.scaledShift
-                )).wait()
-
-            firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
-            assert.notEqual(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
-            assert.notEqual(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
-            assert.equal(firstMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
-        });
-    });
-
-    describe('Meta data', () =>{
-        it('moleculeVault', async () => {
-            const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
-            assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
-        });
-        it('marketRegistry', async () => {
-            const marketRegistry = await marketFactoryInstance.from(molAdmin).marketRegistry();
-            assert.equal(marketRegistry, marketRegistryInstance.contract.address, "Registry not set correctly")
-        });
-        it('collateralToken', async () => {
-            const collateralToken = await marketFactoryInstance.from(molAdmin).collateralToken();
-            assert.equal(collateralToken, pseudoDaiInstance.contract.address, "CollateralToken not set correctly")
-        });
-    })
-
-    describe("Admin Managed functions", () => {
-        it("Reverts if non admin deploys", async () => {
-            await assert.revert(marketFactoryInstance.from(user1).deployMarket(
+    it('Deploys a compound ecosystem', async () => {
+        console.log("\tAdmin functions");
+        let test = await moleculeVaultInstance.from(molAdmin).taxRate();
+        console.log(">>>>>>>>>>>>>>>> " + test);
+        let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+        assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
+        assert.equal(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
+        assert.equal(firstMarketDataObj[2], ethers.constants.AddressZero, "Contract registry creator incorrect")
+        console.log("\t0");
+        await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
-            ));
-        })
-    })
-    describe("Admin Managed Specific", () => {
-        it("Only admin can add an admin", async () => {
-            await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
-            await assert.revert(marketFactoryInstance.from(user2).addAdmin(user1.signer.address))
-        }),
-        it("Only admin can remove an admin", async () =>{
-            await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
-            await assert.revert(marketFactoryInstance.from(user2).removeAdmin(user1.signer.address))
+                marketSettings.taxationRate
+            )).wait()
+        console.log("1");
+        firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
+        assert.notEqual(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
+        assert.notEqual(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
+        assert.equal(firstMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
+        console.log("0");
+    });
 
-            await assert.notRevert(marketFactoryInstance.from(molAdmin).removeAdmin(user1.signer.address))
-            
-        }),
-        describe("Meta Data", () => {
-            it("Checks if admin", async () =>{
-                let adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
-                assert.ok(!adminStatus, "Admin status incorrect")
-                
-                await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
-                
-                adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
-                assert.ok(adminStatus, "Admin status not updated")
-            })
-        })
-    })
-})
+    it('moleculeVault', async () => {
+        console.log("Meta data");
+        const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
+        assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
+    });
+
+    it('marketRegistry', async () => {
+        const marketRegistry = await marketFactoryInstance.from(molAdmin).marketRegistry();
+        assert.equal(marketRegistry, marketRegistryInstance.contract.address, "Registry not set correctly")
+    });
+
+    it('collateralToken', async () => {
+        const collateralToken = await marketFactoryInstance.from(molAdmin).collateralToken();
+        assert.equal(collateralToken, pseudoDaiInstance.contract.address, "CollateralToken not set correctly")
+    });
+
+    it("Reverts if non admin deploys", async () => {
+        console.log("Admin Managed functions");
+        await assert.revert(marketFactoryInstance.from(user1).deployMarket(
+            marketSettings.fundingGoals,
+            marketSettings.phaseDuration,
+            creator.signer.address,
+            marketSettings.curveType,
+            marketSettings.taxationRate,
+            marketSettings.gradientDenominator,
+            marketSettings.scaledShift
+        ));
+    });
+
+    it("Only admin can add an admin", async () => {
+        console.log("Admin Managed Specific");
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
+        await assert.revert(marketFactoryInstance.from(user2).addAdmin(user1.signer.address))
+    });
+
+    it("Only admin can remove an admin", async () =>{
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
+        await assert.revert(marketFactoryInstance.from(user2).removeAdmin(user1.signer.address))
+
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).removeAdmin(user1.signer.address))
+        
+    });
+
+    it("Checks if admin", async () =>{
+        console.log("Meta Data");
+        let adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
+        assert.ok(!adminStatus, "Admin status incorrect")
+        
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
+        
+        adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
+        assert.ok(adminStatus, "Admin status not updated")
+    });
+});

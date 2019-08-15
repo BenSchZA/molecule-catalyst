@@ -75,12 +75,12 @@ contract Vault is IVault, WhitelistAdminRole {
         collateralToken_ = IERC20(_collateralToken);
         moleculeVault_ = IMoleculeVault(_moleculeVault);
 
-        moleculeTaxRate_ = moleculeVault_.taxRate();
+        // moleculeTaxRate_ = moleculeVault_.taxRate();
 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
-            uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate_));
-            fundingPhases_[i].fundingThreshold = withTax;
+        //     uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate_));
+        //     fundingPhases_[i].fundingThreshold = withTax;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
 
