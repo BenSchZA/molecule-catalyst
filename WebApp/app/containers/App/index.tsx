@@ -28,7 +28,6 @@ import selectApp from './selectors';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
 import { forwardTo } from 'utils/history';
-import ErrorBoundary from 'containers/ErrorBoundary';
 
 interface OwnProps { }
 
@@ -66,12 +65,11 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
             />
           )
       )
-    }
-  />
-);
+      }
+    />
+  );
 
-return (
-  <ErrorBoundary>
+  return (
     <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
       <Switch>
         {routes.map(r => (
@@ -85,8 +83,7 @@ return (
         <Route component={NotFoundRedirect} />
       </Switch>
     </AppWrapper>
-  </ErrorBoundary>
-);
+  );
 };
 
 function getNavRoutesForCurrentUser(routes: AppRoute[], userRole: number, isLoggedIn: boolean) {
@@ -103,8 +100,8 @@ const mapStateToProps = state => selectApp(state);
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onConnect: () => dispatch(authActions.authenticate.request()),
   logOut: () => {
-    forwardTo('/discover'),
-      dispatch(authActions.logOut())
+    forwardTo('/discover');
+    dispatch(authActions.logOut());
   },
 });
 

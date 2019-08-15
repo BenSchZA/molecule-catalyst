@@ -10,6 +10,7 @@ import Blockies from 'react-blockies';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
 import { UserType } from 'containers/App/types';
+import ErrorBoundary from 'containers/ErrorBoundary';
 
 
 // import { appRoute } from 'containers/App/routes';
@@ -124,8 +125,8 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                     }}
                     open={Boolean(adminMenuAnchorEl)}
                     onClose={() => setAdminMenuAnchorEl(null)}>
-                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/users')}}>Users</MenuItem>
-                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/projects')}}>Projects</MenuItem>
+                    <MenuItem button onClick={() => { setAdminMenuAnchorEl(null); forwardTo('/admin/users') }}>Users</MenuItem>
+                    <MenuItem button onClick={() => { setAdminMenuAnchorEl(null); forwardTo('/admin/projects') }}>Projects</MenuItem>
                   </Menu>
                 </Fragment>}
             </List>
@@ -159,9 +160,11 @@ const AppWrapper: React.FunctionComponent<Props> = ({
           </div>
         </Toolbar>
       </AppBar>
-      <main className={classes.content}>
-        {children}
-      </main>
+      <ErrorBoundary>
+        <main className={classes.content}>
+          {children}
+        </main>
+      </ErrorBoundary>
     </Fragment>
   );
 }

@@ -29,8 +29,8 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
-  return <ProjectDetails project={props.project} />;
+const ProjectDetailsContainer: React.FunctionComponent<Props> = ({project}: Props) => {
+  return <ProjectDetails project={project} />;
 };
 
 const mapStateToProps = (state, props) => ({

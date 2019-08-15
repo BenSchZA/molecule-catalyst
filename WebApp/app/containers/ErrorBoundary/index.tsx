@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import UnauthorizedPage from 'components/UnauthorizedPage';
 
 interface OwnProps {}
 interface StateProps {}
@@ -22,6 +23,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
@@ -32,7 +34,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return <UnauthorizedPage />;
     }
 
     return this.props.children; 
