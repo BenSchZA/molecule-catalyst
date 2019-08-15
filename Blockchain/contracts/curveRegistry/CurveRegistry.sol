@@ -1,8 +1,8 @@
 pragma solidity 0.5.10;
 
-import { AdminManaged } from "../_shared/modules/AdminManaged.sol";
+import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 
-contract CurveRegistry is AdminManaged {
+contract CurveRegistry is WhitelistAdminRole {
     uint256 internal numberOfCurves_ = 0;
     uint256 internal publishedBlocknumber_;
 
@@ -18,7 +18,7 @@ contract CurveRegistry is AdminManaged {
     event CurveActivated(uint256 index, address indexed libraryAddress);
     event CurveDeactivated(uint256 index, address indexed libraryAddress);
 
-    constructor() public AdminManaged(msg.sender){
+    constructor() public {
         publishedBlocknumber_ = block.number;
     }
 
@@ -31,7 +31,7 @@ contract CurveRegistry is AdminManaged {
         address _libraryAddress,
         string calldata _curveFunction)
         external
-        onlyAdmin()
+        onlyWhitelistAdmin()
         returns(uint256)
     {
         uint256 index = numberOfCurves_;
@@ -54,7 +54,7 @@ contract CurveRegistry is AdminManaged {
       * @dev            Sets the curve to active
       * @param _index   : uint256 - The index of the curve
       */
-    function reactivateCurve(uint256 _index) external onlyAdmin {
+    function reactivateCurve(uint256 _index) external onlyWhitelistAdmin {
         require(curveContracts_[_index].active == false, "Curve already activated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = true;
@@ -68,7 +68,7 @@ contract CurveRegistry is AdminManaged {
       *                 curve module, or vunrability
       * @param _index   : uint256 - The index of the curve
       */
-    function deactivateCurve(uint256 _index) external onlyAdmin {
+    function deactivateCurve(uint256 _index) external onlyWhitelistAdmin {
         require(curveContracts_[_index].active == true, "Curve already deactivated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = false;
