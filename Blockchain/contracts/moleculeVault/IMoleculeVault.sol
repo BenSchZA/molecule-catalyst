@@ -23,18 +23,20 @@ interface IMoleculeVault {
     /// @return bool
     function isAdmin(address _account) external view returns(bool);
 
-    /**
-      * @notice checks admin status of an address
-      */
-    function isWhitelistAdmin(address account) external view returns (bool);
+//----------------------------------------------
+//  The below functions are implemeted in and from the WhitelistAdminRole contract
+//  so cannot be abstract below, as this causes abstract function issues.
+//  These functions are available on the Vault contract.
+//----------------------------------------------
+    // function isWhitelistAdmin(address account) public view returns (bool) {
+    //     return _whitelistAdmins.has(account);
+    // }
 
-    /**
-      * @dev Allows a whitelisted admin to add another admin
-      */
-    function addWhitelistAdmin(address account) external;
+    // function addWhitelistAdmin(address account) public onlyWhitelistAdmin {
+    //     _addWhitelistAdmin(account);
+    // }
 
-    /**
-      * @dev Allows a whitlisted admin to renouce their role as admin
-      */
-    function renounceWhitelistAdmin() external;
+    // function renounceWhitelistAdmin() public {
+    //     _removeWhitelistAdmin(msg.sender);
+    // }
 }

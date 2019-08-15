@@ -106,14 +106,19 @@ describe('Market test', () => {
     // TODO: Resolve inverse intergrals variance issue
     it("Calculates Dai to Tokens accurately - Mint", async () => {
         console.log("\tPricing functions");
-        const priceToMintForDai = await marketInstance.colateralToTokenBuying(purchasingSequences.first.dai.daiCost);
+        console.log("  xxx Market - Collateral to token buying function failing");
+        // const priceToMintForDai = await marketInstance.poolBalance();
+        const priceToMintForDai = await marketInstance.collateralToTokenBuying(purchasingSequences.first.dai.daiCost);
+        console;etherlime.log(priceToMintForDai)
         assert.ok(priceToMintForDai.eq(purchasingSequences.first.dai.tokenResult), "Price to mint dai incorrect");
     });
     
     // it("Calculates Dai to Tokens accurately - Burn")
     
     it("Calculates Token to Dai accurately - Mint", async () => {
+        console.log("  xxx Market - Price to mint function failing");
         const priceToMintForToken = await marketInstance.priceToMint(purchasingSequences.first.token.tokenResult);
+        console.log(priceToMintForToken)
         assert.ok(priceToMintForToken.eq(purchasingSequences.first.token.daiCost), "Price to mint token incorrect");
     });
 
@@ -122,6 +127,7 @@ describe('Market test', () => {
         const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
 
         const balance = await marketInstance.balanceOf(user1.signer.address);
+        console.log("  xxx Market - Reward for burn function failing");
         const rewardForBurn = await marketInstance.rewardForBurn(balance);
 
 
@@ -147,6 +153,7 @@ describe('Market test', () => {
         const balanceBefore = await marketInstance.balanceOf(user1.signer.address);
 
         const daiBalanceBefore = await pseudoDaiInstance.balanceOf(user1.signer.address);
+        console.log("  xxx Market - Burn function failing");
         await assert.notRevert(marketInstance.from(user1).burn(balanceBefore));
         
         const balanceAfter = await marketInstance.balanceOf(user1.signer.address);
@@ -189,7 +196,7 @@ describe('Market test', () => {
     });
 
     it('Emits Transfer in mint', async () =>{
-        console.log("\tEvents");
+        console.log("  Events");
         const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
         
         const transfers = (await(txReceipt.events.filter(
@@ -275,7 +282,7 @@ describe('Market test', () => {
     });
 
     it('Get allowance', async () => {
-        console.log("Meta data");
+        console.log("  Meta data");
         let allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
         assert.ok(allowance.eq(0), "Allowance already set");
 

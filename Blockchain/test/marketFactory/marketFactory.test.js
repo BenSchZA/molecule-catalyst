@@ -78,13 +78,10 @@ describe('Market Factory test', () => {
 
     it('Deploys a compound ecosystem', async () => {
         console.log("\tAdmin functions");
-        let test = await moleculeVaultInstance.from(molAdmin).taxRate();
-        console.log(">>>>>>>>>>>>>>>> " + test);
         let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
         assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
         assert.equal(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
         assert.equal(firstMarketDataObj[2], ethers.constants.AddressZero, "Contract registry creator incorrect")
-        console.log("\t0");
         await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
                 marketSettings.phaseDuration,
@@ -92,16 +89,20 @@ describe('Market Factory test', () => {
                 marketSettings.curveType,
                 marketSettings.taxationRate
             )).wait()
-        console.log("1");
         firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
         assert.notEqual(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
         assert.notEqual(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
         assert.equal(firstMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
-        console.log("0");
     });
 
     it('moleculeVault', async () => {
         console.log("Meta data");
+        // console.log(moleculeVaultInstance);
+        console.log("  xxx Market Factory - No mol vault functions work");
+        let test = await moleculeVaultInstance.from(molAdmin).collateralToken();
+        // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
+        // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
+        console.log(">>>>>>>>>>>>>>>> " + test);
         const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
         assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
     });
@@ -123,34 +124,32 @@ describe('Market Factory test', () => {
             marketSettings.phaseDuration,
             creator.signer.address,
             marketSettings.curveType,
-            marketSettings.taxationRate,
-            marketSettings.gradientDenominator,
-            marketSettings.scaledShift
+            marketSettings.taxationRate
         ));
     });
 
     it("Only admin can add an admin", async () => {
         console.log("Admin Managed Specific");
-        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
-        await assert.revert(marketFactoryInstance.from(user2).addAdmin(user1.signer.address))
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+        await assert.revert(marketFactoryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
     });
 
     it("Only admin can remove an admin", async () =>{
-        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
-        await assert.revert(marketFactoryInstance.from(user2).removeAdmin(user1.signer.address))
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+        await assert.revert(marketFactoryInstance.from(user2).renounceWhitelistAdmin())
 
-        await assert.notRevert(marketFactoryInstance.from(molAdmin).removeAdmin(user1.signer.address))
+        await assert.notRevert(marketFactoryInstance.from(user1).renounceWhitelistAdmin())
         
     });
 
     it("Checks if admin", async () =>{
         console.log("Meta Data");
-        let adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
+        let adminStatus = await marketFactoryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
         assert.ok(!adminStatus, "Admin status incorrect")
         
-        await assert.notRevert(marketFactoryInstance.from(molAdmin).addAdmin(user1.signer.address))
+        await assert.notRevert(marketFactoryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
         
-        adminStatus = await marketFactoryInstance.from(molAdmin).isAdmin(user1.signer.address)
+        adminStatus = await marketFactoryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
         assert.ok(adminStatus, "Admin status not updated")
     });
 });

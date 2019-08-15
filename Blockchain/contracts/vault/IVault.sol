@@ -34,16 +34,15 @@ interface IVault {
 //  so cannot be abstract below, as this causes abstract function issues.
 //  These functions are available on the Vault contract.
 //----------------------------------------------
-    // /// @dev    Used to add an admin
-    // /// @param _newAdmin        :address The address of the new admin
-    // function addAdmin(address _newAdmin) external;
+    // function isWhitelistAdmin(address account) public view returns (bool) {
+    //     return _whitelistAdmins.has(account);
+    // }
 
-    // /// @dev    Used to remove admins
-    // /// @param _oldAdmin        :address The address of the previous admin
-    // function removeAdmin(address _oldAdmin) external;
+    // function addWhitelistAdmin(address account) public onlyWhitelistAdmin {
+    //     _addWhitelistAdmin(account);
+    // }
 
-    // /// @dev    Checking admin rights
-    // /// @param _account         :address in question
-    // /// @return bool
-    // function isAdmin(address _account) external view returns(bool);
+    // function renounceWhitelistAdmin() public {
+    //     _removeWhitelistAdmin(msg.sender);
+    // }
 }

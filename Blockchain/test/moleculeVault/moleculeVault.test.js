@@ -121,7 +121,8 @@ describe('Molecule vault test', () => {
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
 
             assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
-        })
+        });
+
         it('Executes transfer correctly', async () =>{
             const user2BalanceBefore = await pseudoDaiInstance.balanceOf(user2.signer.address);
            

@@ -13,6 +13,8 @@ let CurveFunctionsAbi = require('../build/CurveFunctions.json');
 const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
 const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);
 
+let tokenDaiCost = '0x04157b0cf2c3799d500000';
+
 const purchasingSequences = {
     first: {
         dai: {
@@ -20,7 +22,7 @@ const purchasingSequences = {
             tokenResult: ethers.utils.parseUnits("317571.0051884025", 18)
         },
         token: {
-            daiCost: ethers.utils.parseUnits("5074821.12",18),
+            daiCost: ethers.utils.parseUnits("5074821.12",18),//0x04157b0cf2c3799d500000
             tokenResult: defaultTokenVolume
         }
     },
