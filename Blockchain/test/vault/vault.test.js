@@ -16,9 +16,9 @@ const {
     defaultDaiPurchase,
     defaultTokenVolume,
     purchasingSequences
- } = require("../testing.settings.js");
+} = require("../testing.settings.js");
 
-describe('Vault test', () => {
+describe("Vault test", async () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
@@ -104,7 +104,7 @@ describe('Vault test', () => {
         }
     });
 
-    describe("Market interactions", () => {
+    describe("Market interactions", async () => {
         it("Validates funding on mint accurately", async () => {
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -121,7 +121,8 @@ describe('Vault test', () => {
             assert.ok(currentPhase.eq(1), "Phase invalid");
 
             assert.ok(balance.gte(marketSettings.fundingGoals[0]), "Vault balance invalid")
-        })
+        });
+
         it("Increments the round if funding is reached", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -140,7 +141,7 @@ describe('Vault test', () => {
             assert.equal(phaseData[3], 2, "Phase state not set to ended");
 
             assert.ok(balance.gte(marketSettings.fundingGoals[0]), "Vault balance invalid")
-        })
+        });
 
         it("Sets the new end date of the second phase correctly", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
@@ -163,7 +164,8 @@ describe('Vault test', () => {
             phaseData = await vaultInstance.fundingPhase(1);
             assert.equal(phaseData[3], 1, "Next phase state not set to started");
             assert.ok(phaseData[2].gt(0), "Phase invalid");
-        })
+        });
+
         it("Blocks minting if too much time has passed", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -182,7 +184,8 @@ describe('Vault test', () => {
             
             estimateTokens = await marketInstance.colateralToTokenBuying(ethers.utils.parseUnits("50000", 18))
             await assert.revert(marketInstance.from(user1).mint(user1.signer.address, estimateTokens), "Mint was allowed incorrectly")
-        })
+        });
+
         it("Validates funding ends last round correctly", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -227,17 +230,16 @@ describe('Vault test', () => {
             // Checking that mints after are reverted
             estimateTokens = await marketInstance.colateralToTokenBuying(ethers.utils.parseUnits("50000", 18))
             await assert.revert(marketInstance.from(user2).mint(user2.signer.address, estimateTokens), "Mint succeeded incorrectly");
-
-        })
-    })
+        });
+    });
 
     describe('Admin functions', async () => {
         it('Terminate market', async () => {
             await assert.revert(vaultInstance.from(user1).terminateMarket(), "Unauthorised termination");
             await assert.notRevert(vaultInstance.from(creator).terminateMarket(), "Termination failed");
         });
-        it("Withdraws after a fund is raised successfully", async () =>{
 
+        it("Withdraws after a fund is raised successfully", async () => {
             await assert.revert(vaultInstance.from(creator).withdraw(0), "Withdraw succeeded incorrectly")
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
@@ -265,8 +267,9 @@ describe('Vault test', () => {
 
             assert.ok(balanceOfCreatorBefore.lt(balanceOfCreatorAfter), "Tokens not transfered to creator")
             assert.ok(balanceOfMoleVaultBefore.lt(balanceOfMoleVaultAfter), "Tokens not transfered to molecule vault")
-        })
-        it("Withdraws all funds if all rounds are finished", async () =>{
+        });
+
+        it("Withdraws all funds if all rounds are finished", async () => {
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
 
@@ -317,7 +320,8 @@ describe('Vault test', () => {
 
             const marketActiveState = await marketInstance.active();
             assert.ok(!marketActiveState, "Market not terminated")
-        })
+        });
+
         it("Withdraws multiple rounds if theres outstanding withdraws", async () => {
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
@@ -353,10 +357,10 @@ describe('Vault test', () => {
             assert.ok(outstandingEnd.eq(0), "All funds not sent");
 
             await assert.revert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 replayed incorrectly")
-        })
+        });
     });
 
-    describe("Events", () => {
+    describe("Events", async () => {
         it("Emits FundingWithdrawn", async () => {
             await assert.revert(vaultInstance.from(creator).withdraw(0), "Withdraw succeeded incorrectly")
             let phaseData = await vaultInstance.fundingPhase(0);
@@ -373,7 +377,8 @@ describe('Vault test', () => {
 
             assert.ok(FundsWithdrawn.values.phase.eq(0), "Event phase emitted incorrectly")
             assert.ok(FundsWithdrawn.values.amount.eq(marketSettings.fundingGoals[0]), "Event value emitted incorrectly")
-        })
+        });
+
         it("Emits PhaseFinalised", async () => {
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -389,10 +394,10 @@ describe('Vault test', () => {
 
             assert.ok(PhaseFinalised.values.phase.eq(0), "Event phase emitted incorrectly")
             assert.ok(PhaseFinalised.values.amount.gt(marketSettings.fundingGoals[0]), "Event value emitted incorrectly")
-        })
-    })
+        });
+    });
 
-    describe('Meta data', async () =>{
+    describe('Meta data', async () => {
         it('Get Funding phase data', async () => {
             const fundingData = await vaultInstance.fundingPhase(0);
             assert.ok(fundingData[0].gt(0), "Funding threshold incorrect")
@@ -400,12 +405,14 @@ describe('Vault test', () => {
             assert.ok(fundingData[2].gt(0), "Date not set")
             assert.equal(fundingData[3], 1, "State incorrect")
         });
+
         it('Get outstanding withdraw amount', async () =>{
             const outstandingWithdraw = await vaultInstance.outstandingWithdraw();
             assert.ok(outstandingWithdraw.eq(0), "Phase invalid")
 
             // TODO: Check after a fund phase succeeds
         });
+
         it('Get current phase', async () => {
             const currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid")
@@ -413,25 +420,27 @@ describe('Vault test', () => {
 
             // TODO: check once funding has increase to next phase
         });
+
         it('Get market', async () =>{
             const marketAddress = await vaultInstance.market();
             assert.equal(marketAddress, marketInstance.contract.address, "Market Contract address invaild")
         });
-    })
+    });
 
-    describe("Admin Managed Specific", () => {
+    describe("Admin Managed Specific", async () => {
         it("Only admin can add an admin", async () => {
             await assert.notRevert(vaultInstance.from(creator).addAdmin(user1.signer.address), "Adding admin failed")
             await assert.revert(vaultInstance.from(user2).addAdmin(user1.signer.address), "Unauthorised adding of admin")
-        }),
+        });
+
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(vaultInstance.from(creator).addAdmin(user1.signer.address), "Adding admin failed")
             await assert.revert(vaultInstance.from(user2).removeAdmin(user1.signer.address), "Unauthorised removal of admin")
 
             await assert.notRevert(vaultInstance.from(creator).removeAdmin(user1.signer.address), "Removal of admin failed")
-            
-        }),
-        describe("Meta Data", () => {
+        });
+
+    describe("Meta Data", async () => {
             it("Checks if admin", async () =>{
                 let adminStatus = await vaultInstance.from(creator).isAdmin(user1.signer.address)
                 assert.ok(!adminStatus, "Admin status incorrect")
@@ -440,7 +449,7 @@ describe('Vault test', () => {
                 
                 adminStatus = await vaultInstance.from(creator).isAdmin(user1.signer.address)
                 assert.ok(adminStatus, "Admin status not updated")
-            })
-        })
-    })
-})
+            });
+        });
+    });
+});

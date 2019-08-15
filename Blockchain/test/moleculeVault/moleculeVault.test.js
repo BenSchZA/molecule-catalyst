@@ -15,9 +15,9 @@ const {
     defaultDaiPurchase,
     defaultTokenVolume,
     purchasingSequences
- } = require("../testing.settings.js");
+} = require("../testing.settings.js");
  
-describe('Molecule vault test', () => {
+describe("Molecule vault test", async () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
@@ -105,7 +105,7 @@ describe('Molecule vault test', () => {
         }
     });
 
-    describe('Admin functions', () => {
+    describe("Admin functions", async () => {
         beforeEach(async () => {
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
@@ -140,8 +140,8 @@ describe('Molecule vault test', () => {
 
             assert.ok(balanceOfMoleculeVaultBefore.gt(balanceOfMoleculeVaultAfter), "Balance of vault not decreased");
             assert.ok(balanceOfMoleculeVaultAfter.eq(0), "Not all funds were sent");
+        });
 
-        })
         it('Executes approve correctly', async () =>{
             await assert.revert(moleculeVaultInstance.from(creator).approve(creator.signer.address, ethers.constants.MaxUint256), "Unauthorised approve fired")
             const approvalBefore = await pseudoDaiInstance.allowance(moleculeVaultInstance.contract.address, creator.signer.address)
@@ -155,7 +155,7 @@ describe('Molecule vault test', () => {
         });
     });
 
-    describe("Vault interactions", () => {
+    describe("Vault interactions", async () => {
         it("Receives tax from vault withdraws", async () =>{
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
@@ -171,33 +171,36 @@ describe('Molecule vault test', () => {
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
 
             assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
-        })
-    })
+        });
+    });
 
-    describe('Meta data', () =>{
+    describe("Meta data", async () => {
         it('Get collateralToken', async () =>{
             const collateralToken = await moleculeVaultInstance.collateralToken();
             assert.equal(collateralToken, pseudoDaiInstance.contract.address, "Collateral token invalid")
         });
+        
         it('Get taxRate', async () => {
             const taxRate = await moleculeVaultInstance.taxRate();
             assert.ok(taxRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
         });
-    })
+    });
 
-    describe("Admin Managed Specific", () => {
+    describe("Admin Managed Specific", async () => {
         it("Only admin can add an admin", async () => {
             await assert.notRevert(moleculeVaultInstance.from(molAdmin).addAdmin(user1.signer.address))
             await assert.revert(moleculeVaultInstance.from(user2).addAdmin(user1.signer.address))
-        }),
+        });
+
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(moleculeVaultInstance.from(molAdmin).addAdmin(user1.signer.address))
             await assert.revert(moleculeVaultInstance.from(user2).removeAdmin(user1.signer.address))
 
             await assert.notRevert(moleculeVaultInstance.from(molAdmin).removeAdmin(user1.signer.address))
-            
-        }),
-        describe("Meta Data", () => {
+        });
+
+
+        describe("Meta Data", async () => {
             it("Checks if admin", async () =>{
                 let adminStatus = await moleculeVaultInstance.from(molAdmin).isAdmin(user1.signer.address)
                 assert.ok(!adminStatus, "Admin status incorrect")
@@ -206,7 +209,7 @@ describe('Molecule vault test', () => {
                 
                 adminStatus = await moleculeVaultInstance.from(molAdmin).isAdmin(user1.signer.address)
                 assert.ok(adminStatus, "Admin status not updated")
-            })
-        })
+            });
+        });
     })
 })

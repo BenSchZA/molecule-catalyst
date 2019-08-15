@@ -15,9 +15,9 @@ const {
     defaultDaiPurchase,
     defaultTokenVolume,
     purchasingSequences
- } = require("../testing.settings.js");
+} = require("../testing.settings.js");
  
-describe('Market Registry test', () => {
+describe("Market Registry test", async () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
@@ -75,7 +75,7 @@ describe('Market Registry test', () => {
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
     });
 
-    describe('Registry Functions', () => {
+    describe("Registry Functions", async () => {
         it('Registers factory from valid deployer', async () => {
             let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
             assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
@@ -119,7 +119,7 @@ describe('Market Registry test', () => {
         });
     });
 
-    describe('Deployer Management', () => {
+    describe("Deployer Management", async () => {
         it('Only admin registers a deployer', async () => {
             const secondMarketFactoryInstance = await deployer.deploy(
                 MarketFactoryAbi,
@@ -156,7 +156,6 @@ describe('Market Registry test', () => {
             assert.notEqual(secondMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
             assert.notEqual(secondMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
             assert.equal(secondMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
-
         });
 
         it('Only admin deactivates a deactivates deployer', async () => {
@@ -194,7 +193,7 @@ describe('Market Registry test', () => {
         });
     });
 
-    describe("Events", () => {
+    describe("Events", async () => {
         it("Emits Market Created", async () => {
             const txReceipt = await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -217,7 +216,8 @@ describe('Market Registry test', () => {
             assert.equal(marketCreatedEvent.values.marketAddress, firstMarketDataObj[0], "Market address incorrect");
             assert.equal(marketCreatedEvent.values.vault, firstMarketDataObj[1], "Vault address incorrect");
             assert.equal(marketCreatedEvent.values.creator, creator.signer.address, "Creator address incorrect");
-        })
+        });
+
         it("Emits Deployer Added", async () => {
             const secondMarketFactoryInstance = await deployer.deploy(
                 MarketFactoryAbi,
@@ -236,7 +236,8 @@ describe('Market Registry test', () => {
             
             assert.equal(deployerAddedEvent.values.deployer, secondMarketFactoryInstance.contract.address, "Deloyer address incorrect");
             assert.equal(deployerAddedEvent.values.version, "Initial factory", "Deloyer version message incorrect");
-        })
+        });
+
         it("Emits Deployer Removed", async () => {
             const txReceipt = await (await marketRegistryInstance.from(molAdmin).removeMarketDeployer(marketFactoryInstance.contract.address, "Deprecating")).wait()
 
@@ -246,10 +247,10 @@ describe('Market Registry test', () => {
             
             assert.equal(deployerRemovedEvent.values.deployer, marketFactoryInstance.contract.address, "Deloyer address incorrect");
             assert.equal(deployerRemovedEvent.values.reason, "Deprecating", "Deloyer version message incorrect");
-        })
-    })
+        });
+    });
     
-    describe('Meta data', () =>{
+    describe("Meta data", async () => {
         it('Get Market', async () => {
             let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
             assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
@@ -271,6 +272,7 @@ describe('Market Registry test', () => {
             assert.notEqual(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
             assert.equal(firstMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
         });
+
         it('Get index', async () => {
             let getIndex = await marketRegistryInstance.from(molAdmin).getIndex();
             assert.ok(getIndex.eq(0), "Starting index incorrect")
@@ -298,31 +300,34 @@ describe('Market Registry test', () => {
 
             assert.ok(getIndex.eq(1), "Index not incremented");
         });
+
         it('Is Market Deployer', async () => {
             const isMarketFalse = await marketRegistryInstance.from(molAdmin).isMarketDeployer(moleculeVaultInstance.contract.address);
             const isMarketTrue = await marketRegistryInstance.from(molAdmin).isMarketDeployer(marketFactoryInstance.contract.address);
             assert.equal(isMarketFalse, false, "Unauthrorised deployer registered");
             assert.equal(isMarketTrue, true, "Correct deployer not registered");
         });
+
         it('Published Block number', async () => {
             const publishedBlocknumber = await marketRegistryInstance.from(molAdmin).publishedBlocknumber();
             assert.ok(publishedBlocknumber.gt(0), "Published block not set")
         });
-    })
+    });
 
-    describe("Admin Managed", () => {
+    describe("Admin Managed", async () => {
         it("Only admin can add an admin", async () => {
             await assert.notRevert(marketRegistryInstance.from(molAdmin).addAdmin(user1.signer.address))
             await assert.revert(marketRegistryInstance.from(user2).addAdmin(user1.signer.address))
-        }),
+        });
+
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(marketRegistryInstance.from(molAdmin).addAdmin(user1.signer.address))
             await assert.revert(marketRegistryInstance.from(user2).removeAdmin(user1.signer.address))
 
             await assert.notRevert(marketRegistryInstance.from(molAdmin).removeAdmin(user1.signer.address))
-            
-        }),
-        describe("Meta Data", () => {
+        });
+
+        describe("Meta Data", async () => {
             it("Checks if admin", async () =>{
                 let adminStatus = await marketRegistryInstance.from(molAdmin).isAdmin(user1.signer.address)
                 assert.ok(!adminStatus, "Admin status incorrect")
@@ -331,7 +336,7 @@ describe('Market Registry test', () => {
                 
                 adminStatus = await marketRegistryInstance.from(molAdmin).isAdmin(user1.signer.address)
                 assert.ok(adminStatus, "Admin status not updated")
-            })
-        })
-    })
-})
+            });
+        });
+    });
+});
