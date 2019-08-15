@@ -16,11 +16,13 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 export const colors = {
   moleculeBranding: {
     primary: '#37B4A4',
+    primaryLight: '#37B4A4',
     secondary: '#12999D',
   },
   white: '#FFFFFF',
   black: '#000000',
   grey: '#E5E5E5',
+  darkGrey: '#0000008a',
   lightGrey: '#f2f2f2',
   textBlack: 'rgba(0, 0, 0, 0.87)',
   textGrey: 'rgba(0, 0, 0, 0.60)'
@@ -41,16 +43,7 @@ const theme = (createMuiTheme as any)({
   },
   typography: {
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Montserrat',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+      'Montserrat'
     ].join(','),
   },
   overrides: {
@@ -217,6 +210,56 @@ const theme = (createMuiTheme as any)({
     MuiSelect: {
       selectMenu: {
         height: '1.1875em'
+      }
+    },
+    MuiCard: {
+      root: {
+        maxWidth: 450,
+        maxHeight: 500
+      },
+    },
+    MuiCardContent: {
+      root: {
+        fontSize: '0.9rem',
+        fontWeight: 'normal',
+        color: colors.darkGrey,
+        paddingTop: '12px',
+        height: '184px',
+        paddingLeft: '0px'
+      },
+    },
+    MuiCardMedia: {
+      root: {
+        height: '150px',
+        paddingLeft: '0px'
+      },
+    },
+    MuiCardHeader: {
+      root:{
+        height: '64px',
+      },
+      content: {
+        height:'51px'
+      },
+      title: {
+        paddingTop: '16px',
+        paddingLeft: '0px',
+        paddingBottom: '0px',
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        
+      },
+      subheader: {
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingBottom: '0px',
+        fontSize: '0.6em',
+        fontWeight: 'bold'
+      },
+    },
+    MuiGrid: {
+      root: {
+        paddingTop: '32px'
       }
     }
   }
