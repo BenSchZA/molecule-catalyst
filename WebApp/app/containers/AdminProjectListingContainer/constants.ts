@@ -5,8 +5,7 @@
  */
 
 enum ActionTypes {
-  SET_PROJECTS = 'app/AdminProjectApprovalListingContainer/SET_PROJECTS',
- 
+  SET_STATUS_FILTER = 'app/AdminProjectListingContainer/SET_STATUS_FILTER',
 }
 
 export default ActionTypes;

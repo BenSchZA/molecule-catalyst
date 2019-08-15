@@ -14,7 +14,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 // };
 
 export const colors = {
-  moleculeBranding:{
+  moleculeBranding: {
     primary: '#37B4A4',
     secondary: '#12999D',
   },
@@ -40,7 +40,7 @@ const theme = (createMuiTheme as any)({
     },
   },
   typography: {
-    fontFamily:  [
+    fontFamily: [
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
@@ -62,21 +62,15 @@ const theme = (createMuiTheme as any)({
         marginLeft: '8px',
         marginBottom: '24px',
       },
-      text:{
+      text: {
         paddingLeft: '16px',
         paddingRight: '16px',
         paddingTop: '8px'
       },
-      contained:{
+      contained: {
         backgroundColor: colors.moleculeBranding.primary,
         color: colors.white,
         marginLeft: '44%'
-      }
-    },
-    MuiPaper: {
-      root: {
-        // paddingLeft: '8px',
-        // paddingRight: '8px',
       }
     },
     MuiTypography: {
@@ -90,13 +84,13 @@ const theme = (createMuiTheme as any)({
         paddingBottom: '32px',
         textAlign: 'center'
       },
-      h4:{
+      h4: {
         paddingTop: '8px',
         paddingBottom: '16px',
         paddingLeft: '8px',
         paddingRight: '8px'
       },
-      h3:{
+      h3: {
         textAlign: 'center',
         paddingTop: '32px',
         paddingBottom: '32px'
@@ -118,7 +112,7 @@ const theme = (createMuiTheme as any)({
         color: colors.textBlack
       }
     },
-    MuiInputLabel:{
+    MuiInputLabel: {
       root: {
         fontWeight: 'bold',
         paddingTop: '8px',
@@ -157,8 +151,8 @@ const theme = (createMuiTheme as any)({
         },
       }
     },
-    MuiTextField:{
-      root:{
+    MuiTextField: {
+      root: {
         marginTop: '8px',
         marginBottom: '8px',
         marginLeft: '8px',
@@ -172,32 +166,27 @@ const theme = (createMuiTheme as any)({
         display: 'block'
       }
     },
-    MuiFormHelperText:{
-      root:{
+    MuiFormHelperText: {
+      root: {
         backgroundColor: colors.white,
         margin: '0px'
       },
-      contained:{
+      contained: {
         margin: '0px'
       }
     },
-    MuiSvgIcon:{
-      root:{
-        paddingRight: '4px' 
+    MuiSvgIcon: {
+      root: {
+        paddingRight: '4px'
       }
     },
-    MuiContainer:{
-      maxWidthXl:{
-        width:'1200px'
+    MuiContainer: {
+      maxWidthXl: {
+        width: '1200px'
       }
     },
-    MuiTable:{
-      root:{
-
-      }
-    },
-    MuiTableHead:{
-      root:{
+    MuiTableHead: {
+      root: {
         backgroundColor: colors.grey
       }
     },
@@ -206,10 +195,10 @@ const theme = (createMuiTheme as any)({
         height: '4px'
       }
     },
-    MuiTableCell:{
-      root:{
+    MuiTableCell: {
+      root: {
       },
-      body:{
+      body: {
         paddingTop: '4px',
         paddingBottom: '4px',
       },
@@ -217,14 +206,17 @@ const theme = (createMuiTheme as any)({
         fontSize: '1rem'
       }
     },
-    MuiDivider:{
-      root:{
-      },
-      middle:{
+    MuiDivider: {
+      middle: {
         marginTop: "32px",
         backgroundColor: colors.moleculeBranding.primary,
         alignSelf: 'center',
         verticalAlign: 'middle',
+      }
+    },
+    MuiSelect: {
+      selectMenu: {
+        height: '1.1875em'
       }
     }
   }

@@ -12,6 +12,7 @@ interface AuthenticationState {
   selectedNetworkId?: number,
   errorMessage: string,
   userRole: number,
+  userId: string,
 }
 
 

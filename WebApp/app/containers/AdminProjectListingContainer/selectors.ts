@@ -1,18 +1,36 @@
-import { createSelector, createStructuredSelector } from 'reselect';
+import { createStructuredSelector, createSelector } from 'reselect';
 import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
+import { selectAllProjects } from 'domain/projects/selectors';
 import { ApplicationRootState } from 'types';
 
-const selectProjects = (state: ApplicationRootState) => {
-  return state.adminProjectListing.projects;
+const selectFilter = (state: ApplicationRootState) => {
+  return state ? state.adminProjectListing.statusFilter : -1
 };
 
-const makeSelectProjects = createSelector(selectProjects, substate => {
-  return (substate) ? Object.keys(substate).map(k => substate[k]) : [];
-})
+const makeSelectFilter = createSelector(
+  selectFilter,
+  (filter) => {
+    return filter;
+  },
+);
+
+const makeSelectFilteredProjects = createSelector(
+  selectAllProjects,
+  makeSelectFilter,
+  (allProjects, filter) => {
+    if (filter === -1) {
+      return allProjects
+    } else {
+      return allProjects.filter(p => p.status === filter);
+    }
+
+  }
+)
 
 const selectAdminProjectListing = createStructuredSelector<RootState, StateProps>({
-  projects: makeSelectProjects
+  projects: makeSelectFilteredProjects,
+  statusFilter: makeSelectFilter
 });
 
 

@@ -2,26 +2,18 @@ import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
-enum ProjectSubmissionStatus {
-  created,
-  accepted,
-  rejected,
-  started,
-  ended
-}
-
 /* --- STATE --- */
-interface AdminProjectApprovalListingContainerState {
-  projects: any,
+interface AdminProjectListingContainerState {
+  statusFilter: number,
 }
 
 /* --- ACTIONS --- */
-type AdminProjectApprovalListingContainerActions = ActionType<typeof actions>;
+type AdminProjectListingContainerActions = ActionType<typeof actions>;
 
 /* --- EXPORTS --- */
 
 type RootState = ApplicationRootState;
-type ContainerState = AdminProjectApprovalListingContainerState;
-type ContainerActions = AdminProjectApprovalListingContainerActions;
+type ContainerState = AdminProjectListingContainerState;
+type ContainerActions = AdminProjectListingContainerActions;
 
-export { RootState, ContainerState, ContainerActions, ProjectSubmissionStatus };
+export { RootState, ContainerState, ContainerActions };

@@ -8,7 +8,7 @@ import React, { Fragment } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBody, TableRow, TableCell, Typography, Paper, Button, Grid } from '@material-ui/core';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
-import { ProjectSubmissionStatus } from 'containers/AdminProjectListingContainer/types';
+import { ProjectSubmissionStatus } from '../../domain/projects/types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -34,6 +34,9 @@ const styles = (theme: Theme) =>
     buttonBar: {
       textAlign: 'right',
       paddingRight: 0,
+    },
+    titles: {
+      whiteSpace: 'nowrap',
     }
   });
 
@@ -153,23 +156,23 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
                   <Table>
                     <TableBody>
                     <TableRow>
-                        <TableCell>Title: </TableCell>
+                        <TableCell className={classes.titles}>Title: </TableCell>
                         <TableCell>{rp.title}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Description: </TableCell>
+                        <TableCell className={classes.titles}>Description: </TableCell>
                         <TableCell>{rp.description}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Result:</TableCell>
+                        <TableCell className={classes.titles}>Result:</TableCell>
                         <TableCell>{rp.result}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Funding Goal:</TableCell>
+                        <TableCell className={classes.titles}>Funding Goal:</TableCell>
                         <TableCell>{rp.fundingGoal}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Duration:</TableCell>
+                        <TableCell className={classes.titles}>Duration:</TableCell>
                         <TableCell>{rp.duration + (rp.duration > 1 ? ' months': ' month')}</TableCell>
                       </TableRow>
                     </TableBody>
