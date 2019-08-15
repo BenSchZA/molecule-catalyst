@@ -17,7 +17,7 @@ const {
     purchasingSequences
  } = require("../testing.settings.js");
 
-describe('Market test', () => {
+describe('Market test', async () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
@@ -106,19 +106,19 @@ describe('Market test', () => {
     describe("Pricing functions", async () => {
     // TODO: Resolve inverse intergrals variance issue
         it("Calculates Dai to Tokens accurately - Mint", async () => {
-            console.log("    xxx Market - Collateral to token buying function failing");
+            console.log("       xxx Market - Collateral to token buying function failing");
             // const priceToMintForDai = await marketInstance.poolBalance();
             const priceToMintForDai = await marketInstance.collateralToTokenBuying(purchasingSequences.first.dai.daiCost);
-            console;etherlime.log(priceToMintForDai)
+            console.log(priceToMintForDai);
             assert.ok(priceToMintForDai.eq(purchasingSequences.first.dai.tokenResult), "Price to mint dai incorrect");
         });
         
         // it("Calculates Dai to Tokens accurately - Burn")
     
         it("Calculates Token to Dai accurately - Mint", async () => {
-            console.log("   xxx Market - Price to mint function failing");
+            console.log("       xxx Market - Price to mint function failing");
             const priceToMintForToken = await marketInstance.priceToMint(purchasingSequences.first.token.tokenResult);
-            console.log(priceToMintForToken)
+            console.log(priceToMintForToken);
             assert.ok(priceToMintForToken.eq(purchasingSequences.first.token.daiCost), "Price to mint token incorrect");
         });
 
@@ -127,7 +127,7 @@ describe('Market test', () => {
             const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
 
             const balance = await marketInstance.balanceOf(user1.signer.address);
-            console.log("  xxx Market - Reward for burn function failing");
+            console.log("       xxx Market - Reward for burn function failing");
             const rewardForBurn = await marketInstance.rewardForBurn(balance);
 
 
@@ -154,7 +154,7 @@ describe('Market test', () => {
             const balanceBefore = await marketInstance.balanceOf(user1.signer.address);
 
             const daiBalanceBefore = await pseudoDaiInstance.balanceOf(user1.signer.address);
-            console.log("  xxx Market - Burn function failing");
+            console.log("       xxx Market - Burn function failing");
             await assert.notRevert(marketInstance.from(user1).burn(balanceBefore));
             
             const balanceAfter = await marketInstance.balanceOf(user1.signer.address);
@@ -286,47 +286,47 @@ describe('Market test', () => {
                 await assert.notRevert(marketInstance.from(user2).transferFrom(user1.signer.address, user2.signer.address, purchasingSequences.first.token.tokenResult.div(2)))
             });
         });
-    });
 
-    describe("Meta data", async () => {
-        it('Get allowance', async () => {
-            let allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
-            assert.ok(allowance.eq(0), "Allowance already set");
-
-            await (await marketInstance.from(user1).approve(user2.signer.address, ethers.constants.MaxUint256)).wait();
-            allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
-            assert.ok(allowance.eq(ethers.constants.MaxUint256), "Allowance not set");
-        });
-
-        it('Get totalSupply', async () =>{
-            let totalSupply = await marketInstance.totalSupply();
-            assert.ok(totalSupply.eq(0), "Total supply invalid")
-            await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
-            
-            totalSupply = await marketInstance.totalSupply();
-            assert.ok(totalSupply.eq(purchasingSequences.first.token.tokenResult), "Total supply not increased")
-        });
-
-        it('Get balanceOf', async () =>{
-            let balance = await marketInstance.balanceOf(user1.signer.address);
-            assert.ok(balance.eq(0), "Balance invalid")
-            await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
-            
-            balance = await marketInstance.balanceOf(user1.signer.address);
-            assert.ok(balance.eq(purchasingSequences.first.token.tokenResult), "Balance not increased")
-        });
-
-        it('Get poolBalance', async () =>{
-            let poolBalance = await marketInstance.poolBalance();
-            assert.ok(poolBalance.eq(0), "Pool balance invalid")
-            await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
-            poolBalance = await marketInstance.poolBalance();
-            assert.ok(poolBalance.gt(0), "Pool balance not increased")
-        });
-
-        it('Get decimals', async () => {
-            const decimals = await marketInstance.decimals();
-            assert.ok(decimals.eq(18), "Decimals not set")
+        describe("Meta data", async () => {
+            it('Get allowance', async () => {
+                let allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+                assert.ok(allowance.eq(0), "Allowance already set");
+    
+                await (await marketInstance.from(user1).approve(user2.signer.address, ethers.constants.MaxUint256)).wait();
+                allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+                assert.ok(allowance.eq(ethers.constants.MaxUint256), "Allowance not set");
+            });
+    
+            it('Get totalSupply', async () =>{
+                let totalSupply = await marketInstance.totalSupply();
+                assert.ok(totalSupply.eq(0), "Total supply invalid")
+                await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
+                
+                totalSupply = await marketInstance.totalSupply();
+                assert.ok(totalSupply.eq(purchasingSequences.first.token.tokenResult), "Total supply not increased")
+            });
+    
+            it('Get balanceOf', async () =>{
+                let balance = await marketInstance.balanceOf(user1.signer.address);
+                assert.ok(balance.eq(0), "Balance invalid")
+                await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
+                
+                balance = await marketInstance.balanceOf(user1.signer.address);
+                assert.ok(balance.eq(purchasingSequences.first.token.tokenResult), "Balance not increased")
+            });
+    
+            it('Get poolBalance', async () =>{
+                let poolBalance = await marketInstance.poolBalance();
+                assert.ok(poolBalance.eq(0), "Pool balance invalid")
+                await assert.notRevert(await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult));
+                poolBalance = await marketInstance.poolBalance();
+                assert.ok(poolBalance.gt(0), "Pool balance not increased")
+            });
+    
+            it('Get decimals', async () => {
+                const decimals = await marketInstance.decimals();
+                assert.ok(decimals.eq(18), "Decimals not set")
+            });
         });
     });
 });

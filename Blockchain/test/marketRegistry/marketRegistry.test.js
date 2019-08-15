@@ -87,9 +87,7 @@ describe("Market Registry test", async () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate,
-                    marketSettings.gradientDenominator,
-                    marketSettings.scaledShift
+                    marketSettings.taxationRate
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -112,9 +110,7 @@ describe("Market Registry test", async () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
+                marketSettings.taxationRate
             ));
         });
     });
@@ -135,9 +131,7 @@ describe("Market Registry test", async () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
+                marketSettings.taxationRate
             ));
 
             await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(secondMarketFactoryInstance.contract.address, "Initial factory")).wait()
@@ -147,9 +141,7 @@ describe("Market Registry test", async () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
+                marketSettings.taxationRate
             )).wait()
 
             let secondMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -169,9 +161,7 @@ describe("Market Registry test", async () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate,
-                    marketSettings.gradientDenominator,
-                    marketSettings.scaledShift
+                    marketSettings.taxationRate
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -186,9 +176,7 @@ describe("Market Registry test", async () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
+                marketSettings.taxationRate
             ));
         });
     });
@@ -200,9 +188,7 @@ describe("Market Registry test", async () => {
                 marketSettings.phaseDuration,
                 creator.signer.address,
                 marketSettings.curveType,
-                marketSettings.taxationRate,
-                marketSettings.gradientDenominator,
-                marketSettings.scaledShift
+                marketSettings.taxationRate
             )).wait();
 
             const marketCreatedEvent = (await(txReceipt.events.filter(
@@ -262,9 +248,7 @@ describe("Market Registry test", async () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate,
-                    marketSettings.gradientDenominator,
-                    marketSettings.scaledShift
+                    marketSettings.taxationRate
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -287,9 +271,7 @@ describe("Market Registry test", async () => {
                     marketSettings.phaseDuration,
                     creator.signer.address,
                     marketSettings.curveType,
-                    marketSettings.taxationRate,
-                    marketSettings.gradientDenominator,
-                    marketSettings.scaledShift
+                    marketSettings.taxationRate
                 )).wait()
 
             firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
@@ -316,25 +298,25 @@ describe("Market Registry test", async () => {
 
     describe("Admin Managed", async () => {
         it("Only admin can add an admin", async () => {
-            await assert.notRevert(marketRegistryInstance.from(molAdmin).addAdmin(user1.signer.address))
-            await assert.revert(marketRegistryInstance.from(user2).addAdmin(user1.signer.address))
+            await assert.notRevert(marketRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+            await assert.revert(marketRegistryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
         it("Only admin can remove an admin", async () =>{
-            await assert.notRevert(marketRegistryInstance.from(molAdmin).addAdmin(user1.signer.address))
-            await assert.revert(marketRegistryInstance.from(user2).removeAdmin(user1.signer.address))
+            await assert.notRevert(marketRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+            await assert.revert(marketRegistryInstance.from(user2).renounceWhitelistAdmin())
 
-            await assert.notRevert(marketRegistryInstance.from(molAdmin).removeAdmin(user1.signer.address))
+            await assert.notRevert(marketRegistryInstance.from(user1.signer.address).renounceWhitelistAdmin())
         });
 
         describe("Meta Data", async () => {
             it("Checks if admin", async () =>{
-                let adminStatus = await marketRegistryInstance.from(molAdmin).isAdmin(user1.signer.address)
+                let adminStatus = await marketRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
                 assert.ok(!adminStatus, "Admin status incorrect")
                 
-                await assert.notRevert(marketRegistryInstance.from(molAdmin).addAdmin(user1.signer.address))
+                await assert.notRevert(marketRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
                 
-                adminStatus = await marketRegistryInstance.from(molAdmin).isAdmin(user1.signer.address)
+                adminStatus = await marketRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
                 assert.ok(adminStatus, "Admin status not updated")
             });
         });

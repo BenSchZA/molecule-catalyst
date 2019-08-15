@@ -145,28 +145,29 @@ describe('Curve Registry test', async () => {
             assert.ok(publishedBlock.gt(0), "Published block not set")
         });
 
-        it("Only admin can add an admin", async () => {
-            console.log("\tAdmin Managed Specific");
-            await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(curveRegistryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
-        });
+        describe('Admin Managed Specific', async () => {
+            it("Only admin can add an admin", async () => {
+                await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+                await assert.revert(curveRegistryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
+            });
 
-        it("Only admin can remove an admin", async () =>{
-            await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(curveRegistryInstance.from(user2).renounceWhitelistAdmin())
+            it("Only admin can remove an admin", async () =>{
+                await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+                await assert.revert(curveRegistryInstance.from(user2).renounceWhitelistAdmin())
 
-            // Admins are no longer able to remove each other with WhitelistAdmin
-            // await assert.notRevert(curveRegistryInstance.from(molAdmin).renounceWhitelistAdmin(user1.signer.address))
-        });
+                // Admins are no longer able to remove each other with WhitelistAdmin
+                // await assert.notRevert(curveRegistryInstance.from(molAdmin).renounceWhitelistAdmin(user1.signer.address))
+            });
 
-        it("Checks if admin", async () =>{
-            let adminStatus = await curveRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
-            assert.ok(!adminStatus, "Admin status incorrect")
-            
-            await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            
-            adminStatus = await curveRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
-            assert.ok(adminStatus, "Admin status not updated")
+            it("Checks if admin", async () =>{
+                let adminStatus = await curveRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
+                assert.ok(!adminStatus, "Admin status incorrect")
+                
+                await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+                
+                adminStatus = await curveRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
+                assert.ok(adminStatus, "Admin status not updated")
+            });
         });
     });
 });

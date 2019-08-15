@@ -98,12 +98,6 @@ describe("Market Factory test", async () => {
 
     describe("Meta data", async () => {
         it('moleculeVault', async () => {
-            // console.log(moleculeVaultInstance);
-            console.log("  xxx Market Factory - No mol vault functions work");
-            let test = await moleculeVaultInstance.from(molAdmin).collateralToken();
-            // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
-            // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
-            console.log(">>>>>>>>>>>>>>>> " + test);
             const moleculeVault = await marketFactoryInstance.from(molAdmin).moleculeVault();
             assert.equal(moleculeVault, moleculeVaultInstance.contract.address, "Vault not set correctly")
         });
@@ -111,6 +105,11 @@ describe("Market Factory test", async () => {
         it('marketRegistry', async () => {
             const marketRegistry = await marketFactoryInstance.from(molAdmin).marketRegistry();
             assert.equal(marketRegistry, marketRegistryInstance.contract.address, "Registry not set correctly")
+        });
+
+        it('curveRegistry', async () => {
+            const curveRegistry = await marketFactoryInstance.from(molAdmin).curveRegistry();
+            assert.equal(curveRegistry, curveRegistryInstance.contract.address, "Registry not set correctly")
         });
 
         it('collateralToken', async () => {
