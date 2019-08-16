@@ -49,7 +49,7 @@ const deploy = async (network, secret) => {
   const curveRegistryInstance = await deployer.deploy(CurveRegistryABI);
   const registerCurveTX = await curveRegistryInstance.registerCurve(
     curveFunctionsInstance.contract.address,
-    "linear: (1/17500)*x + 0.5"
+    "linear: (1/20000)*x + 0.5"
   );
   let result = await curveRegistryInstance.verboseWaitForTransaction(registerCurveTX, 'Register curve');
 

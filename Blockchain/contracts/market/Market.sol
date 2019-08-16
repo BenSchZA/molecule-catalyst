@@ -17,7 +17,7 @@ contract Market is IMarket, IERC20 {
     bool internal active_ = true;
     // Vault that recives taxation
     IVault internal creatorVault_;
-    // Percentage of vault taxation i.e 20
+    // Percentage of vault taxation e.g. 20
     uint256 internal taxationRate_;
     // Address of curve function
     ICurveFunctions internal curveLibrary_;
@@ -118,15 +118,17 @@ contract Market is IMarket, IERC20 {
     /// @param _numTokens   :uint256 The number of tokens you want to mint
     /// @dev                We have modified the minting function to divert a portion of the purchase tokens
     function mint(address _to, uint256 _numTokens) external onlyActive() returns(bool) {
-        uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
-        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
+        uint256 priceForTokens = priceToMint(_numTokens);
+        require(priceForTokens > 0, "Tokens requested too low");
 
-        uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
+        // uint256 poolBalance = collateralToken_.balanceOf(address(this));
+        uint256 baseUnit = 100;
+        uint256 tax = priceForTokens.sub(priceForTokens.mul(100).div(baseUnit.add(taxationRate_)));
 
         collateralToken_.transferFrom(
             msg.sender,
             address(this),
-            untaxedDai.add(tax)
+            priceForTokens
         );
 
         require(
@@ -134,11 +136,11 @@ contract Market is IMarket, IERC20 {
                 address(creatorVault_),
                 tax
             ),
-            "Vault portion not sent"
+            "Vault tax not transferred"
         );
 
         totalSupply_ = totalSupply_.add(_numTokens);
-        balances[msg.sender] = balances[msg.sender].add(_numTokens); // Minus amount sent to Revenue target
+        balances[msg.sender] = balances[msg.sender].add(_numTokens);
 
         require(creatorVault_.validateFunding(), "Funding validation failed");
 
@@ -221,10 +223,10 @@ contract Market is IMarket, IERC20 {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             :uint256 Required collateral corrected for decimals
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
-        uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
-        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalanceFetched);
+        uint256 poolBalance = collateralToken_.balanceOf(address(this));
+        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance);
 
-        uint256 tax = (untaxedDai.div(100)).mul(taxationRate_);
+        uint256 tax = untaxedDai.mul(taxationRate_).div(100);
         return untaxedDai.add(tax);
     }
 
@@ -235,17 +237,15 @@ contract Market is IMarket, IERC20 {
         return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
 
-    // [Inverse pricing functions]
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
     ///                     Including molecule & market contributions
     /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
-        //Gets the amount for vault
-        // Incoming dai is 100% + taxation rate, implying dividing by 100+taxRate, will produce an accurate 1 percent to work with
-        uint256 buyTax = (_collateralTokenOffered.div(taxationRate_.add(100))).mul(taxationRate_);
-        //Remaining collateral gets sent to vyper to work out amount of tokens
-        uint256 correctedForTax = _collateralTokenOffered.sub(buyTax);
-        return (inverseCurveIntegral(curveIntegral(totalSupply_).add(correctedForTax))).sub(totalSupply_);
+        // Buy tax sent to vault
+        // uint256 buyTax = _collateralTokenOffered.mul(taxationRate_).div(100);
+        // uint256 collateralPlusTax = _collateralTokenOffered.add(buyTax);
+        // Calculate token reward for collateral cost
+        return inverseCurveIntegral(curveIntegral(totalSupply_).add(_collateralTokenOffered)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token

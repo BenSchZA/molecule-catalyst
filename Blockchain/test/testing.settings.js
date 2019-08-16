@@ -8,12 +8,10 @@ let MoleculeVaultAbi = require('../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../build/CurveRegistry.json');
 let MarketRegistryAbi = require('../build/MarketRegistry.json');
 let MarketFactoryAbi = require('../build/MarketFactory.json');
-let CurveFunctionsAbi = require('../build/CurveFunctions.json');
+let CurveFunctionsAbi = require('../build/CurveIntegrals.json');
 
 const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
 const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);
-
-let tokenDaiCost = '0x04157b0cf2c3799d500000';
 
 const purchasingSequences = {
     first: {
@@ -60,12 +58,12 @@ let marketSettings = {
         ethers.utils.parseUnits("6", 0)
     ],
     curveType: ethers.utils.parseUnits("0", 0),
-    taxationRate: ethers.utils.parseUnits("60", 0)
+    taxationRate: ethers.utils.parseUnits("15", 0)
 }
 
 const simulatedCurve = {
     scaledShift: ethers.utils.parseUnits("50", 16), // 0.5
-    gradientDenominator: ethers.utils.parseUnits("17500", 0),
+    gradientDenominator: ethers.utils.parseUnits("20000", 0),
     defaultPurchaseAmount: ethers.utils.parseUnits("100", 18),
     init:{
         totalSupply: ethers.utils.parseUnits("0", 18),

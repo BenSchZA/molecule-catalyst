@@ -16,6 +16,7 @@
   "author": "Linum Labs",
   "license": "MIT",
   "dependencies": {
+    "bignumber.js": "^9.0.0",
     "dotenv": "8.0.0",
     "etherlime": "^2.2.0",
     "etherlime-lib": "^1.1.3",

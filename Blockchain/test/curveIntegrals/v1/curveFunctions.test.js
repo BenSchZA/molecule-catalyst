@@ -43,7 +43,7 @@ describe("Curve Functions test", async () => {
         .curveIntegral(simulatedCurve.defaultPurchaseAmount);
       assert.equal(
         ethers.utils.formatUnits(rawDaiBN, 18),
-        50.285714285714285,
+        50.25,
         "Calculation incorrect"
       );
     });
@@ -57,7 +57,7 @@ describe("Curve Functions test", async () => {
         .inverseCurveIntegral(rawDaiBN);
       assert.equal(
         ethers.utils.formatUnits(rawTokenBN, 18),
-        99.999999999999982499,
+        100.0,
         "Calculation incorrect"
       );
     });
