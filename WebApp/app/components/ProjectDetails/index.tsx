@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Container, Typography } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Container, Typography, Button } from '@material-ui/core';
 import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 
@@ -25,6 +25,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({project}: OwnProps) 
     <Typography variant='h6'>Organization: {project.user.affiliatedOrganisation}</Typography>
     <Typography variant='h6'>Status: {ProjectSubmissionStatus[project.status]}</Typography>
     <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} />
+    <Button onClick={() => console.log('buy')}>Support Project</Button>
+    <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
     <Typography variant='h6'>Abstract: {project.abstract}</Typography>
   </Container>
 );
