@@ -107,8 +107,7 @@ describe('Market test', async () => {
 
     describe("Pricing functions", async () => {
         it("collateralToTokenBuying() accurate", async() => {
-            const defaultDaiPurchase = ethers.utils.parseUnits("100", 18); //5000000
-            // const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);
+            const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18); //5000000
             
             const tokenResult = await marketInstance.collateralToTokenBuying(defaultDaiPurchase);
             console.log(`Token result = ${tokenResult.toString()}`);
@@ -134,9 +133,14 @@ describe('Market test', async () => {
             console.log(`Token balance after = ${tokenBalanceAfter.toString()}`);
             console.log(`Reward for burn = ${rewardForBurn.toString()}`);
 
-            BigNumber.config({ DECIMAL_PLACES: 18 - 4 });
+            // Process for reasonable precision check
+            BigNumber.config({ DECIMAL_PLACES: 18 - 3 });
             BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
-            assert(rewardForBurn.eq(defaultDaiPurchase), "Reward doesn't equal purchased value");
+            const rewardForBurnBN = BigNumber(rewardForBurn.toString()).div('1e18');
+            const defaultDaiPurchaseBN = BigNumber(defaultDaiPurchase.toString()).div('1e18');
+            console.log(`Reward for burn BN = ${rewardForBurnBN.toPrecision(18 - 3)}`);
+
+            assert(rewardForBurnBN.isEqualTo(defaultDaiPurchaseBN), "Reward doesn't equal purchased value");
 
             const transfers = (await mintReceipt.events.filter(
                 event => event.topics[0] == marketInstance.interface.events.Transfer.topic
@@ -144,9 +148,6 @@ describe('Market test', async () => {
             
             const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
             assert(purposedBurnValue.eq(rewardForBurn), "Reward for burn incorrect")
-
-            // const daiReward = await marketInstance.rewardForBurn(tokenResult);
-            // console.log(daiReward);
         });
 
         // it("priceToMint() accurate", async() => {
