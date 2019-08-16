@@ -6,7 +6,8 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, Typography } from '@material-ui/core';
-import { Project } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import apiUrlBuilder from 'api/apiUrlBuilder';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -17,10 +18,14 @@ interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
 }
 
-const ProjectDetails: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
+const ProjectDetails: React.FunctionComponent<OwnProps> = ({project}: OwnProps) => (
   <Container maxWidth='lg'>
-    <Typography variant='h4'>{props.project.title}</Typography>
-    
+    <Typography variant='h4'>{project.title}</Typography>
+    <Typography variant='h6'>Researcher: {project.user.fullName}</Typography>
+    <Typography variant='h6'>Organization: {project.user.affiliatedOrganisation}</Typography>
+    <Typography variant='h6'>Status: {ProjectSubmissionStatus[project.status]}</Typography>
+    <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} />
+    <Typography variant='h6'>Abstract: {project.abstract}</Typography>
   </Container>
 );
 
