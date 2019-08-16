@@ -102,7 +102,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
       <AppBar position="fixed" className={classes.appBar} >
         <Toolbar disableGutters={true} className={classes.toolbar}>
           <Link className={classes.appBarLogo} to="/discover">
-            <ReactSVG src="molecule-logo.svg" />
+            <ReactSVG src="molecule-catalyst-logo.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 45px') } />
           </Link>
           <div className={classes.navAccount}>
             <List className={classes.navList}>
