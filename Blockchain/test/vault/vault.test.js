@@ -111,9 +111,9 @@ describe("Vault test", async () => {
             console.log(">>> 0");
             let phaseData = await vaultInstance.fundingPhase(0);
             console.log(">>> funding phase data");
-            console.log(phaseData[0].toNumber());
-            console.log(phaseData[1].toNumber());
-            console.log(phaseData[2].toNumber());
+            console.log(phaseData[0].toString());
+            console.log(phaseData[1].toString());
+            console.log(phaseData[2].toString());
             console.log(phaseData);
             console.log(">>> 1");
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
@@ -133,7 +133,6 @@ describe("Vault test", async () => {
         it("Increments the round if funding is reached", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
-            console.log(">>> 0");
             let phaseData = await vaultInstance.fundingPhase(0);
             console.log(">>> funding phase data");
             console.log(phaseData);
@@ -156,12 +155,12 @@ describe("Vault test", async () => {
         it("Sets the new end date of the second phase correctly", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
-            console.log(">>> 0");
+            
             let phaseData = await vaultInstance.fundingPhase(0);
             console.log(">>> funding phase data");
             console.log(phaseData);
             assert.equal(phaseData[3], 1, "Phase state not set to started");
-            console.log(">>> 0");
+            
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(100);
             console.log(">>> 0");
             const estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
@@ -418,6 +417,7 @@ describe("Vault test", async () => {
             const fundingData = await vaultInstance.fundingPhase(0);
             console.log(fundingData);
             console.log(">>> 0");
+            console.log(fundingData[0].toNumber());
             console.log(fundingData[1].toNumber());
             console.log(fundingData[2].toNumber());
             console.log(fundingData[3].toNumber());
@@ -441,7 +441,6 @@ describe("Vault test", async () => {
         it('Get current phase', async () => {
             const currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid")
-
 
             // TODO: check once funding has increase to next phase
         });

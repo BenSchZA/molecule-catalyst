@@ -14,9 +14,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         collateralToken_ = _collateralToken;
         taxRate_ = _taxRate;
         // Adding the Molecule admin address as an admin
-        super.addWhitelistAdmin(_moleculeAdmin);
-        // Removing the contract from admin role
-        super.renounceWhitelistAdmin();
+        // super.addWhitelistAdmin(_moleculeAdmin);
+        // // Removing the contract from admin role
+        // renounceWhitelistAdmin();
     }
 
     function transfer(address _to, uint256 _amount) public onlyWhitelistAdmin() {
