@@ -23,6 +23,7 @@ describe("Vault test", async () => {
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
+    let admin2 = accounts[5];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
@@ -43,8 +44,7 @@ describe("Vault test", async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
-            moleculeVaultSettings.taxationRate,
-            molAdmin.signer.address
+            moleculeVaultSettings.taxationRate
         );
 
         marketRegistryInstance = await deployer.deploy(
@@ -417,18 +417,18 @@ describe("Vault test", async () => {
             const fundingData = await vaultInstance.fundingPhase(0);
             console.log(fundingData);
             console.log(">>> 0");
-            console.log(fundingData[0].toNumber());
-            console.log(fundingData[1].toNumber());
-            console.log(fundingData[2].toNumber());
-            console.log(fundingData[3].toNumber());
+            console.log(fundingData[0].toString());
+            console.log(fundingData[1].toString());
+            console.log(fundingData[2].toString());
+            console.log(fundingData[3].toString());
             assert.equal(fundingData[0].toNumber, 0, "Funding threshold incorrect")
             console.log(">>> 0");
             
-            assert.equal(fundingData[1].toNumber(), marketSettings.phaseDuration[0], "Phase incorrect")
+            assert.equal(fundingData[1].toString(), marketSettings.phaseDuration[0], "Phase incorrect")
             console.log(">>> 0");
-            assert.equal(fundingData[2].toNumber(), 0, "Date not set")
+            assert.equal(fundingData[2].toString(), 0, "Date not set")
             console.log(">>> 0");
-            assert.equal(fundingData[3].toNumber(), 1, "State incorrect")
+            assert.equal(fundingData[3].toString(), 1, "State incorrect")
         });
 
         it('Get outstanding withdraw amount', async () =>{

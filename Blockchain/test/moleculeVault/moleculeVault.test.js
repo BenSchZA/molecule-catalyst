@@ -22,6 +22,7 @@ describe("Molecule vault test", async () => {
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
+    let admin2 = accounts[5];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
@@ -41,8 +42,7 @@ describe("Molecule vault test", async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
-            moleculeVaultSettings.taxationRate,
-            molAdmin.signer.address
+            moleculeVaultSettings.taxationRate
         );
         
         marketRegistryInstance = await deployer.deploy(
