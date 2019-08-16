@@ -34,9 +34,11 @@ async function fetchFromWindow() {
   const { web3 } = window as any;
   blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
   // @ts-ignore
-  const network = await blockchainResources.provider.ready;
+  await blockchainResources.provider.ready;
   // const signer = await provider.getSigner();
-  blockchainResources.signer = await blockchainResources.provider.getSigner();
+  const signer = await blockchainResources.provider.getSigner();
+  blockchainResources.signer = signer;
+  blockchainResources.signerAddress = await signer.getAddress();
 }
 
 export async function initBlockchainResources() {
@@ -133,92 +135,14 @@ export async function verifySignature(message: string, signature: string) {
   }
 }
 
-export async function getBlockchainResources(): Promise<BlockchainResources> {
-  const { web3, ethereum } = window as any;
-  let result: BlockchainResources = {
-    approvedNetwork: false,
-    networkId: 0,
-    daiAddress: "0x",
-    // @ts-ignore
-    signer: null,
-    signerAddress: "",
-    isCipher: false,
-    isMetaMask: false,
-    isStatus: false,
-    isToshi: false,
-    signedMsgRegex: /0x[A-Fa-f0-9]+/
-  };
 
-  try {
-
-    result.isToshi = !!web3.currentProvider.isToshi;
-    result.isCipher = !!web3.currentProvider.isCipher;
-    result.isMetaMask = !!web3.currentProvider.isMetaMask;
-    let isStatus = false;
-
-    let accountArray: string[] | any = [];
-    if (result.isMetaMask) {
-      accountArray = await ethereum.send('eth_requestAccounts');
-      if (accountArray.code && accountArray.code == 4001) {
-        throw ("Connection rejected");
-      }
-    } else if (result.isToshi) {
-      // Unlocked already
-    } else if (result.isCipher) {
-
-    } else {
-      if (ethereum) {
-        result.isStatus = !!ethereum.isStatus;
-        if (isStatus) {
-          await ethereum.enable();
-        }
-      }
-    }
-    result.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
-    // @ts-ignore
-    await result.provider.ready;
-    result.signer = await result.provider.getSigner();
-    result.signerAddress = await result.signer.getAddress();
-
-    const chainId = (await result.provider.getNetwork()).chainId;
-    result.networkId = chainId;
-
-    if (chainId == 1) {
-      result.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
-      result.approvedNetwork = true;
-    } else if (chainId == 5) {
-      result.daiAddress = `${process.env.GOERLI_DAI_ADDRESS}`;
-      result.approvedNetwork = true;
-    } else if (chainId == 4) {
-      result.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
-      result.approvedNetwork = true;
-    } else if (chainId == 42) {
-      result.daiAddress = `${process.env.KOVAN_DAI_ADDRESS}`;
-      result.approvedNetwork = true;
-    } else if (chainId == 3) {
-      result.daiAddress = `${process.env.ROPSTEN_DAI_ADDRESS}`;
-      result.approvedNetwork = true;
-    } else {
-      throw "Invalid network"
-    }
-
-    return result;
-  }
-  catch (e) {
-    throw e;
-  }
-}
 
 export async function getBlockchainObjects(): Promise<BlockchainResources> {
   try {
     if (blockchainResources.daiAddress == "0x") {
       await initBlockchainResources();
     } else {
-      const newData = fetchFromWindow();
-      blockchainResources = {
-        ...blockchainResources,
-        ...newData
-      }
+      await fetchFromWindow();
     }
     return blockchainResources;
   }

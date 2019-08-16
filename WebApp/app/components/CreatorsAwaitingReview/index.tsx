@@ -78,7 +78,7 @@ const CreatorsAwaitingReview: React.FunctionComponent<OwnProps> = (props: OwnPro
         </ExpansionPanel>
         )) : 
         <ExpansionPanel>
-         <Typography className={props.classes.heading}>No awaiting creator applications</Typography>
+          <Typography className={props.classes.heading}>No awaiting creator applications</Typography>
         </ExpansionPanel>
       }
     </Paper>

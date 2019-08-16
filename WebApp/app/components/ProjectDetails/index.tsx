@@ -18,9 +18,9 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
-  <Container>
-    <Typography>Project Details</Typography>
-    <Typography>{props.project.title}</Typography>
+  <Container maxWidth='lg'>
+    <Typography variant='h4'>{props.project.title}</Typography>
+    
   </Container>
 );
 
