@@ -6,15 +6,21 @@ import { UserDocument } from './user.schema';
 import { Schemas } from '../app.constants';
 import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
+import { ServiceBase } from 'src/common/serviceBase';
 
 @Injectable()
-export class UserService {
+export class UserService extends ServiceBase {
 
-  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>) {}
+  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>) {
+    super(UserService.name);
+  }
 
   async create(ethAddress: string): Promise<User> {
+    this.logger.debug('Creating new user');
+    const profiler = this.logger.startTimer();
     const newUser = await new this.userRepository({ethAddress});
     await newUser.save();
+    profiler.done('Created new user');
     return newUser.toObject();
   }
 
@@ -62,6 +68,7 @@ export class UserService {
   }
 
   async promoteToAdmin(userId: string): Promise<User> {
+    this.logger.info(`Promoting user to admin: ${userId}`);
     const user = await this.userRepository.findById(userId);
     user.type = UserType.Admin;
     user.save();

@@ -57,13 +57,9 @@ export function* refreshTokenPoller() {
     }
 
     delayDuration = (decodedToken.exp - Date.now() / 1000) * 0.9;
-    // Only refresh the token when it is nearing expiry.
     if ((Date.now() / 1000) + (delayDuration + 1) > decodedToken.exp) {
-      // console.log(`Token is expiring soon. Refreshing...`);
       yield call(getAccessToken, signedMessage, signerAddress);
-      // console.log(`access token updated`);
     } else {
-      // console.log(`token not refreshed, going to sleep for ${delayDuration}`);
       yield delay(delayDuration * 1000);
     }
   }
@@ -120,7 +116,6 @@ export const addressChangeEventChannel = eventChannel(emit => {
 export function* addressChangeListener() {
   while (true) {
     const newAddress = yield take(addressChangeEventChannel);
-    localStorage.clear();
     yield put(authenticationActions.logOut());
     yield put(authenticationActions.setEthAddress(newAddress[0]));
     yield fork(connectWallet)

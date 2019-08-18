@@ -8,15 +8,21 @@ import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { User } from 'src/user/user.schema';
 import { ProjectSubmissionStatus } from './project.schema';
+import { ServiceBase } from 'src/common/serviceBase';
 
 @Injectable()
-export class ProjectService {
+export class ProjectService extends ServiceBase {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
-  private readonly attachmentService: AttachmentService) {}
+  private readonly attachmentService: AttachmentService) {
+    super(ProjectService.name);
+  }
   
   async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
+    this.logger.debug('saving new project data');
+    const profiler = this.logger.startTimer();
     const project = await new this.projectRepository({...projectData, user: user.id});
     if (file) {
+      // TODO - Crop and resize image here for optimal display
       const attachment = await this.attachmentService.create({
         filename: `${project.id}-${file.originalname}`,
         contentType: file.mimetype
@@ -25,6 +31,7 @@ export class ProjectService {
     }
     
     await project.save();
+    profiler.done('project saved');
     return project.toObject();
   }
   

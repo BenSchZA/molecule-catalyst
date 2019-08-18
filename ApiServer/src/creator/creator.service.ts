@@ -12,21 +12,26 @@ import { TokenDocument } from 'src/auth/token.schema';
 import { ConfigService } from 'src/config/config.service';
 import { UserService } from 'src/user/user.service';
 import { ObjectId } from 'mongodb';
+import { ServiceBase } from 'src/common/serviceBase';
 
 @Injectable()
-export class CreatorService {
+export class CreatorService extends ServiceBase {
   constructor(@InjectModel(Schemas.Creator) private readonly creatorRepository: Model<CreatorApplicationDocument>,
               private readonly attachmentService: AttachmentService,
               private readonly sendgridService: SendGridService,
               private readonly jwtService: JwtService,
               @InjectModel(Schemas.Token) private readonly tokenRepository: Model<TokenDocument>,
               private readonly configService: ConfigService,
-              private readonly userService: UserService) { }
+              private readonly userService: UserService) {
+                super(CreatorService.name);
+              }
 
   async addApplication(applicationData: CreatorApplicationDto, file: any, user: User): Promise<CreatorApplication> {
-    console.log('saving application');
+    const profiler = this.logger.startTimer();
+    this.logger.debug('saving application');
     const creator = await new this.creatorRepository({...applicationData, user: user.id});
     if (file) {
+      // TODO - Crop and resize image here for optimal display
       const attachment = await this.attachmentService.create({
         filename: `${creator.id}-${file.originalname}`,
         contentType: file.mimetype
@@ -35,10 +40,11 @@ export class CreatorService {
     }
 
     await creator.save();
-
+    this.logger.debug('application saved');
     const token = await this.jwtService.signAsync({ userId: user.id }, { notBefore: Date.now(), expiresIn: 43200 });
     await this.tokenRepository.create({userId: user.id, token});
 
+    this.logger.debug('sending email');
     try {
       const appConfig = this.configService.get('app');
       await this.sendgridService.send({
@@ -52,12 +58,15 @@ export class CreatorService {
       creator.status = CreatorApplicationStatus.awaitingEmailVerification;
       creator.save()
     } catch (error) {
-      console.log('Error sending verification email to user');
-    }    
+      this.logger.error('Error sending verification email to user', error);
+    }
+    
+    profiler.done('Creator Application successfully saved')
     return creator.toObject();
   }
 
   async verifyEmail(token: string): Promise<boolean> {
+    this.logger.debug('Attempting email verification');
     const savedToken = await this.tokenRepository.findOne({token: token});
     if (savedToken) {
       const creator = await this.creatorRepository.findOne({user: savedToken.userId});
@@ -66,6 +75,7 @@ export class CreatorService {
       await this.tokenRepository.deleteOne(savedToken);
       return true;
     } else {
+      this.logger.debug('Email verification token not found or already expired');
       throw new ForbiddenException('Email verification token has expired');
     }
   }
@@ -82,7 +92,6 @@ export class CreatorService {
 
   async approveApplication(id: string | ObjectId, user: User) {
     const application = await this.creatorRepository.findById(id);
-    
     await this.userService.setUserDetails(application.user as string, application);
     application.status = CreatorApplicationStatus.accepted;
     application.reviewedBy = user.id;
