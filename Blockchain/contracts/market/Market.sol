@@ -107,9 +107,7 @@ contract Market is IMarket, IERC20 {
             "Tokens not sent"
         );
 
-        // emit Burn(msg.sender, _numTokens, rewardForBurn);
         emit Transfer(msg.sender, address(0), _numTokens);
-
         return true;
     }
 
@@ -121,7 +119,6 @@ contract Market is IMarket, IERC20 {
         uint256 priceForTokens = priceToMint(_numTokens);
         require(priceForTokens > 0, "Tokens requested too low");
 
-        // uint256 poolBalance = collateralToken_.balanceOf(address(this));
         uint256 baseUnit = 100;
         uint256 tax = priceForTokens.sub(priceForTokens.mul(100).div(baseUnit.add(taxationRate_)));
 
@@ -144,7 +141,6 @@ contract Market is IMarket, IERC20 {
 
         require(creatorVault_.validateFunding(), "Funding validation failed");
 
-        // emit Mint(_to, _numTokens, untaxedDai.add(tax));
         emit Transfer(address(0), _to, _numTokens);
         return true;
     }
@@ -212,7 +208,7 @@ contract Market is IMarket, IERC20 {
 
         uint256 poolBalance = collateralToken_.balanceOf(address(this));
 
-        // This works out the value of 1 token then caculates what the whole amount is
+        // Performs a flat linear 100% collateralized sale
         uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
 
@@ -221,7 +217,7 @@ contract Market is IMarket, IERC20 {
 
     // [Pricing functions]
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
-    /// @return             :uint256 Required collateral corrected for decimals
+    /// @return             :uint256 Required collateral
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
         uint256 poolBalance = collateralToken_.balanceOf(address(this));
         uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance);
@@ -231,25 +227,19 @@ contract Market is IMarket, IERC20 {
     }
 
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
-    /// @return             Potential return collateral corrected for decimals
+    /// @return             Potential return collateral
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
         return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
     }
 
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
-    ///                     Including molecule & market contributions
     /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
-        // Buy tax sent to vault
-        // uint256 buyTax = _collateralTokenOffered.mul(taxationRate_).div(100);
-        // uint256 collateralPlusTax = _collateralTokenOffered.add(buyTax);
-        // Calculate token reward for collateral cost
         return inverseCurveIntegral(curveIntegral(totalSupply_).add(_collateralTokenOffered)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
-    ///                                 Including Molecule & market contributions
     /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
     function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
         return uint256(

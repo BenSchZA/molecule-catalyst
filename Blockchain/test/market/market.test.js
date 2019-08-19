@@ -117,17 +117,24 @@ describe('Market test', async () => {
             // * collateralToTokenSelling()
             // * burn()
 
+            const DECIMALS = 18;
+            const EXPECTED_PRECISION = DECIMALS - 6;
+            BigNumber.config({ DECIMAL_PLACES: EXPECTED_PRECISION });
+            BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
+            
+            /* ############################################################################################ */
+            // Get token value of requested Dai value purchase (not including tax)
+
             const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
             
             const tokenResult = await marketInstance.collateralToTokenBuying(defaultDaiPurchase);
-            console.log(`Token result = ${tokenResult.toString()}`);
-
             const priceToMint = await marketInstance.priceToMint(tokenResult);
-            console.log(`Price to mint = ${priceToMint.toString()}`);
-
             const daiBalanceBefore = await pseudoDaiInstance.balanceOf(user1.signer.address);
-            console.log(`Dai balance before = ${daiBalanceBefore.toString()}`);
+
             assert(daiBalanceBefore.gt(defaultDaiPurchase), "User doesn't have enough Dai");
+            /* ############################################################################################ */
+            // Mint previous token value (tax now added)
+            // Ensure rewardForBurn() == Dai purchase value
 
             const mintTX = await marketInstance.from(user1).mint(
                 user1.signer.address,
@@ -136,49 +143,67 @@ describe('Market test', async () => {
             const mintReceipt = await marketInstance.verboseWaitForTransaction(mintTX, "Mint tokens");
 
             const daiBalanceAfter = await pseudoDaiInstance.balanceOf(user1.signer.address);
-            console.log(`Dai balance after = ${daiBalanceAfter.toString()}`);
-
             const tokenBalanceAfter = await marketInstance.balanceOf(user1.signer.address);
             const rewardForBurn = await marketInstance.rewardForBurn(tokenBalanceAfter);
-            console.log(`Token balance after = ${tokenBalanceAfter.toString()}`);
-            console.log(`Reward for burn = ${rewardForBurn.toString()}`);
+            
+            // Check taxation
+            assert.equal(
+                BigNumber(defaultDaiPurchase.mul(115).div(100).toString())
+                    .shiftedBy(-DECIMALS).toString(),
+                BigNumber(priceToMint.toString())
+                    .shiftedBy(-DECIMALS)
+                    .decimalPlaces(EXPECTED_PRECISION).toString(), 
+                "Tax incorrect");
+            assert.equal(
+                (daiBalanceBefore.sub(daiBalanceAfter)).toString(), 
+                priceToMint.toString(), 
+                "Dai balance not accurate");
 
             // Process for reasonable precision check
-            BigNumber.config({ DECIMAL_PLACES: 18 - 3 });
-            BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
-            const rewardForBurnBN = BigNumber(rewardForBurn.toString()).div('1e18').decimalPlaces(18 - 6);
-            const defaultDaiPurchaseBN = BigNumber(defaultDaiPurchase.toString()).div('1e18');
+            const rewardForBurnBN = BigNumber(rewardForBurn.toString())
+                .shiftedBy(-DECIMALS)
+                .decimalPlaces(EXPECTED_PRECISION);
+            const defaultDaiPurchaseBN = BigNumber(defaultDaiPurchase.toString())
+                .shiftedBy(-DECIMALS);
             console.log(`Default Dai purchase BN = ${defaultDaiPurchaseBN}`);
             console.log(`Reward for burn BN = ${rewardForBurnBN}`);
 
             assert(rewardForBurnBN.isEqualTo(defaultDaiPurchaseBN), "Reward doesn't equal purchased value");
+            /* ############################################################################################ */
+            // Check Transfer() event accurate
 
             const transfers = (await mintReceipt.events.filter(
                 event => event.topics[0] == marketInstance.interface.events.Transfer.topic
             )).map(transferEvent => marketInstance.interface.parseLog(transferEvent));
             
-            const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
-            assert(purposedBurnValue.eq(rewardForBurn), "Reward for burn incorrect")
-        });
+            const mintEventValue = transfers[0].values.value.sub(transfers[1].values.value);
+            assert(mintEventValue.eq(rewardForBurn), "Mint Transfer event incorrect");
 
-        // it("Calculates Token to Dai accurately - Burn", async () =>{
-        //     let daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
-        //     const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
+            /* ############################################################################################ */
+            // Check burn() and collateralToTokenSelling()
 
-        //     const balance = await marketInstance.balanceOf(user1.signer.address);
-        //     console.log("       xxx Market - Reward for burn function failing");
-        //     const rewardForBurn = await marketInstance.rewardForBurn(balance);
-
-
-        //     const transfers = (await(txReceipt.events.filter(
-        //         event => event.topics[0] == marketInstance.interface.events.Transfer.topic
-        //     ))).map(transferEvent => marketInstance.interface.parseLog(transferEvent))
+            const tokenSellingResult = await marketInstance.collateralToTokenSelling(rewardForBurn);
             
-        //     const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
-        //     assert.ok(purposedBurnValue.eq(rewardForBurn), "Reward for burn incorrect")
+            const burnTX = await marketInstance.from(user1).burn(
+                tokenSellingResult
+            );
+            const burnReceipt = await marketInstance.verboseWaitForTransaction(burnTX, "Burn tokens");
 
-        //     // This will be the vault assert console.log(ethers.utils.formatUnits(transfers[1].values.value, 18))
-        // });
+            const tokenBalanceAfterBurn = await marketInstance.balanceOf(user1.signer.address);
+
+            assert.equal(tokenBalanceAfterBurn.toString(), 0, "Tokens not burned accurately");
+            assert.equal(tokenResult.toString(), tokenSellingResult.toString(), "Value of purchase not equal to value of sale");
+
+            /* ############################################################################################ */
+            // Check Transfer() event accurate
+
+            const burnTransferEvents = (await burnReceipt.events.filter(
+                event => event.topics[0] == marketInstance.interface.events.Transfer.topic
+            )).map(transferEvent => marketInstance.interface.parseLog(transferEvent));
+            
+            const burnEventValue = burnTransferEvents[1].values.value;//.sub(burnTransferEvents[1].values.value);
+            assert.equal(burnEventValue.toString(), tokenSellingResult.toString(), "Burn Transfer event incorrect");
+        });
     });
 
     // describe("Token exchange", async () => {
