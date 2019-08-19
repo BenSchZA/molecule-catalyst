@@ -58,7 +58,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
         </Grid>
         <Grid item>
           <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-            {!project.user.profileImage && <Face />}
+            {!project.user.profileImage && <Face fontSize='large' />}
           </Avatar>
         </Grid>
         <Grid item>
