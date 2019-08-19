@@ -106,8 +106,18 @@ describe('Market test', async () => {
     });
 
     describe("Pricing functions", async () => {
-        it("collateralToTokenBuying() accurate", async() => {
-            const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18); //5000000
+        it("Token <-> collateral conversions accurate", async() => {
+            // This tests:
+            // * collateralToTokenBuying()
+            // * priceToMint()
+            // * mint()
+            // * rewardForBurn()
+            // * Transfer() event
+            // Still need to test:
+            // * collateralToTokenSelling()
+            // * burn()
+
+            const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
             
             const tokenResult = await marketInstance.collateralToTokenBuying(defaultDaiPurchase);
             console.log(`Token result = ${tokenResult.toString()}`);
@@ -136,9 +146,10 @@ describe('Market test', async () => {
             // Process for reasonable precision check
             BigNumber.config({ DECIMAL_PLACES: 18 - 3 });
             BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
-            const rewardForBurnBN = BigNumber(rewardForBurn.toString()).div('1e18');
+            const rewardForBurnBN = BigNumber(rewardForBurn.toString()).div('1e18').decimalPlaces(18 - 6);
             const defaultDaiPurchaseBN = BigNumber(defaultDaiPurchase.toString()).div('1e18');
-            console.log(`Reward for burn BN = ${rewardForBurnBN.toPrecision(18 - 3)}`);
+            console.log(`Default Dai purchase BN = ${defaultDaiPurchaseBN}`);
+            console.log(`Reward for burn BN = ${rewardForBurnBN}`);
 
             assert(rewardForBurnBN.isEqualTo(defaultDaiPurchaseBN), "Reward doesn't equal purchased value");
 
@@ -149,27 +160,6 @@ describe('Market test', async () => {
             const purposedBurnValue = transfers[0].values.value.sub(transfers[1].values.value);
             assert(purposedBurnValue.eq(rewardForBurn), "Reward for burn incorrect")
         });
-
-        // it("priceToMint() accurate", async() => {
-
-        // });
-
-        // it("Calculates Dai to Tokens accurately - Mint", async () => {
-        //     console.log("       xxx Market - Collateral to token buying function failing");
-        //     // const priceToMintForDai = await marketInstance.poolBalance();
-        //     const priceToMintForDai = await marketInstance.collateralToTokenBuying(purchasingSequences.first.dai.daiCost);
-        //     console.log(priceToMintForDai);
-        //     assert.ok(priceToMintForDai.eq(purchasingSequences.first.dai.tokenResult), "Price to mint dai incorrect");
-        // });
-        
-        // it("Calculates Dai to Tokens accurately - Burn")
-    
-        // it("Calculates Token to Dai accurately - Mint", async () => {
-        //     console.log("       xxx Market - Price to mint function failing");
-        //     const priceToMintForToken = await marketInstance.priceToMint(purchasingSequences.first.token.tokenResult);
-        //     console.log(priceToMintForToken);
-        //     assert.ok(priceToMintForToken.eq(purchasingSequences.first.token.daiCost), "Price to mint token incorrect");
-        // });
 
         // it("Calculates Token to Dai accurately - Burn", async () =>{
         //     let daiBalance = await pseudoDaiInstance.balanceOf(user1.signer.address);
