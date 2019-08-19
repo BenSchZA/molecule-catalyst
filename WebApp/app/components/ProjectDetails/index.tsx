@@ -8,6 +8,7 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Container, Typography, Button, Paper, Divider, Grid, Avatar, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import apiUrlBuilder from 'api/apiUrlBuilder';
+import { Face } from '@material-ui/icons';
 
 const styles = ({ spacing }: Theme) =>
   createStyles({
@@ -56,7 +57,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
           <Typography variant='body2'>{project.user.affiliatedOrganisation || ''}</Typography>
         </Grid>
         <Grid item>
-          <Avatar className={classes.researcherAvatar} src={apiUrlBuilder.attachmentStream(project.user.profileImage)} />
+          <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+            {!project.user.profileImage && <Face />}
+          </Avatar>
         </Grid>
         <Grid item>
           <Typography>{project.user.biography}</Typography>
