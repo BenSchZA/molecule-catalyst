@@ -26,6 +26,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => (
+  (project) ? 
   <Container maxWidth='lg'>
     <Paper className={classes.projectSection}>
       <Typography variant='h4'>{project.title}</Typography>
@@ -74,6 +75,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
         </TableBody>
       </Table>
     </Paper>
+  </Container> :
+  <Container>
+    Loading data
   </Container>
 );
 
