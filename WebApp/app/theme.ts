@@ -37,6 +37,15 @@ const theme = (createMuiTheme as any)({
       dark: colors.moleculeBranding.secondary,
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1366,
+      xl: 1600,
+    }
+  },
   typography: {
     fontFamily: [
       '-apple-system',
