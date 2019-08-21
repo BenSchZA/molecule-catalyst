@@ -15,8 +15,8 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 export const colors = {
   moleculeBranding: {
-    primary: '#37B4A4',
-    secondary: '#12999D',
+    primary: '#003E52',
+    secondary: '#37B4A4',
   },
   white: '#FFFFFF',
   black: '#000000',
@@ -33,10 +33,8 @@ const theme = (createMuiTheme as any)({
       paper: colors.white,
     },
     primary: {
-      main: colors.moleculeBranding.primary
-    },
-    secondary: {
-      main: colors.moleculeBranding.secondary
+      main: colors.moleculeBranding.primary,
+      dark: colors.moleculeBranding.secondary,
     },
   },
   typography: {
@@ -56,7 +54,7 @@ const theme = (createMuiTheme as any)({
   overrides: {
     MuiButton: {
       root: {
-        background: colors.moleculeBranding.primary,
+        background: colors.moleculeBranding.secondary,
         color: colors.white,
         marginTop: '24px',
         marginLeft: '8px',
@@ -68,7 +66,7 @@ const theme = (createMuiTheme as any)({
         paddingTop: '8px'
       },
       contained: {
-        backgroundColor: colors.moleculeBranding.primary,
+        backgroundColor: colors.moleculeBranding.secondary,
         color: colors.white,
         marginLeft: '44%'
       }
@@ -209,7 +207,7 @@ const theme = (createMuiTheme as any)({
     MuiDivider: {
       middle: {
         marginTop: "32px",
-        backgroundColor: colors.moleculeBranding.primary,
+        backgroundColor: colors.moleculeBranding.secondary,
         alignSelf: 'center',
         verticalAlign: 'middle',
       }
