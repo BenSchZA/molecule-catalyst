@@ -1,18 +1,19 @@
-import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
-import { CreatorApplicationDto } from "./creatorApplication.dto";
-import { User, UserType } from 'src/user/user.schema';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Schemas } from 'src/app.constants';
 import { Model } from 'mongoose';
+import { SendGridService } from '@anchan828/nest-sendgrid';
+import { Schemas } from 'src/app.constants';
+import { CreatorApplicationDto } from "./creatorApplication.dto";
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/user.schema';
 import { CreatorApplicationDocument, CreatorApplicationStatus, CreatorApplication } from './creator.schema';
 import { AttachmentService } from 'src/attachment/attachment.service';
-import { SendGridService } from '@anchan828/nest-sendgrid';
-import { JwtService } from '@nestjs/jwt';
 import { TokenDocument } from 'src/auth/token.schema';
 import { ConfigService } from 'src/config/config.service';
 import { UserService } from 'src/user/user.service';
 import { ObjectId } from 'mongodb';
 import { ServiceBase } from 'src/common/serviceBase';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class CreatorService extends ServiceBase {
@@ -31,11 +32,14 @@ export class CreatorService extends ServiceBase {
     this.logger.debug('saving application');
     const creator = await new this.creatorRepository({...applicationData, user: user.id});
     if (file) {
-      // TODO - Crop and resize image here for optimal display
+      const croppedFile = await sharp(file.buffer)
+        .resize(300, 300, {
+          position: sharp.strategy.attention,
+        }).toBuffer();
       const attachment = await this.attachmentService.create({
         filename: `${creator.id}-${file.originalname}`,
         contentType: file.mimetype
-      }, file);
+      }, {buffer: croppedFile});
       creator.profileImage = attachment;
     }
 
@@ -58,7 +62,7 @@ export class CreatorService extends ServiceBase {
       creator.status = CreatorApplicationStatus.awaitingEmailVerification;
       creator.save()
     } catch (error) {
-      this.logger.error('Error sending verification email to user', error);
+      this.logger.error('Error sending verification email to user', error.toString());
     }
     
     profiler.done('Creator Application successfully saved')
