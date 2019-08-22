@@ -91,16 +91,16 @@ const theme = (createMuiTheme as any)({
         paddingBottom: '32px',
         textAlign: 'center'
       },
+      h3: {
+        textAlign: 'center',
+        paddingTop: '32px',
+        paddingBottom: '32px'
+      },
       h4: {
         paddingTop: '8px',
         paddingBottom: '16px',
         paddingLeft: '8px',
         paddingRight: '8px'
-      },
-      h3: {
-        textAlign: 'center',
-        paddingTop: '32px',
-        paddingBottom: '32px'
       },
       h5: {
         paddingTop: '32px',
