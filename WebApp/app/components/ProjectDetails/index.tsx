@@ -18,8 +18,11 @@ const styles = ({ spacing }: Theme) =>
       margin: spacing(2),
     },
     researcherAvatar: {
-      height: 120,
-      width: 120,
+      position: 'relative',
+      height: 79,
+      width: 79,
+      left: '3rem',
+      transform: 'translate(0, -50%)'
     },
     bannerWrapper: {
       position: 'relative',
@@ -46,8 +49,21 @@ const styles = ({ spacing }: Theme) =>
       alignItems: 'center',
       position: 'absolute',
       left: '50%',
-      top: '50%',
+      top: '35%',
       transform: 'translate(-50%, -50%)',
+      zIndex: 2,
+      color: colors.white
+    },
+    bannerFooter: {
+      width: '100%',
+      background: "#003E52",
+      opacity: 0.83,
+      backdropFilter: 'blur(31px)',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'absolute',
+      left: '50%',
+      transform: 'translate(-50%, -100%)',
       zIndex: 2,
       color: colors.white
     }
@@ -63,17 +79,21 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
       <div className={classes.bannerWrapper}>
         <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} className={classes.bannerImage} />
         <div className={classes.bannerContent}>
-          <Typography variant='h4'>{project.title}</Typography>
+          <Typography variant='h2'>{project.title}</Typography>
           <div>
             <Button onClick={() => console.log('buy')}>Support Project</Button>
             <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
           </div>
         </div>
+        <div className={classes.bannerFooter}>
+          <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+            {!project.user.profileImage && <Face fontSize='large' />}
+          </Avatar>
+          <Typography variant='h6'>Researcher: {project.user.fullName}</Typography>
+          <Typography variant='h6'>Organization: {project.user.affiliatedOrganisation}</Typography>
+        </div>
       </div>
       <Paper className={classes.projectSection}>
-
-        <Typography variant='h6'>Researcher: {project.user.fullName}</Typography>
-        <Typography variant='h6'>Organization: {project.user.affiliatedOrganisation}</Typography>
         <Typography variant='h6'>Status: {ProjectSubmissionStatus[project.status]}</Typography>
 
         <Divider />
@@ -96,9 +116,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
             <Typography variant='body2'>{project.user.affiliatedOrganisation || ''}</Typography>
           </Grid>
           <Grid item>
-            <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-              {!project.user.profileImage && <Face fontSize='large' />}
-            </Avatar>
+
           </Grid>
           <Grid item>
             <Typography>{project.user.biography}</Typography>

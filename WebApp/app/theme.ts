@@ -89,7 +89,8 @@ const theme = (createMuiTheme as any)({
       h2: {
         paddingTop: '64px',
         paddingBottom: '32px',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold',
       },
       h3: {
         textAlign: 'center',
