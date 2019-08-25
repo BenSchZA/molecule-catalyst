@@ -19,9 +19,9 @@ const styles = ({ spacing }: Theme) =>
     },
     researcherAvatar: {
       position: 'relative',
-      height: 79,
-      width: 79,
-      left: '3rem',
+      height: spacing(5),
+      width: spacing(5),
+      left: spacing(5),
       transform: 'translate(0, -50%)'
     },
     bannerWrapper: {
@@ -57,15 +57,19 @@ const styles = ({ spacing }: Theme) =>
     bannerFooter: {
       width: '100%',
       background: "#003E52",
-      opacity: 0.83,
+      opacity: 0.63,
       backdropFilter: 'blur(31px)',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       position: 'absolute',
       left: '50%',
       transform: 'translate(-50%, -100%)',
       zIndex: 2,
-      color: colors.white
+      color: colors.white,
+    },
+    footerContent: {
+      display: 'flex',
+      flexDirection: 'row',
     }
   });
 
@@ -85,13 +89,19 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
             <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
           </div>
         </div>
-        <div className={classes.bannerFooter}>
-          <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-            {!project.user.profileImage && <Face fontSize='large' />}
-          </Avatar>
-          <Typography variant='h6'>Researcher: {project.user.fullName}</Typography>
-          <Typography variant='h6'>Organization: {project.user.affiliatedOrganisation}</Typography>
-        </div>
+        <Grid container className={classes.bannerFooter} justify='space-between'>
+          <Grid item xs={1}>
+            <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+              {!project.user.profileImage && <Face fontSize='large' />}
+            </Avatar>
+          </Grid>
+          <Grid item xs={10}>
+            <Typography variant='h6'>{project.user.fullName}</Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Typography variant='h6'>{project.user.affiliatedOrganisation}</Typography>
+          </Grid>
+        </Grid>
       </div>
       <Paper className={classes.projectSection}>
         <Typography variant='h6'>Status: {ProjectSubmissionStatus[project.status]}</Typography>
