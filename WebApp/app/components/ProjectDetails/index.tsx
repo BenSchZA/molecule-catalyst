@@ -67,10 +67,6 @@ const styles = ({ spacing }: Theme) =>
       zIndex: 2,
       color: colors.white,
     },
-    footerContent: {
-      display: 'flex',
-      flexDirection: 'row',
-    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -90,17 +86,17 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
           </div>
         </div>
         <Grid container className={classes.bannerFooter} justify='space-between'>
-          <Grid item xs={1}>
-            <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-              {!project.user.profileImage && <Face fontSize='large' />}
-            </Avatar>
-          </Grid>
-          <Grid item xs={10}>
-            <Typography variant='h6'>{project.user.fullName}</Typography>
-          </Grid>
-          <Grid item xs={1}>
-            <Typography variant='h6'>{project.user.affiliatedOrganisation}</Typography>
-          </Grid>
+            <Grid item xs={1}>
+              <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+                {!project.user.profileImage && <Face fontSize='large' />}
+              </Avatar>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant='h6'>{project.user.fullName}</Typography>
+            </Grid>
+            <Grid item xs={5}>
+              <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation}</Typography>
+            </Grid>
         </Grid>
       </div>
       <Paper className={classes.projectSection}>

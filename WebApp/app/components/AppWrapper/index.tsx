@@ -38,7 +38,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navAccount: {
     display: 'flex',
-    height: '',
+    height: spacing(5),
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
