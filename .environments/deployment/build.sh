@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env nix-shell
+#!nix-shell ../shell.nix -i bash
 set -o errexit -o nounset -o pipefail
 
 ensure_repo_exists() {

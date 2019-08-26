@@ -2,6 +2,8 @@ include:
   - .gitlab-ci-test.yml
   - .gitlab-ci-deploy.yml 
 
+image: yodascholtz/nix-build-env:latest
+
 # Cache modules in between jobs for current branch
 cache:
   #key: ${CI_COMMIT_REF_SLUG}
@@ -15,13 +17,16 @@ cache:
     - apt-cache/
 
 variables:
+  REGION: us-west-2
   GIT_SUBMODULE_STRATEGY: recursive
   # DOCKER_HOST: tcp://localhost:2375/
   NODE_OPTIONS: --max-old-space-size=4096
   TOOL_NODE_FLAGS: --max-old-space-size=4096
   REGISTRY: 540682145059.dkr.ecr.us-west-2.amazonaws.com
 
-image: $REGISTRY/linumlabs/molecule-alpha/build/node-env:latest
+default:
+  before_script:
+    - cachix use linum-build
 
 stages:
   - build

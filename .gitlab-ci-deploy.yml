@@ -1,7 +1,7 @@
 # If build passes tests, push to release CR
 docker-build:
   stage: docker-build
-  image: $REGISTRY/linumlabs/molecule-alpha/build/docker-env:latest
+  image: yodascholtz/nix-build-env:latest
   services:
     - docker:dind
   variables:
@@ -18,7 +18,7 @@ docker-build:
 deploy:
   stage: deploy
   environment: production
-  image: $REGISTRY/linumlabs/molecule-alpha/build/nix-build-env:latest
+  image: yodascholtz/nix-build-env:latest
   variables:
     CLUSTER: AmazonEKS_LinumLabs_Spot
     PROJECT_NAME: $CI_PROJECT_NAME
