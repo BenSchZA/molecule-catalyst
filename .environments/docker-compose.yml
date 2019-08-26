@@ -1,0 +1,7 @@
+version: '3.5'
+services:
+  build-env:
+    image: $REGISTRY/linumlabs/molecule-alpha/build/nix-build-env:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
