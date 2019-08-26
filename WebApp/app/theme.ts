@@ -28,14 +28,13 @@ export const colors = {
 
 const theme = (createMuiTheme as any)({
   palette: {
-    background: {
-      default: colors.grey,
-      paper: colors.white,
-    },
+
     primary: {
       main: colors.moleculeBranding.primary,
-      dark: colors.moleculeBranding.secondary,
     },
+    secondary: {
+      main: colors.moleculeBranding.secondary,
+    }
   },
   breakpoints: {
     values: {

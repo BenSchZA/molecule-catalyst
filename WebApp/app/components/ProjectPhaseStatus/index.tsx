@@ -7,13 +7,16 @@
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Grid, Typography, Chip, LinearProgress } from '@material-ui/core';
 
-const styles = (theme: Theme) =>
+const styles = ({palette}: Theme) =>
   createStyles({
-    // JSS in CSS goes here
+    phaseProgressBar: {
+      color: palette.secondary.main,
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
   phase: {
+    index: number,
     title: string,
     fundingGoal: number,
     fundedAmount: number,
@@ -24,12 +27,12 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}: OwnProps) => 
 <Grid item xs={3}>
-  <Typography>PHASE 01</Typography>
+  <Typography>PHASE {phase.index}</Typography>
   <Typography>{phase.title}</Typography>
   <Typography>FUNDING GOAL</Typography>
   <Typography>{phase.title}</Typography>
   <Typography>FUNDING GOAL</Typography>
-  <LinearProgress variant="determinate" value={((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} />
+  <LinearProgress variant="determinate" value={((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} color="secondary"/>
   <Typography>{`${((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} %`}</Typography>
   <Chip label={phase.status}/>
 </Grid>;

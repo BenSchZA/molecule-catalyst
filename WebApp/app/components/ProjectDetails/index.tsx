@@ -163,14 +163,16 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
           </Grid>
         </Grid>
         <Grid container direction='row' alignItems='center' justify='center' spacing={4}>
-          {project.researchPhases && project.researchPhases.map((p, i) => 
+          {project.researchPhases && project.researchPhases.map((p, i) =>
             <ProjectPhaseStatus key={i} phase={{
-                daysRemaining: 10,
-                fundedAmount: 5000,
-                fundingGoal: p.fundingGoal,
-                title: p.title,
-                status: 'Released' }} />
-            )}
+              index: i+1,
+              daysRemaining: 10,
+              fundedAmount: 5000,
+              fundingGoal: p.fundingGoal,
+              title: p.title,
+              status: 'Released'
+            }} />
+          )}
         </Grid>
       </Paper>
       <Paper className={classes.projectSection} square>
@@ -181,12 +183,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
         <Typography>{project.approach}</Typography>
       </Paper>
       <Paper className={classes.projectSection} square>
-        <Typography variant='h4'>Team</Typography>
-        <Grid container direction='row'>
-          <Grid item>
-            <Typography>{project.user.biography}</Typography>
-          </Grid>
-        </Grid>
         <Typography variant='subtitle2'>Contributors</Typography>
         <Table>
           <TableBody>
