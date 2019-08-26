@@ -2,7 +2,7 @@ include:
   - .gitlab-ci-test.yml
   - .gitlab-ci-deploy.yml 
 
-image: registry.gitlab.com/linumlabs/molecule-alpha/build/node-env:latest
+image: yodascholtz/nix-build-env:latest
 
 # Cache modules in between jobs for current branch
 cache:
@@ -17,17 +17,16 @@ cache:
     - apt-cache/
 
 variables:
-  MOLECULE_FRONTEND_CONTAINER_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/testing/molecule-frontend:$CI_BUILD_REF_NAME
-  MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/release/molecule-frontend:$CI_BUILD_REF_NAME
-  MOLECULE_BACKEND_CONTAINER_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/testing/molecule-backend:$CI_BUILD_REF_NAME
-  MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE: registry.gitlab.com/linumlabs/molecule-alpha/release/molecule-backend:$CI_BUILD_REF_NAME
-  API_HOST: alpha-api-$CI_BUILD_REF_NAME.mol.ai/api
-  APM_SERVICE_NAME: molecule-frontend-alpha-$CI_BUILD_REF_NAME
-  APM_SERVER_ENDPOINT: https://apm.mol.ai
+  REGION: us-west-2
   GIT_SUBMODULE_STRATEGY: recursive
   # DOCKER_HOST: tcp://localhost:2375/
   NODE_OPTIONS: --max-old-space-size=4096
   TOOL_NODE_FLAGS: --max-old-space-size=4096
+  REGISTRY: 540682145059.dkr.ecr.us-west-2.amazonaws.com
+
+default:
+  before_script:
+    - cachix use linum-build
 
 stages:
   - build

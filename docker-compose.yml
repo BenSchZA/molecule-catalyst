@@ -1,12 +1,12 @@
 version: '3.5'
 services:
   core:
-    image: registry.gitlab.com/linumlabs/molecule-alpha/build/core:latest
+    image: $REGISTRY/linumlabs/molecule-alpha/build/core:latest
     build:
       context: .
       dockerfile: ./Dockerfile.core
   builder:
-    image: registry.gitlab.com/linumlabs/molecule-alpha/build/builder:latest
+    image: $REGISTRY/linumlabs/molecule-alpha/build/builder:latest
     build:
       context: .
       dockerfile: ./Dockerfile
