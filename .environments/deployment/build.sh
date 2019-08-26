@@ -1,17 +1,17 @@
 #!/usr/bin/env nix-shell
-#!nix-shell ../shell.nix -i bash
+#!nix-shell .environments/derivation_shell.nix/shell.drv -i bash
 set -o errexit -o nounset -o pipefail
 
 ensure_repo_exists() {
   for REPO_NAME in $1
   do
-    aws ecr describe-repositories --repository-names $REPO_NAME || aws ecr create-repository --repository-name $REPO_NAME
+    aws ecr describe-repositories --repository-names $REPO_NAME --region $REGION || aws ecr create-repository --repository-name $REPO_NAME --region $REGION
   done
 }
 
 build_image() {
-  $(aws ecr get-login --no-include-email)
-  ensure_repo_exists '$FRONTEND_REPO_NAME $BACKEND_REPO_NAME'
+  $(aws ecr get-login --no-include-email --region $REGION)
+  ensure_repo_exists "$FRONTEND_REPO_NAME $BACKEND_REPO_NAME"
   #docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
   docker-compose -v
   docker-compose build

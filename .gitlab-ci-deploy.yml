@@ -7,9 +7,6 @@ docker-build:
   variables:
     PROJECT_NAME: $CI_PROJECT_NAME
     BRANCH_NAME: $CI_BUILD_REF_NAME
-  before_script:
-    - echo "Starting Docker build stage..."
-    - echo "Override global 'before_script'"
   script:
     - .environments/deployment/build.sh
   only:
@@ -23,11 +20,8 @@ deploy:
     CLUSTER: AmazonEKS_LinumLabs_Spot
     PROJECT_NAME: $CI_PROJECT_NAME
     BRANCH_NAME: $CI_BUILD_REF_NAME
-  before_script:
-    - echo "Starting deploy stage..."
-    - echo "Override global 'before_script'"
   script:
-    - nix-shell .environments/shell.nix
+    - nix-shell .environments/derivation_shell.nix/shell.drv
     - .environments/scripts/configure-k8s.sh
     - .environments/deployment/deploy.sh
   only:

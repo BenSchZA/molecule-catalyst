@@ -15,6 +15,7 @@ cache:
     - ApiServer/node_modules/
     - WebApp/node_modules/
     - apt-cache/
+    - .environments/derivation_shell.nix/
 
 variables:
   REGION: us-west-2
@@ -27,6 +28,7 @@ variables:
 default:
   before_script:
     - cachix use linum-build
+    - .environments/ns.sh .environments/shell.nix
 
 stages:
   - build

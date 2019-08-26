@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell ../shell.nix -i bash
+#!nix-shell .environments/derivation_shell.nix/shell.drv -i bash
 set -o errexit -o nounset -o pipefail
 
 # TODO:
@@ -125,6 +125,7 @@ deploy() {
 
   if [ $TAG == "nightly" ]
   then
+    echo "Configuring env variables"
   # elif [ $TAG == "staging" ]
   # then
   else

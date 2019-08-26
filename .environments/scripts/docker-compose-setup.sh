@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell ../shell.nix -i bash
+#!nix-shell .environments/derivation_shell.nix/shell.drv -i bash
 set -o errexit -o nounset -o pipefail
 
 docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com \
