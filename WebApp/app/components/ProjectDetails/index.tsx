@@ -10,12 +10,12 @@ import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
 import { colors } from 'theme';
+import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 
-const styles = ({ spacing }: Theme) =>
+const styles = ({ spacing, palette }: Theme) =>
   createStyles({
     projectSection: {
-      padding: spacing(2),
-      margin: spacing(2),
+      padding: spacing(4),
     },
     researcherAvatar: {
       position: 'relative',
@@ -64,14 +64,23 @@ const styles = ({ spacing }: Theme) =>
       position: 'absolute',
       left: '50%',
       transform: 'translate(-50%, -100%)',
-      zIndex: 2,
+      zIndex: 3,
       color: colors.white,
+    },
+    fundingStatusSection: {
+      width: '100%',
+      background: '#F7F7F7',
+    },
+    fundingStatusItem: {
+      borderRight: '1px',
+      borderRightColor: palette.secondary.main,
     },
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
 }
+
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => (
   (project) ?
@@ -86,44 +95,94 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
           </div>
         </div>
         <Grid container className={classes.bannerFooter} justify='space-between'>
-            <Grid item xs={1}>
-              <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-                {!project.user.profileImage && <Face fontSize='large' />}
-              </Avatar>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant='h6'>{project.user.fullName}</Typography>
-            </Grid>
-            <Grid item xs={5}>
-              <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation}</Typography>
-            </Grid>
+          <Grid item xs={1}>
+            <Avatar className={classes.researcherAvatar} src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+              {!project.user.profileImage && <Face fontSize='large' />}
+            </Avatar>
+          </Grid>
+          <Grid item xs={5}>
+            <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase()}</Typography>
+          </Grid>
+          <Grid item xs={5}>
+            <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation && project.user.affiliatedOrganisation.toUpperCase()}</Typography>
+          </Grid>
+          <Grid item xs={1}>
+          </Grid>
         </Grid>
       </div>
-      <Paper className={classes.projectSection}>
-        <Typography variant='h6'>Status: {ProjectSubmissionStatus[project.status]}</Typography>
-
+      <Paper className={classes.projectSection} square>
+        <Grid container>
+          <Grid item xs={6}>
+            <Typography variant='h6'>START DATE: {('Date').toUpperCase()}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant='h6' align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
+          </Grid>
+        </Grid>
         <Divider />
-        <Typography variant='h6'>Abstract: {project.abstract}</Typography>
+        <Typography variant='h6'>Abstract</Typography>
+        <Typography paragraph>{project.abstract}</Typography>
+        <Typography variant='h6'>Funding Status</Typography>
+        <Grid container className={classes.fundingStatusSection} direction='row' justify='space-evenly' alignItems='stretch'>
+          <Grid item>
+            <Typography>
+              95.0%
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography>
+              Total Funding Goal
+            </Typography>
+            <Typography>
+              55000 USD
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography>
+              Total Pledged
+            </Typography>
+            <Typography>
+              50000 USD
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography>
+              Total Released
+            </Typography>
+            <Typography>
+              45000 USD
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography>
+              Total Duration Left
+            </Typography>
+            <Typography>
+              35 Days
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container direction='row' alignItems='center' justify='center' spacing={4}>
+          {project.researchPhases && project.researchPhases.map((p, i) => 
+            <ProjectPhaseStatus key={i} phase={{
+                daysRemaining: 10,
+                fundedAmount: 5000,
+                fundingGoal: p.fundingGoal,
+                title: p.title,
+                status: 'Released' }} />
+            )}
+        </Grid>
       </Paper>
-      <Paper className={classes.projectSection}>
+      <Paper className={classes.projectSection} square>
         <Typography variant='h4'>Research Background</Typography>
         <Typography variant='subtitle2'>What is the significance of your research</Typography>
         <Typography>{project.context}</Typography>
         <Typography variant='subtitle2'>What is the experimental approach for this reseach initiative</Typography>
         <Typography>{project.approach}</Typography>
       </Paper>
-      <Paper className={classes.projectSection}>
+      <Paper className={classes.projectSection} square>
         <Typography variant='h4'>Team</Typography>
-        <Typography variant='subtitle2'>Reseacher</Typography>
         <Grid container direction='row'>
-          <Grid item>
-            <Typography variant='body1'>{project.user.fullName || ''}</Typography>
-            <Typography variant='body2'>{project.user.professionalTitle || ''}</Typography>
-            <Typography variant='body2'>{project.user.affiliatedOrganisation || ''}</Typography>
-          </Grid>
-          <Grid item>
-
-          </Grid>
           <Grid item>
             <Typography>{project.user.biography}</Typography>
           </Grid>

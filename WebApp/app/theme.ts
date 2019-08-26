@@ -215,9 +215,11 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider: {
+      root: {
+        backgroundColor: colors.moleculeBranding.secondary,
+      },
       middle: {
         marginTop: "32px",
-        backgroundColor: colors.moleculeBranding.secondary,
         alignSelf: 'center',
         verticalAlign: 'middle',
       }
