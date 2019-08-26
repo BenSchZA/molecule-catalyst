@@ -1,4 +1,6 @@
-#!/bin/bash -ex
+#!/usr/bin/env nix-shell
+#!nix-shell ../shell.nix -i bash
+set -o errexit -o nounset -o pipefail
 
 git config --global push.default simple
 git config --global user.email "${GITLAB_USER_EMAIL}"
