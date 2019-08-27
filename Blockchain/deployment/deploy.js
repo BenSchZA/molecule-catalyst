@@ -41,8 +41,7 @@ const deploy = async (network, secret) => {
     MoleculeVaultABI,
     false,
     pseudoDaiInstance.contract.address,
-    15,
-    deployer.signer.address
+    15
   );
 
   const curveFunctionsInstance = await deployer.deploy(CurveFunctionsABI);
@@ -62,6 +61,12 @@ const deploy = async (network, secret) => {
     marketRegistryInstance.contract.address,
     curveRegistryInstance.contract.address
   );
+
+  const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
+    marketFactoryInstance.contract.address,
+    "Debug logs/version"
+  );
+  await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
 
   const CONTRACT_ADDRESSES = `
   PDAI_CONTRACT_ADDRESS=${pseudoDaiInstance.contract.address}
