@@ -22,6 +22,8 @@ export class AttachmentController {
 
   @Get(':id/stream')
   public async getFileStream(@Res() res: Response, @Param('id') attachmentId: string): Promise<Stream> {
+    if (!attachmentId) return undefined;
+     
     const contentType = await this.attachmentService.getFileContentType(attachmentId);
     res.set('Content-Type', contentType);
     const readStream = this.attachmentService.getFileStream(attachmentId);

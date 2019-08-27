@@ -38,7 +38,7 @@ export const UserSchema = new Schema({
   blacklisted: { type: Boolean, default: false },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
-  email: { type: String, required: false, unique: true },
+  email: { type: String, required: false },
   profileImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: false },
   biography: { type: String, required: false },
   professionalTitle: { type: String, required: false },

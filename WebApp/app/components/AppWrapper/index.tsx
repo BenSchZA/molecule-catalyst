@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { List, ListItem, Button, Menu, MenuItem, Avatar } from '@material-ui/core';
+import { List, ListItem, Button, Menu, MenuItem, Avatar, Container } from '@material-ui/core';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,6 +10,7 @@ import Blockies from 'react-blockies';
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
 import { UserType } from 'containers/App/types';
+import ErrorBoundary from 'containers/ErrorBoundary';
 
 
 // import { appRoute } from 'containers/App/routes';
@@ -37,7 +38,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navAccount: {
     display: 'flex',
-    height: '',
+    height: spacing(5),
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
@@ -99,69 +100,73 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   return (
     <Fragment>
       <AppBar position="fixed" className={classes.appBar} >
-        <Toolbar disableGutters={true} className={classes.toolbar}>
-          <Link className={classes.appBarLogo} to="/discover">
-            <ReactSVG src="molecule-logo.svg" />
-          </Link>
-          <div className={classes.navAccount}>
-            <List className={classes.navList}>
-              {navRoutes.map(r => (
-                <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
-              ))}
-              {(userRole === UserType.Admin) &&
-                <Fragment>
-                  <ListItem button onClick={(e) => setAdminMenuAnchorEl(e.currentTarget)}>Admin</ListItem>
-                  <Menu
-                    anchorEl={adminMenuAnchorEl as Element}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    open={Boolean(adminMenuAnchorEl)}
-                    onClose={() => setAdminMenuAnchorEl(null)}>
-                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/users')}}>Users</MenuItem>
-                    <MenuItem button onClick={() => {setAdminMenuAnchorEl(null); forwardTo('/admin/projects')}}>Projects</MenuItem>
-                  </Menu>
-                </Fragment>}
-            </List>
-            {!isLoggedIn ? (
-              <div className={classes.connectButton}>
-                <Button onClick={() => onConnect()} disabled={!walletUnlocked}>CONNECT</Button>
-              </div>
-            ) : (
-                <Fragment>
-                  <Avatar onClick={(e) => setAnchorEl(e.currentTarget)} className={classes.avatar}>
-                    <Blockies seed={ethAddress || '0x'} size={10} />
-                  </Avatar>
-                  <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl as Element}
-                    getContentAnchorEl={null}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={() => setAnchorEl(null)}>
-                    <MenuItem onClick={() => { setAnchorEl(null); logOut() }}>Log Out</MenuItem>
-                  </Menu>
-                </Fragment>
-              )}
-          </div>
-        </Toolbar>
+        <Container maxWidth='lg'>
+          <Toolbar disableGutters={true} className={classes.toolbar}>
+            <Link className={classes.appBarLogo} to="/discover">
+              <ReactSVG src="molecule-catalyst-logo.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 45px')} />
+            </Link>
+            <div className={classes.navAccount}>
+              <List className={classes.navList}>
+                {navRoutes.map(r => (
+                  <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
+                ))}
+                {(userRole === UserType.Admin) &&
+                  <Fragment>
+                    <ListItem button onClick={(e) => setAdminMenuAnchorEl(e.currentTarget)}>Admin</ListItem>
+                    <Menu
+                      anchorEl={adminMenuAnchorEl as Element}
+                      getContentAnchorEl={null}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      open={Boolean(adminMenuAnchorEl)}
+                      onClose={() => setAdminMenuAnchorEl(null)}>
+                      <MenuItem button onClick={() => { setAdminMenuAnchorEl(null); forwardTo('/admin/users') }}>Users</MenuItem>
+                      <MenuItem button onClick={() => { setAdminMenuAnchorEl(null); forwardTo('/admin/projects') }}>Projects</MenuItem>
+                    </Menu>
+                  </Fragment>}
+              </List>
+              {!isLoggedIn ? (
+                <div className={classes.connectButton}>
+                  <Button onClick={() => onConnect()} disabled={!walletUnlocked}>CONNECT</Button>
+                </div>
+              ) : (
+                  <Fragment>
+                    <Avatar onClick={(e) => setAnchorEl(e.currentTarget)} className={classes.avatar}>
+                      <Blockies seed={ethAddress || '0x'} size={10} />
+                    </Avatar>
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorEl as Element}
+                      getContentAnchorEl={null}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      open={Boolean(anchorEl)}
+                      onClose={() => setAnchorEl(null)}>
+                      <MenuItem onClick={() => { setAnchorEl(null); logOut() }}>Log Out</MenuItem>
+                    </Menu>
+                  </Fragment>
+                )}
+            </div>
+          </Toolbar>
+        </Container>
       </AppBar>
-      <main className={classes.content}>
-        {children}
-      </main>
+      <ErrorBoundary>
+        <main className={classes.content}>
+          {children}
+        </main>
+      </ErrorBoundary>
     </Fragment>
   );
 }

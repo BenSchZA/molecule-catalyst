@@ -145,7 +145,7 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
             </TableCell>
           </TableRow>
           {project.researchPhases && project.researchPhases.map((rp, i) =>
-            <Fragment>
+            <Fragment key={i}>
               <TableRow className={classes.altRow}>
                 <TableCell className={classes.altRowCell}>
                   {`Phase ${i + 1}`}

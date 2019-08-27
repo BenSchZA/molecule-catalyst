@@ -23,31 +23,6 @@ export class LoggerService extends Logger {
           format.json(),
         ),
       }),
-      // new transports.Console({
-      //   format: format.combine(
-      //     format.colorize(),
-      //     format.printf((message: any) => {
-      //       const output = isObject(message.message)
-      //         ? `${'Object:'}\n${JSON.stringify(message.message, null, 2)}\n`
-      //         : `${message.message}${(message.durationMs ? ` Duration=${message.durationMs}ms` : '')}`;
-        
-      //       const localeStringOptions = {
-      //         year: 'numeric',
-      //         hour: 'numeric',
-      //         minute: 'numeric',
-      //         day: '2-digit',
-      //         month: '2-digit',
-      //       };
-      //       const timestamp = new Date(Date.now()).toLocaleString(
-      //         undefined,
-      //         localeStringOptions,
-      //       );
-            
-      //       let result = `[Nest] ${process.pid}   - ${timestamp}   [${message.context}] ${output}`;
-      //       return result;
-      //     })
-      //   )
-      // })
     ],
   })
 

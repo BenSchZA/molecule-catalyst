@@ -15,8 +15,8 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 export const colors = {
   moleculeBranding: {
-    primary: '#37B4A4',
-    secondary: '#12999D',
+    primary: '#003E52',
+    secondary: '#37B4A4',
   },
   white: '#FFFFFF',
   black: '#000000',
@@ -28,16 +28,22 @@ export const colors = {
 
 const theme = (createMuiTheme as any)({
   palette: {
-    background: {
-      default: colors.grey,
-      paper: colors.white,
-    },
+
     primary: {
-      main: colors.moleculeBranding.primary
+      main: colors.moleculeBranding.primary,
     },
     secondary: {
-      main: colors.moleculeBranding.secondary
-    },
+      main: colors.moleculeBranding.secondary,
+    }
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1366,
+      xl: 1600,
+    }
   },
   typography: {
     fontFamily: [
@@ -56,7 +62,7 @@ const theme = (createMuiTheme as any)({
   overrides: {
     MuiButton: {
       root: {
-        background: colors.moleculeBranding.primary,
+        background: colors.moleculeBranding.secondary,
         color: colors.white,
         marginTop: '24px',
         marginLeft: '8px',
@@ -68,7 +74,7 @@ const theme = (createMuiTheme as any)({
         paddingTop: '8px'
       },
       contained: {
-        backgroundColor: colors.moleculeBranding.primary,
+        backgroundColor: colors.moleculeBranding.secondary,
         color: colors.white,
         marginLeft: '44%'
       }
@@ -82,18 +88,19 @@ const theme = (createMuiTheme as any)({
       h2: {
         paddingTop: '64px',
         paddingBottom: '32px',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold',
+      },
+      h3: {
+        textAlign: 'center',
+        paddingTop: '32px',
+        paddingBottom: '32px'
       },
       h4: {
         paddingTop: '8px',
         paddingBottom: '16px',
         paddingLeft: '8px',
         paddingRight: '8px'
-      },
-      h3: {
-        textAlign: 'center',
-        paddingTop: '32px',
-        paddingBottom: '32px'
       },
       h5: {
         paddingTop: '32px',
@@ -207,9 +214,11 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider: {
+      root: {
+        backgroundColor: colors.moleculeBranding.secondary,
+      },
       middle: {
         marginTop: "32px",
-        backgroundColor: colors.moleculeBranding.primary,
         alignSelf: 'center',
         verticalAlign: 'middle',
       }

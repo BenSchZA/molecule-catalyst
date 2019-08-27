@@ -39,5 +39,6 @@ export interface ApplicationRootState {
   readonly createProjectContainer: never;
   readonly adminUserViewContainer: never;
   readonly adminProjectReviewContainer: never;
-  readonly myProjectsContainer: never
+  readonly myProjectsContainer: never;
+  readonly projectDetailsContainer: never;
 }

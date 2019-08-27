@@ -1,16 +1,15 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from './config/config.service';
-import { Logger } from 'winston';
-import { Modules } from './app.constants';
-import { LoggerService } from './logger.service';
+import { LoggerService } from './common/logger.service';
+import { ServiceBase } from './common/serviceBase';
 
 @Injectable()
-export class AppService {
-  private readonly logger: LoggerService = new LoggerService(AppService.name);
-  constructor(private readonly config: ConfigService) {}
+export class AppService extends ServiceBase {
+  constructor(private readonly config: ConfigService) {
+    super(AppService.name);
+  }
 
   root(): any {
-    this.logger.info('test info message');
     return {
       name: this.config.get('app').name,
       version: this.config.get('app').version,

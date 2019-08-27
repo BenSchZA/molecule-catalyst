@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import { ConfigService } from './config/config.service';
-import { LoggerService } from './logger.service';
+import { LoggerService } from './common/logger.service';
 
 
 async function bootstrap() {
