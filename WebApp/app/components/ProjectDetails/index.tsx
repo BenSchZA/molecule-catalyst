@@ -75,6 +75,11 @@ const styles = ({ spacing, palette }: Theme) =>
       borderRight: '1px',
       borderRightColor: palette.secondary.main,
     },
+    projectProgress: {
+      paddingTop: spacing(1),
+      paddingBottom: spacing(1),
+      color: palette.secondary.main,
+    }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -125,7 +130,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
         <Typography variant='h6'>Funding Status</Typography>
         <Grid container className={classes.fundingStatusSection} direction='row' justify='space-evenly' alignItems='stretch'>
           <Grid item>
-            <Typography>
+            <Typography variant='h2' className={classes.projectProgress}>
               95.0%
             </Typography>
           </Grid>

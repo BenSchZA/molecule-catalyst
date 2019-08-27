@@ -30,8 +30,8 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}:
   <Typography>PHASE {phase.index}</Typography>
   <Typography>{phase.title}</Typography>
   <Typography>FUNDING GOAL</Typography>
-  <Typography>{phase.title}</Typography>
-  <Typography>FUNDING GOAL</Typography>
+  <Typography>{phase.fundingGoal}</Typography>
+  <Typography>{phase.daysRemaining === 0 ? `PROGRESS` : `${phase.daysRemaining} days remaining`}</Typography>
   <LinearProgress variant="determinate" value={((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} color="secondary"/>
   <Typography>{`${((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} %`}</Typography>
   <Chip label={phase.status}/>
