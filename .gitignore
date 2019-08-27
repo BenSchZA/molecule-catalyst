@@ -167,3 +167,4 @@ $RECYCLE.BIN/
 
 *.nix
 build/
+derivation_*
