@@ -164,7 +164,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
         </Grid>
         <Grid container direction='row' alignItems='center' justify='center' spacing={4}>
           {project.researchPhases && project.researchPhases.map((p, i) =>
-            <ProjectPhaseStatus key={i} phase={{
+            <ProjectPhaseStatus key={i+1} phase={{
               index: i+1,
               daysRemaining: 10,
               fundedAmount: 5000,
@@ -199,7 +199,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
     </Container> :
     <Container>
       Loading data
-  </Container>
+    </Container>
 );
 
 export default withStyles(styles, { withTheme: true })(ProjectDetails);
