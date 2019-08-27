@@ -57,6 +57,8 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
       margin: `0px ${spacing(4)}px 0px ${spacing(4)}px`,
       textAlign: 'center',
       color: colors.white,
+      display: "inline-flex",
+      justifyContent: "center"
     },
   },
   avatar: {
