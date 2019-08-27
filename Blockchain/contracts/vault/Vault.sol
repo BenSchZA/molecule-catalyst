@@ -79,7 +79,7 @@ contract Vault is IVault, WhitelistAdminRole {
 
         uint256 loopLength = _fundingGoals.length;
         for(uint256 i = 0; i < loopLength; i++){
-            uint256 withTax = _fundingGoals[i].add((_fundingGoals[i].div(100)).mul(moleculeTaxRate_));
+            uint256 withTax = _fundingGoals[i].add(_fundingGoals[i].mul(moleculeTaxRate_).div(100));
             fundingPhases_[i].fundingThreshold = withTax;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
         }
@@ -126,7 +126,7 @@ contract Vault is IVault, WhitelistAdminRole {
             outstandingWithdraw_ = outstandingWithdraw_.sub(fundingPhases_[_phase].fundingThreshold);
             fundingPhases_[_phase].state == FundingState.PAID;
 
-            uint256 molTax = (fundingPhases_[_phase].fundingThreshold.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
+            uint256 molTax = fundingPhases_[_phase].fundingThreshold.mul(moleculeTaxRate_).div(moleculeTaxRate_.add(100));
             require(collateralToken_.transfer(address(moleculeVault_), molTax), "Tokens not transfer");
 
             uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold.sub(molTax);
@@ -190,11 +190,11 @@ contract Vault is IVault, WhitelistAdminRole {
         // Checks if ended or paid for conclusion of phase
         if(fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= FundingState.ENDED)) {
             // Works out the molecule tax amount
-            uint256 molTax = (remainingBalance.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_);
+            uint256 molTax = remainingBalance.mul(moleculeTaxRate_).div(moleculeTaxRate_.add(100));
             // Transfers amount to the molecule vault
             require(collateralToken_.transfer(address(moleculeVault_), molTax), "Transfering of funds failed");
             // Works out the remaining balance after mol tax, which is fetched
-                // incase of remaining fractions from math
+            // incase of remaining fractions from math
             remainingBalance = collateralToken_.balanceOf(address(this));
             // Transfers the amount to the msg.sender
             require(collateralToken_.transfer(creator_, remainingBalance), "Transfering of funds failed");
@@ -225,7 +225,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @dev The offset for checking the funding threshold
       */
     function outstandingWithdraw() public view returns(uint256){
-        uint256 minusMolTax = outstandingWithdraw_.sub((outstandingWithdraw_.div(moleculeTaxRate_.add(100))).mul(moleculeTaxRate_));
+        uint256 minusMolTax = outstandingWithdraw_.sub(outstandingWithdraw_.mul(moleculeTaxRate_).div(moleculeTaxRate_.add(100)));
         return minusMolTax;
     }
 

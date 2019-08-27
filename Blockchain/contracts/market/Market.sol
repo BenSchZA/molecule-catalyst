@@ -209,7 +209,7 @@ contract Market is IMarket, IERC20 {
         uint256 poolBalance = collateralToken_.balanceOf(address(this));
 
         // Performs a flat linear 100% collateralized sale
-        uint256 daiToTransfer = (poolBalance.div(totalSupply_)).mul(_amount);
+        uint256 daiToTransfer = poolBalance.mul(_amount).div(totalSupply_);
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
 
         emit Transfer(address(this), msg.sender, _amount);
