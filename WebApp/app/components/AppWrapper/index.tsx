@@ -38,7 +38,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navAccount: {
     display: 'flex',
-    height: spacing(5),
+    height: spacing(8),
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
@@ -49,6 +49,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navList: {
     display: 'flex',
+    height: "100%",
     flexDirection: 'row',
     margin: 0,
     padding: 0,
@@ -63,6 +64,10 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   connectButton: {
     marginRight: spacing(3),
+    "& > *":{
+      margin: 0
+    }
+
   }
 });
 
