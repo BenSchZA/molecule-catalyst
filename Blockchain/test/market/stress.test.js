@@ -28,7 +28,7 @@ let marketSettingsStress = {
     taxationRate: ethers.utils.parseUnits("15", 0)
 }
 
-describe('Market test', async () => {
+describe('Market stress test', async () => {
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
@@ -114,8 +114,6 @@ describe('Market test', async () => {
         }
     });
 
-    
-
     describe("Token exchange", async () => {
         it("Mints specified token amount", async () =>{
             await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
@@ -144,61 +142,113 @@ describe('Market test', async () => {
             const mintVolumePerAction = purchasingSequences.first.token.tokenResult.div(sequences);
 
             let pastBalance = []
+            //
             for(let i = 0; i < sequences; i++){
-                try{
-                pastBalance[0] = await marketInstance.balanceOf(accounts[0].signer.address);
-                pastBalance[1] = await marketInstance.balanceOf(accounts[1].signer.address);
-                pastBalance[2] = await marketInstance.balanceOf(accounts[2].signer.address);
-                pastBalance[3] = await marketInstance.balanceOf(accounts[3].signer.address);
-                pastBalance[4] = await marketInstance.balanceOf(accounts[4].signer.address);
-                pastBalance[5] = await marketInstance.balanceOf(accounts[5].signer.address);
-                pastBalance[6] = await marketInstance.balanceOf(accounts[6].signer.address);
-                pastBalance[7] = await marketInstance.balanceOf(accounts[7].signer.address);
-                pastBalance[8] = await marketInstance.balanceOf(accounts[8].signer.address);
-                pastBalance[9] = await marketInstance.balanceOf(accounts[9].signer.address);
+                try {
+                    pastBalance[0] = await marketInstance.balanceOf(accounts[0].signer.address);
+                    pastBalance[1] = await marketInstance.balanceOf(accounts[1].signer.address);
+                    pastBalance[2] = await marketInstance.balanceOf(accounts[2].signer.address);
+                    pastBalance[3] = await marketInstance.balanceOf(accounts[3].signer.address);
+                    pastBalance[4] = await marketInstance.balanceOf(accounts[4].signer.address);
+                    pastBalance[5] = await marketInstance.balanceOf(accounts[5].signer.address);
+                    pastBalance[6] = await marketInstance.balanceOf(accounts[6].signer.address);
+                    pastBalance[7] = await marketInstance.balanceOf(accounts[7].signer.address);
+                    pastBalance[8] = await marketInstance.balanceOf(accounts[8].signer.address);
+                    pastBalance[9] = await marketInstance.balanceOf(accounts[9].signer.address);
 
-                // Account 1 Mint
-                await (await marketInstance.from(accounts[0]).mint(accounts[0].signer.address, mintVolumePerAction)).wait();
-                const postMintBalance = await marketInstance.balanceOf(accounts[0].signer.address);
-                assert.ok(pastBalance[0].lt(postMintBalance));
+                    // Account 1 Mint
+                    await (await marketInstance.from(accounts[0]).mint(accounts[0].signer.address, mintVolumePerAction)).wait();
+                    const postMintBalance = await marketInstance.balanceOf(accounts[0].signer.address);
+                    assert.ok(pastBalance[0].lt(postMintBalance));
 
-                const transferValue = postMintBalance.sub(pastBalance[0]).div(4)
+                    if(i < 10) {
+                        await (await marketInstance.from(accounts[i]).mint(accounts[i].signer.address, ethers.utils.parseUnits("500", 18))).wait();
+                    }
 
-                // Transfer 1/4 of mint to account 2
-                await (await marketInstance.from(accounts[0]).transfer(accounts[1].signer.address, transferValue))
+                    // Other accounts mint
 
-                // Receiver burns half
-                const rewardForBurn = await marketInstance.rewardForBurn(transferValue.div(2))
-                await assert.notRevert(marketInstance.from(accounts[1]).burn(transferValue.div(2)));
+                    const transferValue = postMintBalance.sub(pastBalance[0]).div(4)
 
-                // Mints with the result of the burn to account 3
-                await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, transferValue.div(2))).wait();
-                
-                // Accounts 2 & 3 send half to 4 & 5
-                const account2SendingShare = (await marketInstance.balanceOf(accounts[1].signer.address)).sub(pastBalance[1]).div(2);
-                const account3SendingShare = (await marketInstance.balanceOf(accounts[2].signer.address)).sub(pastBalance[2]).div(2);
+                    // Transfer 1/4 of mint to account 2
+                    await (await marketInstance.from(accounts[0]).transfer(accounts[1].signer.address, transferValue))
 
-                await (await marketInstance.from(accounts[1]).transfer(accounts[3].signer.address, account2SendingShare))
-                await (await marketInstance.from(accounts[2]).transfer(accounts[4].signer.address, account3SendingShare))
+                    // Receiver burns half
+                    const rewardForBurn = await marketInstance.rewardForBurn(transferValue.div(2))
+                    await assert.notRevert(marketInstance.from(accounts[1]).burn(transferValue.div(2)));
 
-                // Distribute to the rest
-                const account4SendingShare = (await marketInstance.balanceOf(accounts[4].signer.address)).sub(pastBalance[4]).div(2);
-                const account5SendingShare = (await marketInstance.balanceOf(accounts[5].signer.address)).sub(pastBalance[5]).div(2);
+                    // Mints with the result of the burn to account 3
+                    await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, transferValue.div(2))).wait();
+                    
+                    // Accounts 2 & 3 send half to 4 & 5
+                    const account2SendingShare = (await marketInstance.balanceOf(accounts[1].signer.address)).sub(pastBalance[1]).div(2);
+                    const account3SendingShare = (await marketInstance.balanceOf(accounts[2].signer.address)).sub(pastBalance[2]).div(2);
 
-                await (await marketInstance.from(accounts[4]).transfer(accounts[6].signer.address, account4SendingShare))
-                await (await marketInstance.from(accounts[5]).transfer(accounts[7].signer.address, account5SendingShare))
+                    await (await marketInstance.from(accounts[1]).transfer(accounts[3].signer.address, account2SendingShare))
+                    await (await marketInstance.from(accounts[2]).transfer(accounts[4].signer.address, account3SendingShare))
 
-                const account7SendingShare = (await marketInstance.balanceOf(accounts[6].signer.address)).sub(pastBalance[6]).div(2);
-                const account8SendingShare = (await marketInstance.balanceOf(accounts[7].signer.address)).sub(pastBalance[7]).div(2);
+                    // Distribute to the rest
+                    const account4SendingShare = (await marketInstance.balanceOf(accounts[4].signer.address)).sub(pastBalance[4]).div(2);
+                    const account5SendingShare = (await marketInstance.balanceOf(accounts[5].signer.address)).sub(pastBalance[5]).div(2);
 
-                await (await marketInstance.from(accounts[6]).transfer(accounts[8].signer.address, account7SendingShare))
-                await (await marketInstance.from(accounts[7]).transfer(accounts[9].signer.address, account8SendingShare))
-                }
-                catch(e){
-                    console.log(`${i} Had a crash`, e)
+                    await (await marketInstance.from(accounts[4]).transfer(accounts[6].signer.address, account4SendingShare))
+                    await (await marketInstance.from(accounts[5]).transfer(accounts[7].signer.address, account5SendingShare))
+
+                    const account7SendingShare = (await marketInstance.balanceOf(accounts[6].signer.address)).sub(pastBalance[6]).div(2);
+                    const account8SendingShare = (await marketInstance.balanceOf(accounts[7].signer.address)).sub(pastBalance[7]).div(2);
+
+                    await (await marketInstance.from(accounts[6]).transfer(accounts[8].signer.address, account7SendingShare))
+                    await (await marketInstance.from(accounts[7]).transfer(accounts[9].signer.address, account8SendingShare))
+                } catch(error){
+                    console.log(`${i} Had a crash`, error);
                 }
             }
-        })
+            
+            try {
+                //check the balance of the vault 
+                // withdraw from all 10 accounts
+                // check the vault as it goes and see what they are getting out 
+                // ensure everything is runing smooth
+                const vaultBalanceBeforeWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+                let phaseData = await vaultInstance.fundingPhase(0);
+
+                assert.equal(phaseData[3].toString(), 1, "Funding round state incorrect");
+
+                await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, ethers.utils.parseUnits("940000", 18))).wait();
+                const vaultBalanceAfterWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+                phaseData = await vaultInstance.fundingPhase(0);
+                await (await vaultInstance.from(creator).terminateMarket());
+                const marketActivity = await marketInstance.active();
+                
+
+                assert.equal(marketActivity, false, "Market has not been terminated");
+                assert.equal(phaseData[3].toString(), 2, "Funding round has not ended");
+                assert(vaultBalanceBeforeWithdraws.toString() <= vaultBalanceAfterWithdraws.toString(), "Vault balance did not change with mint");
+
+                let balanceOfUserInMarketBeforeWithdraw = 0;
+                let balanceOfUserInDaiBeforeWithdraw = 0;
+                let balanceOfUserInMarketAfterWithdraw = 0;
+                let balanceOfUserInDaiAfterWithdraw = 0;
+                for (let index = 0; index < 10; index++) {
+                    balanceOfUserInMarketBeforeWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
+                    console.log("\nUser " + index + "\nBalance in market:");
+                    console.log(balanceOfUserInMarketBeforeWithdraw.toString());
+                    balanceOfUserInDaiBeforeWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
+                    console.log("Balance of user in DAI");
+                    console.log(balanceOfUserInDaiBeforeWithdraw.toString());
+
+                    let result = await marketInstance.withdraw(balanceOfUserInMarketBeforeWithdraw);
+
+                    balanceOfUserInMarketAfterWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
+                    console.log("\nUser " + index + "\nBalance in market:");
+                    console.log(balanceOfUserInMarketAfterWithdraw.toString());
+                    balanceOfUserInDaiAfterWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
+                    console.log("Balance of user in DAI");
+                    console.log(balanceOfUserInDaiAfterWithdraw.toString());
+                }
+            } catch (error) {
+                console.log(`Had a crash`, error);
+            }
+        });
     });
     
 });
