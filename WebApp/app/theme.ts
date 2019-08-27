@@ -22,7 +22,7 @@ export const colors = {
   white: '#FFFFFF',
   black: '#000000',
   grey: '#E5E5E5',
-  darkGrey: '#0000008a',
+  darkGrey: '#3C2828',
   lightGrey: '#f2f2f2',
   textBlack: 'rgba(0, 0, 0, 0.87)',
   textGrey: 'rgba(0, 0, 0, 0.60)'
@@ -43,7 +43,8 @@ const theme = (createMuiTheme as any)({
   },
   typography: {
     fontFamily: [
-      'Montserrat'
+      'Montserrat',
+      'Roboto'
     ].join(','),
   },
   overrides: {
@@ -124,8 +125,15 @@ const theme = (createMuiTheme as any)({
     },
     MuiInputBase: {
       input: {
-        fontSize: '0.75rem',
-        lineHeight: '1rem'
+        lineHeight: '1rem',
+        fontFamily: 'Roboto',
+        fontSize: '20px',
+      },
+      inputAdornedEnd :{
+        lineHeight: '1rem',
+        fontFamily: 'Roboto',
+        fontSize: '20px',
+        paddingTop: 0
       }
     },
     MuiFilledInput: {
@@ -150,7 +158,8 @@ const theme = (createMuiTheme as any)({
         marginBottom: '8px',
         marginLeft: '8px',
         marginRight: '8px',
-        backgroundColor: colors.grey
+        backgroundColor: colors.grey,
+
       }
     },
     MuiFormControl: {
@@ -176,7 +185,8 @@ const theme = (createMuiTheme as any)({
     MuiContainer: {
       maxWidthXl: {
         width: '1200px'
-      }
+      },
+      
     },
     MuiTableHead: {
       root: {
@@ -200,22 +210,28 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider: {
+      root: {
+        
+      },
       middle: {
         marginTop: "32px",
+        marginLeft: 0,
         backgroundColor: colors.moleculeBranding.primary,
         alignSelf: 'center',
         verticalAlign: 'middle',
+        height: 2,
+        width: 1200
       }
     },
     MuiSelect: {
       selectMenu: {
-        height: '1.1875em'
+        height: 20,
       }
     },
     MuiCard: {
       root: {
-        maxWidth: 450,
-        maxHeight: 500
+        maxWidth: 647,
+        maxHeight: 712.02
       },
     },
     MuiCardContent: {
@@ -225,7 +241,8 @@ const theme = (createMuiTheme as any)({
         color: colors.darkGrey,
         paddingTop: '12px',
         height: '184px',
-        paddingLeft: '0px'
+        paddingLeft: '0px',
+        fontFamily: 'Roboto'
       },
     },
     MuiCardMedia: {
@@ -236,16 +253,16 @@ const theme = (createMuiTheme as any)({
     },
     MuiCardHeader: {
       root:{
-        height: '64px',
+        height: '84px',
       },
       content: {
         height:'51px'
       },
       title: {
-        paddingTop: '16px',
+        paddingTop: '0px',
         paddingLeft: '0px',
         paddingBottom: '0px',
-        fontSize: '1rem',
+        fontSize: '24px',
         fontWeight: 'bold',
         
       },
@@ -253,13 +270,39 @@ const theme = (createMuiTheme as any)({
         paddingTop: '0px',
         paddingLeft: '0px',
         paddingBottom: '0px',
-        fontSize: '0.6em',
-        fontWeight: 'bold'
+        fontSize: '12px',
+        fontWeight: 'bold',
+        fontFamily: 'Montserrat',
+        color: colors.darkGrey
       },
+    },
+    MuiCardActions: {
+      root: {
+        paddingLeft: '16px'
+      }
     },
     MuiGrid: {
       root: {
-        paddingTop: '32px'
+        paddingTop: '64px',
+      },
+      container: {
+        maxWidth: '1980px',
+        alignItems: 'center',
+        paddingLeft: '302px',
+        paddingRight: '302px',
+      }
+    },
+    MuiChip: {
+      root: {
+        float: 'right',
+        marginTop: '34px',
+      },
+      colorPrimary: {
+        backgroundColor: colors.white
+      },
+      label: {
+        fontSize: '0.6rem',
+        fontWeight: '600',
       }
     }
   }

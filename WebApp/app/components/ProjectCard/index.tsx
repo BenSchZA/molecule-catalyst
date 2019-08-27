@@ -5,22 +5,21 @@
  */
 
 import React, { Fragment } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions, Chip } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
-import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import { Project } from 'domain/projects/types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    avatar: {
-      backgroundColor: 'red',
-    },
     percentage: {
       color: colors.moleculeBranding.primary,
+      fontWeight: 'lighter',
+      fontSize: '60px',
       float: 'left',
-      paddingTop: '12px',
+      paddingTop: '0px',
       marginTop: '12px',
       paddingBottom: '0px',
       paddingLeft: '16px'
@@ -39,14 +38,41 @@ const styles = (theme: Theme) =>
       textOverflow: 'ellipsis',
       whiteSpace: 'inherit',
       overflow: 'hidden',
+      color: colors.darkGrey,
+      font: '20px/27px Roboto, san-serif'
     },
+    projectLeadLabel: {
+      fontSize: '0.5rem',
+      fontWeight: 'bold',
+      fontFamily: 'Montserrat',
+      float: 'left'
+    },
+    projectLead: {
+      fontSize: '0.6em',
+      fontWeight: 'bold',
+      fontFamily: 'Montserrat',
+      float: 'left',
+      paddingLeft: '5px'
+    },
+    association: {
+      fontSize: '1rem',
+      fontWeight: 'bold',
+      fontFamily: 'Montserrat',
+      float: 'left',
+      paddingTop: '5px'
+    },
+    footer: {
+      float: 'left',
+      paddingTop: '8px',
+      paddingBottom: '8px',
+    }
 
   });
 
 const BorderLinearProgress = withStyles({
     root: {
       height: 5,
-      width: '450px',
+      width: '647px',
       backgroundColor: lighten(colors.moleculeBranding.primary, 0.5),
       paddingleft: '0px',
       marginTop: '84px!important',
@@ -71,19 +97,26 @@ interface OwnProps extends WithStyles<typeof styles> {
   project: Project
 }
 
+const switchStatus = (status) => {
+  switch(status){
+      default :
+        return 'ONGOING';
+  }
+};
+
 const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => (
   <Fragment>
-     <Card>
+     <Card elevation={8}>
       <CardHeader
         title={project.title}
-        subheader={ProjectSubmissionStatus[project.status].toUpperCase()}
+        subheader={switchStatus(project.status)}
       />
        <CardContent>
          <div className={classes.abstract}>
         {truncateText(project.abstract)}
          </div>
-         <Typography variant="h3" className={classes.percentage}>55%</Typography>
-          
+         <Typography className={classes.percentage}>55%</Typography>
+         <Chip color="primary" label="Funded of $10,000" />
       <BorderLinearProgress
         className={classes.margin}
         variant="determinate"
@@ -95,7 +128,13 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         src={apiUrlBuilder.attachmentStream(project.featuredImage)}
       />
       <CardActions disableSpacing>
-       
+        <div className={classes.footer}>
+        <div>
+       <div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>
+       <div className={classes.projectLead}>JOHN H. MYRLAND SNR PH.D</div>
+       </div>
+       <div className={classes.association}>Stanford University</div>
+       </div>
       </CardActions>
     </Card>
   </Fragment>
