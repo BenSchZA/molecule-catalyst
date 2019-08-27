@@ -1,5 +1,6 @@
 const etherlime = require('etherlime-lib');
 const ethers = require('ethers');
+const BigNumber = require('bignumber.js');
 
 let MarketAbi = require('../build/Market.json');
 let VaultAbi = require('../build/Vault.json');
@@ -12,6 +13,11 @@ let CurveFunctionsAbi = require('../build/CurveIntegrals.json');
 
 const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
 const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);
+
+const DECIMALS = 18;
+const EXPECTED_PRECISION = DECIMALS - 6;
+BigNumber.config({ DECIMAL_PLACES: EXPECTED_PRECISION });
+BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
 
 const purchasingSequences = {
     first: {
@@ -61,6 +67,17 @@ let marketSettings = {
     taxationRate: ethers.utils.parseUnits("15", 0)
 }
 
+let vaultMarketSettings = {
+    fundingGoals: [
+        ethers.utils.parseUnits("5000000", 18)
+    ],
+    phaseDuration: [
+        ethers.utils.parseUnits("12", 0)
+    ],
+    curveType: ethers.utils.parseUnits("0", 0),
+    taxationRate: ethers.utils.parseUnits("15", 0)
+}
+
 const simulatedCurve = {
     scaledShift: ethers.utils.parseUnits("50", 16), // 0.5
     gradientDenominator: ethers.utils.parseUnits("20000", 0),
@@ -89,9 +106,12 @@ module.exports = {
     VaultAbi,
     MoleculeVaultAbi,
     marketSettings,
+    vaultMarketSettings,
     daiSettings,
     defaultDaiPurchase,
     defaultTokenVolume,
+    DECIMALS,
+    EXPECTED_PRECISION,
     purchasingSequences,
     moleculeVaultSettings,
     simulatedCurve,

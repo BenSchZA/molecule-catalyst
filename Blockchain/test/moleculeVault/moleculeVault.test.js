@@ -16,6 +16,8 @@ const {
     defaultTokenVolume,
     purchasingSequences
 } = require("../testing.settings.js");
+
+const BigNumber = require('bignumber.js');
  
 describe("Molecule vault test", async () => {
     let molAdmin = accounts[1];
@@ -113,20 +115,33 @@ describe("Molecule vault test", async () => {
 
     describe("Admin functions", async () => {
         beforeEach(async () => {
+            const DECIMALS = 18;
+            const EXPECTED_PRECISION = DECIMALS - 6;
+            BigNumber.config({ DECIMAL_PLACES: EXPECTED_PRECISION });
+            BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_UP });
+
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101)
             let balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+ 
             assert.ok(balanceOfMoleculeVault.eq(0), "Tokens already in the vault")
-            
+
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
 
             await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw worked without the round being finished")
-            
+
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
             
-            assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
+            const balanceOfMoleculeVaultShifted = BigNumber(balanceOfMoleculeVault.toString())
+                .shiftedBy(-DECIMALS)
+                .decimalPlaces(EXPECTED_PRECISION);
+            const targetBalanceShifted = BigNumber(targetBalance.toString())
+                .shiftedBy(-DECIMALS)
+                .decimalPlaces(EXPECTED_PRECISION);
+
+            assert.equal(balanceOfMoleculeVaultShifted.toString(), targetBalanceShifted.toString(), "Tokens not transfered")
         });
 
         it('Executes approve correctly', async () =>{

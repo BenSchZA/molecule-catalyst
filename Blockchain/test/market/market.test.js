@@ -259,6 +259,67 @@ describe('Market test', async () => {
             assert.ok(daiBalanceBefore.lt(daiBalanceAfter), "Dai balance not increased")
             assert.ok(tokenBalanceAfter.eq(0), "Token balance not decreased")
         });
+
+
+        it("Sets the new end date of the second phase correctly", async () =>{
+            let currentPhase = await vaultInstance.currentPhase();
+            assert.ok(currentPhase.eq(0), "Phase invalid");
+            
+            let phaseData = await vaultInstance.fundingPhase(0);
+
+            assert.equal(phaseData[3], 1, "Phase state not set to started");
+            
+            let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
+            const estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+            phaseData = await vaultInstance.fundingPhase(0);
+            currentPhase = await vaultInstance.currentPhase();
+
+            assert.ok(currentPhase.eq(1), "Phase invalid");
+            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+
+            phaseData = await vaultInstance.fundingPhase(1);
+
+            assert.equal(phaseData[3], 1, "Next phase state not set to started");
+            assert.ok(phaseData[2].gt(0), "Phase invalid");
+        });
+
+        it("Withdraws multiple rounds if theres outstanding withdraws", async () => {
+            let phaseData = await vaultInstance.fundingPhase(0);
+            let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
+
+            let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+
+            phaseData = await vaultInstance.fundingPhase(0);
+            currentPhase = await vaultInstance.currentPhase();
+            assert.ok(currentPhase.eq(1), "Phase not incremented");
+            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+
+            // Ending round 2
+            phaseData = await vaultInstance.fundingPhase(1);
+            daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
+            estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
+            await (await marketInstance.from(user2).mint(user2.signer.address, estimateTokens)).wait();
+
+            currentPhase = await vaultInstance.currentPhase();
+            phaseData = await vaultInstance.fundingPhase(1);
+            assert.ok(currentPhase.eq(2), "Phase not incremented to 2");
+            assert.equal(phaseData[3], 2, "2nd phase state not set to ended");
+
+            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw 0 failed")
+            const outstandingAfter = await vaultInstance.outstandingWithdraw();
+
+            phaseData = await vaultInstance.fundingPhase(1);
+            assert.ok(outstandingAfter.gt(0), "Outstanding is 0")
+            assert.ok(phaseData[0].eq(outstandingAfter.div(100).mul(moleculeVaultSettings.taxationRate.add(100))), "Outstanding withdraw incorrect")
+
+            await assert.notRevert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 failed")
+            const outstandingEnd = await vaultInstance.outstandingWithdraw();
+            assert.ok(outstandingEnd.eq(0), "All funds not sent");
+
+            await assert.revert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 replayed incorrectly")
+        });
     });
 
     describe("Events", async () => {
