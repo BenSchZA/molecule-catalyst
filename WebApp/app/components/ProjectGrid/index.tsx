@@ -4,6 +4,7 @@ import { Theme, WithStyles, Container, Grid, Divider } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Project } from 'domain/projects/types';
 import ProjectCard from 'components/ProjectCard';
+import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) => createStyles({
   maxWidthLg: {

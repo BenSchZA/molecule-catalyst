@@ -7,6 +7,7 @@ import { UserService } from '../user/user.service';
 import { ethers } from 'ethers';
 import { ConfigService } from 'src/config/config.service';
 import { UserType, User } from 'src/user/user.schema';
+import { ServiceBase } from 'src/common/serviceBase';
 
 export interface JwtPayload {
   userId: string;
@@ -25,12 +26,14 @@ export interface AccessPermit {
 }
 
 @Injectable()
-export class AuthService {
+export class AuthService extends ServiceBase {
   constructor(
     private readonly userService: UserService,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {
+    super(AuthService.name);
+  }
 
   async generatePermit(ethAddress): Promise<AccessPermit> {
     const serverAccountWallet = await ethers.Wallet.fromMnemonic(
@@ -73,7 +76,6 @@ export class AuthService {
       user = newUser;
     }
 
-    // TODO get expiry from config
     const accessToken = this.jwtService.sign(
       {
         userId: user.id,

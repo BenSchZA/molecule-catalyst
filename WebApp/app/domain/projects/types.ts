@@ -48,6 +48,7 @@ interface User {
   lastName?: string,
   professionalTitle?: string,
   fullName?: string
+  profileImage: string,
 }
 
 /* --- STATE --- */
