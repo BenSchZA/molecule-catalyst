@@ -57,7 +57,6 @@ const styles = ({ spacing, palette }: Theme) =>
     },
     bannerFooter: {
       width: '100%',
-      backdropFilter: 'blur(31)',
       height: "60px",
       display: 'flex',
       flexDirection: 'row',
@@ -164,6 +163,9 @@ const styles = ({ spacing, palette }: Theme) =>
       borderRight: '1px',
       borderRightColor: palette.secondary.main,
     },
+    fundingPhaseSection:{
+      padding: 0
+    },
     projectProgress: {
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
@@ -262,7 +264,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }:
           </div>
         </article>
         <div className={classes.contentWrapper}>
-          <Grid container direction='row' alignItems='center' justify='center' spacing={4}>
+          <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
             {project.researchPhases && project.researchPhases.map((p, i) =>
               <ProjectPhaseStatus key={i+1} phase={{
                 index: i+1,
