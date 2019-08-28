@@ -33,7 +33,9 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     paddingTop: spacing(8),
     paddingLeft: spacing(2),
     paddingRight: spacing(2),
-    backgroundColor: colors.lightGrey,
+    background: 'url(\'Seperator-02.png\')',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor: colors.white,
     minHeight: '100vh'
   },
   navAccount: {

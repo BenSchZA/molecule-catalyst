@@ -9,7 +9,6 @@ import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLa
 import { Form, Field, FieldArray } from 'formik';
 import { TextField } from 'formik-material-ui';
 import UploadImageField from 'components/UploadImageField';
-import { colors } from 'theme';
 import { Remove, Add } from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
@@ -23,7 +22,7 @@ const styles = (theme: Theme) =>
     },
     banner: {
       paddingBottom: '18px',
-      backgroundColor: colors.lightGrey,
+      backgroundColor: 'transparent',
       alignItems: 'center'
     },
     heading: {
