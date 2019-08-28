@@ -17,10 +17,13 @@ export const colors = {
   moleculeBranding: {
     primary: '#003E52',
     secondary: '#37B4A4',
+    primaryLight: '#37B4A4',
+    third: '#03DAC6'
   },
   white: '#FFFFFF',
   black: '#000000',
   grey: '#E5E5E5',
+  darkGrey: '#3C2828',
   lightGrey: '#f2f2f2',
   textBlack: 'rgba(0, 0, 0, 0.87)',
   textGrey: 'rgba(0, 0, 0, 0.60)'
@@ -47,16 +50,8 @@ const theme = (createMuiTheme as any)({
   },
   typography: {
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
       'Montserrat',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+      'Roboto'
     ].join(','),
   },
   overrides: {
@@ -138,8 +133,15 @@ const theme = (createMuiTheme as any)({
     },
     MuiInputBase: {
       input: {
-        fontSize: '0.75rem',
-        lineHeight: '1rem'
+        lineHeight: '1rem',
+        fontFamily: 'Roboto',
+        fontSize: '20px',
+      },
+      inputAdornedEnd :{
+        lineHeight: '1rem',
+        fontFamily: 'Roboto',
+        fontSize: '20px',
+        paddingTop: 0
       }
     },
     MuiFilledInput: {
@@ -164,7 +166,8 @@ const theme = (createMuiTheme as any)({
         marginBottom: '8px',
         marginLeft: '8px',
         marginRight: '8px',
-        backgroundColor: colors.grey
+        backgroundColor: colors.grey,
+
       }
     },
     MuiFormControl: {
@@ -190,7 +193,8 @@ const theme = (createMuiTheme as any)({
     MuiContainer: {
       maxWidthXl: {
         width: '1200px'
-      }
+      },
+      
     },
     MuiTableHead: {
       root: {
@@ -214,18 +218,96 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider: {
-      root: {
-        backgroundColor: colors.moleculeBranding.secondary,
-      },
       middle: {
         marginTop: "32px",
+        backgroundColor: colors.moleculeBranding.third,
         alignSelf: 'center',
         verticalAlign: 'middle',
+        height: 2,
+        width: 1200
       }
     },
     MuiSelect: {
       selectMenu: {
-        height: '1.1875em'
+        height: 20,
+      }
+    },
+    MuiCard: {
+      root: {
+        maxWidth: 647,
+        maxHeight: 712.02
+      },
+    },
+    MuiCardContent: {
+      root: {
+        fontSize: '0.9rem',
+        fontWeight: 'normal',
+        color: colors.darkGrey,
+        paddingTop: '12px',
+        height: '184px',
+        paddingLeft: '0px',
+        fontFamily: 'Roboto'
+      },
+    },
+    MuiCardMedia: {
+      root: {
+        height: '150px',
+        paddingLeft: '0px'
+      },
+    },
+    MuiCardHeader: {
+      root:{
+        height: '84px',
+      },
+      content: {
+        height:'51px'
+      },
+      title: {
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingBottom: '0px',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        
+      },
+      subheader: {
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingBottom: '0px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        fontFamily: 'Montserrat',
+        color: colors.darkGrey
+      },
+    },
+    MuiCardActions: {
+      root: {
+        paddingLeft: '16px'
+      }
+    },
+    MuiGrid: {
+      root: {
+        paddingTop: '64px',
+      },
+      container: {
+        maxWidth: '1980px',
+        alignItems: 'center',
+        paddingLeft: '302px',
+        paddingRight: '302px',
+      }
+    },
+    MuiChip: {
+      root: {
+        float: 'right',
+        marginTop: '63px',
+      },
+      colorPrimary: {
+        backgroundColor: colors.white,
+        color: colors.black,
+      },
+      label: {
+        fontSize: '14px',
+        fontWeight: '600',
       }
     }
   }
