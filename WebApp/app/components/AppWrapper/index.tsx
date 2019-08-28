@@ -14,7 +14,7 @@ import ErrorBoundary from 'containers/ErrorBoundary';
 
 
 // import { appRoute } from 'containers/App/routes';
-
+const spacingFromProfile = 20;
 
 const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   appBar: {
@@ -40,7 +40,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navAccount: {
     display: 'flex',
-    height: spacing(5),
+    height: spacing(8),
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
@@ -51,13 +51,16 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   navList: {
     display: 'flex',
+    height: "100%",
     flexDirection: 'row',
-    margin: 0,
+    margin: `0 ${spacingFromProfile}px 0 0`,
     padding: 0,
     '& > *': {
-      margin: `0px ${spacing(4)}px 0px ${spacing(4)}px`,
+      margin: `0`,
       textAlign: 'center',
       color: colors.white,
+      display: "inline-flex",
+      justifyContent: "center",
     },
   },
   avatar: {
@@ -65,6 +68,10 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   connectButton: {
     marginRight: spacing(3),
+    "& > *":{
+      margin: 0
+    }
+
   }
 });
 

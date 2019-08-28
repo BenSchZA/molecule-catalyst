@@ -21,6 +21,7 @@ export const colors = {
     third: '#03DAC6'
   },
   white: '#FFFFFF',
+  whiteAlt: '#F7F7F7',
   black: '#000000',
   grey: '#E5E5E5',
   darkGrey: '#3C2828',
