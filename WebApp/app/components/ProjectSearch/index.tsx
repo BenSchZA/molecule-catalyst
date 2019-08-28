@@ -36,7 +36,8 @@ const styles = (theme: Theme) =>
       paddingTop: 15
     },
     header: {
-      paddingTop: 140
+      paddingTop: 140,
+      fontWeight: 'normal'
     },
     menuItem: {
       color: colors.darkGrey,

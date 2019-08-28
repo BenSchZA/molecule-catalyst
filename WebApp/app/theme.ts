@@ -18,6 +18,7 @@ export const colors = {
     primary: '#003E52',
     secondary: '#37B4A4',
     primaryLight: '#37B4A4',
+    third: '#03DAC6'
   },
   white: '#FFFFFF',
   black: '#000000',
@@ -219,7 +220,7 @@ const theme = (createMuiTheme as any)({
     MuiDivider: {
       middle: {
         marginTop: "32px",
-        backgroundColor: colors.moleculeBranding.primary,
+        backgroundColor: colors.moleculeBranding.third,
         alignSelf: 'center',
         verticalAlign: 'middle',
         height: 2,
@@ -298,13 +299,14 @@ const theme = (createMuiTheme as any)({
     MuiChip: {
       root: {
         float: 'right',
-        marginTop: '34px',
+        marginTop: '63px',
       },
       colorPrimary: {
-        backgroundColor: colors.white
+        backgroundColor: colors.white,
+        color: colors.black,
       },
       label: {
-        fontSize: '0.6rem',
+        fontSize: '14px',
         fontWeight: '600',
       }
     }

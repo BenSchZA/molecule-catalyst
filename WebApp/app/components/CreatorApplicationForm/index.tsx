@@ -10,20 +10,23 @@ import { Save } from '@material-ui/icons';
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import UploadImageField from 'components/UploadImageField';
-import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      marginTop: '24px',
+      marginTop: '70px',
       paddingLeft: '8px'
     },
     banner: {
       marginBottom: '16px',
-      backgroundColor: colors.lightGrey,
+      backgroundColor: 'transparent',
       alignItems: 'center'
     },
     heading: {
+      textAlign: 'center',
+      paddingTop: 140
+    },
+    headingText: {
       textAlign: 'center',
     },
   });
@@ -35,7 +38,7 @@ const CreatorApplicationForm: React.FunctionComponent<OwnProps> = (props: OwnPro
   <Container>
     <Paper className={props.classes.banner} square={true} elevation={0}>
       <Typography variant='h3' className={props.classes.heading}>Add Profile Details</Typography>
-      <Typography variant='body1' className={props.classes.heading}>
+      <Typography variant='body1' className={props.classes.headingText}>
         Before you can apply for funding for your scientific experiment on the Molecule platform you need to provide us with some more details about yourself and your research background. We will contact you directly after internal review.
       </Typography>
       <Divider variant='middle' />

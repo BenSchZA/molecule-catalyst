@@ -15,13 +15,13 @@ import { Project } from 'domain/projects/types';
 const styles = (theme: Theme) =>
   createStyles({
     percentage: {
-      color: colors.moleculeBranding.primary,
+      color: '#37B4A4',
       fontWeight: 'lighter',
       fontSize: '60px',
       float: 'left',
       paddingTop: '0px',
       marginTop: '12px',
-      paddingBottom: '0px',
+      paddingBottom: '15px',
       paddingLeft: '16px'
     },
     media: {
@@ -32,9 +32,9 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(1),
     },
     abstract: {
-      height: '64px',
+      height: '100px',
       paddingLeft: '16px',
-      paddingTop: '8px',
+      paddingTop: '23px',
       textOverflow: 'ellipsis',
       whiteSpace: 'inherit',
       overflow: 'hidden',
@@ -42,22 +42,24 @@ const styles = (theme: Theme) =>
       font: '20px/27px Roboto, san-serif'
     },
     projectLeadLabel: {
-      fontSize: '0.5rem',
+      font: '10px Montserrat',
       fontWeight: 'bold',
-      fontFamily: 'Montserrat',
-      float: 'left'
+      letterSpacing: '1.88px',
+      float: 'left',
+      paddingTop: '4px'
     },
     projectLead: {
-      fontSize: '0.6em',
-      fontWeight: 'bold',
-      fontFamily: 'Montserrat',
+      fontWeight: 'bolder',
       float: 'left',
-      paddingLeft: '5px'
+      paddingLeft: '5px',
+      font: '14px Montserrat',
+      letterSpacing: '1.88px',
+      textTransform: 'uppercase',
     },
     association: {
-      fontSize: '1rem',
-      fontWeight: 'bold',
-      fontFamily: 'Montserrat',
+      fontWeight: 'bolder',
+      font: '16px Montserrat',
+      letterSpacing: '1.88px',
       float: 'left',
       paddingTop: '5px'
     },
@@ -65,6 +67,10 @@ const styles = (theme: Theme) =>
       float: 'left',
       paddingTop: '8px',
       paddingBottom: '8px',
+    },
+    cardImage: {
+      paddingTop: 36,
+      height: 280
     }
 
   });
@@ -73,7 +79,7 @@ const BorderLinearProgress = withStyles({
     root: {
       height: 5,
       width: '647px',
-      backgroundColor: lighten(colors.moleculeBranding.primary, 0.5),
+      backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
       paddingleft: '0px',
       marginTop: '84px!important',
       marginBottom: '0px!important',
@@ -82,7 +88,7 @@ const BorderLinearProgress = withStyles({
     },
     bar: {
       borderRadius: 20,
-      backgroundColor: colors.moleculeBranding.primary,
+      backgroundColor: colors.moleculeBranding.third,
     },
   })(LinearProgress);
 
@@ -116,7 +122,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         {truncateText(project.abstract)}
          </div>
          <Typography className={classes.percentage}>55%</Typography>
-         <Chip color="primary" label="Funded of $10,000" />
+         <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
       <BorderLinearProgress
         className={classes.margin}
         variant="determinate"
@@ -124,6 +130,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         value={50}  />
       </CardContent>
       <CardMedia
+        className={classes.cardImage}
         component='img'
         src={apiUrlBuilder.attachmentStream(project.featuredImage)}
       />
@@ -131,9 +138,9 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.footer}>
         <div>
        <div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>
-       <div className={classes.projectLead}>JOHN H. MYRLAND SNR PH.D</div>
+       <div className={classes.projectLead}>{project.user.fullName}</div>
        </div>
-       <div className={classes.association}>Stanford University</div>
+       <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
        </div>
       </CardActions>
     </Card>
