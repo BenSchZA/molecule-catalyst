@@ -46,27 +46,39 @@ const styles = (theme: Theme) =>
       fontWeight: 'bold',
       letterSpacing: '1.88px',
       float: 'left',
-      paddingTop: '4px'
+      paddingTop: '4px',
+      paddingRight: '5px',
     },
     projectLead: {
       fontWeight: 'bolder',
       float: 'left',
-      paddingLeft: '5px',
       font: '14px Montserrat',
       letterSpacing: '1.88px',
       textTransform: 'uppercase',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: 'inline-block',
+      width: '100%'
     },
     association: {
       fontWeight: 'bolder',
       font: '16px Montserrat',
       letterSpacing: '1.88px',
       float: 'left',
-      paddingTop: '5px'
+      paddingTop: '5px',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: 'inline-block',
+      width: '100%'
     },
     footer: {
       float: 'left',
       paddingTop: '8px',
       paddingBottom: '8px',
+      width: '60%',
+      minWidth: '350px'
     },
     cardImage: {
       paddingTop: 36,
@@ -76,7 +88,7 @@ const styles = (theme: Theme) =>
       float: 'right',
       paddingTop: '8px',
       paddingBottom: '8px',
-      paddingLeft: '50%'
+      paddingLeft: '30%'
     }
 
   });
@@ -143,10 +155,10 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
       <CardActions disableSpacing>
         <div className={classes.footer}>
         <div>
-       <div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>
-       <div className={classes.projectLead}>{project.user.fullName}</div>
+       
+       <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>KENT FOURIE kdfnsjnvjkladflkjvnaljkvnadjklfn{project.user.fullName}</div>
        </div>
-       <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
+       <div className={classes.association}>SUPER COOL SCHOOL jhbsakfnjklnvkjaqlkvbalkvba{project.user.affiliatedOrganisation}</div>
        </div>
        <div className={classes.avatar}>
        <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
