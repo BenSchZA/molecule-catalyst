@@ -5,7 +5,7 @@
  */
 
 import React, { Fragment } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions, Chip } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions, Chip, Avatar } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
@@ -71,6 +71,12 @@ const styles = (theme: Theme) =>
     cardImage: {
       paddingTop: 36,
       height: 280
+    },
+    avatar: {
+      float: 'right',
+      paddingTop: '8px',
+      paddingBottom: '8px',
+      paddingLeft: '50%'
     }
 
   });
@@ -138,9 +144,12 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.footer}>
         <div>
        <div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>
-       <div className={classes.projectLead}>{project.user.fullName}</div>
+       <div className={classes.projectLead}> KENT FOURIE{project.user.fullName}</div>
        </div>
-       <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
+       <div className={classes.association}>SUPER COOL SCHOOL{project.user.affiliatedOrganisation}</div>
+       </div>
+       <div className={classes.avatar}>
+       <Avatar sizes={} src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
        </div>
       </CardActions>
     </Card>
