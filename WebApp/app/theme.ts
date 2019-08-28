@@ -285,17 +285,6 @@ const theme = (createMuiTheme as any)({
         paddingLeft: '16px'
       }
     },
-    MuiGrid: {
-      root: {
-        paddingTop: '64px',
-      },
-      container: {
-        maxWidth: '1980px',
-        alignItems: 'center',
-        paddingLeft: '302px',
-        paddingRight: '302px',
-      }
-    },
     MuiChip: {
       root: {
         float: 'right',

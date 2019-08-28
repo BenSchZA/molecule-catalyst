@@ -23,11 +23,11 @@ const styles = ({spacing}: Theme) => createStyles({
   },
   banner:{
     marginBottom: '16px',
-    backgroundColor: colors.lightGrey,
+    backgroundColor: 'transparent',
     width: '65%'
   },
   demo: {
-    backgroundColor: colors.lightGrey,
+    backgroundColor: 'transparent',
     width: '150%'
   }
 });

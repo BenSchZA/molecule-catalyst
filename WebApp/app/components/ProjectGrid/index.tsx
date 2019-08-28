@@ -17,6 +17,13 @@ const styles = (theme: Theme) => createStyles({
   divider: {
     marginLeft: 303,
     marginTop: 200
+  },
+  grid: {
+    paddingTop: '64px',
+    maxWidth: '1980px',
+    alignItems: 'center',
+    paddingLeft: '302px',
+    paddingRight: '302px',
   }
 });
 
@@ -29,6 +36,7 @@ const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: Own
   <Container className={classes.maxWidthLg}>
      <Divider className={classes.divider} variant='middle' />
     <Grid 
+    className={classes.grid}
     container
     spacing={2}
     direction="row"
