@@ -144,9 +144,9 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.footer}>
         <div>
        <div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>
-       <div className={classes.projectLead}> KENT FOURIE{project.user.fullName}</div>
+       <div className={classes.projectLead}>{project.user.fullName}</div>
        </div>
-       <div className={classes.association}>SUPER COOL SCHOOL{project.user.affiliatedOrganisation}</div>
+       <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
        </div>
        <div className={classes.avatar}>
        <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
