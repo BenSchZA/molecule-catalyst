@@ -33,10 +33,9 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     paddingTop: spacing(8),
     paddingLeft: spacing(2),
     paddingRight: spacing(2),
-    background: 'url(\'Seperator-02.png\')',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor: colors.white,
-    minHeight: '100vh'
+    position: "relative",
+    minHeight: '100vh',
+
   },
   navAccount: {
     display: 'flex',
@@ -71,7 +70,20 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     "& > *":{
       margin: 0
     }
-
+  },
+  background: {
+    display: "block",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    zIndex: -1,
+    "& img":{
+      width: "100%"
+    },
+    "& ~ *":{
+      zIndex: 0
+    }
   }
 });
 
@@ -173,6 +185,9 @@ const AppWrapper: React.FunctionComponent<Props> = ({
       </AppBar>
       <ErrorBoundary>
         <main className={classes.content}>
+          <div className={classes.background}>
+            <img src="Seperator-02.png" alt=""/>
+          </div>
           {children}
         </main>
       </ErrorBoundary>

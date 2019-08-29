@@ -220,7 +220,7 @@ const theme = (createMuiTheme as any)({
     },
     MuiDivider: {
       middle: {
-        marginTop: "32px",
+        margin: "32px auto 10px !important",
         backgroundColor: colors.moleculeBranding.third,
         alignSelf: 'center',
         verticalAlign: 'middle',

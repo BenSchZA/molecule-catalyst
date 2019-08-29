@@ -5,7 +5,6 @@
  */
 
 import React, { Fragment } from 'react';
-import { colors } from 'theme';
 import { Theme, createStyles, withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { ProjectSubmissionStatus, Project } from '../../domain/projects/types';
 import dayjs from 'dayjs'
@@ -14,7 +13,7 @@ const styles = (theme: Theme) =>
   createStyles({
     banner: {
       marginBottom: '16px',
-      backgroundColor: colors.lightGrey,
+      backgroundColor: 'transparent',
       width: '100%'
     },
     maxWidth: {

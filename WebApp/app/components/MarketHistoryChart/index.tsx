@@ -76,7 +76,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       initial_price = marketHistory[0].firstTokenPrice,
       current_date = new Date(),
       current_price = currentTokenValue;
-    
+
     // append the svg obgect to the body of the page
     if(this._svgNode) {
       this._rootNode.childNodes.forEach(node => {
@@ -95,7 +95,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       first_token_price: value.firstTokenPrice,
       token_amount: value.tokenAmount,
       dai_amount: value.daiAmount,
-      type: value.daiAmount < 0 ? "BUY" : "SELL",  
+      type: value.daiAmount < 0 ? "BUY" : "SELL",
     }));
 
     // add data point for current price
@@ -113,7 +113,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
 
     // set data ranges and scales
     let xscale = d3.scaleTime()
-      .domain(d3.extent(data, function(d) { return d.date; })) 
+      .domain(d3.extent(data, function(d) { return d.date; }))
       .range([0, width]);
 
     let yscale = d3.scaleLinear()
@@ -148,7 +148,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
         .tickSize(-height)
         .tickFormat("")
       );
-  
+
     this._svgNode.append("g")
       .attr("class", "grid y-grid")
       .style("stroke-dasharray", ("3,3"))
@@ -170,7 +170,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
         .scale(xscale)
         .ticks(5)
         .tickFormat(d3.timeFormat("%d/%m/%Y")))
-  
+
     this._svgNode.append("g")
       .call(d3.axisLeft()
         .scale(yscale)
@@ -199,7 +199,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       .attr("class", "x-line")
       .attr("y1", 0)
       .attr("y2", height);
-    
+
     // append line to show y-coordinate of tooltip
     tooltipGroup.append("line")
       .attr("class", "y-line")
@@ -241,7 +241,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
 
       // mouse coordinates
       let mouse_x = d3.mouse(d3.event.currentTarget)[0];
-      //let mouse_y = d3.mouse(d3.event.currentTarget)[1];
+      // let mouse_y = d3.mouse(d3.event.currentTarget)[1];
 
       // determine data point that should be highlighted
       let x0 = xscale.invert(mouse_x); // conver x-coordinate to date
@@ -273,7 +273,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       axisRectGroup.select("rect.x-axis-rect")
           .attr("x", rect_x)
           .attr("y", rect_y);
-        
+
       axisRectGroup.select("text.axis-rect-text-x")
         .attr("x", text_x)
         .attr("y", text_y)
@@ -285,13 +285,13 @@ class MarketHistoryChart extends React.Component<OwnProps> {
         tooltipGroup.select("line.y-line")
         .attr("transform",
             "translate(0," + yscale(d1.first_token_price) + ")");
-        
+
         // move tooltip circle to data point closest to mouse location
         tooltipGroup.select("circle.tooltip-circle")
           .style("display", null)
           .attr("transform",
               "translate(" + xscale(d.date) + "," + yscale(d.first_token_price) + ")");
-        
+
         // data point label box
         tooltipLabel
           .html(d.type + "<br>" +
@@ -316,7 +316,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
           .attr("x", text_x)
           .attr("y", text_y)
           .text(formatNumber(d1.first_token_price));
-        
+
         // cursor assigns to most right data point (current price)
         // display current price label
         if (d["date"] == current_date) {
