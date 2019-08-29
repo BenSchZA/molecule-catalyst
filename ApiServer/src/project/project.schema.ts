@@ -28,6 +28,23 @@ interface IProject {
   researchPhases: ResearchPhase[],
   status: ProjectSubmissionStatus,
   reviewedBy: User | ObjectId | string,
+  chainData: ChainData,
+}
+
+interface ChainData {
+  block: number,
+  index: number,
+  marketAddress: string,
+  vaultAddress: string,
+  creatorAddress: string,
+}
+
+const defaultChainData: ChainData = {
+  block: -1,
+  index: -1,
+  marketAddress: "",
+  vaultAddress: "",
+  creatorAddress: "",
 }
 
 interface Collaborator {
@@ -64,6 +81,18 @@ let ResearchPhaseSchema = new Schema({
     id: false
   });
 
+let ChainDataSchema = new Schema({
+  block: { type: Number, required: true },
+  index: { type: Number, required: true },
+  marketAddress: { type: String, required: true },
+  vaultAddress: { type: String, required: true },
+  creatorAddress: { type: String, required: true },
+}, 
+{
+  _id: false,
+  id: false
+});
+
 export interface ProjectDocument extends IProject, Document { }
 
 export const ProjectSchema = new Schema({
@@ -76,7 +105,8 @@ export const ProjectSchema = new Schema({
   collaborators: { type: [CollaboratorSchema], required: true },
   researchPhases: { type: [ResearchPhaseSchema], required: true },
   status: { type: Number, required: true, default: ProjectSubmissionStatus.created, enum: [...spreadEnumKeys(ProjectSubmissionStatus)] },
-  reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false }
+  reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false },
+  chainData: { type: ChainDataSchema, required: true, default: defaultChainData },
 }, {
     timestamps: true,
     toJSON: {

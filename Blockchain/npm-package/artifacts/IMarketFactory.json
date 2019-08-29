@@ -1,0 +1,1108 @@
+{
+  "contractName": "IMarketFactory",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_fundingGoals",
+          "type": "uint256[]"
+        },
+        {
+          "name": "_phaseDurations",
+          "type": "uint256[]"
+        },
+        {
+          "name": "_creator",
+          "type": "address"
+        },
+        {
+          "name": "_curveType",
+          "type": "uint256"
+        },
+        {
+          "name": "_taxationRate",
+          "type": "uint256"
+        }
+      ],
+      "name": "deployMarket",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newMoleculeVault",
+          "type": "address"
+        }
+      ],
+      "name": "updateMoleculeVault",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "moleculeVault",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "marketRegistry",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "curveRegistry",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "collateralToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity 0.5.10;\n\ninterface IMarketFactory {\n    /**\n      * @author Veronica - @veronicalc\n      * @dev    This function allows for the creation of a\n      *         new market, consisting of a curve and vault\n      * @notice Vyper cannot handle arrays of unknown length,\n      *         and thus the funding goals and durations will\n      *         only be stored in the vault, which is Solidity.\n      * @param _fundingGoals This is the amount wanting to be\n      *             raised in each round, in collateral.\n      * @param _phaseDurations The time for each round in\n      *             number of blocks.\n      * @param _creator Address of the researcher.\n      * @param _curveType Curve selected\n      * @param _taxationRate The pecentage of taxation. e.g: 60\n      */\n    function deployMarket(\n        uint256[] calldata _fundingGoals,\n        uint256[] calldata _phaseDurations,\n        address _creator,\n        uint256 _curveType,\n        uint256 _taxationRate\n    )\n        external;\n\n    /**\n      * @notice This function will only affect new markets, and will not update\n      *         already created markets. This can only be called by an admin\n      */\n    function updateMoleculeVault(address _newMoleculeVault) external;\n\n    function moleculeVault() external view returns(address);\n\n    function marketRegistry() external view returns(address);\n\n    function curveRegistry() external view returns(address);\n\n    function collateralToken() external view returns(address);\n}\n",
+  "sourcePath": "temp/market/IMarketFactory.sol",
+  "ast": {
+    "absolutePath": "temp/market/IMarketFactory.sol",
+    "exportedSymbols": {
+      "IMarketFactory": [
+        28367
+      ]
+    },
+    "id": 28368,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28326,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:148"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 28367,
+        "linearizedBaseContracts": [
+          28367
+        ],
+        "name": "IMarketFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "@author Veronica - @veronicalc\n@dev    This function allows for the creation of a\n        new market, consisting of a curve and vault\n@notice Vyper cannot handle arrays of unknown length,\n        and thus the funding goals and durations will\n        only be stored in the vault, which is Solidity.\n@param _fundingGoals This is the amount wanting to be\n            raised in each round, in collateral.\n@param _phaseDurations The time for each round in\n            number of blocks.\n@param _creator Address of the researcher.\n@param _curveType Curve selected\n@param _taxationRate The pecentage of taxation. e.g: 60",
+            "id": 28341,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deployMarket",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28339,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28329,
+                  "name": "_fundingGoals",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "821:32:148",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 28327,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "821:7:148",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 28328,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "821:9:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28332,
+                  "name": "_phaseDurations",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "863:34:148",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 28330,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "863:7:148",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 28331,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "863:9:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28334,
+                  "name": "_creator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "907:16:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28333,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "907:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28336,
+                  "name": "_curveType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "933:18:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28335,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "933:7:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28338,
+                  "name": "_taxationRate",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "961:21:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28337,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "961:7:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "811:177:148"
+            },
+            "returnParameters": {
+              "id": 28340,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1005:0:148"
+            },
+            "scope": 28367,
+            "src": "790:216:148",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@notice This function will only affect new markets, and will not update\n        already created markets. This can only be called by an admin",
+            "id": 28346,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateMoleculeVault",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28344,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28343,
+                  "name": "_newMoleculeVault",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28346,
+                  "src": "1215:25:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28342,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1215:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1214:27:148"
+            },
+            "returnParameters": {
+              "id": 28345,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1250:0:148"
+            },
+            "scope": 28367,
+            "src": "1186:65:148",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28351,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "moleculeVault",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28347,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1279:2:148"
+            },
+            "returnParameters": {
+              "id": 28350,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28349,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28351,
+                  "src": "1304:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28348,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1304:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1303:9:148"
+            },
+            "scope": 28367,
+            "src": "1257:56:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28356,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "marketRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28352,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1342:2:148"
+            },
+            "returnParameters": {
+              "id": 28355,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28354,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28356,
+                  "src": "1367:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28353,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1367:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1366:9:148"
+            },
+            "scope": 28367,
+            "src": "1319:57:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28361,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "curveRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28357,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1404:2:148"
+            },
+            "returnParameters": {
+              "id": 28360,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28359,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28361,
+                  "src": "1429:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28358,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1429:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1428:9:148"
+            },
+            "scope": 28367,
+            "src": "1382:56:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28366,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "collateralToken",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28362,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1468:2:148"
+            },
+            "returnParameters": {
+              "id": 28365,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28364,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28366,
+                  "src": "1493:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28363,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1493:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1492:9:148"
+            },
+            "scope": 28367,
+            "src": "1444:58:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 28368,
+        "src": "25:1479:148"
+      }
+    ],
+    "src": "0:1505:148"
+  },
+  "legacyAST": {
+    "absolutePath": "temp/market/IMarketFactory.sol",
+    "exportedSymbols": {
+      "IMarketFactory": [
+        28367
+      ]
+    },
+    "id": 28368,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28326,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:148"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 28367,
+        "linearizedBaseContracts": [
+          28367
+        ],
+        "name": "IMarketFactory",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "@author Veronica - @veronicalc\n@dev    This function allows for the creation of a\n        new market, consisting of a curve and vault\n@notice Vyper cannot handle arrays of unknown length,\n        and thus the funding goals and durations will\n        only be stored in the vault, which is Solidity.\n@param _fundingGoals This is the amount wanting to be\n            raised in each round, in collateral.\n@param _phaseDurations The time for each round in\n            number of blocks.\n@param _creator Address of the researcher.\n@param _curveType Curve selected\n@param _taxationRate The pecentage of taxation. e.g: 60",
+            "id": 28341,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deployMarket",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28339,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28329,
+                  "name": "_fundingGoals",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "821:32:148",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 28327,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "821:7:148",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 28328,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "821:9:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28332,
+                  "name": "_phaseDurations",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "863:34:148",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 28330,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "863:7:148",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 28331,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "863:9:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28334,
+                  "name": "_creator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "907:16:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28333,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "907:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28336,
+                  "name": "_curveType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "933:18:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28335,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "933:7:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 28338,
+                  "name": "_taxationRate",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28341,
+                  "src": "961:21:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 28337,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "961:7:148",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "811:177:148"
+            },
+            "returnParameters": {
+              "id": 28340,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1005:0:148"
+            },
+            "scope": 28367,
+            "src": "790:216:148",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@notice This function will only affect new markets, and will not update\n        already created markets. This can only be called by an admin",
+            "id": 28346,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateMoleculeVault",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28344,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28343,
+                  "name": "_newMoleculeVault",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28346,
+                  "src": "1215:25:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28342,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1215:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1214:27:148"
+            },
+            "returnParameters": {
+              "id": 28345,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1250:0:148"
+            },
+            "scope": 28367,
+            "src": "1186:65:148",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28351,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "moleculeVault",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28347,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1279:2:148"
+            },
+            "returnParameters": {
+              "id": 28350,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28349,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28351,
+                  "src": "1304:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28348,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1304:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1303:9:148"
+            },
+            "scope": 28367,
+            "src": "1257:56:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28356,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "marketRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28352,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1342:2:148"
+            },
+            "returnParameters": {
+              "id": 28355,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28354,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28356,
+                  "src": "1367:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28353,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1367:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1366:9:148"
+            },
+            "scope": 28367,
+            "src": "1319:57:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28361,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "curveRegistry",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28357,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1404:2:148"
+            },
+            "returnParameters": {
+              "id": 28360,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28359,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28361,
+                  "src": "1429:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28358,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1429:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1428:9:148"
+            },
+            "scope": 28367,
+            "src": "1382:56:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 28366,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "collateralToken",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 28362,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1468:2:148"
+            },
+            "returnParameters": {
+              "id": 28365,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 28364,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 28366,
+                  "src": "1493:7:148",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 28363,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1493:7:148",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1492:9:148"
+            },
+            "scope": 28367,
+            "src": "1444:58:148",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 28368,
+        "src": "25:1479:148"
+      }
+    ],
+    "src": "0:1505:148"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.10+commit.5a6ea5b1.Emscripten.clang",
+    "optimizer": false,
+    "runs": 200
+  },
+  "networks": {},
+  "schemaVersion": "2.2.0",
+  "updatedAt": "2019-08-28T10:00:02.498Z"
+}

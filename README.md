@@ -1,5 +1,4 @@
 
-# Molecule Alpha Research Funding
 
 
 The Molecule Alpha implementation focuses on giving no strings attached funding to small research initiatives. This is done by gamifying the crowdfunding aspect by using bonding curves and a taxation on buy.
@@ -153,6 +152,18 @@ After configuring the `ApiServer`, `WebApp`, and `Blockchain` following the step
 ## Blockchain - Getting started
 
 ### Dependencies 
+
+### Deployment
+
+The latest Rinkeby test net deployment as of 27-08-2019:
+
+```
+RINKEBY_DAI_ADDRESS=0x9F22cD5824561051dB9AB4652293324f3019B00b
+MARKET_REGISTRY_ADDRESS=0x785eA9F1fF715dbE6F4CFb40890F2b33117b65A2
+MARKET_FACTORY_ADDRESS=0x7945D145f12f798fA31271F26127f2D3e94AcdA6
+```
+
+For testing against the Rinkeby testnet, add the above environment variables to your WebApp `.env` file.
 
 ### Running tests
 

@@ -25,6 +25,7 @@ const apiUrlBuilder = {
   promoteToAdmin: (userId: string) => generateUri(`users/${userId}/promoteToAdmin`),
   approveProject: (projectId: string) => generateUri(`project/${projectId}/approve`),
   rejectProject: (projectId: string) => generateUri(`project/${projectId}/reject`),
+  launchProject: (projectId: string) => generateUri(`project/${projectId}/launch`),
 };
 
 export default apiUrlBuilder;

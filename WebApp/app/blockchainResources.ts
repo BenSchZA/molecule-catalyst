@@ -5,6 +5,8 @@ export interface BlockchainResources {
   approvedNetwork: boolean,
   networkId: number,
   daiAddress: string,
+  marketRegistryAddress: string,
+  marketFactoryAddress: string,
   signer: JsonRpcSigner,
   provider: Web3Provider,
   signerAddress: string,
@@ -20,6 +22,8 @@ export let blockchainResources: BlockchainResources = {
   approvedNetwork: false,
   networkId: 0,
   daiAddress: "0x",
+  marketRegistryAddress: "0x",
+  marketFactoryAddress: "0x",
   // @ts-ignore
   signer: null,
   signerAddress: "",
@@ -69,6 +73,7 @@ export async function initBlockchainResources() {
         }
       }
     }
+    
     blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
     // @ts-ignore
     await blockchainResources.provider.ready;
@@ -77,6 +82,9 @@ export async function initBlockchainResources() {
 
     const chainId = (await blockchainResources.provider.getNetwork()).chainId;
     blockchainResources.networkId = chainId;
+
+    blockchainResources.marketRegistryAddress = `${process.env.MARKET_REGISTRY_ADDRESS}`;
+    blockchainResources.marketFactoryAddress = `${process.env.MARKET_FACTORY_ADDRESS}`;
 
     if (chainId == 1) {
       blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
@@ -92,6 +100,9 @@ export async function initBlockchainResources() {
       blockchainResources.approvedNetwork = true;
     } else if (chainId == 3) {
       blockchainResources.daiAddress = `${process.env.ROPSTEN_DAI_ADDRESS}`;
+      blockchainResources.approvedNetwork = true;
+    } else if (chainId == Number(process.env.LOCAL_CHAIN_ID)) {
+      blockchainResources.daiAddress = `${process.env.LOCAL_DAI_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else {
       throw "Invalid network"
@@ -135,8 +146,6 @@ export async function verifySignature(message: string, signature: string) {
   }
 }
 
-
-
 export async function getBlockchainObjects(): Promise<BlockchainResources> {
   try {
     if (blockchainResources.daiAddress == "0x") {
@@ -153,5 +162,5 @@ export async function getBlockchainObjects(): Promise<BlockchainResources> {
 
 export async function getGasPrice() {
   let priceData = await (await fetch("https://ethgasstation.info/json/ethgasAPI.json")).json();
-  return ethers.utils.parseUnits(`${(priceData.average / 10) + 1.5}`, 'gwei');// This adds 1 Gwei to the average for a safe fast action
+  return ethers.utils.parseUnits(`${(priceData.average / 10) + 1.5}`, 'gwei'); // This adds 1 Gwei to the average for a safe fast action
 }

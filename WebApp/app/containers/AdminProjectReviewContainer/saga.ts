@@ -1,17 +1,19 @@
 import * as adminUserActions from './actions'
-import { takeEvery, select, call } from 'redux-saga/effects';
+import { takeEvery, select, call, put } from 'redux-saga/effects';
 import { getType } from 'typesafe-actions';
 import { ApplicationRootState } from 'types';
 import { 
-  approveProject as approveProjectApi,
-  rejectProject as rejectProjectApi,
-} from '../../api'
+  approveProject as approveProjectAPI,
+  rejectProject as rejectProjectAPI,
+} from '../../api';
 import { forwardTo } from 'utils/history';
+import { launchProject } from 'domain/projects/actions';
 
 export function* approveProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
-    yield call(approveProjectApi, action.payload, apiKey);
+    yield call(approveProjectAPI, action.payload, apiKey);
+    yield put(launchProject.request(action.payload));
     yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);
@@ -21,7 +23,7 @@ export function* approveProject(action) {
 export function* rejectProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
-    yield call(rejectProjectApi, action.payload, apiKey);
+    yield call(rejectProjectAPI, action.payload, apiKey);
     yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);

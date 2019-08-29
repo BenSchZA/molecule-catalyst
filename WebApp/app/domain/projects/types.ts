@@ -23,6 +23,7 @@ interface IProject {
   researchPhases: ResearchPhase[],
   status: ProjectSubmissionStatus,
   reviewedBy: string,
+  chainData: ChainData,
 }
 
 interface Collaborator {
@@ -51,6 +52,14 @@ interface User {
   profileImage: string,
 }
 
+interface ChainData {
+  block: number,
+  index: number,
+  marketAddress: string,
+  vaultAddress: string,
+  creatorAddress: string,
+}
+
 /* --- STATE --- */
 interface ProjectsState {
 
@@ -66,4 +75,4 @@ type DomainState = ProjectsState;
 type DomainActions = ProjectActions;
 type Project = IProject
 
-export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus };
+export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData };
