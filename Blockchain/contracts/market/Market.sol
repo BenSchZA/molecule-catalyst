@@ -203,6 +203,7 @@ contract Market is IMarket, IERC20 {
     function withdraw(uint256 _amount) public returns(bool) {
         require(active_ == false, "Market not finalised");
         require(_amount <= balances[msg.sender], "Insufficient funds");
+        require(_amount > 0, "Cannot withdraw 0");
 
         balances[msg.sender] = balances[msg.sender].sub(_amount);
 
@@ -210,6 +211,8 @@ contract Market is IMarket, IERC20 {
 
         // Performs a flat linear 100% collateralized sale
         uint256 daiToTransfer = poolBalance.mul(_amount).div(totalSupply_);
+        totalSupply_ = totalSupply_.sub(_amount);
+
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
 
         emit Transfer(address(this), msg.sender, _amount);
