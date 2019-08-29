@@ -3,6 +3,7 @@ import apiUrlBuilder from './apiUrlBuilder';
 import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
 import { ProjectData } from 'containers/CreateProjectContainer/types';
+import { LaunchProjectData } from 'domain/projects/types';
 
 
 export function login(signedPermit: string, ethAddress: string): Promise<any> {
@@ -92,4 +93,9 @@ export async function approveProject(projectId: string, apiToken: string) {
 
 export async function rejectProject(projectId: string, apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.rejectProject(projectId), undefined, 'application/json', true, apiToken);
+}
+
+export async function launchProject(projectId: string, projectData: LaunchProjectData, apiToken: string) {
+  const body = JSON.stringify(projectData);
+  return apiRequest(RequestMethod.POST, apiUrlBuilder.launchProject(projectId), body, 'application/json', true, apiToken);
 }

@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptorHelper, FileOptions } from 'src/helpers/fileInterceptorHelper';
 import { SubmitProjectDTO } from './dto/submitProject.dto'
 import { Request } from 'express';
+import { LaunchProjectDTO } from './dto/launchProject.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -64,6 +65,18 @@ export class ProjectController {
   @Roles(UserType.Admin)
   async rejectProject(@Param('projectId') projectId, @Req() req: Request & { user: User }) {
     const result = await this.projectService.rejectProject(projectId, req.user);
+    return result;
+  }
+
+  @Post(':projectId/launch')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
+  async launchProject(
+    @Param('projectId') projectId,
+    @Req() req: Request & { user: User },
+    @Body() reqBody: LaunchProjectDTO) {
+      
+    const result = await this.projectService.launchProject(projectId, reqBody, req.user);
     return result;
   }
 }

@@ -1,0 +1,23 @@
+{
+  "name": "@molecule-protocol/catalyst-contracts",
+  "version": "0.0.7",
+  "description": "Molecule protocol contracts",
+  "main": "index.js",
+  "scripts": {
+    "prePublish": "./build-artifacts.sh",
+    "compileIndex": "./compile-index.sh"
+  },
+  "author": "Benjamin Scholtz - Linum Labs",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "/artifacts",
+    "README.md"
+  ],
+  "dependencies": {
+    "etherlime": "^2.2.0",
+    "solc": "0.5.10"
+  }
+}

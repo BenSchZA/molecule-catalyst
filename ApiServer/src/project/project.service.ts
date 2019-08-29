@@ -8,6 +8,7 @@ import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { User } from 'src/user/user.schema';
 import { ProjectSubmissionStatus } from './project.schema';
+import { LaunchProjectDTO } from './dto/launchProject.dto';
 import { ServiceBase } from 'src/common/serviceBase';
 import * as sharp from 'sharp';
 
@@ -42,7 +43,7 @@ export class ProjectService extends ServiceBase {
   async getProjects() {
     const result = await this.projectRepository
       .find().or([{status: ProjectSubmissionStatus.started}, {status: ProjectSubmissionStatus.ended}])
-      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt -chainData');
     return result.map(r => r.toObject())
   }
 
@@ -73,6 +74,14 @@ export class ProjectService extends ServiceBase {
     const project = await this.projectRepository.findById(projectId);
     project.status = ProjectSubmissionStatus.rejected;
     project.reviewedBy = user.id;
+    await project.save();
+    return project.toObject();
+  }
+
+  async launchProject(projectId: any, projectData: LaunchProjectDTO, user: User) {
+    const project = await this.projectRepository.findById(projectId);
+    project.chainData = { ...projectData };
+    project.status = ProjectSubmissionStatus.started;
     await project.save();
     return project.toObject();
   }
