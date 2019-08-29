@@ -225,24 +225,30 @@ describe('Market stress test', async () => {
                 let balanceOfUserInMarketAfterWithdraw = 0;
                 let balanceOfUserInDaiAfterWithdraw = 0;
                 let balanceOfMarket = 0;
+                let tokenSupply = 0;
 
                 for (let index = 0; index < 10; index++) {
                     balanceOfUserInMarketBeforeWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
                     balanceOfUserInDaiBeforeWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
                     balanceOfMarket =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+                    tokenSupply = await marketInstance.totalSupply();
 
                     console.log("\nUser " + index + "\n\tBalance in market:");
                     console.log("\t" + balanceOfUserInMarketBeforeWithdraw.toString());
                     console.log("\tBalance of user in DAI:");
                     console.log("\t" + balanceOfUserInDaiBeforeWithdraw.toString());
-                    console.log("\tBalance of market:");
+                    console.log("\tBalance of Dai in market:");
                     console.log("\t" + balanceOfMarket.toString())
+                    console.log("\tToken supply:");
+                    console.log("\t" + tokenSupply.toString());
 
-                    let result = await marketInstance.from(accounts[index].signer.address).withdraw(balanceOfUserInMarketBeforeWithdraw);
-                    
+                    let txReceipt = await marketInstance.from(accounts[index].signer.address).withdraw(balanceOfUserInMarketBeforeWithdraw);
+                    let result = await txReceipt.wait();
+
                     balanceOfUserInMarketAfterWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
                     balanceOfUserInDaiAfterWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
                     balanceOfMarket =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+                    tokenSupply = await marketInstance.totalSupply();
 
                     console.log("\n\tAfter withdrawing:");
                     console.log("\tBalance in market:");
@@ -251,6 +257,8 @@ describe('Market stress test', async () => {
                     console.log("\t" + balanceOfUserInDaiAfterWithdraw.toString());
                     console.log("\tBalance of market:");
                     console.log("\t" + balanceOfMarket.toString())
+                    console.log("\tToken supply:");
+                    console.log("\t" + tokenSupply.toString());
                 }
             } catch (error) {
                 console.log(`Had a crash`, error);
