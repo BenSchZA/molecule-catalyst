@@ -2,7 +2,7 @@ import * as createProjectActions from './actions'
 import { takeEvery, select, call } from 'redux-saga/effects';
 import { getType } from 'typesafe-actions';
 import { ApplicationRootState } from 'types';
-import { submitProject as submitProjectApi } from '../../api'
+import { submitProject as submitProjectApi } from '../../api';
 import { forwardTo } from 'utils/history';
 
 export function* submitProject(action) {

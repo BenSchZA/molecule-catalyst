@@ -241,7 +241,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
 
       // mouse coordinates
       let mouse_x = d3.mouse(d3.event.currentTarget)[0];
-      let mouse_y = d3.mouse(d3.event.currentTarget)[1];
+      //let mouse_y = d3.mouse(d3.event.currentTarget)[1];
 
       // determine data point that should be highlighted
       let x0 = xscale.invert(mouse_x); // conver x-coordinate to date
