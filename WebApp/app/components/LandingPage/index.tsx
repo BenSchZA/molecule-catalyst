@@ -2,7 +2,6 @@ import { Typography, WithStyles, Button, Theme, Paper, Grid, ListItem, List, Lis
 import { Accessibility, Fingerprint, SupervisorAccount } from '@material-ui/icons';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import {colors} from 'theme';
 import { compose } from 'redux';
 import { forwardTo } from 'utils/history';
 import FolderIcon from '@material-ui/icons/Folder';
