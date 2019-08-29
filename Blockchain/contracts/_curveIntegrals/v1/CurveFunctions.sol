@@ -5,7 +5,7 @@ import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 // @author Ben Scholtz @ Linum Labs
 // @title Bonding curve functions
 
-contract CurveIntegrals {
+contract CurveFunctions {
   using SafeMath for uint256;
 
   string constant public curveFunction = "linear: (1/20000)*x + 0.5";
