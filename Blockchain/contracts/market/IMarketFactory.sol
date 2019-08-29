@@ -38,4 +38,8 @@ interface IMarketFactory {
     function curveRegistry() external view returns(address);
 
     function collateralToken() external view returns(address);
+
+    function addWhitelistAdmin(address account) external;
+    
+    function isWhitelistAdmin(address account) external view returns (bool);
 }
