@@ -206,54 +206,65 @@ describe('Market stress test', async () => {
                     console.log(`${i} Had a crash`)
                 }
             }
-            
+            // Withdrawing the tokens from the market 
             try {
-                //check the balance of the vault 
-                // withdraw from all 10 accounts
-                // check the vault as it goes and see what they are getting out 
-                // ensure everything is runing smooth
                 const vaultBalanceBeforeWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
                 let phaseData = await vaultInstance.fundingPhase(0);
-
-                assert.equal(phaseData[3].toString(), 1, "Funding round state incorrect");
-
-                await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, ethers.utils.parseUnits("940000", 18))).wait();
-                const vaultBalanceAfterWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
-                phaseData = await vaultInstance.fundingPhase(0);
                 await (await vaultInstance.from(creator).terminateMarket());
                 const marketActivity = await marketInstance.active();
-                
 
-                assert.equal(marketActivity, false, "Market has not been terminated");
+                assert(vaultBalanceBeforeWithdraws.toString() >= phaseData[0].toString(), "Vault balance is lower than phase goal");
                 assert.equal(phaseData[3].toString(), 2, "Funding round has not ended");
-                assert(vaultBalanceBeforeWithdraws.toString() <= vaultBalanceAfterWithdraws.toString(), "Vault balance did not change with mint");
-
+                assert.equal(marketActivity, false, "Market has not been terminated");
+         
                 let balanceOfUserInMarketBeforeWithdraw = 0;
                 let balanceOfUserInDaiBeforeWithdraw = 0;
                 let balanceOfUserInMarketAfterWithdraw = 0;
                 let balanceOfUserInDaiAfterWithdraw = 0;
+                let balanceOfMarketBeforeWithdraw = 0;
+                let balanceOfMarketAfterWithdraw = 0;
+                let tokenSupplyBeforeWithdraw = 0;
+                let tokenSupplyAfterWithdraw = 0;
+
                 for (let index = 0; index < 10; index++) {
                     balanceOfUserInMarketBeforeWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
-                    console.log("\nUser " + index + "\nBalance in market:");
-                    console.log(balanceOfUserInMarketBeforeWithdraw.toString());
                     balanceOfUserInDaiBeforeWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
-                    console.log("Balance of user in DAI");
-                    console.log(balanceOfUserInDaiBeforeWithdraw.toString());
+                    balanceOfMarketBeforeWithdraw =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+                    tokenSupplyBeforeWithdraw = await marketInstance.totalSupply();
+                    // Withdrawing a 0 balance will result in a revert
+                    if(balanceOfUserInMarketBeforeWithdraw.toString() != 0) {
+                        let txReceipt = await (await marketInstance.from(accounts[index].signer.address).withdraw(balanceOfUserInMarketBeforeWithdraw)).wait();
+    
+                        balanceOfUserInMarketAfterWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
+                        balanceOfUserInDaiAfterWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
+                        balanceOfMarketAfterWithdraw =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+                        tokenSupplyAfterWithdraw = await marketInstance.totalSupply();
 
-                    let result = await marketInstance.withdraw(balanceOfUserInMarketBeforeWithdraw);
-
-                    balanceOfUserInMarketAfterWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
-                    console.log("\nUser " + index + "\nBalance in market:");
-                    console.log(balanceOfUserInMarketAfterWithdraw.toString());
-                    balanceOfUserInDaiAfterWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
-                    console.log("Balance of user in DAI");
-                    console.log(balanceOfUserInDaiAfterWithdraw.toString());
+                        // User tests
+                        assert(balanceOfUserInMarketBeforeWithdraw.toString() > balanceOfUserInMarketAfterWithdraw.toString(), "User has a bigger balance before withdrawing");
+                        assert.equal(balanceOfUserInMarketAfterWithdraw.toString(), 0, "User has tokens in market after withdraw");
+                        assert.notEqual(balanceOfUserInDaiAfterWithdraw.toString(), balanceOfUserInDaiBeforeWithdraw.toString(), "Use has less DAI after withdraw");
+                        // Market tests
+                        assert.notEqual(tokenSupplyBeforeWithdraw.toString(), tokenSupplyAfterWithdraw.toString(), "Token supply did not decrease with withdraw");
+                        assert.notEqual(balanceOfMarketBeforeWithdraw.toString(), balanceOfMarketAfterWithdraw.toString(), "Market balance did not decrease with withdraw");
+                    } else {
+                        try {
+                            await (await marketInstance.from(accounts[index].signer.address).withdraw(balanceOfUserInMarketBeforeWithdraw)).wait();
+                            assert.equal(true, false, "Was able to withdraw with 0 tokens");
+                        } catch (error) {
+                            assert.equal(true, true, "Withdraw failed on 0 token balance");
+                        }
+                    }
                 }
+                // Ensuring the market has no supply or collateral
+                balanceOfMarketAfterWithdraw =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+                tokenSupplyAfterWithdraw = await marketInstance.totalSupply();
+
+                assert.equal(balanceOfMarketAfterWithdraw.toString(), 0, "Market has left over collateral");
+                assert.equal(tokenSupplyAfterWithdraw.toString(), 0, "Market has tokens after all withdraws");
             } catch (error) {
                 console.log(`Had a crash`, error);
             }
-
-            // Do withdraw checks
         })
     });
     
