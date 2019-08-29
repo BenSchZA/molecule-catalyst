@@ -208,46 +208,49 @@ describe('Market stress test', async () => {
             }
             
             try {
-                //check the balance of the vault 
-                // withdraw from all 10 accounts
-                // check the vault as it goes and see what they are getting out 
-                // ensure everything is runing smooth
                 const vaultBalanceBeforeWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
                 let phaseData = await vaultInstance.fundingPhase(0);
 
-                assert.equal(phaseData[3].toString(), 1, "Funding round state incorrect");
+                console.log(vaultBalanceBeforeWithdraws.toString())
 
-                await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, ethers.utils.parseUnits("940000", 18))).wait();
-                const vaultBalanceAfterWithdraws = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
-                phaseData = await vaultInstance.fundingPhase(0);
                 await (await vaultInstance.from(creator).terminateMarket());
                 const marketActivity = await marketInstance.active();
-                
 
-                assert.equal(marketActivity, false, "Market has not been terminated");
+                assert(vaultBalanceBeforeWithdraws.toString() >= phaseData[0].toString(), "Vault balance is lower than phase goal");
                 assert.equal(phaseData[3].toString(), 2, "Funding round has not ended");
-                assert(vaultBalanceBeforeWithdraws.toString() <= vaultBalanceAfterWithdraws.toString(), "Vault balance did not change with mint");
-
+                assert.equal(marketActivity, false, "Market has not been terminated");
+         
                 let balanceOfUserInMarketBeforeWithdraw = 0;
                 let balanceOfUserInDaiBeforeWithdraw = 0;
                 let balanceOfUserInMarketAfterWithdraw = 0;
                 let balanceOfUserInDaiAfterWithdraw = 0;
+                let balanceOfMarket = 0;
+
                 for (let index = 0; index < 10; index++) {
                     balanceOfUserInMarketBeforeWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
-                    console.log("\nUser " + index + "\nBalance in market:");
-                    console.log(balanceOfUserInMarketBeforeWithdraw.toString());
                     balanceOfUserInDaiBeforeWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
-                    console.log("Balance of user in DAI");
-                    console.log(balanceOfUserInDaiBeforeWithdraw.toString());
+                    balanceOfMarket =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
 
-                    let result = await marketInstance.withdraw(balanceOfUserInMarketBeforeWithdraw);
+                    console.log("\nUser " + index + "\n\tBalance in market:");
+                    console.log("\t" + balanceOfUserInMarketBeforeWithdraw.toString());
+                    console.log("\tBalance of user in DAI:");
+                    console.log("\t" + balanceOfUserInDaiBeforeWithdraw.toString());
+                    console.log("\tBalance of market:");
+                    console.log("\t" + balanceOfMarket.toString())
 
+                    let result = await marketInstance.from(accounts[index].signer.address).withdraw(balanceOfUserInMarketBeforeWithdraw);
+                    
                     balanceOfUserInMarketAfterWithdraw = await marketInstance.balanceOf(accounts[index].signer.address);
-                    console.log("\nUser " + index + "\nBalance in market:");
-                    console.log(balanceOfUserInMarketAfterWithdraw.toString());
                     balanceOfUserInDaiAfterWithdraw = await pseudoDaiInstance.balanceOf(accounts[index].signer.address);
-                    console.log("Balance of user in DAI");
-                    console.log(balanceOfUserInDaiAfterWithdraw.toString());
+                    balanceOfMarket =  await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+
+                    console.log("\n\tAfter withdrawing:");
+                    console.log("\tBalance in market:");
+                    console.log("\t" + balanceOfUserInMarketAfterWithdraw.toString());
+                    console.log("\tBalance of user in DAI");
+                    console.log("\t" + balanceOfUserInDaiAfterWithdraw.toString());
+                    console.log("\tBalance of market:");
+                    console.log("\t" + balanceOfMarket.toString())
                 }
             } catch (error) {
                 console.log(`Had a crash`, error);
