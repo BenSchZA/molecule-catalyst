@@ -152,14 +152,15 @@ describe('Vault stress test', async () => {
             console.log(phaseData[3].toString())
 
             const marketActivity = await marketInstance.active();
-            console.log(marketActivity)
+            
+            assert.equal(marketActivity, false, "Market is still active");
 
             let balanceOfUser1 = await pseudoDaiInstance.balanceOf(user1.signer.address);
             let balanceOfUser2 = await pseudoDaiInstance.balanceOf(user2.signer.address);
 
             await (await marketInstance.from(user1.signer.address, mintAMount).withdraw(balanceOfUser1)).wait();
-            await (await marketInstance.from(user1.signer.address, mintAMount).withdraw(balanceOfUser2)).wait();
-            
+            await (await marketInstance.from(user2.signer.address, mintAMount).withdraw(balanceOfUser2)).wait();
+
             let balanceOfUser1After = await pseudoDaiInstance.balanceOf(user1.signer.address);
             let balanceOfUser2After = await pseudoDaiInstance.balanceOf(user2.signer.address);
 
@@ -167,22 +168,7 @@ describe('Vault stress test', async () => {
             console.log(balanceOfUser2)
             console.log(balanceOfUser1After)
             console.log(balanceOfUser2After)
-            /**
-             * 5750000000000000000000000
-1
-9956040576
-1
-5750000000000000000000000
-1
-9956040576
-1
-5750000000000000000000000
-1
-9956040576
-1
-false
-
-             */
+            
         });
 
         it("Blocks minting if too much time has passed", async () => {
