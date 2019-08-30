@@ -2,6 +2,8 @@
 
 ## Contract variables names
 
+The naming convention for variables and functions.
+
 ### Private/internal variables
 
 To indicate that a contract (storage) variable is private/internal, add an underscore to the end of the name. This is to prevent the accidental use of storage variables.
