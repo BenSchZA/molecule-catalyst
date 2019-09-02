@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "contractName": "Secondary",
   "abi": [
@@ -1720,3 +1721,53 @@
   "schemaVersion": "2.1.7",
   "updatedAt": "2019-08-12T11:56:48.961Z"
 }
+=======
+[
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "PrimaryTransferred",
+    "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "primary",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "transferPrimary",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
+>>>>>>> 1a5fa3a... Feature/contract deployment fix

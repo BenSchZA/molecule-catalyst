@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "contractName": "ICurveFunctions",
   "abi": [
@@ -460,3 +461,45 @@
   "schemaVersion": "2.1.7",
   "updatedAt": "2019-08-12T11:56:48.942Z"
 }
+=======
+[
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "x_t",
+        "type": "uint256"
+      }
+    ],
+    "name": "curveIntegral",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "x_d",
+        "type": "uint256"
+      }
+    ],
+    "name": "inverseCurveIntegral",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]
+>>>>>>> 1a5fa3a... Feature/contract deployment fix

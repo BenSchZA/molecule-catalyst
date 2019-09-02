@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "contractName": "IMarketFactory",
   "abi": [
@@ -1106,3 +1107,107 @@
   "schemaVersion": "2.1.7",
   "updatedAt": "2019-08-12T11:56:49.005Z"
 }
+=======
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_fundingGoals",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_phaseDurations",
+        "type": "uint256[]"
+      },
+      {
+        "name": "_creator",
+        "type": "address"
+      },
+      {
+        "name": "_curveType",
+        "type": "uint256"
+      },
+      {
+        "name": "_taxationRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployMarket",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newMoleculeVault",
+        "type": "address"
+      }
+    ],
+    "name": "updateMoleculeVault",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "moleculeVault",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "marketRegistry",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "curveRegistry",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "collateralToken",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+>>>>>>> 1a5fa3a... Feature/contract deployment fix

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "contractName": "Math",
   "abi": [],
@@ -1877,3 +1878,6 @@
   "schemaVersion": "2.1.7",
   "updatedAt": "2019-08-12T11:56:48.959Z"
 }
+=======
+[]
+>>>>>>> 1a5fa3a... Feature/contract deployment fix

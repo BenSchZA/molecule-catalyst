@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "contractName": "ReentrancyGuard",
   "abi": [
@@ -800,3 +801,13 @@
   "schemaVersion": "2.1.7",
   "updatedAt": "2019-08-12T11:56:49.003Z"
 }
+=======
+[
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  }
+]
+>>>>>>> 1a5fa3a... Feature/contract deployment fix
