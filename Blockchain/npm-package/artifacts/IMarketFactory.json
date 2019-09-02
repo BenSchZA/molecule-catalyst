@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "contractName": "IMarketFactory",
   "abi": [
@@ -101,33 +100,75 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "addWhitelistAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isWhitelistAdmin",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceWhitelistAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity 0.5.10;\n\ninterface IMarketFactory {\n    /**\n      * @author Veronica - @veronicalc\n      * @dev    This function allows for the creation of a\n      *         new market, consisting of a curve and vault\n      * @notice Vyper cannot handle arrays of unknown length,\n      *         and thus the funding goals and durations will\n      *         only be stored in the vault, which is Solidity.\n      * @param _fundingGoals This is the amount wanting to be\n      *             raised in each round, in collateral.\n      * @param _phaseDurations The time for each round in\n      *             number of blocks.\n      * @param _creator Address of the researcher.\n      * @param _curveType Curve selected\n      * @param _taxationRate The pecentage of taxation. e.g: 60\n      */\n    function deployMarket(\n        uint256[] calldata _fundingGoals,\n        uint256[] calldata _phaseDurations,\n        address _creator,\n        uint256 _curveType,\n        uint256 _taxationRate\n    )\n        external;\n\n    /**\n      * @notice This function will only affect new markets, and will not update\n      *         already created markets. This can only be called by an admin\n      */\n    function updateMoleculeVault(address _newMoleculeVault) external;\n\n    function moleculeVault() external view returns(address);\n\n    function marketRegistry() external view returns(address);\n\n    function curveRegistry() external view returns(address);\n\n    function collateralToken() external view returns(address);\n}\n",
-  "sourcePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/market/IMarketFactory.sol",
+  "source": "pragma solidity 0.5.10;\n\ninterface IMarketFactory {\n    /**\n      * @author Veronica - @veronicalc\n      * @dev    This function allows for the creation of a\n      *         new market, consisting of a curve and vault\n      * @notice Vyper cannot handle arrays of unknown length,\n      *         and thus the funding goals and durations will\n      *         only be stored in the vault, which is Solidity.\n      * @param _fundingGoals This is the amount wanting to be\n      *             raised in each round, in collateral.\n      * @param _phaseDurations The time for each round in\n      *             number of blocks.\n      * @param _creator Address of the researcher.\n      * @param _curveType Curve selected\n      * @param _taxationRate The pecentage of taxation. e.g: 60\n      */\n    function deployMarket(\n        uint256[] calldata _fundingGoals,\n        uint256[] calldata _phaseDurations,\n        address _creator,\n        uint256 _curveType,\n        uint256 _taxationRate\n    )\n        external;\n\n    /**\n      * @notice This function will only affect new markets, and will not update\n      *         already created markets. This can only be called by an admin\n      */\n    function updateMoleculeVault(address _newMoleculeVault) external;\n\n    function moleculeVault() external view returns(address);\n\n    function marketRegistry() external view returns(address);\n\n    function curveRegistry() external view returns(address);\n\n    function collateralToken() external view returns(address);\n\n    function addWhitelistAdmin(address account) external;\n    \n    function isWhitelistAdmin(address account) external view returns (bool);\n\n    function renounceWhitelistAdmin() external;\n}\n",
+  "sourcePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/market/IMarketFactory.sol",
   "ast": {
-    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/market/IMarketFactory.sol",
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/market/IMarketFactory.sol",
     "exportedSymbols": {
       "IMarketFactory": [
-        4394
+        4632
       ]
     },
-    "id": 4395,
+    "id": 4633,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4353,
+        "id": 4576,
         "literals": [
           "solidity",
           "0.5",
           ".10"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:28"
+        "src": "0:23:29"
       },
       {
         "baseContracts": [],
@@ -135,9 +176,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 4394,
+        "id": 4632,
         "linearizedBaseContracts": [
-          4394
+          4632
         ],
         "name": "IMarketFactory",
         "nodeType": "ContractDefinition",
@@ -145,23 +186,23 @@
           {
             "body": null,
             "documentation": "@author Veronica - @veronicalc\n@dev    This function allows for the creation of a\n        new market, consisting of a curve and vault\n@notice Vyper cannot handle arrays of unknown length,\n        and thus the funding goals and durations will\n        only be stored in the vault, which is Solidity.\n@param _fundingGoals This is the amount wanting to be\n            raised in each round, in collateral.\n@param _phaseDurations The time for each round in\n            number of blocks.\n@param _creator Address of the researcher.\n@param _curveType Curve selected\n@param _taxationRate The pecentage of taxation. e.g: 60",
-            "id": 4368,
+            "id": 4591,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "deployMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4366,
+              "id": 4589,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4356,
+                  "id": 4579,
                   "name": "_fundingGoals",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "821:32:28",
+                  "scope": 4591,
+                  "src": "821:32:29",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -170,19 +211,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 4354,
+                      "id": 4577,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "821:7:28",
+                      "src": "821:7:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 4355,
+                    "id": 4578,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "821:9:28",
+                    "src": "821:9:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -193,11 +234,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4359,
+                  "id": 4582,
                   "name": "_phaseDurations",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "863:34:28",
+                  "scope": 4591,
+                  "src": "863:34:29",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -206,19 +247,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 4357,
+                      "id": 4580,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "863:7:28",
+                      "src": "863:7:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 4358,
+                    "id": 4581,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "863:9:28",
+                    "src": "863:9:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -229,11 +270,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4361,
+                  "id": 4584,
                   "name": "_creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "907:16:28",
+                  "scope": 4591,
+                  "src": "907:16:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -241,10 +282,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4360,
+                    "id": 4583,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "907:7:28",
+                    "src": "907:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -256,11 +297,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4363,
+                  "id": 4586,
                   "name": "_curveType",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "933:18:28",
+                  "scope": 4591,
+                  "src": "933:18:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -268,10 +309,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4362,
+                    "id": 4585,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "933:7:28",
+                    "src": "933:7:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -282,11 +323,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4365,
+                  "id": 4588,
                   "name": "_taxationRate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "961:21:28",
+                  "scope": 4591,
+                  "src": "961:21:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -294,10 +335,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4364,
+                    "id": 4587,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "961:7:28",
+                    "src": "961:7:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -307,16 +348,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "811:177:28"
+              "src": "811:177:29"
             },
             "returnParameters": {
-              "id": 4367,
+              "id": 4590,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1005:0:28"
+              "src": "1005:0:29"
             },
-            "scope": 4394,
-            "src": "790:216:28",
+            "scope": 4632,
+            "src": "790:216:29",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -324,23 +365,23 @@
           {
             "body": null,
             "documentation": "@notice This function will only affect new markets, and will not update\n        already created markets. This can only be called by an admin",
-            "id": 4373,
+            "id": 4596,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "updateMoleculeVault",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4371,
+              "id": 4594,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4370,
+                  "id": 4593,
                   "name": "_newMoleculeVault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4373,
-                  "src": "1215:25:28",
+                  "scope": 4596,
+                  "src": "1215:25:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -348,10 +389,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4369,
+                    "id": 4592,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1215:7:28",
+                    "src": "1215:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -362,16 +403,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1214:27:28"
+              "src": "1214:27:29"
             },
             "returnParameters": {
-              "id": 4372,
+              "id": 4595,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1250:0:28"
+              "src": "1250:0:29"
             },
-            "scope": 4394,
-            "src": "1186:65:28",
+            "scope": 4632,
+            "src": "1186:65:29",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -379,29 +420,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4378,
+            "id": 4601,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "moleculeVault",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4374,
+              "id": 4597,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1279:2:28"
+              "src": "1279:2:29"
             },
             "returnParameters": {
-              "id": 4377,
+              "id": 4600,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4376,
+                  "id": 4599,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4378,
-                  "src": "1304:7:28",
+                  "scope": 4601,
+                  "src": "1304:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -409,10 +450,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4375,
+                    "id": 4598,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1304:7:28",
+                    "src": "1304:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -423,10 +464,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1303:9:28"
+              "src": "1303:9:29"
             },
-            "scope": 4394,
-            "src": "1257:56:28",
+            "scope": 4632,
+            "src": "1257:56:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -434,29 +475,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4383,
+            "id": 4606,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "marketRegistry",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4379,
+              "id": 4602,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1342:2:28"
+              "src": "1342:2:29"
             },
             "returnParameters": {
-              "id": 4382,
+              "id": 4605,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4381,
+                  "id": 4604,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4383,
-                  "src": "1367:7:28",
+                  "scope": 4606,
+                  "src": "1367:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -464,10 +505,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4380,
+                    "id": 4603,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1367:7:28",
+                    "src": "1367:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -478,10 +519,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1366:9:28"
+              "src": "1366:9:29"
             },
-            "scope": 4394,
-            "src": "1319:57:28",
+            "scope": 4632,
+            "src": "1319:57:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -489,29 +530,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4388,
+            "id": 4611,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "curveRegistry",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4384,
+              "id": 4607,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1404:2:28"
+              "src": "1404:2:29"
             },
             "returnParameters": {
-              "id": 4387,
+              "id": 4610,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4386,
+                  "id": 4609,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4388,
-                  "src": "1429:7:28",
+                  "scope": 4611,
+                  "src": "1429:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -519,10 +560,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4385,
+                    "id": 4608,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1429:7:28",
+                    "src": "1429:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -533,10 +574,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1428:9:28"
+              "src": "1428:9:29"
             },
-            "scope": 4394,
-            "src": "1382:56:28",
+            "scope": 4632,
+            "src": "1382:56:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -544,29 +585,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4393,
+            "id": 4616,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "collateralToken",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4389,
+              "id": 4612,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1468:2:28"
+              "src": "1468:2:29"
             },
             "returnParameters": {
-              "id": 4392,
+              "id": 4615,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4391,
+                  "id": 4614,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4393,
-                  "src": "1493:7:28",
+                  "scope": 4616,
+                  "src": "1493:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -574,10 +615,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4390,
+                    "id": 4613,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1493:7:28",
+                    "src": "1493:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -588,40 +629,204 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1492:9:28"
+              "src": "1492:9:29"
             },
-            "scope": 4394,
-            "src": "1444:58:28",
+            "scope": 4632,
+            "src": "1444:58:29",
             "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4621,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4619,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4618,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4621,
+                  "src": "1535:15:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4617,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1535:7:29",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1534:17:29"
+            },
+            "returnParameters": {
+              "id": 4620,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1560:0:29"
+            },
+            "scope": 4632,
+            "src": "1508:53:29",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4628,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4624,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4623,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4628,
+                  "src": "1597:15:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4622,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1597:7:29",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1596:17:29"
+            },
+            "returnParameters": {
+              "id": 4627,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4626,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4628,
+                  "src": "1637:4:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4625,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1637:4:29",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1636:6:29"
+            },
+            "scope": 4632,
+            "src": "1571:72:29",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4631,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4629,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1680:2:29"
+            },
+            "returnParameters": {
+              "id": 4630,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1691:0:29"
+            },
+            "scope": 4632,
+            "src": "1649:43:29",
+            "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 4395,
-        "src": "25:1479:28"
+        "scope": 4633,
+        "src": "25:1669:29"
       }
     ],
-    "src": "0:1505:28"
+    "src": "0:1695:29"
   },
   "legacyAST": {
-    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/market/IMarketFactory.sol",
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/market/IMarketFactory.sol",
     "exportedSymbols": {
       "IMarketFactory": [
-        4394
+        4632
       ]
     },
-    "id": 4395,
+    "id": 4633,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4353,
+        "id": 4576,
         "literals": [
           "solidity",
           "0.5",
           ".10"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:28"
+        "src": "0:23:29"
       },
       {
         "baseContracts": [],
@@ -629,9 +834,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 4394,
+        "id": 4632,
         "linearizedBaseContracts": [
-          4394
+          4632
         ],
         "name": "IMarketFactory",
         "nodeType": "ContractDefinition",
@@ -639,23 +844,23 @@
           {
             "body": null,
             "documentation": "@author Veronica - @veronicalc\n@dev    This function allows for the creation of a\n        new market, consisting of a curve and vault\n@notice Vyper cannot handle arrays of unknown length,\n        and thus the funding goals and durations will\n        only be stored in the vault, which is Solidity.\n@param _fundingGoals This is the amount wanting to be\n            raised in each round, in collateral.\n@param _phaseDurations The time for each round in\n            number of blocks.\n@param _creator Address of the researcher.\n@param _curveType Curve selected\n@param _taxationRate The pecentage of taxation. e.g: 60",
-            "id": 4368,
+            "id": 4591,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "deployMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4366,
+              "id": 4589,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4356,
+                  "id": 4579,
                   "name": "_fundingGoals",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "821:32:28",
+                  "scope": 4591,
+                  "src": "821:32:29",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -664,19 +869,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 4354,
+                      "id": 4577,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "821:7:28",
+                      "src": "821:7:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 4355,
+                    "id": 4578,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "821:9:28",
+                    "src": "821:9:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -687,11 +892,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4359,
+                  "id": 4582,
                   "name": "_phaseDurations",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "863:34:28",
+                  "scope": 4591,
+                  "src": "863:34:29",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -700,19 +905,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 4357,
+                      "id": 4580,
                       "name": "uint256",
                       "nodeType": "ElementaryTypeName",
-                      "src": "863:7:28",
+                      "src": "863:7:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
                       }
                     },
-                    "id": 4358,
+                    "id": 4581,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "863:9:28",
+                    "src": "863:9:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
                       "typeString": "uint256[]"
@@ -723,11 +928,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4361,
+                  "id": 4584,
                   "name": "_creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "907:16:28",
+                  "scope": 4591,
+                  "src": "907:16:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -735,10 +940,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4360,
+                    "id": 4583,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "907:7:28",
+                    "src": "907:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -750,11 +955,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4363,
+                  "id": 4586,
                   "name": "_curveType",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "933:18:28",
+                  "scope": 4591,
+                  "src": "933:18:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -762,10 +967,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4362,
+                    "id": 4585,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "933:7:28",
+                    "src": "933:7:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -776,11 +981,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 4365,
+                  "id": 4588,
                   "name": "_taxationRate",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4368,
-                  "src": "961:21:28",
+                  "scope": 4591,
+                  "src": "961:21:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -788,10 +993,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4364,
+                    "id": 4587,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "961:7:28",
+                    "src": "961:7:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -801,16 +1006,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "811:177:28"
+              "src": "811:177:29"
             },
             "returnParameters": {
-              "id": 4367,
+              "id": 4590,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1005:0:28"
+              "src": "1005:0:29"
             },
-            "scope": 4394,
-            "src": "790:216:28",
+            "scope": 4632,
+            "src": "790:216:29",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -818,23 +1023,23 @@
           {
             "body": null,
             "documentation": "@notice This function will only affect new markets, and will not update\n        already created markets. This can only be called by an admin",
-            "id": 4373,
+            "id": 4596,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "updateMoleculeVault",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4371,
+              "id": 4594,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4370,
+                  "id": 4593,
                   "name": "_newMoleculeVault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4373,
-                  "src": "1215:25:28",
+                  "scope": 4596,
+                  "src": "1215:25:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -842,10 +1047,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4369,
+                    "id": 4592,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1215:7:28",
+                    "src": "1215:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -856,16 +1061,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1214:27:28"
+              "src": "1214:27:29"
             },
             "returnParameters": {
-              "id": 4372,
+              "id": 4595,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1250:0:28"
+              "src": "1250:0:29"
             },
-            "scope": 4394,
-            "src": "1186:65:28",
+            "scope": 4632,
+            "src": "1186:65:29",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -873,29 +1078,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4378,
+            "id": 4601,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "moleculeVault",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4374,
+              "id": 4597,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1279:2:28"
+              "src": "1279:2:29"
             },
             "returnParameters": {
-              "id": 4377,
+              "id": 4600,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4376,
+                  "id": 4599,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4378,
-                  "src": "1304:7:28",
+                  "scope": 4601,
+                  "src": "1304:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -903,10 +1108,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4375,
+                    "id": 4598,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1304:7:28",
+                    "src": "1304:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -917,10 +1122,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1303:9:28"
+              "src": "1303:9:29"
             },
-            "scope": 4394,
-            "src": "1257:56:28",
+            "scope": 4632,
+            "src": "1257:56:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -928,29 +1133,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4383,
+            "id": 4606,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "marketRegistry",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4379,
+              "id": 4602,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1342:2:28"
+              "src": "1342:2:29"
             },
             "returnParameters": {
-              "id": 4382,
+              "id": 4605,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4381,
+                  "id": 4604,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4383,
-                  "src": "1367:7:28",
+                  "scope": 4606,
+                  "src": "1367:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -958,10 +1163,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4380,
+                    "id": 4603,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1367:7:28",
+                    "src": "1367:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -972,10 +1177,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1366:9:28"
+              "src": "1366:9:29"
             },
-            "scope": 4394,
-            "src": "1319:57:28",
+            "scope": 4632,
+            "src": "1319:57:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -983,29 +1188,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4388,
+            "id": 4611,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "curveRegistry",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4384,
+              "id": 4607,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1404:2:28"
+              "src": "1404:2:29"
             },
             "returnParameters": {
-              "id": 4387,
+              "id": 4610,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4386,
+                  "id": 4609,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4388,
-                  "src": "1429:7:28",
+                  "scope": 4611,
+                  "src": "1429:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1013,10 +1218,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4385,
+                    "id": 4608,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1429:7:28",
+                    "src": "1429:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1027,10 +1232,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1428:9:28"
+              "src": "1428:9:29"
             },
-            "scope": 4394,
-            "src": "1382:56:28",
+            "scope": 4632,
+            "src": "1382:56:29",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1038,29 +1243,29 @@
           {
             "body": null,
             "documentation": null,
-            "id": 4393,
+            "id": 4616,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "collateralToken",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 4389,
+              "id": 4612,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1468:2:28"
+              "src": "1468:2:29"
             },
             "returnParameters": {
-              "id": 4392,
+              "id": 4615,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4391,
+                  "id": 4614,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 4393,
-                  "src": "1493:7:28",
+                  "scope": 4616,
+                  "src": "1493:7:29",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1068,10 +1273,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4390,
+                    "id": 4613,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1493:7:28",
+                    "src": "1493:7:29",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1082,132 +1287,192 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1492:9:28"
+              "src": "1492:9:29"
             },
-            "scope": 4394,
-            "src": "1444:58:28",
+            "scope": 4632,
+            "src": "1444:58:29",
             "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4621,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4619,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4618,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4621,
+                  "src": "1535:15:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4617,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1535:7:29",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1534:17:29"
+            },
+            "returnParameters": {
+              "id": 4620,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1560:0:29"
+            },
+            "scope": 4632,
+            "src": "1508:53:29",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4628,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4624,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4623,
+                  "name": "account",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4628,
+                  "src": "1597:15:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 4622,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1597:7:29",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1596:17:29"
+            },
+            "returnParameters": {
+              "id": 4627,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4626,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4628,
+                  "src": "1637:4:29",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 4625,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1637:4:29",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1636:6:29"
+            },
+            "scope": 4632,
+            "src": "1571:72:29",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 4631,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceWhitelistAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4629,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1680:2:29"
+            },
+            "returnParameters": {
+              "id": 4630,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1691:0:29"
+            },
+            "scope": 4632,
+            "src": "1649:43:29",
+            "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 4395,
-        "src": "25:1479:28"
+        "scope": 4633,
+        "src": "25:1669:29"
       }
     ],
-    "src": "0:1505:28"
+    "src": "0:1695:29"
   },
   "compiler": {
     "name": "solc",
     "version": "0.5.10+commit.5a6ea5b1.Emscripten.clang",
-    "optimizer": true,
-    "runs": 500
+    "optimizer": false,
+    "runs": 200
   },
   "networks": {},
-  "schemaVersion": "2.1.7",
-  "updatedAt": "2019-08-12T11:56:49.005Z"
+  "schemaVersion": "2.2.0",
+  "updatedAt": "2019-09-02T09:22:46.904Z"
 }
-=======
-[
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_fundingGoals",
-        "type": "uint256[]"
-      },
-      {
-        "name": "_phaseDurations",
-        "type": "uint256[]"
-      },
-      {
-        "name": "_creator",
-        "type": "address"
-      },
-      {
-        "name": "_curveType",
-        "type": "uint256"
-      },
-      {
-        "name": "_taxationRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "deployMarket",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_newMoleculeVault",
-        "type": "address"
-      }
-    ],
-    "name": "updateMoleculeVault",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "moleculeVault",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "marketRegistry",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "curveRegistry",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "collateralToken",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
->>>>>>> 1a5fa3a... Feature/contract deployment fix

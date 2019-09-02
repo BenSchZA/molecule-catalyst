@@ -1,6 +1,8 @@
 #!/bin/sh
 set -o errexit -o nounset -o pipefail
 
+rm index.js
+
 cat <<EOF >> index.js
 let contracts = {
 EOF

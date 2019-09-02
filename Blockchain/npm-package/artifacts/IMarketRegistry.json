@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "contractName": "IMarketRegistry",
   "abi": [
@@ -248,26 +247,26 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity 0.5.10;\n\ninterface IMarketRegistry {\n    \n    event MarketCreated(uint256 index, address indexed marketAddress, address indexed vault, address indexed creator);\n    event DeployerAdded(address deployer, string version);\n    event DeployerRemoved(address deployer, string reason);\n\n    /**\n      * @dev                Adds a new market deployer to the registry\n      * @param _newDeployer : address - Address of the new market deployer\n      * @param _version     : string - Log text for tracking purposes\n      * @author Ryan\n      */\n    function addMarketDeployer(address _newDeployer, string calldata _version) external;\n\n    /**\n      * @dev                        Removes a market deployer from the registry\n      * @param _deployerToRemove    : address - Address of the market deployer to remove\n      * @param _reason              : string - Log text for tracking purposes\n      * @author Ryan\n      */\n    function removeMarketDeployer(address _deployerToRemove, string calldata _reason) external;\n\n    /// @dev                            Logs the market into the registery\n    /// @param _vault                   :address Address of the vault\n    /// @param _creator                 :address Creator of the market\n    /// @return uint256                 Returns the index of market for looking up\n    /// @author Ryan\n    function registerMarket(\n        address _marketAddress,\n        address _vault,\n        address _creator\n    )\n        external\n        returns(uint256);\n\n    /// Fetching market data\n    /// @param _index                   :uint256 Index of the market\n    /// @dev                            Fetches all data and contract addresses of deployed markets by index, kept as interface for later intergration\n    /// @return Market                  Returns a market struct matching the provided index\n    /// @author Ryan\n    function getMarket(uint256 _index)\n        external\n        view\n        returns(\n            address,\n            address,\n            address\n        );\n\n    /// @dev                            Fetchs the current number of markets infering maximum callable index\n    /// @return Index                   Returns the index of markets for looking up\n    /// @author Ryan\n    function getIndex()\n        external\n        view\n        returns(uint256);\n\n    /// @dev                            Used to check if the deployer is registered\n    /// @return bool                    A simple bool to indicate state\n    /// @author Ryan\n    function isMarketDeployer(address _deployer) external view returns(bool);\n\n    /// @dev                            In order to look up logs efficently, the published block is available\n    /// @return uint256                 The block when the contract was published\n    /// @author Ryan\n    function publishedBlocknumber() external view returns(uint256);\n\n    /**\n      * @notice checks admin status of an address\n      */\n    function isWhitelistAdmin(address account) external view returns (bool);\n\n    /**\n      * @dev Allows a whitelisted admin to add another admin\n      */\n    function addWhitelistAdmin(address account) external;\n\n    /**\n      * @dev Allows a whitlisted admin to renouce their role as admin\n      */\n    function renounceWhitelistAdmin() external;\n}\n",
-  "sourcePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
+  "sourcePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
   "ast": {
-    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
     "exportedSymbols": {
       "IMarketRegistry": [
-        5503
+        5729
       ]
     },
-    "id": 5504,
+    "id": 5730,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5412,
+        "id": 5638,
         "literals": [
           "solidity",
           "0.5",
           ".10"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:31"
+        "src": "0:23:32"
       },
       {
         "baseContracts": [],
@@ -275,9 +274,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5503,
+        "id": 5729,
         "linearizedBaseContracts": [
-          5503
+          5729
         ],
         "name": "IMarketRegistry",
         "nodeType": "ContractDefinition",
@@ -285,21 +284,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5422,
+            "id": 5648,
             "name": "MarketCreated",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5421,
+              "id": 5647,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5414,
+                  "id": 5640,
                   "indexed": false,
                   "name": "index",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "82:13:31",
+                  "scope": 5648,
+                  "src": "82:13:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -307,10 +306,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5413,
+                    "id": 5639,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "82:7:31",
+                    "src": "82:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -321,12 +320,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5416,
+                  "id": 5642,
                   "indexed": true,
                   "name": "marketAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "97:29:31",
+                  "scope": 5648,
+                  "src": "97:29:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -334,10 +333,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5415,
+                    "id": 5641,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "97:7:31",
+                    "src": "97:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -349,12 +348,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5418,
+                  "id": 5644,
                   "indexed": true,
                   "name": "vault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "128:21:31",
+                  "scope": 5648,
+                  "src": "128:21:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -362,10 +361,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5417,
+                    "id": 5643,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:31",
+                    "src": "128:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -377,12 +376,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5420,
+                  "id": 5646,
                   "indexed": true,
                   "name": "creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "151:23:31",
+                  "scope": 5648,
+                  "src": "151:23:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -390,10 +389,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5419,
+                    "id": 5645,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "151:7:31",
+                    "src": "151:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -404,28 +403,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "81:94:31"
+              "src": "81:94:32"
             },
-            "src": "62:114:31"
+            "src": "62:114:32"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5428,
+            "id": 5654,
             "name": "DeployerAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5427,
+              "id": 5653,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5424,
+                  "id": 5650,
                   "indexed": false,
                   "name": "deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5428,
-                  "src": "201:16:31",
+                  "scope": 5654,
+                  "src": "201:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -433,10 +432,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5423,
+                    "id": 5649,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "201:7:31",
+                    "src": "201:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -448,12 +447,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5426,
+                  "id": 5652,
                   "indexed": false,
                   "name": "version",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5428,
-                  "src": "219:14:31",
+                  "scope": 5654,
+                  "src": "219:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -461,10 +460,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5425,
+                    "id": 5651,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "219:6:31",
+                    "src": "219:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -474,28 +473,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "200:34:31"
+              "src": "200:34:32"
             },
-            "src": "181:54:31"
+            "src": "181:54:32"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5434,
+            "id": 5660,
             "name": "DeployerRemoved",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5433,
+              "id": 5659,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5430,
+                  "id": 5656,
                   "indexed": false,
                   "name": "deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5434,
-                  "src": "262:16:31",
+                  "scope": 5660,
+                  "src": "262:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -503,10 +502,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5429,
+                    "id": 5655,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "262:7:31",
+                    "src": "262:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -518,12 +517,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5432,
+                  "id": 5658,
                   "indexed": false,
                   "name": "reason",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5434,
-                  "src": "280:13:31",
+                  "scope": 5660,
+                  "src": "280:13:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -531,10 +530,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5431,
+                    "id": 5657,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "280:6:31",
+                    "src": "280:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -544,30 +543,30 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "261:33:31"
+              "src": "261:33:32"
             },
-            "src": "240:55:31"
+            "src": "240:55:32"
           },
           {
             "body": null,
             "documentation": "@dev                Adds a new market deployer to the registry\n@param _newDeployer : address - Address of the new market deployer\n@param _version     : string - Log text for tracking purposes\n@author Ryan",
-            "id": 5441,
+            "id": 5667,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "addMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5439,
+              "id": 5665,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5436,
+                  "id": 5662,
                   "name": "_newDeployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5441,
-                  "src": "582:20:31",
+                  "scope": 5667,
+                  "src": "582:20:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -575,10 +574,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5435,
+                    "id": 5661,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "582:7:31",
+                    "src": "582:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -590,11 +589,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5438,
+                  "id": 5664,
                   "name": "_version",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5441,
-                  "src": "604:24:31",
+                  "scope": 5667,
+                  "src": "604:24:32",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -602,10 +601,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5437,
+                    "id": 5663,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "604:6:31",
+                    "src": "604:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -615,16 +614,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "581:48:31"
+              "src": "581:48:32"
             },
             "returnParameters": {
-              "id": 5440,
+              "id": 5666,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "638:0:31"
+              "src": "638:0:32"
             },
-            "scope": 5503,
-            "src": "555:84:31",
+            "scope": 5729,
+            "src": "555:84:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -632,23 +631,23 @@
           {
             "body": null,
             "documentation": "@dev                        Removes a market deployer from the registry\n@param _deployerToRemove    : address - Address of the market deployer to remove\n@param _reason              : string - Log text for tracking purposes\n@author Ryan",
-            "id": 5448,
+            "id": 5674,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "removeMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5446,
+              "id": 5672,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5443,
+                  "id": 5669,
                   "name": "_deployerToRemove",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5448,
-                  "src": "960:25:31",
+                  "scope": 5674,
+                  "src": "960:25:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -656,10 +655,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5442,
+                    "id": 5668,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "960:7:31",
+                    "src": "960:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -671,11 +670,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5445,
+                  "id": 5671,
                   "name": "_reason",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5448,
-                  "src": "987:23:31",
+                  "scope": 5674,
+                  "src": "987:23:32",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -683,10 +682,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5444,
+                    "id": 5670,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "987:6:31",
+                    "src": "987:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -696,16 +695,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "959:52:31"
+              "src": "959:52:32"
             },
             "returnParameters": {
-              "id": 5447,
+              "id": 5673,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1020:0:31"
+              "src": "1020:0:32"
             },
-            "scope": 5503,
-            "src": "930:91:31",
+            "scope": 5729,
+            "src": "930:91:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -713,23 +712,23 @@
           {
             "body": null,
             "documentation": "@dev                            Logs the market into the registery\n @param _vault                   :address Address of the vault\n @param _creator                 :address Creator of the market\n @return uint256                 Returns the index of market for looking up\n @author Ryan",
-            "id": 5459,
+            "id": 5685,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "registerMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5455,
+              "id": 5681,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5450,
+                  "id": 5676,
                   "name": "_marketAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1380:22:31",
+                  "scope": 5685,
+                  "src": "1380:22:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -737,10 +736,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5449,
+                    "id": 5675,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1380:7:31",
+                    "src": "1380:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -752,11 +751,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5452,
+                  "id": 5678,
                   "name": "_vault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1412:14:31",
+                  "scope": 5685,
+                  "src": "1412:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -764,10 +763,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5451,
+                    "id": 5677,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1412:7:31",
+                    "src": "1412:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -779,11 +778,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5454,
+                  "id": 5680,
                   "name": "_creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1436:16:31",
+                  "scope": 5685,
+                  "src": "1436:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -791,10 +790,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5453,
+                    "id": 5679,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1436:7:31",
+                    "src": "1436:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -805,19 +804,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1370:88:31"
+              "src": "1370:88:32"
             },
             "returnParameters": {
-              "id": 5458,
+              "id": 5684,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5457,
+                  "id": 5683,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1492:7:31",
+                  "scope": 5685,
+                  "src": "1492:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -825,10 +824,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5456,
+                    "id": 5682,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1492:7:31",
+                    "src": "1492:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -838,10 +837,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1491:9:31"
+              "src": "1491:9:32"
             },
-            "scope": 5503,
-            "src": "1347:154:31",
+            "scope": 5729,
+            "src": "1347:154:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -849,23 +848,23 @@
           {
             "body": null,
             "documentation": "Fetching market data\n @param _index                   :uint256 Index of the market\n @dev                            Fetches all data and contract addresses of deployed markets by index, kept as interface for later intergration\n @return Market                  Returns a market struct matching the provided index\n @author Ryan",
-            "id": 5470,
+            "id": 5696,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5462,
+              "id": 5688,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5461,
+                  "id": 5687,
                   "name": "_index",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1888:14:31",
+                  "scope": 5696,
+                  "src": "1888:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -873,10 +872,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5460,
+                    "id": 5686,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1888:7:31",
+                    "src": "1888:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -886,19 +885,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1887:16:31"
+              "src": "1887:16:32"
             },
             "returnParameters": {
-              "id": 5469,
+              "id": 5695,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5464,
+                  "id": 5690,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1963:7:31",
+                  "scope": 5696,
+                  "src": "1963:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -906,10 +905,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5463,
+                    "id": 5689,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1963:7:31",
+                    "src": "1963:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -921,11 +920,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5466,
+                  "id": 5692,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1984:7:31",
+                  "scope": 5696,
+                  "src": "1984:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -933,10 +932,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5465,
+                    "id": 5691,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1984:7:31",
+                    "src": "1984:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -948,11 +947,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5468,
+                  "id": 5694,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "2005:7:31",
+                  "scope": 5696,
+                  "src": "2005:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -960,10 +959,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5467,
+                    "id": 5693,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2005:7:31",
+                    "src": "2005:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -974,10 +973,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1949:73:31"
+              "src": "1949:73:32"
             },
-            "scope": 5503,
-            "src": "1869:154:31",
+            "scope": 5729,
+            "src": "1869:154:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -985,29 +984,29 @@
           {
             "body": null,
             "documentation": "@dev                            Fetchs the current number of markets infering maximum callable index\n @return Index                   Returns the index of markets for looking up\n @author Ryan",
-            "id": 5475,
+            "id": 5701,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getIndex",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5471,
+              "id": 5697,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2260:2:31"
+              "src": "2260:2:32"
             },
             "returnParameters": {
-              "id": 5474,
+              "id": 5700,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5473,
+                  "id": 5699,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5475,
-                  "src": "2309:7:31",
+                  "scope": 5701,
+                  "src": "2309:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1015,10 +1014,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5472,
+                    "id": 5698,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2309:7:31",
+                    "src": "2309:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1028,10 +1027,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2308:9:31"
+              "src": "2308:9:32"
             },
-            "scope": 5503,
-            "src": "2243:75:31",
+            "scope": 5729,
+            "src": "2243:75:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1039,23 +1038,23 @@
           {
             "body": null,
             "documentation": "@dev                            Used to check if the deployer is registered\n @return bool                    A simple bool to indicate state\n @author Ryan",
-            "id": 5482,
+            "id": 5708,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "isMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5478,
+              "id": 5704,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5477,
+                  "id": 5703,
                   "name": "_deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5482,
-                  "src": "2527:17:31",
+                  "scope": 5708,
+                  "src": "2527:17:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1063,10 +1062,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5476,
+                    "id": 5702,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2527:7:31",
+                    "src": "2527:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1077,19 +1076,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2526:19:31"
+              "src": "2526:19:32"
             },
             "returnParameters": {
-              "id": 5481,
+              "id": 5707,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5480,
+                  "id": 5706,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5482,
-                  "src": "2568:4:31",
+                  "scope": 5708,
+                  "src": "2568:4:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1097,10 +1096,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 5479,
+                    "id": 5705,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2568:4:31",
+                    "src": "2568:4:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1110,10 +1109,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2567:6:31"
+              "src": "2567:6:32"
             },
-            "scope": 5503,
-            "src": "2501:73:31",
+            "scope": 5729,
+            "src": "2501:73:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1121,29 +1120,29 @@
           {
             "body": null,
             "documentation": "@dev                            In order to look up logs efficently, the published block is available\n @return uint256                 The block when the contract was published\n @author Ryan",
-            "id": 5487,
+            "id": 5713,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "publishedBlocknumber",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5483,
+              "id": 5709,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2822:2:31"
+              "src": "2822:2:32"
             },
             "returnParameters": {
-              "id": 5486,
+              "id": 5712,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5485,
+                  "id": 5711,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5487,
-                  "src": "2847:7:31",
+                  "scope": 5713,
+                  "src": "2847:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1151,10 +1150,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5484,
+                    "id": 5710,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2847:7:31",
+                    "src": "2847:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1164,10 +1163,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2846:9:31"
+              "src": "2846:9:32"
             },
-            "scope": 5503,
-            "src": "2793:63:31",
+            "scope": 5729,
+            "src": "2793:63:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1175,23 +1174,23 @@
           {
             "body": null,
             "documentation": "@notice checks admin status of an address",
-            "id": 5494,
+            "id": 5720,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "isWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5490,
+              "id": 5716,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5489,
+                  "id": 5715,
                   "name": "account",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5494,
-                  "src": "2955:15:31",
+                  "scope": 5720,
+                  "src": "2955:15:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1199,10 +1198,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5488,
+                    "id": 5714,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2955:7:31",
+                    "src": "2955:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1213,19 +1212,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2954:17:31"
+              "src": "2954:17:32"
             },
             "returnParameters": {
-              "id": 5493,
+              "id": 5719,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5492,
+                  "id": 5718,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5494,
-                  "src": "2995:4:31",
+                  "scope": 5720,
+                  "src": "2995:4:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1233,10 +1232,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 5491,
+                    "id": 5717,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2995:4:31",
+                    "src": "2995:4:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -1246,10 +1245,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2994:6:31"
+              "src": "2994:6:32"
             },
-            "scope": 5503,
-            "src": "2929:72:31",
+            "scope": 5729,
+            "src": "2929:72:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -1257,23 +1256,23 @@
           {
             "body": null,
             "documentation": "@dev Allows a whitelisted admin to add another admin",
-            "id": 5499,
+            "id": 5725,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "addWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5497,
+              "id": 5723,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5496,
+                  "id": 5722,
                   "name": "account",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5499,
-                  "src": "3112:15:31",
+                  "scope": 5725,
+                  "src": "3112:15:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1281,10 +1280,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5495,
+                    "id": 5721,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3112:7:31",
+                    "src": "3112:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1295,16 +1294,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3111:17:31"
+              "src": "3111:17:32"
             },
             "returnParameters": {
-              "id": 5498,
+              "id": 5724,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3137:0:31"
+              "src": "3137:0:32"
             },
-            "scope": 5503,
-            "src": "3085:53:31",
+            "scope": 5729,
+            "src": "3085:53:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -1312,56 +1311,56 @@
           {
             "body": null,
             "documentation": "@dev Allows a whitlisted admin to renouce their role as admin",
-            "id": 5502,
+            "id": 5728,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "renounceWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5500,
+              "id": 5726,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3262:2:31"
+              "src": "3262:2:32"
             },
             "returnParameters": {
-              "id": 5501,
+              "id": 5727,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3273:0:31"
+              "src": "3273:0:32"
             },
-            "scope": 5503,
-            "src": "3231:43:31",
+            "scope": 5729,
+            "src": "3231:43:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5504,
-        "src": "25:3251:31"
+        "scope": 5730,
+        "src": "25:3251:32"
       }
     ],
-    "src": "0:3277:31"
+    "src": "0:3277:32"
   },
   "legacyAST": {
-    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha_feature-8/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
+    "absolutePath": "/home/bscholtz/LinumLabs/workspace/molecule-alpha/Blockchain/contracts/marketRegistry/IMarketRegistry.sol",
     "exportedSymbols": {
       "IMarketRegistry": [
-        5503
+        5729
       ]
     },
-    "id": 5504,
+    "id": 5730,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5412,
+        "id": 5638,
         "literals": [
           "solidity",
           "0.5",
           ".10"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:31"
+        "src": "0:23:32"
       },
       {
         "baseContracts": [],
@@ -1369,9 +1368,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5503,
+        "id": 5729,
         "linearizedBaseContracts": [
-          5503
+          5729
         ],
         "name": "IMarketRegistry",
         "nodeType": "ContractDefinition",
@@ -1379,21 +1378,21 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5422,
+            "id": 5648,
             "name": "MarketCreated",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5421,
+              "id": 5647,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5414,
+                  "id": 5640,
                   "indexed": false,
                   "name": "index",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "82:13:31",
+                  "scope": 5648,
+                  "src": "82:13:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1401,10 +1400,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5413,
+                    "id": 5639,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "82:7:31",
+                    "src": "82:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1415,12 +1414,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5416,
+                  "id": 5642,
                   "indexed": true,
                   "name": "marketAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "97:29:31",
+                  "scope": 5648,
+                  "src": "97:29:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1428,10 +1427,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5415,
+                    "id": 5641,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "97:7:31",
+                    "src": "97:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1443,12 +1442,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5418,
+                  "id": 5644,
                   "indexed": true,
                   "name": "vault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "128:21:31",
+                  "scope": 5648,
+                  "src": "128:21:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1456,10 +1455,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5417,
+                    "id": 5643,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "128:7:31",
+                    "src": "128:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1471,12 +1470,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5420,
+                  "id": 5646,
                   "indexed": true,
                   "name": "creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5422,
-                  "src": "151:23:31",
+                  "scope": 5648,
+                  "src": "151:23:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1484,10 +1483,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5419,
+                    "id": 5645,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "151:7:31",
+                    "src": "151:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1498,28 +1497,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "81:94:31"
+              "src": "81:94:32"
             },
-            "src": "62:114:31"
+            "src": "62:114:32"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5428,
+            "id": 5654,
             "name": "DeployerAdded",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5427,
+              "id": 5653,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5424,
+                  "id": 5650,
                   "indexed": false,
                   "name": "deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5428,
-                  "src": "201:16:31",
+                  "scope": 5654,
+                  "src": "201:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1527,10 +1526,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5423,
+                    "id": 5649,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "201:7:31",
+                    "src": "201:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1542,12 +1541,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5426,
+                  "id": 5652,
                   "indexed": false,
                   "name": "version",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5428,
-                  "src": "219:14:31",
+                  "scope": 5654,
+                  "src": "219:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1555,10 +1554,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5425,
+                    "id": 5651,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "219:6:31",
+                    "src": "219:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1568,28 +1567,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "200:34:31"
+              "src": "200:34:32"
             },
-            "src": "181:54:31"
+            "src": "181:54:32"
           },
           {
             "anonymous": false,
             "documentation": null,
-            "id": 5434,
+            "id": 5660,
             "name": "DeployerRemoved",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 5433,
+              "id": 5659,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5430,
+                  "id": 5656,
                   "indexed": false,
                   "name": "deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5434,
-                  "src": "262:16:31",
+                  "scope": 5660,
+                  "src": "262:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1597,10 +1596,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5429,
+                    "id": 5655,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "262:7:31",
+                    "src": "262:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1612,12 +1611,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5432,
+                  "id": 5658,
                   "indexed": false,
                   "name": "reason",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5434,
-                  "src": "280:13:31",
+                  "scope": 5660,
+                  "src": "280:13:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1625,10 +1624,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5431,
+                    "id": 5657,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "280:6:31",
+                    "src": "280:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1638,30 +1637,30 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "261:33:31"
+              "src": "261:33:32"
             },
-            "src": "240:55:31"
+            "src": "240:55:32"
           },
           {
             "body": null,
             "documentation": "@dev                Adds a new market deployer to the registry\n@param _newDeployer : address - Address of the new market deployer\n@param _version     : string - Log text for tracking purposes\n@author Ryan",
-            "id": 5441,
+            "id": 5667,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "addMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5439,
+              "id": 5665,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5436,
+                  "id": 5662,
                   "name": "_newDeployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5441,
-                  "src": "582:20:31",
+                  "scope": 5667,
+                  "src": "582:20:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1669,10 +1668,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5435,
+                    "id": 5661,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "582:7:31",
+                    "src": "582:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1684,11 +1683,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5438,
+                  "id": 5664,
                   "name": "_version",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5441,
-                  "src": "604:24:31",
+                  "scope": 5667,
+                  "src": "604:24:32",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -1696,10 +1695,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5437,
+                    "id": 5663,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "604:6:31",
+                    "src": "604:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1709,16 +1708,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "581:48:31"
+              "src": "581:48:32"
             },
             "returnParameters": {
-              "id": 5440,
+              "id": 5666,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "638:0:31"
+              "src": "638:0:32"
             },
-            "scope": 5503,
-            "src": "555:84:31",
+            "scope": 5729,
+            "src": "555:84:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -1726,23 +1725,23 @@
           {
             "body": null,
             "documentation": "@dev                        Removes a market deployer from the registry\n@param _deployerToRemove    : address - Address of the market deployer to remove\n@param _reason              : string - Log text for tracking purposes\n@author Ryan",
-            "id": 5448,
+            "id": 5674,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "removeMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5446,
+              "id": 5672,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5443,
+                  "id": 5669,
                   "name": "_deployerToRemove",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5448,
-                  "src": "960:25:31",
+                  "scope": 5674,
+                  "src": "960:25:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1750,10 +1749,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5442,
+                    "id": 5668,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "960:7:31",
+                    "src": "960:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1765,11 +1764,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5445,
+                  "id": 5671,
                   "name": "_reason",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5448,
-                  "src": "987:23:31",
+                  "scope": 5674,
+                  "src": "987:23:32",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -1777,10 +1776,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5444,
+                    "id": 5670,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "987:6:31",
+                    "src": "987:6:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -1790,16 +1789,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "959:52:31"
+              "src": "959:52:32"
             },
             "returnParameters": {
-              "id": 5447,
+              "id": 5673,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1020:0:31"
+              "src": "1020:0:32"
             },
-            "scope": 5503,
-            "src": "930:91:31",
+            "scope": 5729,
+            "src": "930:91:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -1807,23 +1806,23 @@
           {
             "body": null,
             "documentation": "@dev                            Logs the market into the registery\n @param _vault                   :address Address of the vault\n @param _creator                 :address Creator of the market\n @return uint256                 Returns the index of market for looking up\n @author Ryan",
-            "id": 5459,
+            "id": 5685,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "registerMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5455,
+              "id": 5681,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5450,
+                  "id": 5676,
                   "name": "_marketAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1380:22:31",
+                  "scope": 5685,
+                  "src": "1380:22:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1831,10 +1830,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5449,
+                    "id": 5675,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1380:7:31",
+                    "src": "1380:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1846,11 +1845,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5452,
+                  "id": 5678,
                   "name": "_vault",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1412:14:31",
+                  "scope": 5685,
+                  "src": "1412:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1858,10 +1857,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5451,
+                    "id": 5677,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1412:7:31",
+                    "src": "1412:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1873,11 +1872,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5454,
+                  "id": 5680,
                   "name": "_creator",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1436:16:31",
+                  "scope": 5685,
+                  "src": "1436:16:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1885,10 +1884,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5453,
+                    "id": 5679,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1436:7:31",
+                    "src": "1436:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1899,19 +1898,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1370:88:31"
+              "src": "1370:88:32"
             },
             "returnParameters": {
-              "id": 5458,
+              "id": 5684,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5457,
+                  "id": 5683,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5459,
-                  "src": "1492:7:31",
+                  "scope": 5685,
+                  "src": "1492:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1919,10 +1918,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5456,
+                    "id": 5682,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1492:7:31",
+                    "src": "1492:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1932,10 +1931,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1491:9:31"
+              "src": "1491:9:32"
             },
-            "scope": 5503,
-            "src": "1347:154:31",
+            "scope": 5729,
+            "src": "1347:154:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -1943,23 +1942,23 @@
           {
             "body": null,
             "documentation": "Fetching market data\n @param _index                   :uint256 Index of the market\n @dev                            Fetches all data and contract addresses of deployed markets by index, kept as interface for later intergration\n @return Market                  Returns a market struct matching the provided index\n @author Ryan",
-            "id": 5470,
+            "id": 5696,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getMarket",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5462,
+              "id": 5688,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5461,
+                  "id": 5687,
                   "name": "_index",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1888:14:31",
+                  "scope": 5696,
+                  "src": "1888:14:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1967,10 +1966,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5460,
+                    "id": 5686,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1888:7:31",
+                    "src": "1888:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1980,19 +1979,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1887:16:31"
+              "src": "1887:16:32"
             },
             "returnParameters": {
-              "id": 5469,
+              "id": 5695,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5464,
+                  "id": 5690,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1963:7:31",
+                  "scope": 5696,
+                  "src": "1963:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2000,10 +1999,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5463,
+                    "id": 5689,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1963:7:31",
+                    "src": "1963:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2015,11 +2014,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5466,
+                  "id": 5692,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "1984:7:31",
+                  "scope": 5696,
+                  "src": "1984:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2027,10 +2026,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5465,
+                    "id": 5691,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1984:7:31",
+                    "src": "1984:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2042,11 +2041,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5468,
+                  "id": 5694,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5470,
-                  "src": "2005:7:31",
+                  "scope": 5696,
+                  "src": "2005:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2054,10 +2053,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5467,
+                    "id": 5693,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2005:7:31",
+                    "src": "2005:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2068,10 +2067,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1949:73:31"
+              "src": "1949:73:32"
             },
-            "scope": 5503,
-            "src": "1869:154:31",
+            "scope": 5729,
+            "src": "1869:154:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2079,29 +2078,29 @@
           {
             "body": null,
             "documentation": "@dev                            Fetchs the current number of markets infering maximum callable index\n @return Index                   Returns the index of markets for looking up\n @author Ryan",
-            "id": 5475,
+            "id": 5701,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getIndex",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5471,
+              "id": 5697,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2260:2:31"
+              "src": "2260:2:32"
             },
             "returnParameters": {
-              "id": 5474,
+              "id": 5700,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5473,
+                  "id": 5699,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5475,
-                  "src": "2309:7:31",
+                  "scope": 5701,
+                  "src": "2309:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2109,10 +2108,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5472,
+                    "id": 5698,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2309:7:31",
+                    "src": "2309:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2122,10 +2121,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2308:9:31"
+              "src": "2308:9:32"
             },
-            "scope": 5503,
-            "src": "2243:75:31",
+            "scope": 5729,
+            "src": "2243:75:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2133,23 +2132,23 @@
           {
             "body": null,
             "documentation": "@dev                            Used to check if the deployer is registered\n @return bool                    A simple bool to indicate state\n @author Ryan",
-            "id": 5482,
+            "id": 5708,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "isMarketDeployer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5478,
+              "id": 5704,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5477,
+                  "id": 5703,
                   "name": "_deployer",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5482,
-                  "src": "2527:17:31",
+                  "scope": 5708,
+                  "src": "2527:17:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2157,10 +2156,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5476,
+                    "id": 5702,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2527:7:31",
+                    "src": "2527:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2171,19 +2170,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2526:19:31"
+              "src": "2526:19:32"
             },
             "returnParameters": {
-              "id": 5481,
+              "id": 5707,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5480,
+                  "id": 5706,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5482,
-                  "src": "2568:4:31",
+                  "scope": 5708,
+                  "src": "2568:4:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2191,10 +2190,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 5479,
+                    "id": 5705,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2568:4:31",
+                    "src": "2568:4:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2204,10 +2203,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2567:6:31"
+              "src": "2567:6:32"
             },
-            "scope": 5503,
-            "src": "2501:73:31",
+            "scope": 5729,
+            "src": "2501:73:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2215,29 +2214,29 @@
           {
             "body": null,
             "documentation": "@dev                            In order to look up logs efficently, the published block is available\n @return uint256                 The block when the contract was published\n @author Ryan",
-            "id": 5487,
+            "id": 5713,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "publishedBlocknumber",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5483,
+              "id": 5709,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2822:2:31"
+              "src": "2822:2:32"
             },
             "returnParameters": {
-              "id": 5486,
+              "id": 5712,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5485,
+                  "id": 5711,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5487,
-                  "src": "2847:7:31",
+                  "scope": 5713,
+                  "src": "2847:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2245,10 +2244,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5484,
+                    "id": 5710,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2847:7:31",
+                    "src": "2847:7:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2258,10 +2257,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2846:9:31"
+              "src": "2846:9:32"
             },
-            "scope": 5503,
-            "src": "2793:63:31",
+            "scope": 5729,
+            "src": "2793:63:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2269,23 +2268,23 @@
           {
             "body": null,
             "documentation": "@notice checks admin status of an address",
-            "id": 5494,
+            "id": 5720,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "isWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5490,
+              "id": 5716,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5489,
+                  "id": 5715,
                   "name": "account",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5494,
-                  "src": "2955:15:31",
+                  "scope": 5720,
+                  "src": "2955:15:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2293,10 +2292,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5488,
+                    "id": 5714,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2955:7:31",
+                    "src": "2955:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2307,19 +2306,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2954:17:31"
+              "src": "2954:17:32"
             },
             "returnParameters": {
-              "id": 5493,
+              "id": 5719,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5492,
+                  "id": 5718,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5494,
-                  "src": "2995:4:31",
+                  "scope": 5720,
+                  "src": "2995:4:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2327,10 +2326,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 5491,
+                    "id": 5717,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2995:4:31",
+                    "src": "2995:4:32",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -2340,10 +2339,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2994:6:31"
+              "src": "2994:6:32"
             },
-            "scope": 5503,
-            "src": "2929:72:31",
+            "scope": 5729,
+            "src": "2929:72:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
@@ -2351,23 +2350,23 @@
           {
             "body": null,
             "documentation": "@dev Allows a whitelisted admin to add another admin",
-            "id": 5499,
+            "id": 5725,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "addWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5497,
+              "id": 5723,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5496,
+                  "id": 5722,
                   "name": "account",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5499,
-                  "src": "3112:15:31",
+                  "scope": 5725,
+                  "src": "3112:15:32",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2375,10 +2374,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5495,
+                    "id": 5721,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3112:7:31",
+                    "src": "3112:7:32",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2389,16 +2388,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3111:17:31"
+              "src": "3111:17:32"
             },
             "returnParameters": {
-              "id": 5498,
+              "id": 5724,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3137:0:31"
+              "src": "3137:0:32"
             },
-            "scope": 5503,
-            "src": "3085:53:31",
+            "scope": 5729,
+            "src": "3085:53:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
@@ -2406,288 +2405,44 @@
           {
             "body": null,
             "documentation": "@dev Allows a whitlisted admin to renouce their role as admin",
-            "id": 5502,
+            "id": 5728,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "renounceWhitelistAdmin",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5500,
+              "id": 5726,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3262:2:31"
+              "src": "3262:2:32"
             },
             "returnParameters": {
-              "id": 5501,
+              "id": 5727,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3273:0:31"
+              "src": "3273:0:32"
             },
-            "scope": 5503,
-            "src": "3231:43:31",
+            "scope": 5729,
+            "src": "3231:43:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5504,
-        "src": "25:3251:31"
+        "scope": 5730,
+        "src": "25:3251:32"
       }
     ],
-    "src": "0:3277:31"
+    "src": "0:3277:32"
   },
   "compiler": {
     "name": "solc",
     "version": "0.5.10+commit.5a6ea5b1.Emscripten.clang",
-    "optimizer": true,
-    "runs": 500
+    "optimizer": false,
+    "runs": 200
   },
   "networks": {},
-  "schemaVersion": "2.1.7",
-  "updatedAt": "2019-08-12T11:56:49.010Z"
+  "schemaVersion": "2.2.0",
+  "updatedAt": "2019-09-02T09:22:46.909Z"
 }
-=======
-[
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "index",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "name": "marketAddress",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "vault",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "creator",
-        "type": "address"
-      }
-    ],
-    "name": "MarketCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "deployer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "version",
-        "type": "string"
-      }
-    ],
-    "name": "DeployerAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "deployer",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "reason",
-        "type": "string"
-      }
-    ],
-    "name": "DeployerRemoved",
-    "type": "event"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_newDeployer",
-        "type": "address"
-      },
-      {
-        "name": "_version",
-        "type": "string"
-      }
-    ],
-    "name": "addMarketDeployer",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_deployerToRemove",
-        "type": "address"
-      },
-      {
-        "name": "_reason",
-        "type": "string"
-      }
-    ],
-    "name": "removeMarketDeployer",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_marketAddress",
-        "type": "address"
-      },
-      {
-        "name": "_vault",
-        "type": "address"
-      },
-      {
-        "name": "_creator",
-        "type": "address"
-      }
-    ],
-    "name": "registerMarket",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getMarket",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      },
-      {
-        "name": "",
-        "type": "address"
-      },
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getIndex",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_deployer",
-        "type": "address"
-      }
-    ],
-    "name": "isMarketDeployer",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "publishedBlocknumber",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "isWhitelistAdmin",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "addWhitelistAdmin",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "renounceWhitelistAdmin",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-]
->>>>>>> 1a5fa3a... Feature/contract deployment fix
