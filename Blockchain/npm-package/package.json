@@ -1,10 +1,10 @@
 {
   "name": "@molecule-protocol/catalyst-contracts",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Molecule protocol contracts",
   "main": "index.js",
   "scripts": {
-    "prePublish": "etherlime compile --workingDirectory=../contracts --buildDirectory=artifacts",
+    "prePublish": "./build-artifacts.sh",
     "compileIndex": "./compile-index.sh"
   },
   "author": "Benjamin Scholtz - Linum Labs",
