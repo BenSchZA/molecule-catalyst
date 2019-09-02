@@ -50,7 +50,12 @@ const AdminUserViewContainer: React.FunctionComponent<Props> = (props: Props) =>
 );
 
 const mapStateToProps = (state: ApplicationRootState, props: OwnProps) => ({
-  user: state.adminDashboard.users[props.match.params.userId],
+  user: (state.adminDashboard && state.adminDashboard.users) ? state.adminDashboard.users[props.match.params.userId] : {
+    id: '',
+    type: 0,
+    ethAddress: '0x',
+    createdAt: new Date(),
+  },
 })
 
 const mapDispatchToProps = (
