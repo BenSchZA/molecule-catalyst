@@ -6,12 +6,12 @@ import { ConfigService } from '../config/config.service';
 import { ServiceBase } from 'src/common/serviceBase';
 
 @Injectable()
-export class MarketRegistryService  extends ServiceBase {
+export class MarketRegistryService extends ServiceBase {
   private readonly marketRegistryContract;
 
   constructor(
-      @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
-      private readonly config: ConfigService) {
+    @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
+    private readonly config: ConfigService) {
     super(MarketRegistryService.name);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     const contract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider);
@@ -33,9 +33,7 @@ export class MarketRegistryService  extends ServiceBase {
   public async isUserWhitelistAdmin(userAddress: string): Promise<boolean> {
     this.logger.debug(`Checking whether user is admin: ${userAddress}`);
     try {
-      const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-      const connectedContract = this.marketRegistryContract.connect(serverAccountWallet);
-      const result = await connectedContract.isWhitelistAdmin(userAddress);
+      const result = await this.marketRegistryContract.isWhitelistAdmin(userAddress);
       return result;
     } catch (error) {
       this.logger.error(error.message);
@@ -44,15 +42,26 @@ export class MarketRegistryService  extends ServiceBase {
 
   public async addMarketDeployer(userAddress: string): Promise<void> {
     this.logger.debug(`Adding user to MarketRegistry Approved Deployers: ${userAddress}`);
+    if (!(await this.isMarketDeployer(userAddress))) {
+      try {
+        await (await this.marketRegistryContract.addMarketDeployer(userAddress, 'adding new deployer')).wait();
+        this.logger.info(`User added to MarketRegistry Approved Deployers: ${userAddress}`);
+      } catch (error) {
+        this.logger.error(error.message);
+        throw error;
+      }
+    } else {
+      this.logger.error(`User ${userAddress} is already a deployer`);
+    }
+  }
 
+  public async isMarketDeployer(userAddress: string): Promise<boolean> {
+    this.logger.debug(`Checking whether user is a market deployer: ${userAddress}`);
     try {
-      const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-      const connectedContract = this.marketRegistryContract.connect(serverAccountWallet);
-      await (await connectedContract.addMarketDeployer(userAddress, 'adding deployer')).wait();
-      this.logger.info(`User added to MarketRegistry Approved Deployers: ${userAddress}`);
+      const result = await this.marketRegistryContract.isMarketDeployer(userAddress);
+      return result;
     } catch (error) {
       this.logger.error(error.message);
-      throw error;
     }
   }
 }
