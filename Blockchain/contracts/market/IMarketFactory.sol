@@ -42,4 +42,6 @@ interface IMarketFactory {
     function addWhitelistAdmin(address account) external;
     
     function isWhitelistAdmin(address account) external view returns (bool);
+
+    function renounceWhitelistAdmin() external;
 }
