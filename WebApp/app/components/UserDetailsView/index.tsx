@@ -55,7 +55,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 const UserDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
   <Container>
     <Paper className={props.classes.banner} elevation={0}>
-      <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin`)}>Back</Button>
+      <Button className={props.classes.backButton} onClick={() => forwardTo(`/admin/users`)}>Back</Button>
       <Typography variant='h5'>User Details</Typography>
     </Paper>
     <Paper>

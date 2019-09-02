@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { ethers } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 import { ConfigService } from 'src/config/config.service';
 import { UserType, User } from 'src/user/user.schema';
 import { ServiceBase } from 'src/common/serviceBase';
@@ -36,9 +36,7 @@ export class AuthService extends ServiceBase {
   }
 
   async generatePermit(ethAddress): Promise<AccessPermit> {
-    const serverAccountWallet = await ethers.Wallet.fromMnemonic(
-      this.config.get('serverWallet').mnemonic,
-    );
+    const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey);
     const returnMessage = await serverAccountWallet.signMessage(
       `${this.config.get('jwt').permitSalt} - ${ethAddress.toLowerCase()}`,
     );
