@@ -62,6 +62,12 @@ const deploy = async (network, secret) => {
     curveRegistryInstance.contract.address
   );
 
+  const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
+    marketFactoryInstance.contract.address,
+    "Debug logs/version"
+  );
+  await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
+
   const CONTRACT_ADDRESSES = `
   PDAI_CONTRACT_ADDRESS=${pseudoDaiInstance.contract.address}
   MARKET_REGISTRY_ADDRESS=${marketRegistryInstance.contract.address}
