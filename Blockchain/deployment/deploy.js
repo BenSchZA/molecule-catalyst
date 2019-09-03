@@ -29,7 +29,9 @@ const deploy = async (network, secret) => {
   const deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, 'http://localhost:8545/', defaultConfigs);
   //const deployer = new etherlime.EtherlimeGanacheDeployer();
 
-  const pseudoDaiInstance = await deployer.deploy(
+  const deploy = (...args) => deployer.deployAndVerify(...args);
+
+  const pseudoDaiInstance = await deploy(
     PseudoDaiABI,
     false,
     "PseudoDai",
@@ -37,23 +39,23 @@ const deploy = async (network, secret) => {
     18
   );
 
-  const moleculeVaultInstance = await deployer.deploy(
+  const moleculeVaultInstance = await deploy(
     MoleculeVaultABI,
     false,
     pseudoDaiInstance.contract.address,
     15
   );
 
-  const curveFunctionsInstance = await deployer.deploy(CurveFunctionsABI);
-  const curveRegistryInstance = await deployer.deploy(CurveRegistryABI);
+  const curveFunctionsInstance = await deploy(CurveFunctionsABI);
+  const curveRegistryInstance = await deploy(CurveRegistryABI);
   const registerCurveTX = await curveRegistryInstance.registerCurve(
     curveFunctionsInstance.contract.address,
     "linear: (1/20000)*x + 0.5"
   );
   let result = await curveRegistryInstance.verboseWaitForTransaction(registerCurveTX, 'Register curve');
 
-  const marketRegistryInstance = await deployer.deploy(MarketRegistryABI);
-  const marketFactoryInstance = await deployer.deploy(
+  const marketRegistryInstance = await deploy(MarketRegistryABI);
+  const marketFactoryInstance = await deploy(
     MarketFactoryABI,
     false,
     pseudoDaiInstance.contract.address,
