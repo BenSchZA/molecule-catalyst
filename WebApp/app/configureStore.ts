@@ -5,6 +5,7 @@
 import createReducer from 'reducers';
 import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import { LifeStore } from 'types';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -13,7 +14,7 @@ declare interface IWindow extends Window {
 }
 declare const window: IWindow;
 
-export default function configureStore(initialState = {}) {
+export default function configureStore(initialState) {
   const middlewares = [sagaMiddleware];
 
   const enhancers = [applyMiddleware(...middlewares)];
@@ -39,7 +40,7 @@ export default function configureStore(initialState = {}) {
     createReducer(),
     initialState,
     composeEnhancers(...enhancers),
-  ) as any; // TODO: disable any
+  ) as LifeStore;
 
   // Extensions
   store.runSaga = sagaMiddleware.run;

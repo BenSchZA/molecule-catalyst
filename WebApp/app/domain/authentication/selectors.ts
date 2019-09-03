@@ -23,6 +23,16 @@ const selectIsLoggedIn = (state: ApplicationRootState) => {
   }
 };
 
+const selectUserId = (state: ApplicationRootState) => {
+  const accessToken = state.authentication.accessToken;
+  try {
+    const decodedToken = jwtDecode(accessToken);
+    return decodedToken.userId;
+  } catch (error) {
+    return false;
+  }
+}
+
 const selectUserRole = (state: ApplicationRootState) => {
   return state.authentication.userRole;
 };
@@ -42,6 +52,10 @@ const selectNetworkId = (state: ApplicationRootState) => {
 export const makeSelectIsLoggedIn = createSelector(selectIsLoggedIn, substate => {
   return substate;
 });
+
+export const makeSelectUserId = createSelector(selectUserId, substate => {
+  return substate;
+})
 
 export const makeSelectWalletUnlocked = createSelector(selectWalletUnlocked, substate => {
   return substate;

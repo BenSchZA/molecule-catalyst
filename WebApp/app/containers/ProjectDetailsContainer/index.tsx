@@ -4,32 +4,38 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import { compose, Dispatch } from 'redux';
 
-// import injectSaga from 'utils/injectSaga';
-// import injectReducer from 'utils/injectReducer';
-import makeSelectProjectDetailsContainer from './selectors';
-// import reducer from './reducer';
-// import saga from './saga';
+import injectSaga from 'utils/injectSaga';
+import saga from './saga';
+import { RouteComponentProps } from 'react-router-dom';
+import ProjectDetails from 'components/ProjectDetails';
+import { Project } from 'domain/projects/types';
 
-interface OwnProps {}
+interface RouteParams {
+  projectId: string;
+}
+
+interface OwnProps extends RouteComponentProps<RouteParams>,
+React.Props<RouteParams> { }
 
 interface DispatchProps {}
 
-interface StateProps {}
+interface StateProps {
+  project: Project
+}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.SFC<Props> = (props: Props) => {
-  return <Fragment>ProjectDetailsContainer</Fragment>;
-};
+const ProjectDetailsContainer: React.FunctionComponent<Props> = ({project}: Props) =>(
+  <ProjectDetails project={project} />
+);
 
-const mapStateToProps = createStructuredSelector({
-  projectDetailsContainer: makeSelectProjectDetailsContainer(),
-});
+const mapStateToProps = (state, props) => ({
+  project: state.projects[props.match.params.projectId],
+})
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
@@ -45,20 +51,12 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-// Remember to add the key to ./app/types/index.d.ts ApplicationRootState
-// <OwnProps> restricts access to the HOC's other props. This component must not do anything with reducer hoc
-// const withReducer = injectReducer<OwnProps>({
-//   key: 'projectDetailsContainer',
-//   reducer: reducer,
-// });
-// // <OwnProps> restricts access to the HOC's other props. This component must not do anything with saga hoc
-// const withSaga = injectSaga<OwnProps>({
-//   key: 'projectDetailsContainer',
-//   saga: saga,
-// });
+const withSaga = injectSaga<OwnProps>({
+  key: 'projectDetailsContainer',
+  saga: saga,
+});
 
 export default compose(
-  // withReducer,
-  // withSaga,
+  withSaga,
   withConnect,
 )(ProjectDetailsContainer);

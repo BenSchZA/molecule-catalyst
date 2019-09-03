@@ -1,5 +1,11 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { StatusMonitorModule } from 'nest-status-monitor';
+import { TerminusModule } from '@nestjs/terminus';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SendGridModule } from '@anchan828/nest-sendgrid';
+import { TerminusOptionsService } from './healthCheck.service';
+import { PromModule, InboundMiddleware } from '@panterazar/nestjs-prom';
+import { CreatorModule } from './creator/creator.module';
 import * as mongodbUri from 'mongodb-uri';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,16 +14,15 @@ import { ConfigService } from './config/config.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EthersProviderModule } from './ethers/ethersProvider.module';
-import { StatusMonitorModule } from 'nest-status-monitor';
-import { TerminusModule } from '@nestjs/terminus';
-import { TerminusOptionsService } from './healthCheck.service';
-import { PromModule, InboundMiddleware } from '@panterazar/nestjs-prom';
+import { SendGridHealthModule } from '@anchan828/nest-sendgrid-terminus';
+import { AttachmentModule } from './attachment/attachment.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [ConfigModule,
     StatusMonitorModule.setUp({
-      pageTitle: 'Nest.js Monitoring Page',
-      port: 3001,
+      pageTitle: 'Molecule API Monitoring Page',
+      port: 80,
       path: '/status',
       ignoreStartsWith: '/health/alive',
       spans: [
@@ -51,8 +56,15 @@ import { PromModule, InboundMiddleware } from '@panterazar/nestjs-prom';
       useHttpCounterMiddleware: true,
     }),
     EthersProviderModule,
-    TerminusModule.forRootAsync({
+    TerminusModule.forRootAsync({      
+      imports: [SendGridHealthModule],
       useClass: TerminusOptionsService,
+    }),
+    SendGridModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        apikey: configService.get('sendgrid').apiKey,
+      }),
+      inject: [ConfigService],
     }),
     // WinstonModule.forRootAsync({
     //   useFactory: (configService: ConfigService) => ({
@@ -81,7 +93,10 @@ import { PromModule, InboundMiddleware } from '@panterazar/nestjs-prom';
       inject: [ConfigService],
     }),
     UserModule,
+    AttachmentModule,
     AuthModule,
+    CreatorModule,
+    ProjectModule
   ],
   controllers: [AppController],
   providers: [ConfigService, AppService],

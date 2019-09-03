@@ -1,10 +1,6 @@
-import { take, fork, cancel } from "@redux-saga/core/effects";
-import { connectWallet as  connectWalletSaga} from "domain/authentication/saga";
-import { connectWallet } from "domain/authentication/actions";
+import { put } from "redux-saga/effects";
+import { getProjects } from "domain/projects/actions";
 
 export default function* root() {
-  const connectWalletTask = yield fork(connectWalletSaga);
-  yield take(connectWallet.success)
-  yield cancel(connectWalletTask);
-  // Refresh balances
+  yield put(getProjects());
 }

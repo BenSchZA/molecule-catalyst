@@ -1,5 +1,5 @@
 # Use LTS Node environment as build environment
-FROM registry.gitlab.com/linumlabs/molecule-sandbox/build/core:latest
+FROM 540682145059.dkr.ecr.us-west-2.amazonaws.com/linumlabs/molecule-alpha/build/core:latest
 
 RUN mkdir -p /build/ApiServer
 RUN mkdir -p /build/WebApp
@@ -21,6 +21,8 @@ ADD . /build
 
 ARG API_HOST
 ARG API_SCHEMA
+ARG APM_SERVICE_NAME
+ARG APM_SERVER_ENDPOINT
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"

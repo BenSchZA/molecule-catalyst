@@ -1,0 +1,48 @@
+.line {
+    fill: none;
+    stroke: #00b5bd; /*steelblue;*/
+    stroke-width: 2px;
+}
+
+.grid line {
+    stroke: grey;
+    stroke-opacity: 0.2;
+    shape-rendering: crispEdges
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+.tooltip-group line {
+    stroke: grey;
+    stroke-dasharray: 3,3;
+    opacity: 0.8;
+}
+
+.tooltip-group-current line {
+    stroke: grey;
+    stroke-dasharray: 3,3;
+    opacity: 1;
+}
+
+.label-shade {
+    stroke: white;
+    stroke-width: 3.5px;
+    opacity: 0.8;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}

@@ -5,6 +5,7 @@ import { DomainActions, DomainState } from './types';
 
 export const initialState: DomainState = {
   walletUnlocked: false,
+  userId: '',
   ethAddress: '',
   selectedNetworkId: undefined,
   signedPermit: '',
@@ -20,7 +21,7 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.saveAccessToken):
       return {
         ...state,
-        ...{ accessToken: action.payload.accessToken },
+        ...{ accessToken: action.payload },
       };
     case getType(authenticationActions.connectWallet.success):
       return {
@@ -47,12 +48,17 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.setEthAddress):
       return {
         ...state,
-        ...{ ethAddress: action.payload.ethAddress }
+        ...{ ethAddress: action.payload }
       }
     case getType(authenticationActions.setUserRole):
       return {
         ...state,
         ...{ userRole: action.payload }
+      }
+    case getType(authenticationActions.setUserId):
+      return {
+        ...state,
+        ...{ userId: action.payload }
       }
     default:
       return state;

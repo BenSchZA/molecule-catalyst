@@ -1,6 +1,8 @@
 import { Schema, Document } from 'mongoose';
 import { Schemas } from 'src/app.constants';
 import { spreadEnumKeys } from 'src/helpers/spreadEnum';
+import { Attachment } from 'src/attachment/attachment.schema';
+import { ObjectId } from 'mongodb';
 
 export enum UserType {
   Standard,
@@ -14,29 +16,33 @@ export interface User extends IUser {
 
 interface IUser {
   ethAddress: string;
+  type: UserType;
+  valid: boolean;
+  blacklisted: boolean;
   firstName?: string;
   lastName?: string;
   fullName?: string;
-  // email?: string;
-  profileImage?: { type: Schema.Types.ObjectId, ref: Schemas.Attachment },
-  type: UserType;
-  isValidated: Boolean;
-  valid: Boolean;
-  blacklisted: Boolean;
+  email?: string;
+  profileImage?: Attachment | ObjectId | string,
+  biography?: string,
+  professionalTitle?: string,
+  affiliatedOrganisation?: string,
 }
 
 export interface UserDocument extends IUser, Document { }
 
 export const UserSchema = new Schema({
   ethAddress: { type: String, required: true, unique: true },
+  type: { type: Number, required: true, enum: [...spreadEnumKeys(UserType)], default: UserType.Standard },
+  valid: { type: Boolean, required: true, default: false },
+  blacklisted: { type: Boolean, default: false },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
-  // email: { type: String, required: false, unique: true },
+  email: { type: String, required: false },
   profileImage: { type: Schema.Types.ObjectId, ref: Schemas.Attachment, required: false },
-  type: { type: Number, required: true, enum:[...spreadEnumKeys(UserType)],  default: UserType.Standard },
-  isValidated: { type: Boolean, default: false },
-  valid: { type: Boolean, default: false },
-  blacklisted: { type: Boolean, default: false }
+  biography: { type: String, required: false },
+  professionalTitle: { type: String, required: false },
+  affiliatedOrganisation: { type: String, required: false },
 }, {
     timestamps: true,
     toJSON: {
@@ -58,8 +64,13 @@ export const UserSchema = new Schema({
         return ret;
       },
     },
-  });
+  }
+);
 
 UserSchema.virtual('fullName').get(function () {
-  return this.firstName + ' ' + this.lastName;
+  if (!this.firstName || !this.lastName) {
+    return undefined;
+  } else {
+    return this.firstName + ' ' + this.lastName;
+  }
 });

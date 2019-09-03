@@ -22,11 +22,12 @@ import { DAEMON } from 'utils/constants';
 
 import AppWrapper from '../../components/AppWrapper/index';
 import * as authActions from '../../domain/authentication/actions'
-import routes from './routes';
+import routes, { AppRoute } from './routes';
 import saga from './saga';
 import selectApp from './selectors';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
+import { forwardTo } from 'utils/history';
 
 interface OwnProps { }
 
@@ -35,23 +36,25 @@ export interface StateProps {
   walletUnlocked: boolean;
   ethAddress: string;
   selectedNetworkName: string;
-  userDisplayName: string;
   userRole: number;
 }
 
 export interface DispatchProps {
- onConnect(): void;
- logOut(): void;
+  onConnect(): void;
+  logOut(): void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps & RouteComponentProps;
 
-const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => {
-  return (
+
+
+const App: React.FunctionComponent<Props> = (props: Props) => {
+  const NotFoundRedirect = () => <Redirect to='/404' />
+  const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAuthorized, ...rest }) => (
     <Route
       {...rest}
-      render={props => {
-        return isAuthorized ? (
+      render={props => (
+        isAuthorized ? (
           <Component {...props} />
         ) : (
             <Redirect
@@ -60,23 +63,20 @@ const RoleRoute: React.FunctionComponent<any> = ({ component: Component, isAutho
                 state: { from: props.location },
               }}
             />
-          );
-        }
+          )
+      )
       }
     />
   );
-};
 
-const App: React.SFC<Props> = (props: Props) => {
-  const NotFoundRedirect = () => <Redirect to='/404' />
   return (
-    <AppWrapper navRoutes={routes.filter(r => 
-        r.isNavRequired && 
-        props.userRole >= r.roleRequirement && 
-        r.showNavForRoles.includes(props.userRole))} {...props}>
+    <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
       <Switch>
         {routes.map(r => (
-          <RoleRoute path={r.path} exact component={r.component} isAuthorized={props.userRole >= r.roleRequirement} key={r.path} />)
+          <RoleRoute path={r.path} exact
+            component={r.component}
+            isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
+            key={r.path} />)
         )}
         <Route path='/unauthorized' exact component={UnauthorizedPage} />
         <Route path='/404' exact component={NotFoundPage} />
@@ -86,11 +86,23 @@ const App: React.SFC<Props> = (props: Props) => {
   );
 };
 
+function getNavRoutesForCurrentUser(routes: AppRoute[], userRole: number, isLoggedIn: boolean) {
+  return routes.filter(r =>
+    r.isNavRequired &&  // Exlude any routes that do not require Nav
+    (!r.requireAuth || r.requireAuth && isLoggedIn) && // Exclude routes that require Auth, if the user is not logged in 
+    userRole >= r.roleRequirement && // Exclude routes that require role priveledges greater than the user
+    r.showNavForRoles.includes(userRole) // Exclude any routes that should not be displayed to the user displayed to users.
+  )
+}
+
 const mapStateToProps = state => selectApp(state);
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   onConnect: () => dispatch(authActions.authenticate.request()),
-  logOut: () => dispatch(authActions.logOut()),
+  logOut: () => {
+    forwardTo('/discover');
+    dispatch(authActions.logOut());
+  },
 });
 
 const withConnect = connect(
@@ -98,7 +110,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });
+const withSaga = injectSaga<OwnProps>({ key: 'app', saga: saga, mode: DAEMON });
 
 export default compose(
   withRouter,

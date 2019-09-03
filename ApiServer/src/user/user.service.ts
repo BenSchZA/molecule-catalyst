@@ -1,18 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user.schema';
+import { User, UserType } from './user.schema';
 import { Model } from 'mongoose';
 import { UserDocument } from './user.schema';
 import { Schemas } from '../app.constants';
+import { ObjectId } from 'mongodb';
+import { Attachment } from 'src/attachment/attachment.schema';
+import { ServiceBase } from 'src/common/serviceBase';
+import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
+import { MarketRegistryService } from 'src/marketRegistry/marketRegistry.service';
 
 @Injectable()
-export class UserService {
-  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>) {}
+export class UserService extends ServiceBase {
+
+  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
+    private readonly marketFactoryService: MarketFactoryService,
+    private readonly marketRegistryService: MarketRegistryService
+    ) {
+    super(UserService.name);
+  }
 
   async create(ethAddress: string): Promise<User> {
-    const newUser = await new this.userRepository({ethAddress});
+    this.logger.debug('Creating new user');
+    const profiler = this.logger.startTimer();
+    const isAdmin = await this.marketFactoryService.isUserWhitelistAdmin(ethAddress)
+    const newUser = await new this.userRepository({ethAddress, type: !isAdmin ? UserType.Standard : UserType.Admin });
     await newUser.save();
+    profiler.done('Created new user');
     return newUser.toObject();
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const result = await this.userRepository.find({}).populate(Schemas.User);
+    return result.map(r => r.toObject())
   }
 
   async getUserByEthAddress(ethAddress: string): Promise<User> {
@@ -20,12 +40,45 @@ export class UserService {
     return user ? user.toObject() : false;
   }
 
-  // async findByEmail(email: string): Promise<UserDocument> {
-  //   return await this.userRepository.findOne({ email }).select('password');
-  // }
-
   async findById(userId: string): Promise<User> {
     const user = await this.userRepository.findById(userId);
     return user ? user.toObject() : false;
+  }
+
+  async setUserDetails(userId: string, details: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImage?: string | ObjectId | Attachment,
+    biography: string,
+    professionalTitle: string,
+    affiliatedOrganisation: string,
+  }) {
+    const user = await this.userRepository.findById(userId);
+    user.firstName = details.firstName;
+    user.lastName = details.lastName;
+    user.email = details.email;
+    user.profileImage = details.profileImage;
+    user.biography = details.biography;
+    user.professionalTitle = details.professionalTitle;
+    user.affiliatedOrganisation = details.affiliatedOrganisation;
+    user.type = UserType.ProjectCreator;
+    user.valid = true;
+    await user.save();
+  }
+
+  async promoteToAdmin(userId: string): Promise<User> {
+    this.logger.info(`Promoting user to admin: ${userId}`);
+    const user = await this.userRepository.findById(userId);
+    try {
+      await this.marketFactoryService.addUserToAdminWhitelist(user.ethAddress);
+      await this.marketRegistryService.addUserToAdminWhitelist(user.ethAddress);
+      await this.marketRegistryService.addMarketDeployer(user.ethAddress);
+      user.type = UserType.Admin;
+      user.save();
+      return user.toObject();
+    } catch (error) {
+      this.logger.error(`Something went wrong promoting user ${user.ethAddress} to admin`);
+    }
   }
 }

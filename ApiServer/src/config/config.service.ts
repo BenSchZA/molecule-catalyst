@@ -30,6 +30,9 @@ export interface EnvConfig {
   contracts: {
     [key: string]: any;
   };
+  sendgrid: {
+    [key: string]: any;
+  }
 }
 
 @Injectable()

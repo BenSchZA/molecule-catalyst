@@ -5,7 +5,7 @@
  */
 
 enum ActionTypes {
-  DEFAULT_ACTION = 'app/CreateProjectContainer/DEFAULT_ACTION',
+  SUBMIT_PROJECT = 'app/CreateProjectContainer/SUBMIT_PROJECT',
 }
 
 export default ActionTypes;

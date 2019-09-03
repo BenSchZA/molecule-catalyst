@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as pkg from '../../package.json';
-import { getOsEnv, normalizePort, toBool, toNumber } from './envHelpers';
+import { getOsEnv, normalizePort, toNumber } from './envHelpers';
 
 dotenv.config({ path: path.join(process.cwd(), `.env${((process.env.NODE_ENV === 'test') ? '.test' : '')}`) });
 
@@ -18,6 +18,7 @@ export const env = {
     schema: getOsEnv('APP_SCHEMA') || 'http',
     routePrefix: getOsEnv('APP_ROUTE_PREFIX'),
     port: normalizePort(process.env.PORT || getOsEnv('APP_PORT')),
+    webappUrl: getOsEnv('WEB_APP_URL'),
   },
   log: {
     level: getOsEnv('LOG_LEVEL') || 'info',
@@ -48,9 +49,12 @@ export const env = {
   },
   serverWallet: {
     privateKey: getOsEnv('APPLICATION_WALLET_PRIVATE_KEY'),
-    mnemonic: getOsEnv('APPLICATION_WALLET_MNEMONIC'),
   },
   contracts: {
-
+    marketFactory: getOsEnv('MARKET_FACTORY_ADDRESS'),
+    marketRegistry: getOsEnv('MARKET_REGISTRY_ADDRESS')
   },
+  sendgrid: {
+    apiKey: getOsEnv('SENDGRID_API_KEY'),
+  }
 };

@@ -3,8 +3,7 @@ import { eventChannel } from 'redux-saga';
 import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { forwardTo } from 'utils/history';
-import { getPermit as getPermitApi, login } from '../../api/api';
-// import * as userProfileActions from '../userProfile/actions';
+import { getPermit as getPermitApi, login } from '../../api';
 import * as authenticationActions from './actions';
 import ActionTypes from './constants';
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
@@ -26,7 +25,8 @@ export function* getPermit() {
 export function* getAccessToken(signedPermit, ethAddress) {
   try {
     const apiToken = yield call(login, signedPermit, ethAddress);
-    yield put(authenticationActions.saveAccessToken(apiToken.data));
+    yield put(authenticationActions.saveAccessToken(apiToken.data.accessToken));
+    yield put(authenticationActions.setUserId(apiToken.data.userId))
     const decodedToken = yield call(jwtDecode, apiToken.data.accessToken);
     yield put(authenticationActions.setUserRole(decodedToken.type))
     return apiToken.data;
@@ -57,13 +57,9 @@ export function* refreshTokenPoller() {
     }
 
     delayDuration = (decodedToken.exp - Date.now() / 1000) * 0.9;
-    // Only refresh the token when it is nearing expiry.
     if ((Date.now() / 1000) + (delayDuration + 1) > decodedToken.exp) {
-      // console.log(`Token is expiring soon. Refreshing...`);
       yield call(getAccessToken, signedMessage, signerAddress);
-      // console.log(`access token updated`);
     } else {
-      // console.log(`token not refreshed, going to sleep for ${delayDuration}`);
       yield delay(delayDuration * 1000);
     }
   }
@@ -91,7 +87,7 @@ export function* connectWallet() {
   try {
     const { signerAddress, provider } = yield call(getBlockchainObjects);
     if (provider) {
-      yield put(authenticationActions.setEthAddress({ ethAddress: signerAddress }));
+      yield put(authenticationActions.setEthAddress(signerAddress));
       const network = yield call([provider, provider.getNetwork]);
       yield put(authenticationActions.setNetworkId(network.chainId))
       yield put(authenticationActions.connectWallet.success());
@@ -112,7 +108,7 @@ export const addressChangeEventChannel = eventChannel(emit => {
     });
   }
   catch (e) {
-    emit("Error")
+    console.log(e)
   }
   return () => { };
 });
@@ -120,9 +116,8 @@ export const addressChangeEventChannel = eventChannel(emit => {
 export function* addressChangeListener() {
   while (true) {
     const newAddress = yield take(addressChangeEventChannel);
-    localStorage.clear();
     yield put(authenticationActions.logOut());
-    yield put(authenticationActions.setEthAddress({ ethAddress: newAddress[0] }));
+    yield put(authenticationActions.setEthAddress(newAddress[0]));
     yield fork(connectWallet)
   }
 }

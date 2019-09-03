@@ -9,7 +9,7 @@ import Redux from 'redux';
 // tslint:disable-next-line:no-submodule-imports
 // tslint:disable-next-line:no-implicit-dependencies
 import authenticationReducer from './domain/authentication/reducer';
-import userProfileReducer from './domain/userProfile/reducer';
+import projectReducer from 'domain/projects/reducer';
 
 /**
  * Creates the main reducer with the dynamically injected ones
@@ -17,7 +17,7 @@ import userProfileReducer from './domain/userProfile/reducer';
 export default function createReducer(injectedReducers: Redux.ReducersMapObject = {}): Redux.Reducer<any> {
   return combineReducers({
     authentication: authenticationReducer,
-    userProfile: userProfileReducer,
+    projects: projectReducer,
     ...injectedReducers,
   });
 }
