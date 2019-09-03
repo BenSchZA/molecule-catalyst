@@ -9,7 +9,7 @@ let MoleculeVaultAbi = require('../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../build/CurveRegistry.json');
 let MarketRegistryAbi = require('../build/MarketRegistry.json');
 let MarketFactoryAbi = require('../build/MarketFactory.json');
-let CurveFunctionsAbi = require('../build/CurveIntegrals.json');
+let CurveFunctionsAbi = require('../build/CurveFunctions.json');
 
 const defaultDaiPurchase = ethers.utils.parseUnits("5000000", 18);
 const defaultTokenVolume = ethers.utils.parseUnits("320000", 18);

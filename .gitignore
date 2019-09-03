@@ -167,6 +167,7 @@ $RECYCLE.BIN/
 .etherlime-store
 build/
 derivation_*
+.envrc
 
 .etherlime-store
 .outputParameter
