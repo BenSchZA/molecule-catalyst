@@ -35,6 +35,7 @@ export interface StateProps {
   isLoggedIn: boolean;
   walletUnlocked: boolean;
   ethAddress: string;
+  daiBalance: number,
   selectedNetworkName: string;
   userRole: number;
 }

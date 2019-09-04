@@ -58,6 +58,14 @@ interface ChainData {
   marketAddress: string,
   vaultAddress: string,
   creatorAddress: string,
+  marketData: MarketData,
+}
+
+interface MarketData {
+  active: boolean,
+  balance: number,
+  decimals: number,
+  taxationRate: number,
 }
 
 /* --- STATE --- */
@@ -75,4 +83,4 @@ type DomainState = ProjectsState;
 type DomainActions = ProjectActions;
 type Project = IProject
 
-export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData };
+export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData, MarketData };

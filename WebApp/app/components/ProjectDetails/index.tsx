@@ -12,6 +12,8 @@ import { Face } from '@material-ui/icons';
 import { colors } from 'theme';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import { fade } from '@material-ui/core/styles';
+import ProjectSupportModal from 'components/ProjectSupportModal';
+import { FormikProps, FormikValues } from 'formik';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -180,133 +182,160 @@ const styles = ({ spacing, palette }: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
+  daiBalance: number,
+  formikProps: FormikProps<FormikValues>,
 }
 
 
-const ProjectDetails: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => (
-  (project) ?
-    <Container maxWidth='lg'>
-      <div className={classes.bannerWrapper}>
-        <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} className={classes.bannerImage} />
-        <div className={classes.bannerContent}>
-          <Typography variant='h2'>{project.title}</Typography>
-          <div>
-            <Button onClick={() => console.log('buy')}>Support Project</Button>
-            <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
-          </div>
-        </div>
-        <div className={classes.bannerFooter}>
-          <div>
-            <div className={classes.researcherAvatar} >
-              <Avatar src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
-                {!project.user.profileImage && <Face fontSize='large' />}
-              </Avatar>
+const ProjectDetails: React.FunctionComponent<OwnProps> = ({ 
+    project, 
+    daiBalance, 
+    classes,
+    formikProps,
+  }: OwnProps) => {
+
+  const [open, setOpenModal] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  return (
+    (project && project.chainData && project.chainData.marketData) ?
+      <Container maxWidth='lg'>
+        <ProjectSupportModal
+          daiBalance={daiBalance}
+          closeModal={handleClose}
+          modalState={open}
+          contributionRate={project.chainData.marketData.taxationRate}
+          formikProps={formikProps}
+        />
+        <div className={classes.bannerWrapper}>
+          <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} className={classes.bannerImage} />
+          <div className={classes.bannerContent}>
+            <Typography variant='h2'>{project.title}</Typography>
+            <div>
+              <Button onClick={handleOpen}>Support Project</Button>
+              <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
             </div>
-            <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase()}</Typography>
           </div>
-          <div>
-            <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation && project.user.affiliatedOrganisation.toUpperCase()}</Typography>
+          <div className={classes.bannerFooter}>
+            <div>
+              <div className={classes.researcherAvatar} >
+                <Avatar src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+                  {!project.user.profileImage && <Face fontSize='large' />}
+                </Avatar>
+              </div>
+              <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase()}</Typography>
+            </div>
+            <div>
+              <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation && project.user.affiliatedOrganisation.toUpperCase()}</Typography>
+            </div>
           </div>
         </div>
-      </div>
-      <Paper className={classes.projectSection} square>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography variant='h6'>START DATE: {('Date').toUpperCase()}</Typography>
+        <Paper className={classes.projectSection} square>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant='h6'>START DATE: {('Date').toUpperCase()}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant='h6' align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Typography variant='h6' align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
-          </Grid>
-        </Grid>
-        <Divider />
-        <div className={classes.contentWrapper}>
-          <Typography variant='h6'>Abstract</Typography>
-          <Typography paragraph>{project.abstract}</Typography>
-        </div>
-        <Typography variant='h2'>Funding Status</Typography>
-        <article className={classes.fundingStatusSection} >
-          <div>
-            <Typography variant='h2' className={classes.projectProgress}>
-              95.0%
-            </Typography>
+          <Divider />
+          <div className={classes.contentWrapper}>
+            <Typography variant='h6'>Abstract</Typography>
+            <Typography paragraph>{project.abstract}</Typography>
           </div>
-          <div>
-            <Typography>
-              Total Funding Goal
-            </Typography>
-            <Typography>
-              55000 USD
-            </Typography>
-          </div>
-          <div>
-            <Typography>
-              Total Pledged
-            </Typography>
-            <Typography>
-              50000 USD
-            </Typography>
-          </div>
-          <div>
-            <Typography>
-              Total Released
-            </Typography>
-            <Typography>
-              45000 USD
-            </Typography>
-          </div>
-          <div>
-            <Typography>
-              Total Duration Left
-            </Typography>
-            <Typography>
-              35 Days
-            </Typography>
-          </div>
-        </article>
-        <div className={classes.contentWrapper}>
-          <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
-            {project.researchPhases && project.researchPhases.map((p, i) =>
-              <ProjectPhaseStatus key={i+1} phase={{
-                index: i+1,
-                daysRemaining: 10,
-                fundedAmount: 5000,
-                fundingGoal: p.fundingGoal,
-                title: p.title,
-                status: 'Released'
-              }} />
-            )}
-          </Grid>
-        </div>
-      </Paper>
-      <Paper className={classes.projectSection} square>
-        <div className={classes.contentWrapper}>
-          <Typography variant='h4'>Research Background</Typography>
-          <Typography variant='subtitle2'>What is the significance of your research</Typography>
-          <Typography>{project.context}</Typography>
-          <Typography variant='subtitle2'>What is the experimental approach for this reseach initiative</Typography>
-          <Typography>{project.approach}</Typography>
-        </div>
-      </Paper>
-      <Paper className={classes.projectSection} square>
-        <div className={classes.contentWrapper}>
-          <Typography variant='subtitle2'>Contributors</Typography>
-          <Table>
-            <TableBody>
-              {project.collaborators && project.collaborators.map((c, i) =>
-                <TableRow key={i}>
-                  <TableCell>{c.fullName}</TableCell>
-                  <TableCell>{c.professionalTitle}</TableCell>
-                  <TableCell>{c.affiliatedOrganisation}</TableCell>
-                </TableRow>
+          <Typography variant='h2'>Funding Status</Typography>
+          <article className={classes.fundingStatusSection} >
+            <div>
+              <Typography variant='h2' className={classes.projectProgress}>
+                95.0%
+              </Typography>
+            </div>
+            <div>
+              <Typography>
+                Total Funding Goal
+              </Typography>
+              <Typography>
+                55000 USD
+              </Typography>
+            </div>
+            <div>
+              <Typography>
+                Total Pledged
+              </Typography>
+              <Typography>
+                50000 USD
+              </Typography>
+            </div>
+            <div>
+              <Typography>
+                Total Released
+              </Typography>
+              <Typography>
+                45000 USD
+              </Typography>
+            </div>
+            <div>
+              <Typography>
+                Total Duration Left
+              </Typography>
+              <Typography>
+                35 Days
+              </Typography>
+            </div>
+          </article>
+          <div className={classes.contentWrapper}>
+            <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
+              {project.researchPhases && project.researchPhases.map((p, i) =>
+                <ProjectPhaseStatus key={i+1} phase={{
+                  index: i+1,
+                  daysRemaining: 10,
+                  fundedAmount: 5000,
+                  fundingGoal: p.fundingGoal,
+                  title: p.title,
+                  status: 'Released'
+                }} />
               )}
-            </TableBody>
-        </Table>
-        </div>
-      </Paper>
-    </Container> :
-    <Container>
-      Loading data
-    </Container>
-);
+            </Grid>
+          </div>
+        </Paper>
+        <Paper className={classes.projectSection} square>
+          <div className={classes.contentWrapper}>
+            <Typography variant='h4'>Research Background</Typography>
+            <Typography variant='subtitle2'>What is the significance of your research</Typography>
+            <Typography>{project.context}</Typography>
+            <Typography variant='subtitle2'>What is the experimental approach for this reseach initiative</Typography>
+            <Typography>{project.approach}</Typography>
+          </div>
+        </Paper>
+        <Paper className={classes.projectSection} square>
+          <div className={classes.contentWrapper}>
+            <Typography variant='subtitle2'>Contributors</Typography>
+            <Table>
+              <TableBody>
+                {project.collaborators && project.collaborators.map((c, i) =>
+                  <TableRow key={i}>
+                    <TableCell>{c.fullName}</TableCell>
+                    <TableCell>{c.professionalTitle}</TableCell>
+                    <TableCell>{c.affiliatedOrganisation}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+          </Table>
+          </div>
+        </Paper>
+      </Container> :
+      <Container>
+        Loading data
+      </Container>
+  )
+};
 
 export default withStyles(styles, { withTheme: true })(ProjectDetails);

@@ -13,6 +13,11 @@ import saga from './saga';
 import { RouteComponentProps } from 'react-router-dom';
 import ProjectDetails from 'components/ProjectDetails';
 import { Project } from 'domain/projects/types';
+import { RESTART_ON_REMOUNT } from 'utils/constants';
+import { ApplicationRootState } from 'types';
+import { Formik, FormikProps, FormikValues } from 'formik';
+import * as Yup from 'yup';
+import { supportProject } from 'domain/projects/actions';
 
 interface RouteParams {
   projectId: string;
@@ -21,30 +26,65 @@ interface RouteParams {
 interface OwnProps extends RouteComponentProps<RouteParams>,
 React.Props<RouteParams> { }
 
-interface DispatchProps {}
+interface DispatchProps {
+}
 
 interface StateProps {
-  project: Project
+  project: Project,
+  daiBalance: number,
+  contribution: number,
+  supportProject(projectId: string, contribution: number): void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.FunctionComponent<Props> = ({project}: Props) =>(
-  <ProjectDetails project={project} />
-);
+const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
 
-const mapStateToProps = (state, props) => ({
+  const onSubmit = (values, { setSubmitting }) => {
+    console.log("Submit");
+    props.supportProject(props.project.id, values.contribution);
+    // setTimeout(() => {
+    //   alert(JSON.stringify(values, null, 2));
+    //   setSubmitting(false);
+    // }, 1000);
+  };
+
+  const validationSchema = Yup.object().shape({
+    contribution: Yup.number().positive('Invalid value').min(1).required('Required').test('Check funds', 'Not enough funds', (value) => {
+      return value <= props.daiBalance;
+    }),
+  });
+
+  return (
+    <div>
+      <Formik
+        initialValues={{ contribution: 0 }}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        >
+        {(formikProps: FormikProps<FormikValues>) => (
+          <ProjectDetails
+            project={props.project}
+            daiBalance={props.daiBalance}
+            formikProps={formikProps}
+          />
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+const mapStateToProps = (state: ApplicationRootState, props) => ({
   project: state.projects[props.match.params.projectId],
-})
+  daiBalance: state.authentication.daiBalance,
+});
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
-): DispatchProps => {
-  return {
-    dispatch: dispatch,
-  };
-};
+): DispatchProps => ({
+  supportProject: (projectId, contribution) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
+});
 
 const withConnect = connect(
   mapStateToProps,
@@ -54,6 +94,7 @@ const withConnect = connect(
 const withSaga = injectSaga<OwnProps>({
   key: 'projectDetailsContainer',
   saga: saga,
+  mode: RESTART_ON_REMOUNT
 });
 
 export default compose(

@@ -7,8 +7,6 @@ import { ContainerState as AdminUserListingState } from '../containers/AdminUser
 import { ContainerState as CreateProjectContainerState } from '../containers/CreateProjectContainer/types'
 import { ContainerState as AdminProjectListingState } from '../containers/AdminProjectListingContainer/types'
 
-
-
 export interface LifeStore extends Store<ApplicationRootState> {
   injectedReducers: any;
   injectedSagas: any;
@@ -31,7 +29,7 @@ export interface InjectSagaParams {
 export interface ApplicationRootState {
   readonly app: never;
   readonly authentication: AuthenticationState;
-  readonly projects: ProjectsState
+  readonly projects: ProjectsState;
   readonly discover: DiscoverState;
   readonly creatorApplication: CreatorApplicationState;
   readonly adminDashboard: AdminUserListingState;

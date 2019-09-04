@@ -12,8 +12,8 @@ import { launchProject } from 'domain/projects/actions';
 export function* approveProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
-    yield call(approveProjectAPI, action.payload, apiKey);
     yield put(launchProject.request(action.payload));
+    yield call(approveProjectAPI, action.payload, apiKey);
     yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);

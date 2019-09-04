@@ -7,6 +7,7 @@ export const initialState: DomainState = {
   walletUnlocked: false,
   userId: '',
   ethAddress: '',
+  daiBalance: 0,
   selectedNetworkId: undefined,
   signedPermit: '',
   accessToken: '',
@@ -49,6 +50,11 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
       return {
         ...state,
         ...{ ethAddress: action.payload }
+      }
+    case getType(authenticationActions.setDaiBalance):
+      return {
+        ...state,
+        ...{ daiBalance: action.payload }
       }
     case getType(authenticationActions.setUserRole):
       return {

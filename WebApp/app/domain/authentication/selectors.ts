@@ -10,7 +10,7 @@ const networkNames = {
   77: 'Sokol',
   99: 'POA',
   100: 'XDai'
-}
+};
 
 const selectIsLoggedIn = (state: ApplicationRootState) => {
   const accessToken = state.authentication.accessToken;
@@ -31,7 +31,7 @@ const selectUserId = (state: ApplicationRootState) => {
   } catch (error) {
     return false;
   }
-}
+};
 
 const selectUserRole = (state: ApplicationRootState) => {
   return state.authentication.userRole;
@@ -43,11 +43,15 @@ const selectWalletUnlocked = (state: ApplicationRootState) => {
 
 const selectEthAddress = (state: ApplicationRootState) => {
   return state.authentication.ethAddress;
-}
+};
+
+const selectDaiBalance = (state: ApplicationRootState) => {
+  return state.authentication.daiBalance;
+};
 
 const selectNetworkId = (state: ApplicationRootState) => {
   return state.authentication.selectedNetworkId;
-}
+};
 
 export const makeSelectIsLoggedIn = createSelector(selectIsLoggedIn, substate => {
   return substate;
@@ -55,7 +59,7 @@ export const makeSelectIsLoggedIn = createSelector(selectIsLoggedIn, substate =>
 
 export const makeSelectUserId = createSelector(selectUserId, substate => {
   return substate;
-})
+});
 
 export const makeSelectWalletUnlocked = createSelector(selectWalletUnlocked, substate => {
   return substate;
@@ -63,16 +67,20 @@ export const makeSelectWalletUnlocked = createSelector(selectWalletUnlocked, sub
 
 export const makeSelectEthAddress = createSelector(selectEthAddress, substate => {
   return substate;
-})
+});
+
+export const makeSelectDaiBalance = createSelector(selectDaiBalance, substate => {
+  return substate;
+});
 
 export const makeSelectNetworkId = createSelector(selectNetworkId, substate => {
   return substate;
-})
+});
 
 export const makeSelectNetworkName = createSelector(selectNetworkId, substate => {
   return substate && networkNames[substate];
-})
+});
 
 export const makeSelectUserRole = createSelector(selectUserRole, substate => {
   return substate;
-})
+});

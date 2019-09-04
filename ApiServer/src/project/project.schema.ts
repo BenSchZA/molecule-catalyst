@@ -42,9 +42,9 @@ interface ChainData {
 const defaultChainData: ChainData = {
   block: -1,
   index: -1,
-  marketAddress: "",
-  vaultAddress: "",
-  creatorAddress: "",
+  marketAddress: "0x",
+  vaultAddress: "0x",
+  creatorAddress: "0x",
 }
 
 interface Collaborator {
@@ -82,11 +82,11 @@ let ResearchPhaseSchema = new Schema({
   });
 
 let ChainDataSchema = new Schema({
-  block: { type: Number, required: true },
-  index: { type: Number, required: true },
-  marketAddress: { type: String, required: true },
-  vaultAddress: { type: String, required: true },
-  creatorAddress: { type: String, required: true },
+  block: { type: Number, required: true, default: -1 },
+  index: { type: Number, required: true, default: -1 },
+  marketAddress: { type: String, required: true, default: "0x" },
+  vaultAddress: { type: String, required: true, default: "0x" },
+  creatorAddress: { type: String, required: true, default: "0x" },
 }, 
 {
   _id: false,
