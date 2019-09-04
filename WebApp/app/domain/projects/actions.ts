@@ -5,7 +5,7 @@
  */
 
 import { createStandardAction, createAsyncAction } from 'typesafe-actions';
-import { Project } from './types';
+import { Project, MarketData } from './types';
 
 import ActionTypes from './constants';
 
@@ -18,3 +18,9 @@ export const launchProject = createAsyncAction(
   ActionTypes.LAUNCH_PROJECT_SUCCESS,
   ActionTypes.LAUNCH_PROJECT_FAILURE)
   <string, string, Error>();
+export const setMarketData = createStandardAction(ActionTypes.SET_MARKET_DATA)<{ projectId: string, marketData: MarketData }>();
+export const supportProject = createAsyncAction(
+  ActionTypes.SUPPORT_PROJECT_REQUEST,
+  ActionTypes.SUPPORT_PROJECT_SUCCESS,
+  ActionTypes.SUPPORT_PROJECT_FAILURE)
+  <{ projectId: string, contribution: number }, string, Error>();

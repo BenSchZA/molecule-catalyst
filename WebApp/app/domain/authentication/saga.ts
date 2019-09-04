@@ -8,6 +8,7 @@ import * as authenticationActions from './actions';
 import ActionTypes from './constants';
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
 import { getType } from 'typesafe-actions';
+import { getDaiBalance, getDaiContract } from './chain';
 
 
 export function* getPermit() {
@@ -89,7 +90,7 @@ export function* connectWallet() {
     if (provider) {
       yield put(authenticationActions.setEthAddress(signerAddress));
       const network = yield call([provider, provider.getNetwork]);
-      yield put(authenticationActions.setNetworkId(network.chainId))
+      yield put(authenticationActions.setNetworkId(network.chainId));
       yield put(authenticationActions.connectWallet.success());
     } else {
       yield put(authenticationActions.connectWallet.failure('Non-Ethereum browser detected. You should consider trying MetaMask!'));
@@ -118,7 +119,49 @@ export function* addressChangeListener() {
     const newAddress = yield take(addressChangeEventChannel);
     yield put(authenticationActions.logOut());
     yield put(authenticationActions.setEthAddress(newAddress[0]));
-    yield fork(connectWallet)
+    yield fork(connectWallet);
+  }
+}
+
+export function* daiBalanceListener() {
+  const { signerAddress } = yield call(getBlockchainObjects);
+  const daiContract = yield call(getDaiContract);
+  
+  // event Transfer(
+  //     address indexed from,
+  //     address indexed to,
+  //     uint256 value
+  // );
+  // The null field indicates any value matches, this specifies
+  // "any Transfer from any to signerAddress"
+  const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
+  const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
+
+  daiContract.removeAllListeners(filterTo);
+  daiContract.removeAllListeners(filterFrom);
+
+  const transferEventChannel = eventChannel(emit => {
+    try {
+      // Listen for filtered results
+      daiContract.on(filterTo, (from, to, value) => {
+        console.log('Received ' + value.toString() + ' Dai from ' + from);
+        emit(value);
+      });
+      daiContract.on(filterFrom, (from, to, value) => {
+        console.log('Sent ' + value.toString() + ' Dai to ' + to);
+        emit(value);
+      });
+    }
+    catch (e) {
+      console.log(e);
+    }
+    return () => { };
+  });
+
+  while (true) {
+    const daiBalance = yield call(getDaiBalance);
+    yield put(authenticationActions.setDaiBalance(daiBalance));
+    yield take(transferEventChannel);
   }
 }
 
@@ -139,6 +182,8 @@ export default function* rootAuthenticationSaga() {
 
       // Start the addressChange listener
       yield fork(addressChangeListener);
+      // Start the Dai balance listener
+      yield fork(daiBalanceListener);
 
       // Check store for existing signed message
       const signedMessage = yield select((state: ApplicationRootState) => state.authentication.signedPermit);

@@ -6,11 +6,11 @@ import {
 import { normalize } from "normalizr";
 import projects from './schema';
 import * as ProjectActions from './actions'
-import { select, call, all, put, takeLatest } from 'redux-saga/effects';
+import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { deployMarket } from './chainInteractions';
-import { Project, LaunchProjectData } from './types';
+import { deployMarket, getProjectTokenDetails, mint } from './chain';
+import { Project, MarketData } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
 
 interface Market {
@@ -44,8 +44,8 @@ export function* getMyProjects() {
 
 export function* launchProject(action) {
   const projectID = action.payload;
-  const project: Project = yield select((state) => state.projects[action.payload]);
-
+  let project: Project = yield select((state: ApplicationRootState) => state.projects[action.payload]);
+  
   try {
     let newMarket: Market = {
       fundingGoals: [],
@@ -54,12 +54,12 @@ export function* launchProject(action) {
       taxationRate: 0,
     };
 
-    newMarket.curveType = 0; //TODO: add curve type to data type - for now hard code
     newMarket.fundingGoals = project.researchPhases.map(value => value.fundingGoal);
     newMarket.phaseDurations = project.researchPhases.map(value => value.duration);
+    newMarket.curveType = 0; //TODO: add curve type to data type - for now hard code
     newMarket.taxationRate = 15; //TODO: add tax rate to data type - for now hard code
 
-    let result: LaunchProjectData = {
+    const result = {
       ...(yield call(deployMarket,
                       newMarket.fundingGoals,
                       newMarket.phaseDurations,
@@ -69,7 +69,8 @@ export function* launchProject(action) {
     };
 
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-    yield call(launchProjectAPI, action.payload, result, apiKey);
+    project = yield call(launchProjectAPI, action.payload, result, apiKey);
+    put(ProjectActions.addProject(project));
     put(ProjectActions.launchProject.success(projectID));
 
   } catch (error) {
@@ -78,11 +79,49 @@ export function* launchProject(action) {
   }
 }
 
+export function* supportProject(action) {
+  console.log(action);
+  const projectId = action.payload.projectId;
+  const contribution = action.payload.contribution;
+
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+
+  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+    console.log("Invalid project blockchain data");
+    return;
+  }
+
+  try {
+    yield call(mint, project.chainData.marketAddress, contribution, project.chainData.marketData.taxationRate);
+    yield put(ProjectActions.supportProject.success(projectId));
+  } catch (error) {
+    yield put(ProjectActions.supportProject.failure(projectId));
+    console.log(error);
+  }
+}
+
+export function* getMarketData(projectId) {
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+  
+  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+    console.log("Invalid project blockchain data");
+    return;
+  }
+
+  try {
+    const marketData: MarketData = yield call(getProjectTokenDetails, project.chainData.marketAddress);
+    yield put(ProjectActions.setMarketData({ projectId: projectId, marketData: marketData }));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function* getProjects() {
   try {
     const result = yield call(getProjectsApi);
     const normalised = normalize(result.data, projects);
     yield all(normalised.result.map(projectId => put(ProjectActions.addProject(normalised.entities.projects[projectId]))));
+    yield all(normalised.result.map(projectId => fork(getMarketData, projectId)));
   } catch (error) {
     console.log(error);
   }
@@ -92,5 +131,6 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.getAllProjects), getAllProjects);
   yield takeLatest(getType(ProjectActions.getMyProjects), getMyProjects);
   yield takeLatest(getType(ProjectActions.getProjects), getProjects);
-  yield takeLatest(getType(ProjectActions.launchProject.request), launchProject)
+  yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
+  yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
 }

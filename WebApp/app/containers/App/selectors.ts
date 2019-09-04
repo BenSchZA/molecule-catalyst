@@ -2,7 +2,14 @@
 import { createStructuredSelector } from 'reselect';
 import { RootState } from './types';
 import { StateProps } from 'containers/App';
-import { makeSelectIsLoggedIn, makeSelectWalletUnlocked, makeSelectNetworkName, makeSelectEthAddress, makeSelectUserRole } from 'domain/authentication/selectors';
+import { 
+  makeSelectIsLoggedIn, 
+  makeSelectWalletUnlocked, 
+  makeSelectNetworkName, 
+  makeSelectEthAddress, 
+  makeSelectDaiBalance,
+  makeSelectUserRole,
+} from 'domain/authentication/selectors';
 
 /**
  * Direct selector to the user state domain
@@ -24,6 +31,7 @@ const selectApp = createStructuredSelector<RootState, StateProps>({
   walletUnlocked: makeSelectWalletUnlocked,
   selectedNetworkName: makeSelectNetworkName,
   ethAddress: makeSelectEthAddress,
+  daiBalance: makeSelectDaiBalance,
   userRole: makeSelectUserRole, 
 });
 
