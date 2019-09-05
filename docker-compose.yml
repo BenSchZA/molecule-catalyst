@@ -15,6 +15,18 @@ services:
         - API_SCHEMA
         - APM_SERVICE_NAME
         - APM_SERVER_ENDPOINT
+        - APP_NAME
+        - APP_SCHEMA
+        - APP_HOST
+        - APP_PORT
+        - MAINNET_DAI_ADDRESS
+        - GOERLI_DAI_ADDRESS
+        - RINKEBY_DAI_ADDRESS
+        - KOVAN_DAI_ADDRESS
+        - ROPSTEN_DAI_ADDRESS
+        - PDAI_CONTRACT_ADDRESS
+        - MARKET_REGISTRY_ADDRESS
+        - MARKET_FACTORY_ADDRESS
     depends_on:
       - core
   mongo:
