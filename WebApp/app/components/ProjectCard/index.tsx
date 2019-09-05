@@ -140,7 +140,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
      <Card
       className={classes.card}
       onClick={() => forwardTo(`project/${project.id}`)}
-      onMouseOver={() => setRaised(true)} 
+      onMouseOver={() => setRaised(true)}
       onMouseOut={() => setRaised(false)}
       raised={raised}>
       <CardHeader
@@ -172,7 +172,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
         </div>
         <div className={classes.avatar}>
-        <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
+          <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
         </div>
       </CardActions>
     </Card>
