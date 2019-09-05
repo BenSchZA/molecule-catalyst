@@ -72,8 +72,6 @@ export class UserService extends ServiceBase {
     const user = await this.userRepository.findById(userId);
     try {
       await this.marketFactoryService.addUserToAdminWhitelist(user.ethAddress);
-      await this.marketRegistryService.addUserToAdminWhitelist(user.ethAddress);
-      await this.marketRegistryService.addMarketDeployer(user.ethAddress);
       user.type = UserType.Admin;
       user.save();
       return user.toObject();
