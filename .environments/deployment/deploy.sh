@@ -15,6 +15,35 @@ deploy_namespace() {
   NAMESPACE=$1
 
   cat <<EOF > deployment.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: $NAMESPACE
+data:
+  APP_NAME: "molecule_API_server"
+  APP_SCHEMA: "https"
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "3001"
+  APP_ROUTE_PREFIX: "/api"
+  APP_BANNER: "true"
+  LOG_LEVEL: "debug"
+  LOG_OUTPUT: "dev"
+  MONGO_USERNAME: "mongo-user"
+  MONGO_HOST: "mongo-molecule.$NAMESPACE"
+  MONGO_PORT: "27017"
+  MONGO_DATABASE: "molecule-catalyst-$NAMESPACE"
+  MONGO_AUTH_SOURCE: "admin"
+  BCRYPT_SALT_ROUND: "10"
+  JWT_EXPIRY: "1"
+  ETHERS_PROVIDER: "default"
+  ETHERS_NETWORK: "rinkeby"
+  ETHERS_RPC_PROVIDER_URL: "http://localhost:8545"
+  WEB_APP_URL: "https://alpha-$TAG.mol.ai"
+  PDAI_CONTRACT_ADDRESS=$PDAI_CONTRACT_ADDRESS
+  MARKET_REGISTRY_ADDRESS=$MARKET_REGISTRY_ADDRESS
+  MARKET_FACTORY_ADDRESS=$MARKET_FACTORY_ADDRESS
+---
 # Frontend Deployment (Pod)
 apiVersion: apps/v1
 kind: Deployment
@@ -126,6 +155,9 @@ deploy() {
   if [ $TAG == "nightly" ]
   then
     echo "Configuring env variables"
+    PDAI_CONTRACT_ADDRESS=0x231842628F0eC39887EB2Fe95f52C7Fa2DABf56c
+    MARKET_REGISTRY_ADDRESS=0x3458f1801011732cdd0239d24dF9499fB958817C
+    MARKET_FACTORY_ADDRESS=0xE6BAB70225B5404D7Fd79218d39b767AbF808875
   # elif [ $TAG == "staging" ]
   # then
   else
