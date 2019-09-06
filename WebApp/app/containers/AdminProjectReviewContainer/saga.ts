@@ -3,17 +3,15 @@ import { takeEvery, select, call, put } from 'redux-saga/effects';
 import { getType } from 'typesafe-actions';
 import { ApplicationRootState } from 'types';
 import { 
-  approveProject as approveProjectAPI,
   rejectProject as rejectProjectAPI,
 } from '../../api';
 import { forwardTo } from 'utils/history';
 import { launchProject } from 'domain/projects/actions';
 
 export function* approveProject(action) {
-  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
+    // A project is either approved -> started and launched, or rejected
     yield put(launchProject.request(action.payload));
-    yield call(approveProjectAPI, action.payload, apiKey);
     yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);
