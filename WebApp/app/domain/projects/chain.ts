@@ -66,6 +66,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
     // Get data
     const active = await market.active();
     const balance: BigNumber = await market.balanceOf(signerAddress);
+    const totalSupply: BigNumber = await market.totalSupply();
     const decimals: BigNumber = await market.decimals();
     const taxationRate: BigNumber = await market.taxationRate();
 
@@ -75,6 +76,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
     const result: MarketData = {
       active: active,
       balance: balance.toString(),
+      totalSupply: totalSupply.toString(),
       decimals: decimals.toNumber(),
       taxationRate: taxationRate.toNumber(),
       tokenPrice: tokenPrice.toString(),

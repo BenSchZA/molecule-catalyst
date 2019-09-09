@@ -59,7 +59,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
       const marketData = this.props.project.chainData.marketData;
       const contributionRate = marketData.taxationRate;
       const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
-      const currentTokenSupply = Number(ethers.utils.formatEther(marketData.balance));
+      const currentTokenSupply = Number(ethers.utils.formatEther(marketData.totalSupply));
 
       // D3 Code to create the chart
       // using this._rootNode as container
@@ -101,8 +101,6 @@ class MarketChartD3 extends React.Component<OwnProps> {
             "y": d * slope + y_intercept
           }
         });
-
-      console.log(data_sell);
 
       // data array to draw area below curve
       let area_data = d3.range(0, current_supply - 1, min_mint).map(
