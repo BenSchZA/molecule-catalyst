@@ -9,6 +9,7 @@ import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/s
 import MarketChartD3 from 'components/MarketChartD3';
 import { Paper, CircularProgress, Typography, Link } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
+import { Project } from 'domain/projects/types';
 
 // Example values:
 {/* <MarketChartLayout
@@ -28,8 +29,8 @@ const styles = (theme: Theme) =>
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
       overflowX: 'auto',
-      marginLeft: '20vw',
-      marginRight: '20vw',
+      marginLeft: '10px',
+      marginRight: '10px',
       marginBottom: '20px',
       padding: theme.spacing(2),
     },
@@ -51,11 +52,7 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {
   display: boolean,
-  marketSupplyProps: {
-    contributionRate: number;
-    currentTokenValue: number;
-    currentTokenSupply: number;
-  },
+  project: Project,
 };
 
 class MarketChartLayout extends React.Component<OwnProps> {
@@ -68,7 +65,7 @@ class MarketChartLayout extends React.Component<OwnProps> {
   };
 
   render() {
-    const { classes, marketSupplyProps } = this.props;
+    const { classes, project } = this.props;
     const { value } = this.state;
 
     return (
@@ -77,9 +74,7 @@ class MarketChartLayout extends React.Component<OwnProps> {
         <section className={classes.charts}>
           { value === 0 ?
               <MarketChartD3
-                contributionRate={marketSupplyProps.contributionRate}
-                currentTokenValue={marketSupplyProps.currentTokenValue}
-                currentTokenSupply={marketSupplyProps.currentTokenSupply}/>
+                project={project} />
               : value === 0 && <CircularProgress className={classes.progress} />
           }
           <div className={classes.info}>
