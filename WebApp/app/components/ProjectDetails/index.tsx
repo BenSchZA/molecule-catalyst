@@ -14,6 +14,7 @@ import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import { fade } from '@material-ui/core/styles';
 import ProjectSupportModal from 'components/ProjectSupportModal';
 import { FormikProps, FormikValues } from 'formik';
+import MarketChartLayout from 'components/MarketChartLayout';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -251,7 +252,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography variant='h6'>Abstract</Typography>
             <Typography paragraph>{project.abstract}</Typography>
           </div>
-          <Typography variant='h2'>Funding Status</Typography>
+          <Typography variant='h4' align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography variant='h2' className={classes.projectProgress}>
@@ -305,10 +306,17 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               )}
             </Grid>
           </div>
+          <div className={classes.contentWrapper}>
+            <Typography variant='h4' align="center">Market</Typography>
+            <MarketChartLayout
+              display={true}
+              project={project}
+            />
+          </div>
         </Paper>
         <Paper className={classes.projectSection} square>
           <div className={classes.contentWrapper}>
-            <Typography variant='h4'>Research Background</Typography>
+            <Typography variant='h4' align="center">Research Background</Typography>
             <Typography variant='subtitle2'>What is the significance of your research</Typography>
             <Typography>{project.context}</Typography>
             <Typography variant='subtitle2'>What is the experimental approach for this reseach initiative</Typography>
