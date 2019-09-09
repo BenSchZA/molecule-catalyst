@@ -65,19 +65,15 @@ export async function getProjectTokenDetails(marketAddress: string) {
 
     // Get data
     const active = await market.active();
-    const balance: BigNumber = await market.balanceOf(signerAddress);
-    const decimals: BigNumber = await market.decimals();
-    const taxationRate: BigNumber = await market.taxationRate();
-
-    const rawTokenPrice: BigNumber = await market.priceToMint(ethers.utils.parseEther('1'));
-    const tokenPrice: BigNumber = rawTokenPrice.div(taxationRate.div(100).add(1));
+    const balance = await market.balanceOf(signerAddress);
+    const decimals = await market.decimals();
+    const taxationRate = await market.taxationRate();
 
     const result: MarketData = {
       active: active,
-      balance: balance.toString(),
-      decimals: decimals.toNumber(),
-      taxationRate: taxationRate.toNumber(),
-      tokenPrice: tokenPrice.toString(),
+      balance: parseInt(balance),
+      decimals: parseInt(decimals),
+      taxationRate: parseInt(taxationRate),
     };
 
     return result;
@@ -124,7 +120,7 @@ export async function mint(marketAddress, contribution, contributionRate) {
   }
 }
 
-async function allowance(spender) {
+export async function allowance(spender) {
   // Get blockchain objects
   const { signer } = await getBlockchainObjects();
   const signerAddress = await signer.getAddress();
@@ -137,7 +133,7 @@ async function allowance(spender) {
   return allowance;
 }
 
-async function approve(address, value: BigNumber) {
+export async function approve(address, value: BigNumber) {
   const allowanceValue: BigNumber = await allowance(address);
 
   if(allowanceValue.lt(value)) {

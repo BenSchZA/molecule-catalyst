@@ -14,7 +14,6 @@ import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import { fade } from '@material-ui/core/styles';
 import ProjectSupportModal from 'components/ProjectSupportModal';
 import { FormikProps, FormikValues } from 'formik';
-import MarketChartLayout from 'components/MarketChartLayout';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -253,10 +252,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography paragraph>{project.abstract}</Typography>
           </div>
           <Typography variant='h2'>Funding Status</Typography>
-          <MarketChartLayout
-            display={true}
-            project={project}
-          />
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography variant='h2' className={classes.projectProgress}>

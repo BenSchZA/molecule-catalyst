@@ -63,10 +63,9 @@ interface ChainData {
 
 interface MarketData {
   active: boolean,
-  balance: string,
+  balance: number,
   decimals: number,
   taxationRate: number,
-  tokenPrice: string,
 }
 
 /* --- STATE --- */

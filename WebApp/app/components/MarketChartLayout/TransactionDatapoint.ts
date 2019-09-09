@@ -4,4 +4,5 @@ export interface TransactionDatapoint {
   transactionHash: string;
   tokenAmount: number;
   daiAmount: number;
+  firstTokenPrice: number;
 }

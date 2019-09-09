@@ -8,8 +8,6 @@ import React, { Fragment } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
-import { Project } from 'domain/projects/types';
-import { ethers } from "ethers";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -44,8 +42,10 @@ const styles = (theme: Theme) =>
     }
   });
 
-interface OwnProps extends WithStyles<typeof styles> {
-  project: Project,
+interface OwnProps extends WithStyles < typeof styles > {
+  contributionRate: number;
+  currentTokenValue: number;
+  currentTokenSupply: number;
 };
 
 class MarketChartD3 extends React.Component<OwnProps> {
@@ -56,23 +56,24 @@ class MarketChartD3 extends React.Component<OwnProps> {
     renderChart() {
       if (!this._rootNode) return;
 
-      const marketData = this.props.project.chainData.marketData;
-      const contributionRate = marketData.taxationRate;
-      const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
-      const currentTokenSupply = Number(ethers.utils.formatEther(marketData.balance));
+      const {
+        contributionRate,
+        currentTokenValue,
+        currentTokenSupply,
+      } = this.props;
 
       // D3 Code to create the chart
       // using this._rootNode as container
       // line & graph parameters
-      let current_supply = currentTokenSupply + 1,
+      let current_supply = currentTokenSupply,
         current_price = currentTokenValue,
         y_intercept = 0.5,
         slope = (current_price - y_intercept) / current_supply,
         initial_supply = 0;
 
-      let collateralPool = y_intercept*(current_supply - 1) + ((current_supply - 1)/2)*(current_price - current_price*(contributionRate/100));
+      let collateralPool = y_intercept*current_supply + (current_supply/2)*(current_price - current_price*contributionRate);
 
-      let max_supply = current_supply > 0 ? current_supply*2 : 2;
+      let max_supply = current_supply*2;
       let min_mint = max_supply/1000;
 
       // set the dimensions and margins of the graph
@@ -86,15 +87,15 @@ class MarketChartD3 extends React.Component<OwnProps> {
         height = 500 - margin.top - margin.bottom;
 
       // aggregate line data points in array of objects
-      let data_sell = d3.range(initial_supply, max_supply, min_mint).map(
+      let data_sell = d3.range(initial_supply, max_supply + 1, min_mint).map(
         function (d) {
           return {
             "x": d,
-            "y": d * slope + y_intercept - (contributionRate/100)*(d * slope + y_intercept)
+            "y": d * slope + y_intercept - contributionRate*(d * slope + y_intercept)
           }
         });
 
-      let data = d3.range(initial_supply, max_supply, min_mint).map(
+      let data = d3.range(initial_supply, max_supply + 1, min_mint).map(
         function (d) {
           return {
             "x": d,
@@ -102,14 +103,12 @@ class MarketChartD3 extends React.Component<OwnProps> {
           }
         });
 
-      console.log(data_sell);
-
       // data array to draw area below curve
-      let area_data = d3.range(initial_supply, current_supply - initial_supply - 1, min_mint).map(
+      let area_data = d3.range(initial_supply, current_supply - initial_supply + 1, min_mint).map(
         function (d) {
           return {
             "x": d,
-            "y": d * slope + y_intercept - (contributionRate/100)*(d * slope + y_intercept)
+            "y": d * slope + y_intercept - contributionRate*(d * slope + y_intercept)
           }
         });
 
@@ -301,7 +300,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
           return d.x;
         }).left(data, x0, 1);
         let d0 = data[i - 1];
-        let d1 = data[i - 1];
+        let d1 = data[i];
         let d = x0 - d0.supply > d1.supply - x0 ? d1 : d0;
 
         // move x-line to data point closest to mouse location
@@ -439,7 +438,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
     tooltipGroup.select(`text.x-label-text-${tag}`)
       .attr("transform",
         "translate(" + (xscale(d.x)-100) + "," + (yscale(d.y)-25) + ")")
-      .text(`Current Supply:\t\t\t ${formatNumber(d.x - 1)}`);
+      .text(`Current Supply:\t\t\t ${formatNumber(d.x)}`);
 
     // Line labels: buy/sell
     tooltipGroup.append("text")
