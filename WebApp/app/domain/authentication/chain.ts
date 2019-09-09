@@ -23,6 +23,10 @@ export async function getDaiBalance() {
     const { signer } = await getBlockchainObjects();
     const signerAddress = await signer.getAddress();
 
+    if(!signerAddress) {
+      return 0.0;
+    }
+
     // Get contract instances
     const daiContract = await getDaiContract();
 
