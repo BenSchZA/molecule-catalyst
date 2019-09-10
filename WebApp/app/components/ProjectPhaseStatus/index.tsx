@@ -5,14 +5,69 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Grid, Typography, Chip, LinearProgress } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Grid, Typography, Chip, LinearProgress, Divider } from '@material-ui/core';
+import { colors } from 'theme';
+import { lighten } from '@material-ui/core/styles';
 
-const styles = ({palette}: Theme) =>
+const styles = ({ spacing, palette}: Theme) =>
   createStyles({
     phaseProgressBar: {
       color: palette.secondary.main,
+    },
+    chip:{
+      float: 'left',
+      marginTop: '10px',
+    },
+    label:{
+      font: 'Bold 12px/15px Montserrat',
+      fontWeight: 'bolder',
+      letterSpacing: '1.07px',
+      color: 'black',
+      paddingBottom: 8
+    },
+    largeText:{
+      font: '20px/27px Roboto',
+      fontWeight: 'normal',
+      letterSpacing: '0.62px',
+      color: '#00000099',
+      paddingBottom: 8
+    },
+    progress: {
+      font: '12px/15px Montserrat',
+      letterSpacing: '1.88px',
+      color: '#00000099',
+      opacity: 0.39
+    },
+    progressBar: {
+      background: '#03DAC6 0% 0% no-repeat padding-box',
+      borderRadius: '50px',
+      opacity: 1,
+      width: '242px',
+      height: '9px'
+    },
+    projectProgress: {
+      paddingTop: spacing(1),
+      paddingBottom: spacing(1),
+      color: palette.secondary.main,
+      font: '44px/54px Montserrat',
+      letterSpacing: '-0.39px',
+      opacity: 1
     }
   });
+
+  const BorderLinearProgress = withStyles({
+    root: {
+      height: 5,
+      width: '647px',
+      backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
+      paddingLeft: '6px !important',
+      marginLeft: '6px !important',
+    },
+    bar: {
+      borderRadius: 20,
+      backgroundColor: colors.moleculeBranding.third,
+    },
+  })(LinearProgress);
 
 interface OwnProps extends WithStyles<typeof styles> {
   phase: {
@@ -26,15 +81,22 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}: OwnProps) => 
-<Grid item xs={3}>
-  <Typography>PHASE {phase.index}</Typography>
-  <Typography>{phase.title}</Typography>
-  <Typography>FUNDING GOAL</Typography>
-  <Typography>{phase.fundingGoal}</Typography>
-  <Typography>{phase.daysRemaining === 0 ? `PROGRESS` : `${phase.daysRemaining} days remaining`}</Typography>
-  <LinearProgress variant="determinate" value={((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} color="secondary"/>
-  <Typography>{`${((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} %`}</Typography>
-  <Chip label={phase.status}/>
+<Grid item xs={12}>
+  <Typography className={classes.label}>PHASE 0{phase.index}</Typography>
+  <Typography className={classes.largeText}>{phase.title}</Typography>
+  <Typography className={classes.label}>FUNDING GOAL</Typography>
+  <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} USD</Typography>
+  <Typography className={classes.progress}>{phase.daysRemaining === 0 ? `NOT STARTED` : `${phase.daysRemaining} DAYS LEFT`}</Typography>
+  <BorderLinearProgress
+        variant="determinate"
+        color="secondary"
+        value={50}  />
+  <Typography className={classes.projectProgress}>{`${((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} %`}</Typography>
+  <Chip className={classes.chip} label={phase.status}/>
+  <br></br>
+  <br></br>
+  <br></br>
+  <Divider></Divider>
 </Grid>;
 
 export default withStyles(styles, { withTheme: true })(ProjectPhaseStatus);

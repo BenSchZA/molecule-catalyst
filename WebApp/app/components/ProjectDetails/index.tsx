@@ -119,7 +119,7 @@ const styles = ({ spacing, palette }: Theme) =>
       }
     },
     fundingStatusSection: {
-      width: `calc(100% + ${spacing(8)}px)`,
+      width: `calc(100% + ${spacing(16)}px)`,
       position: "relative",
       left: "50%",
       transform: "translate(-50%, 0)",
@@ -174,12 +174,30 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
       color: palette.secondary.main,
+      font: '44px/54px Montserrat',
+      letterSpacing: '-0.39px',
+      opacity: 1
+    },
+    fundingLabels: {
+      font: 'Bold 12px/15px Montserrat',
+      fontWeight: "bolder",
+      letterSpacing: '1.07px',
+      color: '#000000DE',
+      opacity: 1,
+      textTransform: 'uppercase'
+    },
+    fundingAmount: {
+      font: 'Bold 18px/24px Montserrat',
+      fontWeight: "bolder",
+      letterSpacing: '0',
+      color: '#000000DE',
+      opacity: 1
     },
     contentWrapper:{
       paddingLeft: avatarSize,
       paddingRight: avatarSize,
       paddingTop: avatarSize / 4,
-      paddingBottom: avatarSize *2
+      paddingBottom: avatarSize *1.5
     },
     startDate: {
       font: "14px Montserrat",
@@ -201,6 +219,9 @@ const styles = ({ spacing, palette }: Theme) =>
       font: "18px Roboto",
       letterSpacing: "0.17px",
       color: "#00000099"
+    },
+    fundingStatus:{
+      paddingBottom: avatarSize/2
     },
     divider:{
       margin: "24px auto 32px !important",
@@ -286,23 +307,23 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography paragraph className={classes.abstractText}>{project.abstract}</Typography>
             <Typography className={classes.abstractDate} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
-          <Typography variant='h4' align="center">Funding Status</Typography>
+          <Typography variant='h4' align="center" className={classes.fundingStatus}>Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
             <div>
-              <Typography variant='h2' className={classes.projectProgress}>
+              <Typography className={classes.projectProgress}>
                 95.0%
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}> 
                 Total Funding Goal
               </Typography>
-              <Typography>
-                55000 USD
+              <Typography className={classes.fundingAmount}>
+                {project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} USD
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Pledged
               </Typography>
               <Typography>
@@ -310,7 +331,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Released
               </Typography>
               <Typography>
@@ -318,7 +339,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Duration Left
               </Typography>
               <Typography>
@@ -338,6 +359,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   status: 'Released'
                 }} />
               )}
+             
             </Grid>
           </div>
           <div className={classes.contentWrapper}>
