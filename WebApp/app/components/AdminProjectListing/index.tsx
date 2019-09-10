@@ -30,6 +30,13 @@ const styles = (theme: Theme) =>
     },
     rowText: {
       fontSize: theme.typography.pxToRem(12),
+    },
+    body1: {
+      fontWeight: 'bold',
+      color: colors.textBlack,
+      paddingBottom: '16px',
+      paddingLeft: '8px',
+      paddingRight: '8px'
     }
   });
 

@@ -80,7 +80,13 @@ const styles = (theme: Theme) => createStyles({
     width: 150,
   },
   link:{
-
+  },
+  body1: {
+    fontWeight: 'bold',
+    color: colors.textBlack,
+    paddingBottom: '16px',
+    paddingLeft: '8px',
+    paddingRight: '8px'
   }
 });
 
