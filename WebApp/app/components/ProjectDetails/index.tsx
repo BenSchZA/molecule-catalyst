@@ -15,6 +15,7 @@ import { fade } from '@material-ui/core/styles';
 import ProjectSupportModal from 'components/ProjectSupportModal';
 import { FormikProps, FormikValues } from 'formik';
 import MarketChartLayout from 'components/MarketChartLayout';
+import dayjs from 'dayjs';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -25,7 +26,7 @@ const fundingStatsSpacing = 10;
 const styles = ({ spacing, palette }: Theme) =>
   createStyles({
     projectSection: {
-      padding: spacing(4),
+      padding: `${spacing(4)}px ${spacing(8)}px`,
     },
     bannerWrapper: {
       position: 'relative',
@@ -117,7 +118,7 @@ const styles = ({ spacing, palette }: Theme) =>
       }
     },
     fundingStatusSection: {
-      width: `calc(100% + ${spacing(8)}px)`,
+      width: `calc(100% + ${spacing(16)}px)`,
       position: "relative",
       left: "50%",
       transform: "translate(-50%, 0)",
@@ -172,16 +173,34 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
       color: palette.secondary.main,
+      font: '44px/54px Montserrat',
+      letterSpacing: '-0.39px',
+      opacity: 1
+    },
+    fundingLabels: {
+      font: 'Bold 12px/15px Montserrat',
+      fontWeight: "bolder",
+      letterSpacing: '1.07px',
+      color: '#000000DE',
+      opacity: 1,
+      textTransform: 'uppercase'
+    },
+    fundingAmount: {
+      font: 'Bold 18px/24px Montserrat',
+      fontWeight: "bolder",
+      letterSpacing: '0',
+      color: '#000000DE',
+      opacity: 1
     },
     contentWrapper:{
       paddingLeft: avatarSize,
       paddingRight: avatarSize,
-      paddingTop: avatarSize / 4
+      paddingTop: avatarSize/2,
     },
     fullWidthSection: {
-      width: `calc(100% + ${spacing(8)}px)`,
+      width: `calc(100% + ${spacing(16)}px)`,
       backgroundColor: colors.whiteAlt,
-      marginLeft: -spacing(4),
+      marginLeft: -spacing(8),
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -214,6 +233,7 @@ const styles = ({ spacing, palette }: Theme) =>
       opacity: 1.0
     },
     sectionTitleText: {
+      paddingTop: spacing(8),
       paddingBottom: spacing(4),
       textAlign: 'center',
       font: '30px/37px Montserrat',
@@ -228,6 +248,7 @@ const styles = ({ spacing, palette }: Theme) =>
       color: '#00000099',
       opacity: 1.0,
       paddingBottom: spacing(2),
+      paddingTop: spacing(2),
     },
     contentTitleText: {
       fontWeight: 'bolder',
@@ -236,7 +257,41 @@ const styles = ({ spacing, palette }: Theme) =>
       letterSpacing: 0,
       color: '#000000DE',
       opacity: 1.0,
-      paddingBottom: spacing(2),
+      paddingBottom: "2px",
+      paddingTop: avatarSize / 4,
+    },
+    startDate: {
+      font: "14px Montserrat",
+      fontWeight: "bolder"
+    },
+    abstract: {
+      font: "18px/24px Montserrat",
+      fontWeight: "bold",
+      paddingBottom: "2px"
+    },
+    lastUpdated: {
+      font: "12px Montserrat",
+      fontWeight: "bold",
+      letterSpacing: "1.88px",
+      color: "#00000099",
+      opacity: 0.39
+    },
+    abstractText:{
+      font: "18px Roboto",
+      letterSpacing: "0.17px",
+      color: "#00000099",
+      paddingTop: 15
+    },
+    fundingStatus:{
+      paddingBottom: avatarSize/2
+    },
+    divider:{
+      margin: "24px auto 32px !important",
+      backgroundColor: colors.moleculeBranding.third,
+      alignSelf: 'center',
+      verticalAlign: 'middle',
+      height: 2,
+      width: 1150
     }
   });
 
@@ -289,7 +344,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   {!project.user.profileImage && <Face fontSize='large' />}
                 </Avatar>
               </div>
-              <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase()}</Typography>
+              <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
             </div>
             <div>
               <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation && project.user.affiliatedOrganisation.toUpperCase()}</Typography>
@@ -299,53 +354,56 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Paper className={classes.projectSection} square>
           <Grid container>
             <Grid item xs={6}>
-              <Typography variant='h6'>START DATE: {('Date').toUpperCase()}</Typography>
+              <Typography className={classes.startDate}>START DATE: {dayjs(project.createdAt).format('d MMMM YYYY').toUpperCase()}</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant='h6' align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
+              <Typography className={classes.startDate} align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
             </Grid>
           </Grid>
-          <Divider />
+          <Divider className={classes.divider} />
+          <Typography variant="h4" align='center'>Overview</Typography>
           <div className={classes.contentWrapper}>
-            <Typography variant='h6'>Abstract</Typography>
-            <Typography paragraph>{project.abstract}</Typography>
+            <Typography className={classes.abstract}>Abstract</Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography paragraph className={classes.abstractText}>{project.abstract}</Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
           <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
             <div>
-              <Typography variant='h2' className={classes.projectProgress}>
+              <Typography className={classes.projectProgress}>
                 95.0%
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}> 
                 Total Funding Goal
               </Typography>
-              <Typography>
-                55000 USD
+              <Typography className={classes.fundingAmount}>
+                {project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} USD
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Pledged
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 50000 USD
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Released
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 45000 USD
               </Typography>
             </div>
             <div>
-              <Typography>
+              <Typography className={classes.fundingLabels}>
                 Total Duration Left
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 35 Days
               </Typography>
             </div>
@@ -362,6 +420,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   status: 'Released'
                 }} />
               )}
+             
             </Grid>
           </div>
           <div className={classes.contentWrapper}>
@@ -416,15 +475,19 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography className={classes.contentTitleText}>
               Context and Significance
             </Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.context}
             </Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
             <Typography className={classes.contentTitleText}>
               Approach
             </Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.approach}
             </Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
         </Paper>
       </Container> :
