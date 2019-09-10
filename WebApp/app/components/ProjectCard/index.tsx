@@ -4,13 +4,14 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions, Chip, Avatar } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Project } from 'domain/projects/types';
+import { forwardTo } from 'utils/history';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -80,6 +81,9 @@ const styles = (theme: Theme) =>
       width: '60%',
       minWidth: '350px'
     },
+    card: {
+      cursor: 'pointer',
+    },
     cardImage: {
       paddingTop: 36,
       height: 280
@@ -128,9 +132,17 @@ const switchStatus = (status) => {
   }
 };
 
-const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => (
-  <Fragment>
-     <Card elevation={8}>
+const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => {
+  const [raised, setRaised] = useState(true);
+
+  return (
+    <Fragment>
+     <Card
+      className={classes.card}
+      onClick={() => forwardTo(`project/${project.id}`)}
+      onMouseOver={() => setRaised(true)}
+      onMouseOut={() => setRaised(false)}
+      raised={raised}>
       <CardHeader
         title={project.title}
         subheader={switchStatus(project.status)}
@@ -155,17 +167,16 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
       <CardActions disableSpacing>
         <div className={classes.footer}>
         <div>
-       
-       <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>{project.user.fullName}</div>
-       </div>
-       <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
-       </div>
-       <div className={classes.avatar}>
-       <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
-       </div>
+        <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>{project.user.fullName}</div>
+        </div>
+        <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
+        </div>
+        <div className={classes.avatar}>
+          <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
+        </div>
       </CardActions>
     </Card>
-  </Fragment>
-);
+  </Fragment>);
+};
 
 export default withStyles(styles, { withTheme: true })(ProjectCard);

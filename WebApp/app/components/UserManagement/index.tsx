@@ -59,7 +59,7 @@ const UserManagement: React.FunctionComponent<OwnProps> = (props: OwnProps) => (
                 <TableCell>{dayjs(ca.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                 <TableCell>{ca.type == 0 ? 'Standard' : (ca.type == 2 ? 'Admin' : 'Creator')}</TableCell>
                 <TableCell>
-                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`admin/user/${ca.id}`)}>Details</Button>
+                  <Button className={props.classes.actionButton} onClick={() => forwardTo(`/admin/user/${ca.id}`)}>Details</Button>
                 </TableCell>
               </TableRow>
             )) :

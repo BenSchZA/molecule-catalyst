@@ -7,6 +7,7 @@ import { UserType } from 'containers/App/routes';
 interface AuthenticationState {
   accessToken: string,
   ethAddress: string,
+  daiBalance: number,
   signedPermit: string,
   walletUnlocked: boolean,
   selectedNetworkId?: number,
@@ -14,7 +15,6 @@ interface AuthenticationState {
   userRole: number,
   userId: string,
 }
-
 
 /* --- ACTIONS --- */
 type AuthenticationActions = ActionType<typeof actions>;

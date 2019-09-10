@@ -203,6 +203,7 @@ contract Market is IMarket, IERC20 {
     function withdraw(uint256 _amount) public returns(bool) {
         require(active_ == false, "Market not finalised");
         require(_amount <= balances[msg.sender], "Insufficient funds");
+        require(_amount > 0, "Cannot withdraw 0");
 
         balances[msg.sender] = balances[msg.sender].sub(_amount);
 
@@ -210,6 +211,8 @@ contract Market is IMarket, IERC20 {
 
         // Performs a flat linear 100% collateralized sale
         uint256 daiToTransfer = poolBalance.mul(_amount).div(totalSupply_);
+        totalSupply_ = totalSupply_.sub(_amount);
+
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
 
         emit Transfer(address(this), msg.sender, _amount);
@@ -220,7 +223,7 @@ contract Market is IMarket, IERC20 {
     /// @return             :uint256 Required collateral
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
         uint256 poolBalance = collateralToken_.balanceOf(address(this));
-        uint256 untaxedDai = curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance);
+        uint256 untaxedDai = _curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance);
 
         uint256 tax = untaxedDai.mul(taxationRate_).div(100);
         return untaxedDai.add(tax);
@@ -230,13 +233,13 @@ contract Market is IMarket, IERC20 {
     /// @return             Potential return collateral
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
-        return poolBalanceFetched.sub(curveIntegral(totalSupply_.sub(_numTokens)));
+        return poolBalanceFetched.sub(_curveIntegral(totalSupply_.sub(_numTokens)));
     }
 
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
     /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
-        return inverseCurveIntegral(curveIntegral(totalSupply_).add(_collateralTokenOffered)).sub(totalSupply_);
+        return _inverseCurveIntegral(_curveIntegral(totalSupply_).add(_collateralTokenOffered)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
@@ -244,7 +247,7 @@ contract Market is IMarket, IERC20 {
     function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
         return uint256(
             totalSupply_.sub(
-                inverseCurveIntegral(curveIntegral(totalSupply_).sub(_collateralTokenNeeded))
+                _inverseCurveIntegral(_curveIntegral(totalSupply_).sub(_collateralTokenNeeded))
             )
         );
     }
@@ -300,13 +303,13 @@ contract Market is IMarket, IERC20 {
     /// @dev                Calculate the integral from 0 to x tokens supply
     /// @param _x            The number of tokens supply to integrate to
     /// @return             The total supply in tokens, not wei
-    function curveIntegral(uint256 _x) internal view returns (uint256) {
+    function _curveIntegral(uint256 _x) internal view returns (uint256) {
         return curveLibrary_.curveIntegral(_x);
     }
 
     /// @dev                Inverse integral to convert the incoming colateral value to token volume
     /// @param _x           :uint256 The volume to identify the root off
-    function inverseCurveIntegral(uint256 _x) internal view returns(uint256){
+    function _inverseCurveIntegral(uint256 _x) internal view returns(uint256){
         return curveLibrary_.inverseCurveIntegral(_x);
     }
 }

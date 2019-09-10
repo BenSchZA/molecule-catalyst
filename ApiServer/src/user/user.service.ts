@@ -7,18 +7,24 @@ import { Schemas } from '../app.constants';
 import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
 import { ServiceBase } from 'src/common/serviceBase';
+import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
+import { MarketRegistryService } from 'src/marketRegistry/marketRegistry.service';
 
 @Injectable()
 export class UserService extends ServiceBase {
 
-  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>) {
+  constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
+    private readonly marketFactoryService: MarketFactoryService,
+    private readonly marketRegistryService: MarketRegistryService
+    ) {
     super(UserService.name);
   }
 
   async create(ethAddress: string): Promise<User> {
     this.logger.debug('Creating new user');
     const profiler = this.logger.startTimer();
-    const newUser = await new this.userRepository({ethAddress});
+    const isAdmin = await this.marketFactoryService.isUserWhitelistAdmin(ethAddress)
+    const newUser = await new this.userRepository({ethAddress, type: !isAdmin ? UserType.Standard : UserType.Admin });
     await newUser.save();
     profiler.done('Created new user');
     return newUser.toObject();
@@ -37,12 +43,6 @@ export class UserService extends ServiceBase {
   async findById(userId: string): Promise<User> {
     const user = await this.userRepository.findById(userId);
     return user ? user.toObject() : false;
-  }
-
-  async setUserType(userId: string, userType: UserType) {
-    const user = await this.userRepository.findById(userId);
-    user.type = userType;
-    await user.save();
   }
 
   async setUserDetails(userId: string, details: {
@@ -70,8 +70,13 @@ export class UserService extends ServiceBase {
   async promoteToAdmin(userId: string): Promise<User> {
     this.logger.info(`Promoting user to admin: ${userId}`);
     const user = await this.userRepository.findById(userId);
-    user.type = UserType.Admin;
-    user.save();
-    return user.toObject();
+    try {
+      await this.marketFactoryService.addUserToAdminWhitelist(user.ethAddress);
+      user.type = UserType.Admin;
+      user.save();
+      return user.toObject();
+    } catch (error) {
+      this.logger.error(`Something went wrong promoting user ${user.ethAddress} to admin`);
+    }
   }
 }

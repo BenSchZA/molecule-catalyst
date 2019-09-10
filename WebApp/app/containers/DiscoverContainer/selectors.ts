@@ -31,13 +31,13 @@ const makeSelectDiscoverProjects = createSelector(
     if (!filter.text && filter.projectStatus === -1) {
       return allDashboardProjects
     } else {
-      let filteredProjects = allDashboardProjects.filter(p => p.title.includes(filter.text) || p.user.fullName && p.user.fullName.includes(filter.text))
+      let filteredProjects = allDashboardProjects.filter(p => p.title.toLowerCase().includes(filter.text.toLowerCase()) || p.user.fullName && p.user.fullName.toLowerCase().includes(filter.text.toLowerCase()))
       if (filter.projectStatus !== -1) {
         filteredProjects = filteredProjects.filter(p => p.status === filter.projectStatus);
       }
       return filteredProjects;
     }
-    
+
   },
 );
 

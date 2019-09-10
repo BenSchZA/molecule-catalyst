@@ -21,7 +21,7 @@ const styles = (theme: Theme) => createStyles({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    padding: `${theme.spacing(8)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
     maxWidth: '1980px',
     alignItems: 'center',
     "& > *":{
