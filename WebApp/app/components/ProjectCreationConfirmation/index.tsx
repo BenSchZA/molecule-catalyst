@@ -6,13 +6,12 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Typography, Container, Paper, Divider } from '@material-ui/core';
-import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
   createStyles({
     banner: {
       paddingBottom: '18px',
-      backgroundColor: colors.lightGrey,
+      backgroundColor: 'transparent',
       alignItems: 'center'
     },
     heading: {
@@ -26,7 +25,7 @@ const styles = (theme: Theme) =>
 interface OwnProps extends WithStyles<typeof styles> {}
 
 const ProjectCreationConfirmation: React.SFC<OwnProps> = (props: OwnProps) => (
-  <Container maxWidth='md'>
+  <Container>
     <Paper className={props.classes.banner} square={true} elevation={0}>
         <Typography variant='h2' className={props.classes.heading}>Project submitted successfully!</Typography>
         <Typography variant='body1' className={props.classes.heading}>

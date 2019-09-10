@@ -15,6 +15,7 @@ import { fade } from '@material-ui/core/styles';
 import ProjectSupportModal from 'components/ProjectSupportModal';
 import { FormikProps, FormikValues } from 'formik';
 import MarketChartLayout from 'components/MarketChartLayout';
+import dayjs from 'dayjs';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -25,7 +26,7 @@ const fundingStatsSpacing = 10;
 const styles = ({ spacing, palette }: Theme) =>
   createStyles({
     projectSection: {
-      padding: spacing(4),
+      padding: `${spacing(4)}px ${spacing(8)}px`,
     },
 
     bannerWrapper: {
@@ -177,7 +178,37 @@ const styles = ({ spacing, palette }: Theme) =>
     contentWrapper:{
       paddingLeft: avatarSize,
       paddingRight: avatarSize,
-      paddingTop: avatarSize / 4
+      paddingTop: avatarSize / 4,
+      paddingBottom: avatarSize *2
+    },
+    startDate: {
+      font: "14px Montserrat",
+      fontWeight: "bolder"
+    },
+    abstract: {
+      font: "18px/24px Montserrat",
+      fontWeight: "bold",
+      paddingBottom: "2px"
+    },
+    abstractDate: {
+      font: "12px Montserrat",
+      fontWeight: "bold",
+      letterSpacing: "1.88px",
+      color: "#00000099",
+      opacity: 0.39
+    },
+    abstractText:{
+      font: "18px Roboto",
+      letterSpacing: "0.17px",
+      color: "#00000099"
+    },
+    divider:{
+      margin: "24px auto 32px !important",
+      backgroundColor: colors.moleculeBranding.third,
+      alignSelf: 'center',
+      verticalAlign: 'middle',
+      height: 2,
+      width: 1150
     }
   });
 
@@ -231,7 +262,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   {!project.user.profileImage && <Face fontSize='large' />}
                 </Avatar>
               </div>
-              <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase()}</Typography>
+              <Typography variant='h6'>{project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
             </div>
             <div>
               <Typography variant='h6' align='right'>{project.user.affiliatedOrganisation && project.user.affiliatedOrganisation.toUpperCase()}</Typography>
@@ -241,16 +272,19 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Paper className={classes.projectSection} square>
           <Grid container>
             <Grid item xs={6}>
-              <Typography variant='h6'>START DATE: {('Date').toUpperCase()}</Typography>
+              <Typography className={classes.startDate}>START DATE: {dayjs(project.createdAt).format('d MMMM YYYY').toUpperCase()}</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant='h6' align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
+              <Typography className={classes.startDate} align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
             </Grid>
           </Grid>
-          <Divider />
+          <Divider className={classes.divider} />
+          <Typography variant="h4" align='center'>Overview</Typography>
           <div className={classes.contentWrapper}>
-            <Typography variant='h6'>Abstract</Typography>
-            <Typography paragraph>{project.abstract}</Typography>
+            <Typography className={classes.abstract}>Abstract</Typography>
+            <Typography className={classes.abstractDate}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography paragraph className={classes.abstractText}>{project.abstract}</Typography>
+            <Typography className={classes.abstractDate} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
           <Typography variant='h4' align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >

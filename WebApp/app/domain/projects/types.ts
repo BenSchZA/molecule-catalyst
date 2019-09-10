@@ -47,7 +47,7 @@ interface User {
   affiliatedOrganisation?: string,
   firstName?: string,
   lastName?: string,
-  professionalTitle?: string,
+  professionalTitle: string,
   fullName?: string
   profileImage: string,
 }
