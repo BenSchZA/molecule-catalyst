@@ -12,6 +12,7 @@ import {Field, Form} from 'formik';
 import React, { Fragment } from 'react';
 
 import { FormControl, LinearProgress } from '@material-ui/core';
+import { colors } from 'theme';
 
 const styles = ({ palette, spacing, breakpoints }: Theme) => createStyles({
   layout: {
@@ -43,6 +44,13 @@ const styles = ({ palette, spacing, breakpoints }: Theme) => createStyles({
   submit: {
     marginTop: spacing(3),
   },
+  body1: {
+    fontWeight: 'bold',
+    color: colors.textBlack,
+    paddingBottom: '16px',
+    paddingLeft: '8px',
+    paddingRight: '8px'
+  }
 });
 
 interface Props extends WithStyles<typeof styles> {
