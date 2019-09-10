@@ -131,7 +131,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                 {navRoutes.map(r => (
                   <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
                 ))}
-                {(userRole === UserType.Admin) &&
+                {(isLoggedIn && userRole === UserType.Admin) &&
                   <Fragment>
                     <ListItem button onClick={(e) => setAdminMenuAnchorEl(e.currentTarget)}>Admin</ListItem>
                     <Menu
