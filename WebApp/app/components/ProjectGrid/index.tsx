@@ -39,10 +39,8 @@ const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: Own
   <Container className={classes.maxWidthLg}>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
-      {projects && projects.length > 0 && projects.map(p =>
-      <div>
-        <ProjectCard project={p}/>
-        </div>
+      {projects && projects.length > 0 && projects.map((p, index) =>
+        <ProjectCard key={index} project={p}/>
       )}
     </div>
   </Container>
