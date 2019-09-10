@@ -57,11 +57,12 @@ const styles = ({ spacing, palette}: Theme) =>
 
   const BorderLinearProgress = withStyles({
     root: {
-      height: 5,
+      height: 9,
       width: '647px',
       backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
-      paddingLeft: '6px !important',
-      marginLeft: '6px !important',
+      paddingTop: '12px !important',
+      marginTop: '12px !important',
+      borderRadius: 20
     },
     bar: {
       borderRadius: 20,

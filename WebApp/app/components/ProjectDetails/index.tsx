@@ -195,11 +195,12 @@ const styles = ({ spacing, palette }: Theme) =>
     contentWrapper:{
       paddingLeft: avatarSize,
       paddingRight: avatarSize,
+      paddingTop: avatarSize/2,
     },
     fullWidthSection: {
-      width: `calc(100% + ${spacing(8)}px)`,
+      width: `calc(100% + ${spacing(16)}px)`,
       backgroundColor: colors.whiteAlt,
-      marginLeft: -spacing(4),
+      marginLeft: -spacing(8),
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -232,6 +233,7 @@ const styles = ({ spacing, palette }: Theme) =>
       opacity: 1.0
     },
     sectionTitleText: {
+      paddingTop: spacing(8),
       paddingBottom: spacing(4),
       textAlign: 'center',
       font: '30px/37px Montserrat',
@@ -246,6 +248,7 @@ const styles = ({ spacing, palette }: Theme) =>
       color: '#00000099',
       opacity: 1.0,
       paddingBottom: spacing(2),
+      paddingTop: spacing(2),
     },
     contentTitleText: {
       fontWeight: 'bolder',
@@ -254,9 +257,8 @@ const styles = ({ spacing, palette }: Theme) =>
       letterSpacing: 0,
       color: '#000000DE',
       opacity: 1.0,
-      paddingBottom: spacing(2),
+      paddingBottom: "2px",
       paddingTop: avatarSize / 4,
-      paddingBottom: avatarSize *1.5
     },
     startDate: {
       font: "14px Montserrat",
@@ -267,7 +269,7 @@ const styles = ({ spacing, palette }: Theme) =>
       fontWeight: "bold",
       paddingBottom: "2px"
     },
-    abstractDate: {
+    lastUpdated: {
       font: "12px Montserrat",
       fontWeight: "bold",
       letterSpacing: "1.88px",
@@ -277,7 +279,8 @@ const styles = ({ spacing, palette }: Theme) =>
     abstractText:{
       font: "18px Roboto",
       letterSpacing: "0.17px",
-      color: "#00000099"
+      color: "#00000099",
+      paddingTop: 15
     },
     fundingStatus:{
       paddingBottom: avatarSize/2
@@ -361,9 +364,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography variant="h4" align='center'>Overview</Typography>
           <div className={classes.contentWrapper}>
             <Typography className={classes.abstract}>Abstract</Typography>
-            <Typography className={classes.abstractDate}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography paragraph className={classes.abstractText}>{project.abstract}</Typography>
-            <Typography className={classes.abstractDate} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
           <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
@@ -384,7 +387,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               <Typography className={classes.fundingLabels}>
                 Total Pledged
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 50000 USD
               </Typography>
             </div>
@@ -392,7 +395,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               <Typography className={classes.fundingLabels}>
                 Total Released
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 45000 USD
               </Typography>
             </div>
@@ -400,7 +403,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               <Typography className={classes.fundingLabels}>
                 Total Duration Left
               </Typography>
-              <Typography>
+              <Typography className={classes.fundingAmount}>
                 35 Days
               </Typography>
             </div>
@@ -472,15 +475,19 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography className={classes.contentTitleText}>
               Context and Significance
             </Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.context}
             </Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
             <Typography className={classes.contentTitleText}>
               Approach
             </Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.approach}
             </Typography>
+            <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
         </Paper>
       </Container> :

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Typography, Container, Paper, Divider } from '@material-ui/core';
-
+import { colors } from 'theme';
 const styles = (theme: Theme) =>
   createStyles({
     banner: {
