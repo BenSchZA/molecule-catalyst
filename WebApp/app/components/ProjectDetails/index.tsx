@@ -27,7 +27,6 @@ const styles = ({ spacing, palette }: Theme) =>
     projectSection: {
       padding: spacing(4),
     },
-
     bannerWrapper: {
       position: 'relative',
       "&:after": {
@@ -178,6 +177,66 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingLeft: avatarSize,
       paddingRight: avatarSize,
       paddingTop: avatarSize / 4
+    },
+    fullWidthSection: {
+      width: `calc(100% + ${spacing(8)}px)`,
+      backgroundColor: colors.whiteAlt,
+      marginLeft: -spacing(4),
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingTop: spacing(4),
+      paddingBottom: spacing(4),
+    },
+    avatar: {
+      paddingTop: spacing(2),
+      paddingBottom: spacing(1.5),
+      width: 135,
+      height: "100%",
+      "& > *":{
+        height: 135,
+        width: 135
+      }
+    },
+    projectLeadTitleText: {
+      textAlign: 'center',
+      font: '30px/37px Montserrat',
+      letterSpacing: '-0.26px',
+      color: '#000000DE',
+      opacity: 1.0,
+    },
+    projectLeadText: {
+      textAlign: 'center',
+      font: '14px/20px Roboto',
+      letterSpacing: '0.09px',
+      color: '#00000099',
+      opacity: 1.0
+    },
+    sectionTitleText: {
+      paddingBottom: spacing(4),
+      textAlign: 'center',
+      font: '30px/37px Montserrat',
+      letterSpacing: '-0.26px',
+      color: '#000000DE',
+      opacity: 1.0,
+    },
+    contentText: {
+      textAlign: 'left',
+      font: '18px/24px Roboto',
+      letterSpacing: '0.17px',
+      color: '#00000099',
+      opacity: 1.0,
+      paddingBottom: spacing(2),
+    },
+    contentTitleText: {
+      fontWeight: 'bolder',
+      textAlign: 'left',
+      font: '18px/24px Montserrat',
+      letterSpacing: 0,
+      color: '#000000DE',
+      opacity: 1.0,
+      paddingBottom: spacing(2),
     }
   });
 
@@ -186,7 +245,6 @@ interface OwnProps extends WithStyles<typeof styles> {
   daiBalance: number,
   formikProps: FormikProps<FormikValues>,
 }
-
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({ 
     project, 
@@ -252,7 +310,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography variant='h6'>Abstract</Typography>
             <Typography paragraph>{project.abstract}</Typography>
           </div>
-          <Typography variant='h4' align="center">Funding Status</Typography>
+          <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography variant='h2' className={classes.projectProgress}>
@@ -307,7 +365,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             </Grid>
           </div>
           <div className={classes.contentWrapper}>
-            <Typography variant='h4' align="center">Market</Typography>
+            <Typography className={classes.sectionTitleText} align="center">Market</Typography>
             <MarketChartLayout
               display={true}
               project={project}
@@ -315,17 +373,30 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           </div>
         </Paper>
         <Paper className={classes.projectSection} square>
+          <Typography className={classes.sectionTitleText} align="center">Team</Typography>
+          <Paper className={classes.fullWidthSection} elevation={0} square>
+            <Typography className={classes.projectLeadTitleText} align="center">
+              {project.user.fullName}, {project.user.professionalTitle} at {project.user.affiliatedOrganisation}
+            </Typography>
+            <div className={classes.avatar} >
+              <Avatar src={project.user.profileImage && apiUrlBuilder.attachmentStream(project.user.profileImage)}>
+                {!project.user.profileImage && <Face fontSize='large' />}
+              </Avatar>
+            </div>
+            <Typography className={classes.projectLeadText} align="center">
+              Project Lead
+            </Typography>
+          </Paper>
           <div className={classes.contentWrapper}>
-            <Typography variant='h4' align="center">Research Background</Typography>
-            <Typography variant='subtitle2'>What is the significance of your research</Typography>
-            <Typography>{project.context}</Typography>
-            <Typography variant='subtitle2'>What is the experimental approach for this reseach initiative</Typography>
-            <Typography>{project.approach}</Typography>
-          </div>
-        </Paper>
-        <Paper className={classes.projectSection} square>
-          <div className={classes.contentWrapper}>
-            <Typography variant='subtitle2'>Contributors</Typography>
+            <Typography className={classes.contentTitleText}>
+              Biography
+            </Typography>
+            <Typography className={classes.contentText}>
+              {project.user.biography}
+            </Typography>
+            <Typography className={classes.contentTitleText}>
+              Collaborators
+            </Typography>
             <Table>
               <TableBody>
                 {project.collaborators && project.collaborators.map((c, i) =>
@@ -336,7 +407,24 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   </TableRow>
                 )}
               </TableBody>
-          </Table>
+            </Table>
+          </div>
+        </Paper>
+        <Paper className={classes.projectSection} square>
+          <div className={classes.contentWrapper}>
+            <Typography className={classes.sectionTitleText} align="center">Research Background</Typography>
+            <Typography className={classes.contentTitleText}>
+              Context and Significance
+            </Typography>
+            <Typography className={classes.contentText}>
+              {project.context}
+            </Typography>
+            <Typography className={classes.contentTitleText}>
+              Approach
+            </Typography>
+            <Typography className={classes.contentText}>
+              {project.approach}
+            </Typography>
           </div>
         </Paper>
       </Container> :

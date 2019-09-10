@@ -5,8 +5,9 @@ import React from 'react';
 import { compose } from 'redux';
 import { forwardTo } from 'utils/history';
 import FolderIcon from '@material-ui/icons/Folder';
+import { colors } from 'theme';
 
-const styles = ({spacing}: Theme) => createStyles({
+const styles = (theme: Theme) => createStyles({
   layout: {
     display: 'flex',
     justifyContent: 'center',
@@ -14,7 +15,7 @@ const styles = ({spacing}: Theme) => createStyles({
     alignItems: 'center',
   },
   buttons: {
-    paddingTop: spacing(4),
+    paddingTop: theme.spacing(4),
     paddingLeft: '36%',
     display: 'flex',
     flexDirection: 'row',
@@ -28,6 +29,13 @@ const styles = ({spacing}: Theme) => createStyles({
   demo: {
     backgroundColor: 'transparent',
     width: '150%'
+  },
+  body1: {
+    fontWeight: 'bold',
+    color: colors.textBlack,
+    paddingBottom: '16px',
+    paddingLeft: '8px',
+    paddingRight: '8px'
   }
 });
 

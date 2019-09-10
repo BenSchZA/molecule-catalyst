@@ -32,13 +32,12 @@ export const colors = {
 
 const theme = (createMuiTheme as any)({
   palette: {
-
     primary: {
       main: colors.moleculeBranding.primary,
     },
     secondary: {
       main: colors.moleculeBranding.secondary,
-    }
+    },
   },
   breakpoints: {
     values: {
@@ -102,13 +101,6 @@ const theme = (createMuiTheme as any)({
         paddingTop: '32px',
         paddingBottom: '16px'
       },
-      body1: {
-        fontWeight: 'bold',
-        color: colors.textBlack,
-        paddingBottom: '16px',
-        paddingLeft: '8px',
-        paddingRight: '8px'
-      }
     },
     MuiFormLabel: {
       root: {

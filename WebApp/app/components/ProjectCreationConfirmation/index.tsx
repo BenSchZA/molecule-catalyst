@@ -20,6 +20,13 @@ const styles = (theme: Theme) =>
       maxWidth: '40vw',
       minWidth: '300px',
       margin: 'auto'
+    },
+    body1: {
+      fontWeight: 'bold',
+      color: colors.textBlack,
+      paddingBottom: '16px',
+      paddingLeft: '8px',
+      paddingRight: '8px'
     }
   });
 

@@ -10,6 +10,7 @@ import { Save } from '@material-ui/icons';
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import UploadImageField from 'components/UploadImageField';
+import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -28,6 +29,13 @@ const styles = (theme: Theme) =>
     },
     headingText: {
       textAlign: 'center',
+    },
+    body1: {
+      fontWeight: 'bold',
+      color: colors.textBlack,
+      paddingBottom: '16px',
+      paddingLeft: '8px',
+      paddingRight: '8px'
     },
   });
 
