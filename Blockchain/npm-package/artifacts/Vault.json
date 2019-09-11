@@ -166,7 +166,12 @@
   },
   {
     "constant": false,
-    "inputs": [],
+    "inputs": [
+      {
+        "name": "_receivedFunding",
+        "type": "uint256"
+      }
+    ],
     "name": "validateFunding",
     "outputs": [
       {
@@ -211,6 +216,10 @@
       },
       {
         "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
         "type": "uint8"
       }
     ],
@@ -236,6 +245,20 @@
     "constant": true,
     "inputs": [],
     "name": "currentPhase",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getTotalRounds",
     "outputs": [
       {
         "name": "",

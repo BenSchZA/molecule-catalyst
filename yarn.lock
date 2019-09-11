@@ -1363,18 +1363,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@molecule-protocol/catalyst-contracts@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.9.tgz#9b49cf3c204bc11c5ed9277b3a6d6f77c57d5357"
-  integrity sha512-6Uua+qSX5c1Gv3lpWcfBWNPgVDNz7AW+GA5AOlcs7nhGGJUv1xapo1oyv+BZNKdgOOyphAz2DlM3+9ha5RUJOg==
-  dependencies:
-    etherlime "^2.2.0"
-    solc "0.5.10"
-
-"@molecule-protocol/catalyst-contracts@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.10.tgz#5f38137256d18ddabc94fc6dee3ef293542bae24"
-  integrity sha512-Wzib7p1QFbOfIt88EGRMW6MvXtGtebIZtd6jbptdqgMEfM9gBNGo0qjnHBHGSEidSyT/6/zBsI5VQ1qGgmdO5A==
+"@molecule-protocol/catalyst-contracts@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.11.tgz#4e7407e838af0161b1aeabc92d493758edca2b25"
+  integrity sha512-sqFywOJMhlEqFDeWshjhbeWNgM1Bjfd1kg2xNLdeH5q/yTN35Y43/jh10ns8RY371fhAzEWo1wNiBiCsB041qw==
   dependencies:
     etherlime "^2.2.0"
     solc "0.5.10"
