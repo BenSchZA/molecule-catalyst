@@ -208,10 +208,42 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingTop: spacing(4),
       paddingBottom: spacing(4),
     },
+    phasePaperTitle: {
+      width: `calc(100% + ${spacing(16)}px)`,
+      backgroundColor: colors.whiteAlt,
+      marginLeft: -spacing(8),
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingBottom: spacing(4),
+      paddingTop: spacing(6),
+      marginTop: spacing(2),
+      height: 175
+    },
+    phaseTitleText: {
+      textAlign: 'center',
+      font: '30px/37px Montserrat',
+      letterSpacing: '-0.26px',
+      color: '#000000DE',
+      opacity: 1.0,
+      paddingTop: spacing(2),
+      marginTop: spacing(2)
+    },
     avatar: {
       paddingTop: spacing(2),
       paddingBottom: spacing(1.5),
       width: 135,
+      height: "100%",
+      "& > *":{
+        height: 135,
+        width: 135
+      }
+    },
+    phaseDateChip: {
+      paddingTop: spacing(2),
+      paddingBottom: spacing(1.5),
+      width: 600,
       height: "100%",
       "& > *":{
         height: 135,
@@ -276,6 +308,14 @@ const styles = ({ spacing, palette }: Theme) =>
       color: "#00000099",
       opacity: 0.39
     },
+    phaseDates: {
+      font: "12px/15px Montserrat",
+      fontWeight: "bold",
+      letterSpacing: "1.88px",
+      color: "#00000099",
+      opacity: 1,
+      width: '100%',
+    },
     abstractText:{
       font: "18px Roboto",
       letterSpacing: "0.17px",
@@ -292,6 +332,34 @@ const styles = ({ spacing, palette }: Theme) =>
       verticalAlign: 'middle',
       height: 2,
       width: 1150
+    },
+    projectTitle:{
+      textAlign: "center",
+      font: "Bold 60px/65px Montserrat",
+      letterSpacing: "0.43px",
+      color: "#FFFFFF",
+      textShadow: "0px 3px 6px #0000004E",
+      opacity: 1,
+      width: '1100px',
+      paddingTop: avatarSize*1
+    },
+    supportProject: {
+      background: '#FFFFFF 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#003E52',
+    },
+    redeemHoldings: {
+      background: '#03DAC6 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#FFFFFF'
     }
   });
 
@@ -331,10 +399,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <div className={classes.bannerWrapper}>
           <img src={apiUrlBuilder.attachmentStream(project.featuredImage)} className={classes.bannerImage} />
           <div className={classes.bannerContent}>
-            <Typography variant='h2'>{project.title}</Typography>
+            <Typography className={classes.projectTitle}>{project.title}</Typography>
             <div>
-              <Button onClick={handleOpen}>Support Project</Button>
-              <Button onClick={() => console.log('sell')}>Redeem Holdings</Button>
+              <Button className={classes.supportProject} onClick={handleOpen}>Support Project</Button>
+              <Button className={classes.redeemHoldings} onClick={() => console.log('sell')}>Redeem Holdings</Button>
             </div>
           </div>
           <div className={classes.bannerFooter}>
@@ -354,7 +422,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Paper className={classes.projectSection} square>
           <Grid container>
             <Grid item xs={6}>
-              <Typography className={classes.startDate}>START DATE: {dayjs(project.createdAt).format('d MMMM YYYY').toUpperCase()}</Typography>
+              <Typography className={classes.startDate}>START DATE: {dayjs(project.createdAt).format('DD MMMM YYYY').toUpperCase()}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography className={classes.startDate} align='right'>STATUS: {ProjectSubmissionStatus[project.status].toUpperCase()}</Typography>
@@ -364,7 +432,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography variant="h4" align='center'>Overview</Typography>
           <div className={classes.contentWrapper}>
             <Typography className={classes.abstract}>Abstract</Typography>
-            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('DD MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography paragraph className={classes.abstractText}>{project.abstract}</Typography>
             <Typography className={classes.lastUpdated} align="right">LAST UPDATED BY: {project.user.fullName && project.user.fullName.toUpperCase() + ', ' + project.user.professionalTitle.toUpperCase()}</Typography>
           </div>
@@ -470,12 +538,42 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           </div>
         </Paper>
         <Paper className={classes.projectSection} square>
+          <Typography className={classes.sectionTitleText} align="center">Funding Campaign</Typography>
+          {project.researchPhases && project.researchPhases.map((p, i) =>
+          <div>
+          <Paper className={classes.phasePaperTitle} elevation={0} square>
+            <Typography className={classes.phaseTitleText} align="center">
+              Phase 0{i+1}: {p.title}
+            </Typography>
+            <div className={classes.phaseDateChip}>
+            <Typography className={classes.phaseDates} align="center">{dayjs(project.createdAt).format('DD MMMM YYYY').toUpperCase() + ' - ' + dayjs(project.createdAt).add(p.duration, 'month').format('DD MMMM YYYY').toUpperCase()}</Typography>
+           </div>
+          </Paper>
+          <div className={classes.contentWrapper}>
+            <Typography className={classes.contentTitleText}>
+              Description
+            </Typography>
+            <Typography className={classes.contentText}>
+              {p.description}
+            </Typography>
+            <Typography className={classes.contentTitleText}>
+              Goals
+            </Typography>
+            <Typography className={classes.contentText}>
+              {p.result}
+            </Typography>
+          </div>
+          </div>
+            )}
+        </Paper>
+      
+        <Paper className={classes.projectSection} square>
           <div className={classes.contentWrapper}>
             <Typography className={classes.sectionTitleText} align="center">Research Background</Typography>
             <Typography className={classes.contentTitleText}>
               Context and Significance
             </Typography>
-            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('DD MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.context}
             </Typography>
@@ -483,7 +581,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography className={classes.contentTitleText}>
               Approach
             </Typography>
-            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('d MMM YYYY h:mm ').toUpperCase()}</Typography>
+            <Typography className={classes.lastUpdated}>{dayjs(project.createdAt).format('DD MMM YYYY h:mm ').toUpperCase()}</Typography>
             <Typography className={classes.contentText}>
               {project.approach}
             </Typography>
