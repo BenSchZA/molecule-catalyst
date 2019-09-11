@@ -9,16 +9,11 @@ import * as ProjectActions from './actions'
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { deployMarket, getProjectTokenDetails, mint } from './chain';
+import { getProjectTokenDetails, mint } from './chain';
 import { Project, MarketData } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
 
-interface Market {
-  fundingGoals: number[], 
-  phaseDurations: number[], 
-  curveType: number, 
-  taxationRate: number
-}
+
 
 export function* getAllProjects() {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
@@ -43,39 +38,14 @@ export function* getMyProjects() {
 }
 
 export function* launchProject(action) {
-  const projectID = action.payload;
   let project: Project = yield select((state: ApplicationRootState) => state.projects[action.payload]);
-  
   try {
-    let newMarket: Market = {
-      fundingGoals: [],
-      phaseDurations: [],
-      curveType: 0,
-      taxationRate: 0,
-    };
-
-    newMarket.fundingGoals = project.researchPhases.map(value => value.fundingGoal);
-    newMarket.phaseDurations = project.researchPhases.map(value => value.duration);
-    newMarket.curveType = 0; //TODO: add curve type to data type - for now hard code
-    newMarket.taxationRate = 15; //TODO: add tax rate to data type - for now hard code
-
-    const result = {
-      ...(yield call(deployMarket,
-                      newMarket.fundingGoals,
-                      newMarket.phaseDurations,
-                      newMarket.curveType,
-                      newMarket.taxationRate,
-                     ))
-    };
-
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-    project = yield call(launchProjectAPI, action.payload, result, apiKey);
+    project = yield call(launchProjectAPI, action.payload, apiKey);
     put(ProjectActions.addProject(project));
-    put(ProjectActions.launchProject.success(projectID));
-
+    put(ProjectActions.launchProject.success());
   } catch (error) {
-    console.log(error);
-    put(ProjectActions.launchProject.failure(projectID));
+    put(ProjectActions.launchProject.failure(error));
   }
 }
 
@@ -86,7 +56,7 @@ export function* supportProject(action) {
 
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+  if (!project.chainData.index || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }
@@ -102,8 +72,8 @@ export function* supportProject(action) {
 
 export function* getMarketData(projectId) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
-  
-  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+
+  if (!project.chainData.index || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }

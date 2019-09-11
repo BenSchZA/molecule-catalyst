@@ -17,7 +17,7 @@ export const launchProject = createAsyncAction(
   ActionTypes.LAUNCH_PROJECT_REQUEST,
   ActionTypes.LAUNCH_PROJECT_SUCCESS,
   ActionTypes.LAUNCH_PROJECT_FAILURE)
-  <string, string, Error>();
+  <string, undefined, Error>();
 export const setMarketData = createStandardAction(ActionTypes.SET_MARKET_DATA)<{ projectId: string, marketData: MarketData }>();
 export const supportProject = createAsyncAction(
   ActionTypes.SUPPORT_PROJECT_REQUEST,

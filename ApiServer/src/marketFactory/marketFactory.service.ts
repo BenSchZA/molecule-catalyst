@@ -1,21 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ethers, Wallet, Contract } from 'ethers';
 import { Modules } from 'src/app.constants';
-import { IMarketFactory } from '@molecule-protocol/catalyst-contracts';
+import { IMarketFactory, IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
 import { ConfigService } from '../config/config.service';
 import { ServiceBase } from 'src/common/serviceBase';
 
 @Injectable()
-export class MarketFactoryService  extends ServiceBase {
+export class MarketFactoryService extends ServiceBase {
   private readonly marketFactoryContract: Contract;
+  private readonly marketRegistryContract: Contract;
 
   constructor(
-      @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
-      private readonly config: ConfigService) {
+    @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
+    private readonly config: ConfigService) {
     super(MarketFactoryService.name);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-    const contract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
-    this.marketFactoryContract = contract.connect(serverAccountWallet);
+    const marktetFactoryContract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
+    this.marketFactoryContract = marktetFactoryContract.connect(serverAccountWallet);
+    const marktetRegistryContract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
+    this.marketRegistryContract = marktetRegistryContract.connect(serverAccountWallet);
   }
 
   public async addUserToAdminWhitelist(userAddress: string): Promise<void> {
@@ -38,5 +41,32 @@ export class MarketFactoryService  extends ServiceBase {
     } catch (error) {
       this.logger.error(error.message);
     }
+  }
+
+  public async deployMarket(
+    fundingGoals: Array<number>,
+    phaseDurations: Array<number>,
+    creatorAddress: string,
+    curveType: number,
+    taxationRate: number): Promise<{marketAddress: string, vaultAddress: string}> {
+    const txReceipt = await (await this.marketFactoryContract.deployMarket(
+      fundingGoals.map(value => ethers.utils.parseEther(value.toString())),
+      phaseDurations,
+      creatorAddress,
+      curveType,
+      taxationRate,
+    )).wait();
+
+    let parsedLogs = txReceipt.logs
+      .map(log => this.marketRegistryContract.interface.parseLog(log))
+      .filter(parsedLog => parsedLog != null);
+    let targetLog = parsedLogs
+      .filter(log => log.signature === this.marketRegistryContract.interface.events.MarketCreated.signature)
+      .filter(parsedEvent => parsedEvent.values.creator == creatorAddress)[0];
+
+    return {
+      marketAddress: targetLog.values.marketAddress,
+      vaultAddress: targetLog.values.vault,
+    };
   }
 }
