@@ -231,17 +231,6 @@ const theme = (createMuiTheme as any)({
         maxHeight: 712.02
       },
     },
-    MuiCardContent: {
-      root: {
-        fontSize: '0.9rem',
-        fontWeight: 'normal',
-        color: colors.darkGrey,
-        paddingTop: '12px',
-        height: '184px',
-        paddingLeft: '0px',
-        fontFamily: 'Roboto'
-      },
-    },
     MuiCardMedia: {
       root: {
         height: '150px',

@@ -1,15 +1,14 @@
 /**
  *
- * ProjectCard
+ * BackedProjectCard
  *
  */
 
 import React, { Fragment, useState } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardMedia, Typography, CardActions, Chip, Avatar } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Typography, CardActions, Chip, Grid, Button } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
-import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 
@@ -31,16 +30,6 @@ const styles = (theme: Theme) =>
     },
     margin: {
       margin: theme.spacing(1),
-    },
-    abstract: {
-      height: '100px',
-      paddingLeft: '16px',
-      paddingTop: '23px',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'inherit',
-      overflow: 'hidden',
-      color: colors.darkGrey,
-      font: '20px/27px Roboto, san-serif'
     },
     projectLeadLabel: {
       font: '10px Montserrat',
@@ -98,11 +87,60 @@ const styles = (theme: Theme) =>
       fontSize: '0.9rem',
       fontWeight: 'normal',
       color: colors.darkGrey,
-      paddingTop: '12px',
-      height: '184px',
+      height: '200px',
       paddingLeft: '0px',
-      fontFamily: 'Roboto'
-    }
+      fontFamily: 'Roboto',
+      padding: '0px'
+    },
+    chip:{
+      float: 'left',
+      marginTop: '10px',
+    },
+    label:{
+      font: 'Bold 12px/15px Montserrat',
+      fontWeight: 'bolder',
+      letterSpacing: '1.07px',
+      color: 'black',
+      paddingBottom: 8
+    },
+    largeText:{
+      font: '20px/27px Roboto',
+      fontWeight: 'normal',
+      letterSpacing: '0.62px',
+      color: '#00000099',
+      paddingBottom: 8
+    },
+    progress: {
+      font: '12px/15px Montserrat',
+      letterSpacing: '1.88px',
+      color: '#00000099',
+      opacity: 1
+    },
+    metricContainer:{
+      paddingLeft: '24px'
+    },
+    supportProject: {
+      background: '#FFFFFF 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#003E52',
+    },
+    redeemHoldings: {
+      background: '#03DAC6 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#FFFFFF',
+      float: 'right'
+    },
+    buttonContainer:{
+      paddingRight: '16px'
+    },
 
   });
 
@@ -120,15 +158,9 @@ const BorderLinearProgress = withStyles({
     bar: {
       borderRadius: 20,
       backgroundColor: colors.moleculeBranding.third,
-    },
+    }
   })(LinearProgress);
 
-
-const truncateText = (text : string) => {
-  if(text.length < 175)
-    return text;
-  return text.substr(0, 175) + '...';
-}
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project
@@ -141,7 +173,7 @@ const switchStatus = (status) => {
   }
 };
 
-const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => {
+const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
   return (
@@ -157,9 +189,26 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         subheader={switchStatus(project.status)}
       />
        <CardContent className={classes.cardContent}>
-         <div className={classes.abstract}>
-        {truncateText(project.abstract)}
-         </div>
+       <Grid className={classes.metricContainer} container spacing={1}>
+       <Grid item xs={3}>
+        <Typography className={classes.label}>Price</Typography>
+        <Typography className={classes.largeText}>1.2 DAI</Typography><Typography className={classes.progress}>{'(+10.8%)'}</Typography>
+        </Grid>
+        <Grid item xs={3}>
+        <Typography className={classes.label}>Invested</Typography>
+        <Typography className={classes.largeText}>500 Tokens </Typography>
+        
+        </Grid>
+        <Grid item xs={3}>
+        <Typography className={classes.label}>Value</Typography>
+        <Typography className={classes.largeText}>$ 608.2</Typography><Typography className={classes.progress}>{'(+10.8%)'}</Typography>
+        </Grid>
+        <Grid item xs={3}>
+        <Typography className={classes.label}>Contributed</Typography>
+        <Typography className={classes.largeText}>500 DAI</Typography>
+        </Grid>
+      
+        </Grid>
          <Typography className={classes.percentage}>55%</Typography>
          <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
       <BorderLinearProgress
@@ -167,25 +216,20 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         variant="determinate"
         color="secondary"
         value={50}  />
+       
       </CardContent>
-      <CardMedia
-        className={classes.cardImage}
-        component='img'
-        src={apiUrlBuilder.attachmentStream(project.featuredImage)}
-      />
-      <CardActions disableSpacing>
-        <div className={classes.footer}>
-        <div>
-        <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>{project.user.fullName}</div>
-        </div>
-        <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
-        </div>
-        <div className={classes.avatar}>
-          <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
-        </div>
+      <CardActions>
+        <Grid className={classes.buttonContainer} container>
+          <Grid item xs={6}>
+          <Button className={classes.supportProject} onClick={() => console.log('buy')}>Support Project</Button>
+          </Grid>
+          <Grid item xs={6}>
+          <Button className={classes.redeemHoldings} onClick={() => console.log('sell')}>Redeem Holdings</Button>
+          </Grid>
+       </Grid>
       </CardActions>
     </Card>
   </Fragment>);
 };
 
-export default withStyles(styles, { withTheme: true })(ProjectCard);
+export default withStyles(styles, { withTheme: true })(BackedProjectCard);
