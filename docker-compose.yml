@@ -19,12 +19,8 @@ services:
         - APP_SCHEMA
         - APP_HOST
         - APP_PORT
-        - MAINNET_DAI_ADDRESS
-        - GOERLI_DAI_ADDRESS
-        - RINKEBY_DAI_ADDRESS
-        - KOVAN_DAI_ADDRESS
-        - ROPSTEN_DAI_ADDRESS
-        - PDAI_CONTRACT_ADDRESS
+        - CHAIN_ID
+        - DAI_CONTRACT_ADDRESS
         - MARKET_REGISTRY_ADDRESS
         - MARKET_FACTORY_ADDRESS
     depends_on:

@@ -20,11 +20,11 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     event DeployerAdded(address deployer, string version);
     event DeployerRemoved(address deployer, string reason);
 
-    constructor() public WhitelistAdminRole(){
+    constructor() public WhitelistAdminRole() {
         publishedBlocknumber_ = block.number;
     }
 
-    modifier isRegisteredDeployer(){
+    modifier isRegisteredDeployer() {
         require(deployer_[msg.sender] == true, "Deployer not registered");
         _;
     }

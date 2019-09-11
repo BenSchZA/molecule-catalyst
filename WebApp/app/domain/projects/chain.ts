@@ -27,7 +27,10 @@ export async function deployMarket(
       signerAddress,
       curveType,
       taxationRate,
-      { gasPrice: await getGasPrice() }
+      { 
+        gasPrice: await getGasPrice(),
+        gasLimit: 3000000,
+      }
     )).wait();
 
     // Parse event logs
@@ -89,7 +92,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
   }
 }
 
-export async function mint(marketAddress, contribution, contributionRate) {
+export async function mint(marketAddress, contribution) {
   // Get blockchain objects
   const { signer } = await getBlockchainObjects();
   const signerAddress = await signer.getAddress();
@@ -98,7 +101,7 @@ export async function mint(marketAddress, contribution, contributionRate) {
   const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), signer);
 
   const tokenValue = await market.collateralToTokenBuying(
-    ethers.utils.parseUnits(`${contribution/(1 + contributionRate/100)}`, 18)
+    ethers.utils.parseUnits(`${contribution}`, 18)
   );
 
   // Approve, adding room

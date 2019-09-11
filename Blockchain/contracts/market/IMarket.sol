@@ -8,6 +8,9 @@ interface IMarket {
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
+    event Mint(address indexed to, uint256 amountMinted, uint256 collateralAmount, uint256 researchContribution);
+    event Burn(address indexed from, uint256 amountBurnt, uint256 collateralReturned);
+    event MarketTerminated();
 
     /**
       * @dev                Approves transfers for a given address
@@ -65,7 +68,7 @@ interface IMarket {
     /**
       * @dev                Returns the required collateral amount for a volume of bonding curve tokens
       * @return             :uint256 Required collateral corrected for decimals
-      */ 
+      */
     function priceToMint(uint256 _numTokens) external view returns(uint256);
 
     /**
