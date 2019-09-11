@@ -14,8 +14,7 @@ export class MarketRegistryService extends ServiceBase {
     private readonly config: ConfigService) {
     super(MarketRegistryService.name);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-    const contract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider);
-    this.marketRegistryContract = contract.connect(serverAccountWallet);
+    this.marketRegistryContract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider).connect(serverAccountWallet);
   }
 
   public async addUserToAdminWhitelist(userAddress: string): Promise<void> {

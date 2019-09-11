@@ -488,7 +488,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   status: 'Released'
                 }} />
               )}
-             
             </Grid>
           </div>
           <div className={classes.contentWrapper}>
@@ -540,30 +539,30 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Paper className={classes.projectSection} square>
           <Typography className={classes.sectionTitleText} align="center">Funding Campaign</Typography>
           {project.researchPhases && project.researchPhases.map((p, i) =>
-          <div>
-          <Paper className={classes.phasePaperTitle} elevation={0} square>
-            <Typography className={classes.phaseTitleText} align="center">
-              Phase 0{i+1}: {p.title}
-            </Typography>
-            <div className={classes.phaseDateChip}>
-            <Typography className={classes.phaseDates} align="center">{dayjs(project.createdAt).format('DD MMMM YYYY').toUpperCase() + ' - ' + dayjs(project.createdAt).add(p.duration, 'month').format('DD MMMM YYYY').toUpperCase()}</Typography>
-           </div>
-          </Paper>
-          <div className={classes.contentWrapper}>
-            <Typography className={classes.contentTitleText}>
-              Description
-            </Typography>
-            <Typography className={classes.contentText}>
-              {p.description}
-            </Typography>
-            <Typography className={classes.contentTitleText}>
-              Goals
-            </Typography>
-            <Typography className={classes.contentText}>
-              {p.result}
-            </Typography>
-          </div>
-          </div>
+            <div key={i}>
+              <Paper className={classes.phasePaperTitle} elevation={0} square>
+                <Typography className={classes.phaseTitleText} align="center">
+                  Phase 0{i+1}: {p.title}
+                </Typography>
+                <div className={classes.phaseDateChip}>
+                <Typography className={classes.phaseDates} align="center">{dayjs(project.createdAt).format('DD MMMM YYYY').toUpperCase() + ' - ' + dayjs(project.createdAt).add(p.duration, 'month').format('DD MMMM YYYY').toUpperCase()}</Typography>
+              </div>
+              </Paper>
+              <div className={classes.contentWrapper}>
+                <Typography className={classes.contentTitleText}>
+                  Description
+                </Typography>
+                <Typography className={classes.contentText}>
+                  {p.description}
+                </Typography>
+                <Typography className={classes.contentTitleText}>
+                  Goals
+                </Typography>
+                <Typography className={classes.contentText}>
+                  {p.result}
+                </Typography>
+              </div>
+            </div>
             )}
         </Paper>
       

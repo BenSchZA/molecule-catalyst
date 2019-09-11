@@ -6,12 +6,14 @@ import { ProjectSchema } from './project.schema';
 import { Schemas } from '../app.constants';
 import { AttachmentModule } from 'src/attachment/attachment.module';
 import { UserModule } from 'src/user/user.module';
+import { MarketModule } from 'src/market/market.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Schemas.Project, schema: ProjectSchema }]),
     AttachmentModule,
-    UserModule
+    UserModule,
+    MarketModule,
   ],
   controllers: [ProjectController],
   providers: [ProjectService],

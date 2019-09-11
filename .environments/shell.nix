@@ -13,6 +13,9 @@ stdenv.mkDerivation {
     libudev
     libtool
     libusb
+    libusb.dev
+    libusb1
+    libusb1.dev
     nasm
     autogen
     zlib
