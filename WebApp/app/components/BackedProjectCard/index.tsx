@@ -157,8 +157,8 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
         <Typography className={classes.largeText}>1.2 DAI</Typography><Typography className={classes.progress}>{'(+10.8%)'}</Typography>
         </Grid>
         <Grid item xs={3}>
-        <Typography className={classes.label}>Invested</Typography>
-        <Typography className={classes.largeText}>500 Tokens </Typography>
+        <Typography className={classes.label}>Tokens</Typography>
+        <Typography className={classes.largeText}>500y</Typography>
         </Grid>
         <Grid item xs={3}>
         <Typography className={classes.label}>Value</Typography>
