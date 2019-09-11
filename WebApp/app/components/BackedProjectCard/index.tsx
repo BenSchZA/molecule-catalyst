@@ -24,51 +24,8 @@ const styles = (theme: Theme) =>
       paddingBottom: '15px',
       paddingLeft: '16px'
     },
-    media: {
-      height: 0,
-      paddingTop: '56.25%', // 16:9
-    },
     margin: {
       margin: theme.spacing(1),
-    },
-    projectLeadLabel: {
-      font: '10px Montserrat',
-      fontWeight: 'bold',
-      letterSpacing: '1.88px',
-      float: 'left',
-      paddingTop: '4px',
-      paddingRight: '5px',
-    },
-    projectLead: {
-      fontWeight: 'bolder',
-      float: 'left',
-      font: '14px Montserrat',
-      letterSpacing: '1.88px',
-      textTransform: 'uppercase',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: 'inline-block',
-      width: '100%'
-    },
-    association: {
-      fontWeight: 'bolder',
-      font: '16px Montserrat',
-      letterSpacing: '1.88px',
-      float: 'left',
-      paddingTop: '5px',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: 'inline-block',
-      width: '100%'
-    },
-    footer: {
-      float: 'left',
-      paddingTop: '8px',
-      paddingBottom: '8px',
-      width: '60%',
-      minWidth: '350px'
     },
     card: {
       cursor: 'pointer',
@@ -87,8 +44,9 @@ const styles = (theme: Theme) =>
       fontSize: '0.9rem',
       fontWeight: 'normal',
       color: colors.darkGrey,
-      height: '200px',
+      height: '250px',
       paddingLeft: '0px',
+      paddingTop: '50px',
       fontFamily: 'Roboto',
       padding: '0px'
     },
@@ -117,7 +75,7 @@ const styles = (theme: Theme) =>
       opacity: 1
     },
     metricContainer:{
-      paddingLeft: '24px'
+      paddingLeft: '24px',
     },
     supportProject: {
       background: '#FFFFFF 0% 0% no-repeat padding-box',
@@ -141,6 +99,9 @@ const styles = (theme: Theme) =>
     buttonContainer:{
       paddingRight: '16px'
     },
+    cardHeader: {
+      paddingBottom: '24px'
+    }
 
   });
 
@@ -187,6 +148,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
       <CardHeader
         title={project.title}
         subheader={switchStatus(project.status)}
+        className={classes.cardHeader}
       />
        <CardContent className={classes.cardContent}>
        <Grid className={classes.metricContainer} container spacing={1}>
@@ -197,7 +159,6 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
         <Grid item xs={3}>
         <Typography className={classes.label}>Invested</Typography>
         <Typography className={classes.largeText}>500 Tokens </Typography>
-        
         </Grid>
         <Grid item xs={3}>
         <Typography className={classes.label}>Value</Typography>
@@ -207,7 +168,6 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
         <Typography className={classes.label}>Contributed</Typography>
         <Typography className={classes.largeText}>500 DAI</Typography>
         </Grid>
-      
         </Grid>
          <Typography className={classes.percentage}>55%</Typography>
          <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
