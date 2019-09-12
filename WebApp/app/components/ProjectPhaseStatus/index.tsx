@@ -90,7 +90,7 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}:
   <Typography className={classes.largeText}>{phase.title}</Typography>
   <Typography className={classes.label}>FUNDING GOAL</Typography>
   <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} USD</Typography>
-  <Typography className={classes.progress}>{phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).diff(dayjs(), 'day')} DAYS LEFT`}</Typography>
+  <Typography className={classes.progress}>{phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).add(phase.duration, 'month').diff(dayjs(), 'day')} DAYS LEFT`}</Typography>
   <BorderLinearProgress
         variant="determinate"
         color="secondary"
