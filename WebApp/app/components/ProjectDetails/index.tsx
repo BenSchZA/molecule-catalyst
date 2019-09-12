@@ -16,6 +16,7 @@ import ProjectSupportModal from 'components/ProjectSupportModal';
 import { FormikProps, FormikValues } from 'formik';
 import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
+import { ethers } from 'ethers';
 
 // Settings
 const bannerFooterAccentHeight = 5;
@@ -440,7 +441,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography className={classes.projectProgress}>
-                95.0%
+              {(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %
               </Typography>
             </div>
             <div>
@@ -456,7 +457,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Pledged
               </Typography>
               <Typography className={classes.fundingAmount}>
-                50000 USD
+                {~~ethers.utils.formatEther(project.vaultData.totalRaised).toLocaleString()} USD
               </Typography>
             </div>
             <div>
@@ -464,7 +465,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Released
               </Typography>
               <Typography className={classes.fundingAmount}>
-                45000 USD
+                {(project.vaultData.activePhase == 0 ? 0 : project.researchPhases[1].fundingGoal).toLocaleString()} USD
               </Typography>
             </div>
             <div>
@@ -472,20 +473,22 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Duration Left
               </Typography>
               <Typography className={classes.fundingAmount}>
-                35 Days
+               {dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')} days
               </Typography>
             </div>
           </article>
           <div className={classes.contentWrapper}>
             <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
-              {project.researchPhases && project.researchPhases.map((p, i) =>
+              {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
                 <ProjectPhaseStatus key={i+1} phase={{
                   index: i+1,
-                  daysRemaining: 10,
-                  fundedAmount: 5000,
-                  fundingGoal: p.fundingGoal,
-                  title: p.title,
-                  status: 'Released'
+                  fundedAmount: ~~ethers.utils.formatEther(p.fundingRaised),
+                  fundingGoal: project.researchPhases[i].fundingGoal,
+                  title: project.researchPhases[i].title,
+                  startDate: p.startDate,
+                  state: p.state,
+                  duration: p.phaseDuration,
+                  activePhase: project.vaultData.activePhase
                 }} />
               )}
             </Grid>
