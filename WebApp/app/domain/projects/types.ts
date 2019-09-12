@@ -1,6 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
+import { BigNumber } from 'ethers/utils';
 
 enum ProjectSubmissionStatus {
   created,
@@ -24,6 +25,7 @@ interface IProject {
   status: ProjectSubmissionStatus,
   reviewedBy: string,
   chainData: ChainData,
+  vaultData: VaultData
 }
 
 interface Collaborator {
@@ -59,6 +61,22 @@ interface ChainData {
   vaultAddress: string,
   creatorAddress: string,
   marketData: MarketData,
+}
+
+interface VaultData {
+  lastBlockUpdated: number,
+  totalRaised: BigNumber,
+  activePhase: number,
+  phases: Array<PhaseData>,
+}
+
+interface PhaseData {
+  index: number,
+  fundingThreshold: BigNumber,
+  fundingRaised: BigNumber,
+  phaseDuration: number,
+  startDate: string,
+  state: number
 }
 
 interface MarketData {
