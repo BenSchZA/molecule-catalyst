@@ -16,7 +16,7 @@ export class ProjectController {
 
   // Public getter provides filtered list of projects that are displayed to all users.
   @Get()
-  async getProjects(): Promise<Project[]> {
+  async getProjects() {
     const result = await this.projectService.getProjects();
     return result;
   }
@@ -24,7 +24,7 @@ export class ProjectController {
   @Get('all')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
-  async getAllProjects(): Promise<Project[]> {
+  async getAllProjects() {
     const result = await this.projectService.getAllProjects();
     return result;
   }
@@ -32,7 +32,7 @@ export class ProjectController {
   @Get('my')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.ProjectCreator)
-  async getUserProjects(@Req() req: Request & {user: User}): Promise<Project[]> {
+  async getUserProjects(@Req() req: Request & {user: User}) {
     const result = await this.projectService.getUserProjects(req.user.id);
     return result;
   }

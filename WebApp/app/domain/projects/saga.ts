@@ -86,13 +86,13 @@ export function* supportProject(action) {
 
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
     console.log("Invalid project blockchain data");
     return;
   }
 
   try {
-    yield call(mint, project.chainData.marketAddress, contribution, project.chainData.marketData.taxationRate);
+    yield call(mint, project.chainData.marketAddress, contribution);
     yield put(ProjectActions.supportProject.success(projectId));
   } catch (error) {
     yield put(ProjectActions.supportProject.failure(projectId));
@@ -103,7 +103,7 @@ export function* supportProject(action) {
 export function* getMarketData(projectId) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
   
-  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
     console.log("Invalid project blockchain data");
     return;
   }

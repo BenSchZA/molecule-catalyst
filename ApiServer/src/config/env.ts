@@ -52,7 +52,8 @@ export const env = {
   },
   contracts: {
     marketFactory: getOsEnv('MARKET_FACTORY_ADDRESS'),
-    marketRegistry: getOsEnv('MARKET_REGISTRY_ADDRESS')
+    marketRegistry: getOsEnv('MARKET_REGISTRY_ADDRESS'),
+    dai: getOsEnv('DAI_CONTRACT_ADDRESS'),
   },
   sendgrid: {
     apiKey: getOsEnv('SENDGRID_API_KEY'),

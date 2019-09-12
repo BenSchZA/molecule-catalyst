@@ -114,7 +114,7 @@ describe('Market stress test', async () => {
         }
     });
 
-    describe("Token exchange", () => {
+    describe("Token exchange", async () => {
         it("Mints specified token amount", async () =>{
             await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
             const balance = await marketInstance.balanceOf(user1.signer.address);
@@ -144,7 +144,7 @@ describe('Market stress test', async () => {
             //
             for(let i = 0; i < sequences; i++){
                 try{
-                    const state = (await vaultInstance.fundingPhase(0))[3]
+                    const state = (await vaultInstance.fundingPhase(0))[4]
                     if(state == 2){ // Ended
                         break;
                     }
@@ -214,7 +214,7 @@ describe('Market stress test', async () => {
                 const marketActivity = await marketInstance.active();
 
                 assert(vaultBalanceBeforeWithdraws.toString() >= phaseData[0].toString(), "Vault balance is lower than phase goal");
-                assert.equal(phaseData[3].toString(), 2, "Funding round has not ended");
+                assert.equal(phaseData[4].toString(), 2, "Funding round has not ended");
                 assert.equal(marketActivity, false, "Market has not been terminated");
          
                 let balanceOfUserInMarketBeforeWithdraw = 0;

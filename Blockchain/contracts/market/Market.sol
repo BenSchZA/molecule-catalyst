@@ -35,8 +35,10 @@ contract Market is IMarket, IERC20 {
 
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Transfer(address indexed from, address indexed to, uint value);
-    // event Mint(address indexed to, uint256 amount, uint256 totalCost);
-    // event Burn(address indexed from, uint256 amount, uint256 reward);
+    // the address reciving the tokens, the amount of tokens minted, the amount of DAI spent, the tax donatedd (in DAI)
+    event Mint(address indexed to, uint256 amountMinted, uint256 collateralAmount, uint256 researchContribution);
+    // the address burning the tokens, the amount of tokens burnt, the amount of DAI being recived (in DAI)
+    event Burn(address indexed from, uint256 amountBurnt, uint256 collateralReturned);
     event MarketTerminated();
 
     /**
@@ -94,7 +96,7 @@ contract Market is IMarket, IERC20 {
     function burn(uint256 _numTokens) external onlyActive() returns(bool) {
         require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
 
-        uint256 rewardForBurn = rewardForBurn(_numTokens);
+        uint256 reward = rewardForBurn(_numTokens);
 
         totalSupply_ = totalSupply_.sub(_numTokens);
         balances[msg.sender] = balances[msg.sender].sub(_numTokens);
@@ -102,12 +104,13 @@ contract Market is IMarket, IERC20 {
         require(
             collateralToken_.transfer(
                 msg.sender,
-                rewardForBurn
+                reward
             ),
             "Tokens not sent"
         );
 
         emit Transfer(msg.sender, address(0), _numTokens);
+        emit Burn(msg.sender, _numTokens, reward);
         return true;
     }
 
@@ -119,8 +122,7 @@ contract Market is IMarket, IERC20 {
         uint256 priceForTokens = priceToMint(_numTokens);
         require(priceForTokens > 0, "Tokens requested too low");
 
-        uint256 baseUnit = 100;
-        uint256 tax = priceForTokens.sub(priceForTokens.mul(100).div(baseUnit.add(taxationRate_)));
+        uint256 tax = priceForTokens.mul(taxationRate_).div(100);
 
         collateralToken_.transferFrom(
             msg.sender,
@@ -139,9 +141,12 @@ contract Market is IMarket, IERC20 {
         totalSupply_ = totalSupply_.add(_numTokens);
         balances[msg.sender] = balances[msg.sender].add(_numTokens);
 
-        require(creatorVault_.validateFunding(), "Funding validation failed");
+        require(creatorVault_.validateFunding(tax), "Funding validation failed");
+
+        uint256 priceWithoutTax = priceForTokens.sub(tax);
 
         emit Transfer(address(0), _to, _numTokens);
+        emit Mint(_to, _numTokens, priceWithoutTax, tax);
         return true;
     }
 
@@ -207,10 +212,10 @@ contract Market is IMarket, IERC20 {
 
         balances[msg.sender] = balances[msg.sender].sub(_amount);
 
-        uint256 poolBalance = collateralToken_.balanceOf(address(this));
+        uint256 balance = collateralToken_.balanceOf(address(this));
 
         // Performs a flat linear 100% collateralized sale
-        uint256 daiToTransfer = poolBalance.mul(_amount).div(totalSupply_);
+        uint256 daiToTransfer = balance.mul(_amount).div(totalSupply_);
         totalSupply_ = totalSupply_.sub(_amount);
 
         require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
@@ -222,11 +227,11 @@ contract Market is IMarket, IERC20 {
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
     /// @return             :uint256 Required collateral
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
-        uint256 poolBalance = collateralToken_.balanceOf(address(this));
-        uint256 untaxedDai = _curveIntegral(totalSupply_.add(_numTokens)).sub(poolBalance);
-
-        uint256 tax = untaxedDai.mul(taxationRate_).div(100);
-        return untaxedDai.add(tax);
+        uint256 balance = collateralToken_.balanceOf(address(this));
+        uint256 collateral = _curveIntegral(totalSupply_.add(_numTokens)).sub(balance);
+        uint256 baseUnit = 100;
+        uint256 result = collateral.mul(100).div(baseUnit.sub(taxationRate_));
+        return result;
     }
 
     /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
@@ -239,7 +244,9 @@ contract Market is IMarket, IERC20 {
     /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
     /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
     function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
-        return _inverseCurveIntegral(_curveIntegral(totalSupply_).add(_collateralTokenOffered)).sub(totalSupply_);
+        uint256 tax = _collateralTokenOffered.mul(taxationRate_).div(100);
+        uint256 amountLessTax = _collateralTokenOffered.sub(tax);
+        return _inverseCurveIntegral(_curveIntegral(totalSupply_).add(amountLessTax)).sub(totalSupply_);
     }
 
     /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token

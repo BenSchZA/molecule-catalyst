@@ -15,8 +15,8 @@ const MarketRegistryABI = require('../build/MarketRegistry.json');
 const MarketFactoryABI = require('../build/MarketFactory.json');
 
 const defaultConfigs = {
-  gasPrice: 1000000000,
-  gasLimit: 4700000,
+  //gasPrice: 1000000000,
+  //gasLimit: 5000000,
   chainId: 4,
   etherscanApiKey: process.env.ETHERSCAN_API_KEY,
 };
@@ -63,7 +63,6 @@ const deploy = async (network, secret) => {
     marketRegistryInstance.contract.address,
     curveRegistryInstance.contract.address
   );
-
   const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
     marketFactoryInstance.contract.address,
     "Debug logs/version"
@@ -71,9 +70,9 @@ const deploy = async (network, secret) => {
   await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
 
   const CONTRACT_ADDRESSES = `
-  PDAI_CONTRACT_ADDRESS=${pseudoDaiInstance.contract.address}
-  MARKET_REGISTRY_ADDRESS=${marketRegistryInstance.contract.address}
-  MARKET_FACTORY_ADDRESS=${marketFactoryInstance.contract.address}`;
+DAI_CONTRACT_ADDRESS=${pseudoDaiInstance.contract.address}
+MARKET_REGISTRY_ADDRESS=${marketRegistryInstance.contract.address}
+MARKET_FACTORY_ADDRESS=${marketFactoryInstance.contract.address}`;
   console.log(CONTRACT_ADDRESSES);
 };
 

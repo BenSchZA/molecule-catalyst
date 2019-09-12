@@ -39,7 +39,7 @@ contract CurveFunctions {
     uint256 prefix = 200*10**DECIMALS_36;
     uint256 a = prefix.mul(sqrt(x + 2500*10**DECIMALS_36)).div(sqrt(10**DECIMALS_36));
 
-    // inverse curve integral: -10000*x + 200*sqrt(x + 2500)
+    // inverse curve integral: -10000 + 200*sqrt(x + 2500)
     return uint256(-10000*int256(10**DECIMALS_36) + int256(a)).div(10**DECIMALS);
   }
 

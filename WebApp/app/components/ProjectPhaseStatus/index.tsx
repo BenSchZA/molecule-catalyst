@@ -8,6 +8,7 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Grid, Typography, Chip, LinearProgress, Divider } from '@material-ui/core';
 import { colors } from 'theme';
 import { lighten } from '@material-ui/core/styles';
+import dayjs from 'dayjs';
 
 const styles = ({ spacing, palette}: Theme) =>
   createStyles({
@@ -76,8 +77,10 @@ interface OwnProps extends WithStyles<typeof styles> {
     title: string,
     fundingGoal: number,
     fundedAmount: number,
-    daysRemaining: number,
-    status: string,
+    startDate: string,
+    duration: number,
+    state: number,
+    activePhase: number
   }
 }
 
@@ -87,13 +90,13 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}:
   <Typography className={classes.largeText}>{phase.title}</Typography>
   <Typography className={classes.label}>FUNDING GOAL</Typography>
   <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} USD</Typography>
-  <Typography className={classes.progress}>{phase.daysRemaining === 0 ? `NOT STARTED` : `${phase.daysRemaining} DAYS LEFT`}</Typography>
+  <Typography className={classes.progress}>{phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).add(phase.duration, 'month').diff(dayjs(), 'day')} DAYS LEFT`}</Typography>
   <BorderLinearProgress
         variant="determinate"
         color="secondary"
-        value={50}  />
-  <Typography className={classes.projectProgress}>{`${((phase.fundingGoal-phase.fundedAmount)/phase.fundingGoal)*100} %`}</Typography>
-  <Chip className={classes.chip} label={phase.status}/>
+        value={phase.fundedAmount/phase.fundingGoal*100}  />
+  <Typography className={classes.projectProgress}>{`${(phase.fundedAmount/phase.fundingGoal)*100} %`}</Typography>
+  <Chip className={classes.chip} label={phase.index-1 < phase.activePhase  ? 'RELEASED' : 'NOT RELEASED'}/>
   <br></br>
   <br></br>
   <br></br>

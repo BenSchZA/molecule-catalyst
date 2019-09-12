@@ -7,6 +7,8 @@ import { spreadEnumKeys } from 'src/helpers/spreadEnum';
 
 export interface Project extends IProject {
   id: string;
+  marketData?: any;
+  vaultData?: any;
 }
 
 export enum ProjectSubmissionStatus {
