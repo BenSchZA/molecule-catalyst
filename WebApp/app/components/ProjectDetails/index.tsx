@@ -441,7 +441,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography className={classes.projectProgress}>
-              {(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %
+              {~~(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %
               </Typography>
             </div>
             <div>
