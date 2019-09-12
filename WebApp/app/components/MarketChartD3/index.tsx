@@ -64,13 +64,14 @@ class MarketChartD3 extends React.Component<OwnProps> {
       // D3 Code to create the chart
       // using this._rootNode as container
       // line & graph parameters
-      let current_supply = currentTokenSupply + 1,
+      const current_supply = currentTokenSupply + 1,
         current_price = currentTokenValue,
         y_intercept = 0.5,
         slope = (current_price - y_intercept) / current_supply;
 
       //TODO: to be fetched from backend
-      let collateralPool = y_intercept*(current_supply - 1) + ((current_supply - 1)/2)*(current_price - current_price*(contributionRate/100));
+      const supply = current_supply - 1;
+      const collateralPool = (0.5*slope*Math.pow(supply, 2) + y_intercept*supply)*(1 - contributionRate/100);
 
       let max_supply = current_supply > 0 ? current_supply*2 : 2;
       let min_mint = max_supply/1000;
