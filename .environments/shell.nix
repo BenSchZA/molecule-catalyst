@@ -5,7 +5,7 @@ stdenv.mkDerivation {
   buildInputs = [
     docker
     docker_compose
-    nodejs-11_x
+    nodejs-10_x
     yarn
     pkgconfig
     autoconf
