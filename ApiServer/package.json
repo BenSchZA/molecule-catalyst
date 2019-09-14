@@ -35,7 +35,7 @@
     "@anchan828/nest-sendgrid-terminus": "^0.1.9",
     "@godaddy/terminus": "4.1.2",
     "@hapi/joi": "15.1.0",
-    "@molecule-protocol/catalyst-contracts": "^0.0.11",
+    "@molecule-protocol/catalyst-contracts": "^0.0.12",
     "@nestjs/common": "6.3.2",
     "@nestjs/core": "6.3.2",
     "@nestjs/jwt": "6.1.1",
