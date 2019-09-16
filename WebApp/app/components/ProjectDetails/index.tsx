@@ -60,7 +60,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   const holdingsValue = project.chainData.marketData ? 
     Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
-  const contributionValue = project.chainData.marketData ? 
+  const contributionValue = project.marketData.netContributions[userAddress] ?
     Number(formatEtherPossiblyNegative(project.marketData.netContributions[userAddress]._hex)) : 0;
 
   return (
