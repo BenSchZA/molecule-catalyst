@@ -164,7 +164,7 @@ export class ProjectService extends ServiceBase {
     } catch (error) {
       this.logger.error(`Something went wrong deploying project ${project.id}`);
       this.logger.error(error);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(`Something went wrong deploying project ${project.id}`, error);
     }
   }
 }

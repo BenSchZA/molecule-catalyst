@@ -3,8 +3,6 @@ import apiUrlBuilder from './apiUrlBuilder';
 import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
 import { ProjectData } from 'containers/CreateProjectContainer/types';
-import { LaunchProjectData } from 'domain/projects/types';
-
 
 export function login(signedPermit: string, ethAddress: string): Promise<any> {
   const body = JSON.stringify({ signedPermit: signedPermit, ethAddress: ethAddress});
