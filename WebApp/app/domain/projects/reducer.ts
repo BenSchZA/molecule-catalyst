@@ -30,7 +30,7 @@ function projectReducer(state: DomainState = initialState, action: DomainActions
             marketData: {
               ...action.payload.marketData,
             },
-          }
+          },
         }
       };
     default:
