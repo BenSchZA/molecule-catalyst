@@ -9,8 +9,8 @@ import * as ProjectActions from './actions'
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { deployMarket, getProjectTokenDetails, mint } from './chain';
-import { Project, MarketData } from './types';
+import { deployMarket, getProjectTokenDetails, mint, burn } from './chain';
+import { Project, MarketDataLegacy } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
 
 interface Market {
@@ -80,7 +80,6 @@ export function* launchProject(action) {
 }
 
 export function* supportProject(action) {
-  console.log(action);
   const projectId = action.payload.projectId;
   const contribution = action.payload.contribution;
 
@@ -100,6 +99,24 @@ export function* supportProject(action) {
   }
 }
 
+export function* withdrawHoldings(action) {
+  const projectId = action.payload;
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+
+  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+    console.log("Invalid project blockchain data");
+    return;
+  }
+
+  try {
+    yield call(burn, project.chainData.marketAddress);
+    yield put(ProjectActions.withdrawHoldings.success(projectId));
+  } catch (error) {
+    yield put(ProjectActions.withdrawHoldings.failure(projectId));
+    console.log(error);
+  }
+}
+
 export function* getMarketData(projectId) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
   
@@ -109,7 +126,7 @@ export function* getMarketData(projectId) {
   }
 
   try {
-    const marketData: MarketData = yield call(getProjectTokenDetails, project.chainData.marketAddress);
+    const marketData: MarketDataLegacy = yield call(getProjectTokenDetails, project.chainData.marketAddress);
     yield put(ProjectActions.setMarketData({ projectId: projectId, marketData: marketData }));
   } catch (error) {
     console.log(error);
@@ -133,4 +150,5 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.getProjects), getProjects);
   yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
+  yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
 }

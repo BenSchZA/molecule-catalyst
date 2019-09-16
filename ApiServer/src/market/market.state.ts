@@ -60,8 +60,8 @@ export class MarketState extends ServiceBase {
       return mintAction({
         userAddress: parsed.to,
         amountMinted: parsed.amountMinted,
-        collateralAmount: parsed.amountSpent,
-        reseachContribution: parsed.taxGiven,
+        collateralAmount: parsed.collateralAmount,
+        reseachContribution: parsed.researchContribution,
         blockNumber: log.blockNumber,
         txHash: log.transactionHash,
         timestamp: new Date((await this.ethersProvider.getBlock(log.blockNumber)).timestamp * 1000),
@@ -78,7 +78,7 @@ export class MarketState extends ServiceBase {
     const burnActions = await Promise.all(burns.map(async log => {
       const parsed = this.marketContract.interface.parseLog(log).values;
       return burnAction({
-        userAddress: parsed.to,
+        userAddress: parsed.from,
         amountBurnt: parsed.amountBurnt,
         collateralReturned: parsed.collateralReturned,
         blockNumber: log.blockNumber,

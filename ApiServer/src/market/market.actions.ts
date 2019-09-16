@@ -11,6 +11,7 @@ export const mintAction = createStandardAction('MINT')<{
   txHash: string,
   timestamp: Date
 }>();
+
 export const burnAction = createStandardAction('BURN')<{
   userAddress: string,
   amountBurnt: BigNumber,

@@ -1,8 +1,8 @@
 // import React from 'react';
 // import { mount } from 'enzyme';
 
-// import ProjectSearchModal from '../index';
+// import ProjectRedeemModal from '../index';
 
-describe('<ProjectSearchModal />', () => {
+describe('<ProjectRedeemModal />', () => {
   test.todo('Expect to have unit tests specified')
 });

@@ -4,11 +4,6 @@
  *
  */
 
-/*
- *
- * MyProjectsContainer constants
- *
- */
 enum ActionTypes {
   ADD_PROJECT = 'app/projects/ADD_PROJECT',
   GET_ALL_PROJECTS = 'app/projects/GET_ALL_PROJECTS',
@@ -21,6 +16,9 @@ enum ActionTypes {
   SUPPORT_PROJECT_SUCCESS = 'app/MyProjects/SUPPORT_PROJECT_SUCCESS',
   SUPPORT_PROJECT_FAILURE = 'app/MyProjects/SUPPORT_PROJECT_FAILURE',
   SET_MARKET_DATA = 'app/MyProjects/SET_MARKET_DATA',
+  WITHDRAW_HOLDINGS_REQUEST = "app/MyProjects/WITHDRAW_HOLDINGS_REQUEST",
+  WITHDRAW_HOLDINGS_SUCCESS = "app/MyProjects/WITHDRAW_HOLDINGS_SUCCESS",
+  WITHDRAW_HOLDINGS_FAILURE = "app/MyProjects/WITHDRAW_HOLDINGS_FAILURE"
 }
 
 export default ActionTypes;

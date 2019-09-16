@@ -60,6 +60,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
       const contributionRate = marketData.taxationRate;
       const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
       const currentTokenSupply = Number(ethers.utils.formatEther(marketData.totalSupply));
+      const poolValue = Number(ethers.utils.formatEther(marketData.poolValue));
 
       // D3 Code to create the chart
       // using this._rootNode as container
@@ -68,10 +69,6 @@ class MarketChartD3 extends React.Component<OwnProps> {
         current_price = currentTokenValue,
         y_intercept = 0.5,
         slope = (current_price - y_intercept) / current_supply;
-
-      //TODO: to be fetched from backend
-      const supply = current_supply - 1;
-      const collateralPool = (0.5*slope*Math.pow(supply, 2) + y_intercept*supply)*(1 - contributionRate/100);
 
       let max_supply = current_supply > 0 ? current_supply*2 : 2;
       let min_mint = max_supply/1000;
@@ -359,7 +356,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
           mouseMove(this)
         });
 
-    this.appendCurrentData({x: current_supply, y: current_price}, data, data_sell, collateralPool, width, height, xscale, yscale, formatNumber)
+    this.appendCurrentData({x: current_supply, y: current_price}, data, data_sell, poolValue, width, height, xscale, yscale, formatNumber)
   }
 
   appendCurrentData(d, buy_data, sell_data, collateralPool, width, height, xscale, yscale, formatNumber) {
