@@ -12,6 +12,7 @@ import { getType } from 'typesafe-actions';
 import { getProjectTokenDetails, mint, burn } from './chain';
 import { Project, MarketDataLegacy } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
+import { forwardTo } from 'utils/history';
 
 
 
@@ -44,6 +45,7 @@ export function* launchProject(action) {
     project = yield call(launchProjectAPI, action.payload, apiKey);
     put(ProjectActions.addProject(project));
     put(ProjectActions.launchProject.success());
+    yield call(forwardTo, '/admin/projects');
   } catch (error) {
     put(ProjectActions.launchProject.failure(error));
   }

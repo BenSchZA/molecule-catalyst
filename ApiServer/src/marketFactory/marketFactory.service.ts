@@ -17,7 +17,7 @@ export class MarketFactoryService extends ServiceBase {
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     const marktetFactoryContract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
     this.marketFactoryContract = marktetFactoryContract.connect(serverAccountWallet);
-    const marktetRegistryContract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
+    const marktetRegistryContract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider);
     this.marketRegistryContract = marktetRegistryContract.connect(serverAccountWallet);
   }
 
@@ -61,8 +61,12 @@ export class MarketFactoryService extends ServiceBase {
       .map(log => this.marketRegistryContract.interface.parseLog(log))
       .filter(parsedLog => parsedLog != null);
     let targetLog = parsedLogs
-      .filter(log => log.signature === this.marketRegistryContract.interface.events.MarketCreated.signature)
-      .filter(parsedEvent => parsedEvent.values.creator == creatorAddress)[0];
+      .filter(log => {
+        console.log(log.signature);
+        console.log(this.marketRegistryContract.interface.events.MarketCreated.signature);
+        return log.signature == this.marketRegistryContract.interface.events.MarketCreated.signature
+      })[0]
+      //.filter(parsedEvent => parsedEvent.values.creator == creatorAddress)[0];
 
     return {
       marketAddress: targetLog.values.marketAddress,

@@ -15,6 +15,7 @@ import { MarketFactoryModule } from 'src/marketFactory/marketFactory.module';
     AttachmentModule,
     UserModule,
     MarketFactoryModule,
+    MarketModule,
   ],
   controllers: [ProjectController],
   providers: [ProjectService],

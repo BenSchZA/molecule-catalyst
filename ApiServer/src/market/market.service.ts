@@ -12,7 +12,7 @@ import { VaultDocument, Vault } from './vault.schema';
 import { VaultState } from './vault.state';
 
 @Injectable()
-export class MarketService extends ServiceBase implements OnModuleDestroy {
+export class MarketService extends ServiceBase {
   private readonly marketRegistryContract: Contract;
 
   constructor(
@@ -62,15 +62,11 @@ export class MarketService extends ServiceBase implements OnModuleDestroy {
 
   public async getMarketData(marketAddress: string): Promise<Market> {
     const marketDoc = await this.marketRepository.findOne({marketAddress: marketAddress});
-    return marketDoc.toObject();
+    return (marketDoc) ? marketDoc.toObject() : {};
   }
 
   public async getVaultData(vaultAddress: string): Promise<Vault> {
     const vaultDoc = await this.vaultRepository.findOne({vaultAddress: vaultAddress});
-    return vaultDoc.toObject();
-  }
-
-  onModuleDestroy() {
-    throw new Error("Method not implemented.");
+    return (vaultDoc) ? vaultDoc.toObject() : {};
   }
 }

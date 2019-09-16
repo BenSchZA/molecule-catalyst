@@ -12,7 +12,6 @@ export function* approveProject(action) {
   try {
     // A project is either approved -> started and launched, or rejected
     yield put(launchProject.request(action.payload));
-    yield call(forwardTo, '/admin/projects');
   } catch (error) {
     console.log(error);
   }

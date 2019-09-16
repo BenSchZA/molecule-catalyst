@@ -123,7 +123,7 @@ interface PhaseData {
   state: number
 }
 
-export interface MarketDataLegacy {
+interface MarketDataLegacy {
   active: boolean,
   balance: string,
   totalSupply: string,
