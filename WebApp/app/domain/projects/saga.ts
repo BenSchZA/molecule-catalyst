@@ -39,11 +39,9 @@ export function* getMyProjects() {
 }
 
 export function* launchProject(action) {
-  console.log('in launch project')
   try {
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
     const launchResponse = yield call(launchProjectAPI, action.payload, apiKey);
-    console.log(launchResponse.data.chainData)
     yield put(ProjectActions.addProject(launchResponse.data));
     yield put(ProjectActions.launchProject.success());
     yield call(forwardTo, '/admin/projects');
