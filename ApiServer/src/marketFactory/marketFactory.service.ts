@@ -4,6 +4,7 @@ import { Modules } from 'src/app.constants';
 import { IMarketFactory, IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
 import { ConfigService } from '../config/config.service';
 import { ServiceBase } from 'src/common/serviceBase';
+import { TransactionReceipt } from 'ethers/providers';
 
 @Injectable()
 export class MarketFactoryService extends ServiceBase {
@@ -48,8 +49,14 @@ export class MarketFactoryService extends ServiceBase {
     phaseDurations: Array<number>,
     creatorAddress: string,
     curveType: number,
-    taxationRate: number): Promise<{marketAddress: string, vaultAddress: string}> {
-    const txReceipt = await (await this.marketFactoryContract.deployMarket(
+    taxationRate: number): Promise<{
+      block: number,
+      index: number,
+      marketAddress: string,
+      vaultAddress: string,
+      creatorAddress: string
+    }> {
+    const txReceipt: TransactionReceipt = await (await this.marketFactoryContract.deployMarket(
       fundingGoals.map(value => ethers.utils.parseEther(value.toString())),
       phaseDurations,
       creatorAddress,
@@ -62,15 +69,17 @@ export class MarketFactoryService extends ServiceBase {
       .filter(parsedLog => parsedLog != null);
     let targetLog = parsedLogs
       .filter(log => {
-        console.log(log.signature);
-        console.log(this.marketRegistryContract.interface.events.MarketCreated.signature);
         return log.signature == this.marketRegistryContract.interface.events.MarketCreated.signature
       })[0]
-      //.filter(parsedEvent => parsedEvent.values.creator == creatorAddress)[0];
+    //.filter(parsedEvent => parsedEvent.values.creator == creatorAddress)[0];
 
     return {
+      block: txReceipt.blockNumber,
+      index: parseInt(targetLog.values.index._hex),
       marketAddress: targetLog.values.marketAddress,
       vaultAddress: targetLog.values.vault,
+      creatorAddress: targetLog.values.creator,
     };
-  }
+  };
 }
+

@@ -156,8 +156,7 @@ export class ProjectService extends ServiceBase {
         0,
         15,
       );
-      project.chainData.marketAddress = deploymentResult.marketAddress
-      project.chainData.vaultAddress = deploymentResult.vaultAddress
+      project.chainData = deploymentResult;
       project.status = ProjectSubmissionStatus.started;
       await project.save();
       return project.toObject();
