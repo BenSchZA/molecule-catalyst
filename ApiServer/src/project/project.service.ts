@@ -8,16 +8,17 @@ import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { User } from 'src/user/user.schema';
 import { ProjectSubmissionStatus } from './project.schema';
-import { LaunchProjectDTO } from './dto/launchProject.dto';
 import { ServiceBase } from 'src/common/serviceBase';
 import * as sharp from 'sharp';
 import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
+import { MarketService } from 'src/market/market.service';
 
 @Injectable()
 export class ProjectService extends ServiceBase {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
     private readonly attachmentService: AttachmentService,
-    private readonly marketFactoryService: MarketFactoryService) {
+    private readonly marketFactoryService: MarketFactoryService,
+    private readonly marketService: MarketService) {
     super(ProjectService.name);
   }
 
@@ -43,25 +44,87 @@ export class ProjectService extends ServiceBase {
   }
 
   async getProjects() {
-    const result = await this.projectRepository
+    const projects = await this.projectRepository
       .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])
-      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt -chainData');
-    return result.map(r => r.toObject())
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+
+    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
+      .map(async p => {
+        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
+          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
+          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
+          return {
+            ...p,
+            marketData: marketData.marketData,
+            vaultData: vaultData.vaultData,
+          }
+        } else {
+          return p;
+        }
+      }))
+
+    return enhancedProjects;
   }
 
-  async getAllProjects(): Promise<Project[]> {
-    const result = await this.projectRepository.find().populate(Schemas.User);
-    return result.map(r => r.toObject())
+  async getAllProjects() {
+    this.logger.info('Getting all projects');
+    const projects = await this.projectRepository.find().populate(Schemas.User);
+    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
+      .map(async p => {
+        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
+          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
+          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
+          return {
+            ...p,
+            marketData: marketData.marketData,
+            vaultData: vaultData.vaultData,
+          }
+        } else {
+          return p;
+        }
+      }))
+
+    return enhancedProjects;
   }
 
   async getUserProjects(userId: string) {
-    const result = await this.projectRepository.find({ user: userId }).populate(Schemas.User);
-    return result.map(r => r.toObject());
+    const projects = await this.projectRepository.find({ user: userId }).populate(Schemas.User);
+    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
+      .map(async p => {
+        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
+          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
+          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
+          return {
+            ...p,
+            marketData: marketData.marketData,
+            vaultData: vaultData.vaultData,
+          }
+        } else {
+          return p;
+        }
+      }))
+
+    return enhancedProjects;
   }
 
-  async findById(projectId: string): Promise<Project> {
-    const project = await this.projectRepository.findById(projectId);
-    return project ? project.toObject() : false;
+  async findById(projectId: string) {
+    const projectDoc = await this.projectRepository.findById(projectId);
+    if (!projectDoc) {
+      return false;
+    } else {
+      const project = projectDoc.toObject();
+      if (project.chainData.marketAddress !== '0x' && project.chainData.vaultAddress !== '0x') {
+        const marketData = await this.marketService.getMarketData(project.chainData.marketAddress);
+        const vaultData = await this.marketService.getVaultData(project.chainData.vaultAddress)
+        return {
+          ...project,
+          marketData: marketData.marketData,
+          vaultData: vaultData.vaultData,
+        }
+      } else {
+        return project;
+      }
+    }
   }
 
   async approveProject(projectId: any, user: User) {

@@ -13,15 +13,18 @@ stdenv.mkDerivation {
     libudev
     libtool
     libusb
+    libusb.dev
+    libusb1
+    libusb1.dev
     nasm
     autogen
     zlib
-    nodePackages_10_x.node-gyp
-    nodePackages_10_x.node-gyp-build
-    nodePackages_10_x.node-pre-gyp
-    #python36
-    #python36Packages.pip
-    #python36Packages.setuptools
+    nodePackages.node-gyp
+    nodePackages.node-gyp-build
+    nodePackages.node-pre-gyp
+    python
+    pythonPackages.pip
+    pythonPackages.setuptools
     kubectl
     git
     awscli

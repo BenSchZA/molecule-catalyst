@@ -9,8 +9,8 @@ import * as ProjectActions from './actions'
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { getProjectTokenDetails, mint } from './chain';
-import { Project, MarketData } from './types';
+import { getProjectTokenDetails, mint, burn } from './chain';
+import { Project, MarketDataLegacy } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
 
 
@@ -50,19 +50,18 @@ export function* launchProject(action) {
 }
 
 export function* supportProject(action) {
-  console.log(action);
   const projectId = action.payload.projectId;
   const contribution = action.payload.contribution;
 
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if (!project.chainData.index || project.chainData.marketAddress == "0x") {
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
     console.log("Invalid project blockchain data");
     return;
   }
 
   try {
-    yield call(mint, project.chainData.marketAddress, contribution, project.chainData.marketData.taxationRate);
+    yield call(mint, project.chainData.marketAddress, contribution);
     yield put(ProjectActions.supportProject.success(projectId));
   } catch (error) {
     yield put(ProjectActions.supportProject.failure(projectId));
@@ -70,16 +69,34 @@ export function* supportProject(action) {
   }
 }
 
-export function* getMarketData(projectId) {
+export function* withdrawHoldings(action) {
+  const projectId = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if (!project.chainData.index || project.chainData.marketAddress == "0x") {
+  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
     console.log("Invalid project blockchain data");
     return;
   }
 
   try {
-    const marketData: MarketData = yield call(getProjectTokenDetails, project.chainData.marketAddress);
+    yield call(burn, project.chainData.marketAddress);
+    yield put(ProjectActions.withdrawHoldings.success(projectId));
+  } catch (error) {
+    yield put(ProjectActions.withdrawHoldings.failure(projectId));
+    console.log(error);
+  }
+}
+
+export function* getMarketData(projectId) {
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+  
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+    console.log("Invalid project blockchain data");
+    return;
+  }
+
+  try {
+    const marketData: MarketDataLegacy = yield call(getProjectTokenDetails, project.chainData.marketAddress);
     yield put(ProjectActions.setMarketData({ projectId: projectId, marketData: marketData }));
   } catch (error) {
     console.log(error);
@@ -103,4 +120,5 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.getProjects), getProjects);
   yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
+  yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
 }

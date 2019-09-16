@@ -4,9 +4,9 @@ import { ethers } from "ethers";
 export interface BlockchainResources {
   approvedNetwork: boolean,
   networkId: number,
-  daiAddress: string,
   marketRegistryAddress: string,
   marketFactoryAddress: string,
+  daiAddress: string,
   signer: JsonRpcSigner,
   provider: Web3Provider,
   signerAddress: string,
@@ -25,7 +25,7 @@ export let blockchainResources: BlockchainResources = {
   marketRegistryAddress: "0x",
   marketFactoryAddress: "0x",
   // @ts-ignore
-  signer: null,
+  signer: undefined,
   signerAddress: "",
   isCipher: false,
   isMetaMask: false,
@@ -86,23 +86,8 @@ export async function initBlockchainResources() {
     blockchainResources.marketRegistryAddress = `${process.env.MARKET_REGISTRY_ADDRESS}`;
     blockchainResources.marketFactoryAddress = `${process.env.MARKET_FACTORY_ADDRESS}`;
 
-    if (chainId == 1) {
-      blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else if (chainId == 5) {
-      blockchainResources.daiAddress = `${process.env.GOERLI_DAI_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else if (chainId == 4) {
-      blockchainResources.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else if (chainId == 42) {
-      blockchainResources.daiAddress = `${process.env.KOVAN_DAI_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else if (chainId == 3) {
-      blockchainResources.daiAddress = `${process.env.ROPSTEN_DAI_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else if (chainId == Number(process.env.LOCAL_CHAIN_ID)) {
-      blockchainResources.daiAddress = `${process.env.LOCAL_DAI_ADDRESS}`;
+    if (chainId == parseInt(`${process.env.CHAIN_ID}`)) {
+      blockchainResources.daiAddress = `${process.env.DAI_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else {
       throw "Invalid network"
@@ -117,7 +102,6 @@ export async function resetBlockchainObjects() {
   blockchainResources = {
     approvedNetwork: false,
     networkId: 0,
-    daiAddress: "0x",
     // @ts-ignore
     signer: undefined,
   };
@@ -148,7 +132,7 @@ export async function verifySignature(message: string, signature: string) {
 
 export async function getBlockchainObjects(): Promise<BlockchainResources> {
   try {
-    if (blockchainResources.daiAddress == "0x") {
+    if (!blockchainResources.signer) {
       await initBlockchainResources();
     } else {
       await fetchFromWindow();

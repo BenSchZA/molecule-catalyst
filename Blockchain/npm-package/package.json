@@ -1,6 +1,6 @@
 {
   "name": "@molecule-protocol/catalyst-contracts",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "Molecule protocol contracts",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,9 @@
     "/artifacts",
     "README.md"
   ],
-  "dependencies": {
-    "etherlime": "^2.2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "etherlime": "^2.2.2",
     "solc": "0.5.10"
   }
 }

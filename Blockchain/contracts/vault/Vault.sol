@@ -30,6 +30,8 @@ contract Vault is IVault, WhitelistAdminRole {
     uint256 internal currentPhase_;
     // Offset for checking funding threashold
     uint256 internal outstandingWithdraw_;
+    // The total number of funding rounds
+    uint256 internal totalRounds_;
     
     // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
@@ -37,6 +39,7 @@ contract Vault is IVault, WhitelistAdminRole {
     // Information stored about each phase
     struct FundPhase{
         uint256 fundingThreshold;   // Collateral limit to trigger funding
+        uint256 fundingRaised;      // The amount of funding that has been raised for this round
         uint256 phaseDuration;      // Period of time from start of phase till end
         uint256 startDate;
         FundingState state;         // State enum
@@ -81,7 +84,9 @@ contract Vault is IVault, WhitelistAdminRole {
         for(uint256 i = 0; i < loopLength; i++){
             uint256 withTax = _fundingGoals[i].add(_fundingGoals[i].mul(moleculeTaxRate_).div(100));
             fundingPhases_[i].fundingThreshold = withTax;
+            fundingPhases_[i].fundingRaised = 0;
             fundingPhases_[i].phaseDuration = _phaseDurations[i];
+            totalRounds_ = totalRounds_.add(1);
         }
 
         fundingPhases_[0].startDate = block.timestamp;
@@ -141,21 +146,28 @@ contract Vault is IVault, WhitelistAdminRole {
       * @dev Verifies that the phase passed in: has not been withdrawn, funding goal has been reached,
       *      and that the phase has not expired.
       */
-    function validateFunding() external onlyMarket() returns(bool){
+    function validateFunding(uint256 _receivedFunding) external onlyMarket() returns(bool){
         require(fundingPhases_[currentPhase_].state == FundingState.STARTED, "Funding inactive");
-
-        uint256 balance = collateralToken_.balanceOf(address(this));
-        // balance = balance.sub(outstandingWithdraw_);
 
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
         if(endOfPhase <= block.timestamp) {
+            // terminateMarket();
             return false;
         }
+        
+        fundingPhases_[currentPhase_].fundingRaised = fundingPhases_[currentPhase_].fundingRaised.add(_receivedFunding);
+        
+        // uint256 balance = collateralToken_.balanceOf(address(this));
+        // assert(balance >= fundingPhases_[currentPhase_].fundingRaised);
 
-        if(balance >= fundingPhases_[currentPhase_].fundingThreshold) {
+        if (fundingPhases_[currentPhase_].fundingRaised >= fundingPhases_[currentPhase_].fundingThreshold) {
             // Setting active phase state to ended
             fundingPhases_[currentPhase_].state = FundingState.ENDED;
+            uint256 overflow = fundingPhases_[currentPhase_].fundingRaised.sub(fundingPhases_[currentPhase_].fundingThreshold);
 
+            if (overflow > 0) {
+                fundingPhases_[currentPhase_].fundingRaised = fundingPhases_[currentPhase_].fundingRaised;
+            }
             outstandingWithdraw_ = outstandingWithdraw_.add(fundingPhases_[currentPhase_].fundingThreshold);
 
             currentPhase_ = currentPhase_ + 1;
@@ -165,6 +177,7 @@ contract Vault is IVault, WhitelistAdminRole {
                 // Setting active phase state to Started
                 fundingPhases_[currentPhase_].state = FundingState.STARTED;
                 fundingPhases_[currentPhase_].startDate = block.timestamp;
+                fundingPhases_[currentPhase_].fundingRaised = fundingPhases_[currentPhase_].fundingRaised.add(overflow);
             }
 
             emit PhaseFinalised(currentPhase_.sub(1), fundingPhases_[currentPhase_.sub(1)].fundingThreshold);
@@ -212,9 +225,10 @@ contract Vault is IVault, WhitelistAdminRole {
       * @param _phase : uint256 - The phase that you want the information of
       * @return All stored information about the market.
       */
-    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, FundingState) {
+    function fundingPhase(uint256 _phase) public view returns(uint256, uint256, uint256, uint256, FundingState) {
         return (
             fundingPhases_[_phase].fundingThreshold,
+            fundingPhases_[_phase].fundingRaised,
             fundingPhases_[_phase].phaseDuration,
             fundingPhases_[_phase].startDate,
             fundingPhases_[_phase].state
@@ -234,6 +248,13 @@ contract Vault is IVault, WhitelistAdminRole {
       */
     function currentPhase() public view returns(uint256) {
         return currentPhase_;
+    }
+
+    /**
+      * @dev The total number of funding roudns created
+      */
+    function getTotalRounds() public view returns(uint256) {
+        return totalRounds_;
     }
 
     /**

@@ -1,12 +1,13 @@
-import { WithStyles, Button, Theme, Modal, Typography, Paper, Divider } from '@material-ui/core';
+import { WithStyles, Theme, Modal, Typography, Paper, Divider } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
-import { Info, ArrowForward } from '@material-ui/icons';
+import { Info } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { colors } from 'theme';
 import { Field, Form, FormikProps, FormikValues } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { NegativeButton, PositiveButton } from 'components/custom';
 
 const titleHeight = 40;
 
@@ -79,7 +80,8 @@ const styles = (theme: Theme) => createStyles({
     justifyContent: "flex-end",
     width: 150,
   },
-  link:{
+  link: {
+    textDecoration: 'none',
   },
   body1: {
     fontWeight: 'bold',
@@ -126,7 +128,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
               <Typography variant="body1">
                 Your Account Balance:
               </Typography>
-              <Typography variant="body1">{daiBalance ? daiBalance : 0} DAI</Typography>
+              <Typography variant="body1">{daiBalance ? daiBalance.toFixed(displayPrecision) : 0} DAI</Typography>
               <Typography variant="body1">
                 Enter Contribution Amount
               </Typography>
@@ -142,7 +144,6 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
                   },
                 }}
               />
-              {/* <ErrorMessage className={classes.input} name="contribution" /> */}
             </div>
             <Divider />
             <div className={classes.table}>
@@ -165,12 +166,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
                 <span>
                   Read more about our trading technology
                 </span>
-                <ArrowForward />
               </Fragment>
             </Link>
             <div className={classes.buttons}>
-              <Button type='submit' disabled={formikProps.isSubmitting} onClick={formikProps.submitForm}>Support Project</Button>
-              <Button onClick={closeModal}>Cancel</Button>
+              <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
+              <PositiveButton type='submit' disabled={formikProps.isSubmitting} onClick={formikProps.submitForm}>Support Project</PositiveButton>
             </div>
           </Paper>
         </Modal>

@@ -1,6 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
+import { BigNumber } from 'ethers/utils';
 
 enum ProjectSubmissionStatus {
   created,
@@ -24,6 +25,8 @@ interface IProject {
   status: ProjectSubmissionStatus,
   reviewedBy: string,
   chainData: ChainData,
+  marketData: MarketData,
+  vaultData: VaultData
 }
 
 interface Collaborator {
@@ -58,16 +61,77 @@ interface ChainData {
   marketAddress: string,
   vaultAddress: string,
   creatorAddress: string,
-  marketData: MarketData,
+  marketData: MarketDataLegacy,
 }
 
 interface MarketData {
+  lastBlockUpdated: number,
+  totalMinted: BigNumber,
+  netContributions: Map<string, BigNumber>,
+  balances: Map<string, BigNumber>,
+  transactions: Array<MintTX | BurnTX | TransferTX>,
+}
+
+interface MintTX {
+  txType: TransactionType,
+  userAddress: string,
+  amountMinted: BigNumber,
+  collateralAmount: BigNumber,
+  reseachContribution: BigNumber,
+  blockNumber: number,
+  txHash: string,
+  timestamp: Date
+}
+
+interface BurnTX {
+  userAddress: string,
+  amountBurnt: BigNumber,
+  collateralReturned: BigNumber,
+  blockNumber: number,
+  txHash: string,
+  timestamp: Date
+}
+
+interface TransferTX {
+  fromAddress: string,
+  toAddress: string,
+  amount: BigNumber,
+  blockNumber: number,
+  txHash: string,
+  timestamp: Date
+}
+
+enum TransactionType {
+  MINT = 'MINT',
+  BURN = 'BURN',
+  TRANSFER = 'TRANSFER'
+}
+
+interface VaultData {
+  lastBlockUpdated: number,
+  totalRaised: BigNumber,
+  activePhase: number,
+  phases: Array<PhaseData>,
+}
+
+interface PhaseData {
+  index: number,
+  fundingThreshold: BigNumber,
+  fundingRaised: BigNumber,
+  phaseDuration: number,
+  startDate: string,
+  state: number
+}
+
+export interface MarketDataLegacy {
   active: boolean,
   balance: string,
   totalSupply: string,
   decimals: number,
   taxationRate: number,
   tokenPrice: string,
+  poolValue: string,
+  holdingsValue: string,
 }
 
 /* --- STATE --- */
@@ -85,4 +149,4 @@ type DomainState = ProjectsState;
 type DomainActions = ProjectActions;
 type Project = IProject
 
-export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData, MarketData };
+export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData, MarketData, MarketDataLegacy };

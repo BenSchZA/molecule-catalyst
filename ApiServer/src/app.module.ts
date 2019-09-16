@@ -17,6 +17,7 @@ import { EthersProviderModule } from './ethers/ethersProvider.module';
 import { SendGridHealthModule } from '@anchan828/nest-sendgrid-terminus';
 import { AttachmentModule } from './attachment/attachment.module';
 import { ProjectModule } from './project/project.module';
+import { MarketModule }  from './market/market.module';
 
 @Module({
   imports: [ConfigModule,
@@ -96,7 +97,8 @@ import { ProjectModule } from './project/project.module';
     AttachmentModule,
     AuthModule,
     CreatorModule,
-    ProjectModule
+    ProjectModule,
+    MarketModule,
   ],
   controllers: [AppController],
   providers: [ConfigService, AppService],

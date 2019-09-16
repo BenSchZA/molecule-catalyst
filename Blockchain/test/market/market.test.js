@@ -113,7 +113,6 @@ describe('Market test', async () => {
             // * mint()
             // * rewardForBurn()
             // * Transfer() event
-            // Still need to test:
             // * collateralToTokenSelling()
             // * burn()
 
@@ -148,7 +147,7 @@ describe('Market test', async () => {
             
             // Check taxation
             assert.equal(
-                BigNumber(defaultDaiPurchase.mul(115).div(100).toString())
+                BigNumber(defaultDaiPurchase.toString())
                     .shiftedBy(-DECIMALS).toString(),
                 BigNumber(priceToMint.toString())
                     .shiftedBy(-DECIMALS)
@@ -163,12 +162,14 @@ describe('Market test', async () => {
             const rewardForBurnBN = BigNumber(rewardForBurn.toString())
                 .shiftedBy(-DECIMALS)
                 .decimalPlaces(EXPECTED_PRECISION);
-            const defaultDaiPurchaseBN = BigNumber(defaultDaiPurchase.toString())
+            const defaultDaiPurchaseBN = BigNumber(
+                    defaultDaiPurchase.sub(defaultDaiPurchase.mul(moleculeVaultSettings.taxationRate).div(100))
+                .toString())
                 .shiftedBy(-DECIMALS);
             // console.log(`Default Dai purchase BN = ${defaultDaiPurchaseBN}`);
             // console.log(`Reward for burn BN = ${rewardForBurnBN}`);
 
-            assert(rewardForBurnBN.isEqualTo(defaultDaiPurchaseBN), "Reward doesn't equal purchased value");
+            assert.equal(rewardForBurnBN.toString(), defaultDaiPurchaseBN.toString(), "Reward doesn't equal purchased value");
             /* ############################################################################################ */
             // Check Transfer() event accurate
 
@@ -267,7 +268,7 @@ describe('Market test', async () => {
             
             let phaseData = await vaultInstance.fundingPhase(0);
 
-            assert.equal(phaseData[3], 1, "Phase state not set to started");
+            assert.equal(phaseData[4], 1, "Phase state not set to started");
             
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
             const estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
@@ -276,12 +277,12 @@ describe('Market test', async () => {
             currentPhase = await vaultInstance.currentPhase();
 
             assert.ok(currentPhase.eq(1), "Phase invalid");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
 
             phaseData = await vaultInstance.fundingPhase(1);
 
-            assert.equal(phaseData[3], 1, "Next phase state not set to started");
-            assert.ok(phaseData[2].gt(0), "Phase invalid");
+            assert.equal(phaseData[4], 1, "Next phase state not set to started");
+            assert.notEqual(phaseData[4].toString(), 0, "Phase invalid");
         });
 
         it("Withdraws multiple rounds if theres outstanding withdraws", async () => {
@@ -294,7 +295,7 @@ describe('Market test', async () => {
             phaseData = await vaultInstance.fundingPhase(0);
             currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(1), "Phase not incremented");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
 
             // Ending round 2
             phaseData = await vaultInstance.fundingPhase(1);
@@ -305,7 +306,7 @@ describe('Market test', async () => {
             currentPhase = await vaultInstance.currentPhase();
             phaseData = await vaultInstance.fundingPhase(1);
             assert.ok(currentPhase.eq(2), "Phase not incremented to 2");
-            assert.equal(phaseData[3], 2, "2nd phase state not set to ended");
+            assert.equal(phaseData[4], 2, "2nd phase state not set to ended");
 
             await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw 0 failed")
             const outstandingAfter = await vaultInstance.outstandingWithdraw();
@@ -333,6 +334,22 @@ describe('Market test', async () => {
             assert.ok(transfers[2].values.value.eq(purchasingSequences.first.token.tokenResult), "Event emitted incorrectly")
         });
 
+        it('Emits Mint in mint', async () =>{
+            const txReceipt = await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
+            
+            const transfers = (await(txReceipt.events.filter(
+                event => event.topics[0] == marketInstance.interface.events.Mint.topic
+            ))).map(mintEvent => marketInstance.interface.parseLog(mintEvent));
+
+            const balance = await marketInstance.balanceOf(user1.signer.address);
+
+            // event Mint(address indexed to, uint256 amountMinted, uint256 collateralAmount, uint256 researchContribution);
+            assert.equal(transfers[0].values.to, user1.signer.address, "User address not in event");
+            assert.equal(balance.toString(), transfers[0].values.amountMinted.toString(), "User balance does not match event");
+            assert.notEqual(transfers[0].values.collateralAmount.toString(), 0, "Collateral amount is 0");
+            assert.notEqual(transfers[0].values.researchContribution.toString(), 0, "Research contribution is 0");
+        });
+
         it('Emits Transfer in burn', async () => {
             await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
             
@@ -345,6 +362,22 @@ describe('Market test', async () => {
             ))).map(transferEvent => marketInstance.interface.parseLog(transferEvent))
 
             assert.ok(transfers[1].values.value.eq(balance), "Event emitted incorrectly")
+        });
+
+        it('Emits Burn in burn', async () => {
+            await (await marketInstance.from(user1).mint(user1.signer.address, purchasingSequences.first.token.tokenResult)).wait();
+            
+            const balance = await marketInstance.balanceOf(user1.signer.address);
+            
+            const txReceipt = await (await marketInstance.from(user1).burn(balance)).wait();
+            console.log("\nBurn");
+            
+            const transfers = (await(txReceipt.events.filter(
+                event => event.topics[0] == marketInstance.interface.events.Burn.topic
+            ))).map(burnEvent => marketInstance.interface.parseLog(burnEvent))
+
+            assert.equal(transfers[0].values.from, user1.signer.address, "User address not in event");
+            assert.equal(purchasingSequences.first.token.tokenResult.toString(), transfers[0].values.amountBurnt.toString(), "Mismatch burning to event");
         });
 
         it('Emits Approve', async () => {
@@ -437,6 +470,11 @@ describe('Market test', async () => {
                 
                 balance = await marketInstance.balanceOf(user1.signer.address);
                 assert.ok(balance.eq(purchasingSequences.first.token.tokenResult), "Balance not increased")
+            });
+
+            it('Get total phases', async () => {
+                const allPhases = await vaultInstance.getTotalRounds();
+                assert.equal(allPhases.toString(), 3, "Phase invalid");
             });
     
             it('Get poolBalance', async () =>{

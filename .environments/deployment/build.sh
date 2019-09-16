@@ -27,11 +27,12 @@ build() {
   export REGION=us-west-2
   echo "Building $TAG Docker image"
   source .environments/variables/env_$BRANCH_NAME.sh # Load env variables for frontend build
-  export API_HOST=alpha-api-$TAG.mol.ai/api
   export FRONTEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-frontend
   export BACKEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-backend
   export MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$FRONTEND_REPO_NAME:$TAG
   export MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$BACKEND_REPO_NAME:$TAG
+
+  export API_HOST=alpha-api-$TAG.mol.ai/api
   export APM_SERVICE_NAME=molecule-frontend-alpha-$TAG
   export APM_SERVER_ENDPOINT=https://apm.mol.ai
   

@@ -119,18 +119,20 @@ describe('Vault stress test', async () => {
         }
     });
 
-    describe("Multiple round testing", () => {
+    describe("Multiple round testing", async () => {
         it("Mints specified token amount", async () => {
-            let mintAMount = ethers.utils.parseUnits("50000", 18);
+            let mintAmount = ethers.utils.parseUnits("1500000", 18);
             // Minting tokens (not enough to finish round)
-            await (await marketInstance.from(user1).mint(user1.signer.address, mintAMount)).wait();
-            await (await marketInstance.from(user2).mint(user2.signer.address, mintAMount)).wait();
+            console.log("0")
+            await (await marketInstance.from(user1).mint(user1.signer.address, mintAmount)).wait();
+            console.log("0")
+            await (await marketInstance.from(user2).mint(user2.signer.address, mintAmount)).wait();
             // Getting the phase data from the vault
             let phaseData = await vaultInstance.fundingPhase(0);
             console.log(phaseData[0].toString())
-            console.log(phaseData[1].toString())
             console.log(phaseData[2].toString())
-            console.log(phaseData[3].toString())
+            console.log(phaseData[2].toString())
+            console.log(phaseData[4].toString())
             // Time jumping to end the round
             const exceedTime = constants.monthInSeconds*(marketSettingsStress.phaseDuration[0] + 1);
             await utils.timeTravel(deployer.provider, exceedTime);
@@ -138,29 +140,29 @@ describe('Vault stress test', async () => {
             // Checking withdraws are correct
             phaseData = await vaultInstance.fundingPhase(0);
             console.log(phaseData[0].toString())
-            console.log(phaseData[1].toString())
             console.log(phaseData[2].toString())
-            console.log(phaseData[3].toString())
+            console.log(phaseData[2].toString())
+            console.log(phaseData[4].toString())
 
-            await assert.revert(marketInstance.from(user1).mint(user1.signer.address, mintAMount), "Mint was allowed incorrectly");
+            await assert.revert(marketInstance.from(user1).mint(user1.signer.address, mintAmount), "Mint was allowed incorrectly");
 
             await (await vaultInstance.from(creator).terminateMarket()).wait();
             phaseData = await vaultInstance.fundingPhase(0);
             console.log(phaseData[0].toString())
-            console.log(phaseData[1].toString())
             console.log(phaseData[2].toString())
-            console.log(phaseData[3].toString())
+            console.log(phaseData[2].toString())
+            console.log(phaseData[4].toString())
 
             const marketActivity = await marketInstance.active();
-            
+            console.log("0")
             assert.equal(marketActivity, false, "Market is still active");
-
+            console.log("0")
             let balanceOfUser1 = await pseudoDaiInstance.balanceOf(user1.signer.address);
             let balanceOfUser2 = await pseudoDaiInstance.balanceOf(user2.signer.address);
-
-            await (await marketInstance.from(user1.signer.address, mintAMount).withdraw(balanceOfUser1)).wait();
-            await (await marketInstance.from(user2.signer.address, mintAMount).withdraw(balanceOfUser2)).wait();
-
+            console.log("0")
+            await (await marketInstance.from(user1.signer.address, mintAmount).withdraw(balanceOfUser1)).wait();
+            await (await marketInstance.from(user2.signer.address, mintAmount).withdraw(balanceOfUser2)).wait();
+            console.log("0")
             let balanceOfUser1After = await pseudoDaiInstance.balanceOf(user1.signer.address);
             let balanceOfUser2After = await pseudoDaiInstance.balanceOf(user2.signer.address);
 

@@ -148,7 +148,7 @@ describe("Vault test", async () => {
             currentPhase = await vaultInstance.currentPhase();
 
             assert.ok(currentPhase.eq(1), "Phase invalid");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
             assert.ok(balance.gte(marketSettings.fundingGoals[0]), "Vault balance invalid")
         });
 
@@ -202,7 +202,7 @@ describe("Vault test", async () => {
             currentPhase = await vaultInstance.currentPhase();
 
             assert.ok(currentPhase.eq(1), "Phase not incremented");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
 
             await vaultInstance.from(creator).withdraw(0);
             phaseData = await vaultInstance.fundingPhase(0);
@@ -237,7 +237,7 @@ describe("Vault test", async () => {
             currentPhase = await vaultInstance.currentPhase();
             
             assert.ok(currentPhase.eq(1), "Phase not incremented");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
 
             let balanceOfVaultBefore = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address)
             let balanceOfMolVaultBefore = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address)
@@ -300,7 +300,7 @@ describe("Vault test", async () => {
             const balanceOfMoleVaultBefore = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
 
             assert.ok(currentPhase.eq(1), "Phase not incremented");
-            assert.equal(phaseData[3], 2, "Phase state not set to ended");
+            assert.equal(phaseData[4], 2, "Phase state not set to ended");
             await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed")
 
             const outstandingAfter = await vaultInstance.outstandingWithdraw();
@@ -357,12 +357,12 @@ describe("Vault test", async () => {
     });
 
     describe('Meta data', async () => {
-        it('Get Funding phase data', async () => {
+        it('Get funding phase data', async () => {
             const fundingData = await vaultInstance.fundingPhase(0);
 
             assert.notEqual(fundingData[0].toNumber, 0, "Funding threshold incorrect")
-            assert.equal(fundingData[1].toString(), marketSettings.phaseDuration[0], "Phase incorrect")
-            assert.equal(fundingData[3].toString(), 1, "State incorrect")
+            assert.equal(fundingData[2].toString(), marketSettings.phaseDuration[0].toString(), "Phase incorrect")
+            assert.equal(fundingData[4].toString(), 1, "State incorrect")
         });
 
         it('Get outstanding withdraw amount', async () =>{
@@ -370,12 +370,17 @@ describe("Vault test", async () => {
             assert.ok(outstandingWithdraw.eq(0), "Phase invalid");
         });
 
+        it('Get total phases', async () => {
+            const allPhases = await vaultInstance.getTotalRounds();
+            assert.equal(allPhases.toString(), 1, "Phase invalid");
+        });
+
         it('Get current phase', async () => {
             const currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
         });
 
-        it('Get market', async () =>{
+        it('Get market', async () => {
             const marketAddress = await vaultInstance.market();
             assert.equal(marketAddress, marketInstance.contract.address, "Market Contract address invaild")
         });
