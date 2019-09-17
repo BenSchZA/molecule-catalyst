@@ -133,7 +133,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Funding Goal
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} USD
+                {project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} DAI
               </Typography>
             </div>
             <div>
@@ -141,7 +141,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Pledged
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {~~ethers.utils.formatEther(project.vaultData.totalRaised).toLocaleString()} USD
+                {(~~ethers.utils.formatEther(project.vaultData.totalRaised)).toLocaleString()} DAI
               </Typography>
             </div>
             <div>
@@ -150,8 +150,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
               <Typography className={classes.fundingAmount}>
                 {ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
-                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0)))
-                } USD
+                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))).toLocaleString()
+                } DAI
               </Typography>
             </div>
             <div>

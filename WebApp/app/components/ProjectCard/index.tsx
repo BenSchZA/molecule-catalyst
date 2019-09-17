@@ -153,7 +153,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         {truncateText(project.abstract)}
          </div>
          <Typography className={classes.percentage}>{~~(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %</Typography>
-         <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
+         <Chip color="primary" label={'Funded of ' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString() + ' DAI'} />
       <BorderLinearProgress
         className={classes.margin}
         variant="determinate"
