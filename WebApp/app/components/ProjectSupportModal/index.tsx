@@ -128,7 +128,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
               <Typography variant="body1">
                 Your Account Balance:
               </Typography>
-              <Typography variant="body1">{daiBalance ? daiBalance.toFixed(displayPrecision) : 0} Dai</Typography>
+              <Typography variant="body1">{daiBalance ? daiBalance.toFixed(displayPrecision) : 0} DAI</Typography>
               <Typography variant="body1">
                 Enter Contribution Amount
               </Typography>
@@ -151,13 +151,13 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
                 To Researcher:
               </Typography>
               <Typography variant="body1">
-                {toResearcher} Dai
+                {toResearcher} DAI
               </Typography>
               <Typography variant="body1">
                 To Incentive Pool:
               </Typography>
               <Typography variant="body1">
-                {toIncentivePool} Dai
+                {toIncentivePool} DAI
               </Typography>
             </div>
             <Link className={classes.link} color="primary" to="/">
