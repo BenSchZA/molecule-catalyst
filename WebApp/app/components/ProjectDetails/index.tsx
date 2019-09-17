@@ -197,29 +197,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 project.user.professionalTitle.toUpperCase()}
           </Typography>
         </div>
-        <Typography className={classes.sectionTitleText} align="center">
-          Funding Status
-        </Typography>
-        <article className={classes.fundingStatusSection}>
-          <div>
-            <Typography className={classes.projectProgress}>
-              {
-                ~~(
-                  (Number.parseInt(
-                    ethers.utils.formatEther(project.vaultData.totalRaised),
-                  ) /
-                    project.researchPhases.reduce(
-                      (projectTotal, phase) =>
-                        (projectTotal += phase.fundingGoal),
-                      0,
-                    )) *
-                  100
-                )
-              }{' '}
-              %
-            </Typography>
-          </div>
-          <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
+        <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography className={classes.projectProgress}>
@@ -291,81 +269,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               )}
             </Grid>
           </div>
-          <div>
-            <Typography className={classes.fundingLabels}>
-              Total Pledged
-            </Typography>
-            <Typography className={classes.fundingAmount}>
-              {(~~ethers.utils.formatEther(
-                project.vaultData.totalRaised,
-              )).toLocaleString()}{' '}
-              DAI
-            </Typography>
-          </div>
-          <div>
-            <Typography className={classes.fundingLabels}>
-              Total Released
-            </Typography>
-            <Typography className={classes.fundingAmount}>
-              {ethers.utils
-                .formatEther(
-                  project.vaultData.phases
-                    .filter(value => value.state >= FundingState.ENDED)
-                    .reduce(
-                      (previousValue, currentValue) =>
-                        previousValue.add(currentValue.fundingThreshold),
-                      bigNumberify(0),
-                    ),
-                )
-                .toLocaleString()}{' '}
-              DAI
-            </Typography>
-          </div>
-          <div>
-            <Typography className={classes.fundingLabels}>
-              Total Duration Left
-            </Typography>
-            <Typography className={classes.fundingAmount}>
-              {dayjs(
-                dayjs(project.createdAt).add(
-                  project.researchPhases.reduce(
-                    (totalMonths, phase) => (totalMonths += phase.duration),
-                    0,
-                  ),
-                  'month',
-                ),
-              ).diff(project.createdAt, 'day')}{' '}
-              days
-            </Typography>
-          </div>
-        </article>
-        <div className={classes.contentWrapper}>
-          <Grid
-            className={classes.fundingPhaseSection}
-            container
-            direction="row"
-            alignItems="center"
-            justify="center"
-            spacing={4}
-          >
-            {project.vaultData.phases &&
-              project.vaultData.phases.map((p, i) => (
-                <ProjectPhaseStatus
-                  key={i + 1}
-                  phase={{
-                    index: i + 1,
-                    fundedAmount: ~~ethers.utils.formatEther(p.fundingRaised),
-                    fundingGoal: project.researchPhases[i].fundingGoal,
-                    title: project.researchPhases[i].title,
-                    startDate: p.startDate,
-                    state: p.state,
-                    duration: p.phaseDuration,
-                    activePhase: project.vaultData.activePhase,
-                  }}
-                />
-              ))}
-          </Grid>
-        </div>
+
         <div className={classes.contentWrapper}>
           <Typography className={classes.sectionTitleText} align="center">
             Market
