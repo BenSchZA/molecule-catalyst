@@ -25,9 +25,9 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     contributionValue,
   }: Props) => {
 
-  const displayPrecision = 4;
-  const valueChange = contributionValue > 0 ? 
-    Number(((holdingsValue - contributionValue)*100 / contributionValue).toFixed(displayPrecision)) : 0;
+  const displayPrecision = 2;
+  const valueChange = contributionValue > 0 ?
+    Number(((holdingsValue - contributionValue)*100 / contributionValue)).toFixed(displayPrecision) : 0;
 
   return (
     <Fragment>
@@ -44,11 +44,11 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
               <Typography variant="body1">
                 Your Incentive Pool Holdings Value:
               </Typography>
-              <Typography variant="body1">{holdingsValue} Dai</Typography>
+              <Typography variant="body1">{holdingsValue.toFixed(displayPrecision)} DAI</Typography>
               <Typography variant="body1">
                 Your Incentive Pool Contribution Value:
               </Typography>
-              <Typography variant="body1">{contributionValue} Dai</Typography>
+              <Typography variant="body1">{contributionValue.toFixed(displayPrecision)} DAI</Typography>
             </div>
             <Divider />
             <div className={classes.table}>
