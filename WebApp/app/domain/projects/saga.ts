@@ -9,16 +9,12 @@ import * as ProjectActions from './actions'
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { deployMarket, getProjectTokenDetails, mint, burn } from './chain';
+import { getProjectTokenDetails, mint, burn } from './chain';
 import { Project, MarketDataLegacy } from './types';
 import { launchProject as launchProjectAPI } from '../../api';
+import { forwardTo } from 'utils/history';
 
-interface Market {
-  fundingGoals: number[], 
-  phaseDurations: number[], 
-  curveType: number, 
-  taxationRate: number
-}
+
 
 export function* getAllProjects() {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
@@ -43,39 +39,14 @@ export function* getMyProjects() {
 }
 
 export function* launchProject(action) {
-  const projectID = action.payload;
-  let project: Project = yield select((state: ApplicationRootState) => state.projects[action.payload]);
-  
   try {
-    let newMarket: Market = {
-      fundingGoals: [],
-      phaseDurations: [],
-      curveType: 0,
-      taxationRate: 0,
-    };
-
-    newMarket.fundingGoals = project.researchPhases.map(value => value.fundingGoal);
-    newMarket.phaseDurations = project.researchPhases.map(value => value.duration);
-    newMarket.curveType = 0; //TODO: add curve type to data type - for now hard code
-    newMarket.taxationRate = 15; //TODO: add tax rate to data type - for now hard code
-
-    const result = {
-      ...(yield call(deployMarket,
-                      newMarket.fundingGoals,
-                      newMarket.phaseDurations,
-                      newMarket.curveType,
-                      newMarket.taxationRate,
-                     ))
-    };
-
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-    project = yield call(launchProjectAPI, action.payload, result, apiKey);
-    put(ProjectActions.addProject(project));
-    put(ProjectActions.launchProject.success(projectID));
-
+    const launchResponse = yield call(launchProjectAPI, action.payload, apiKey);
+    yield put(ProjectActions.addProject(launchResponse.data));
+    yield put(ProjectActions.launchProject.success());
+    yield call(forwardTo, '/admin/projects');
   } catch (error) {
-    console.log(error);
-    put(ProjectActions.launchProject.failure(projectID));
+    put(ProjectActions.launchProject.failure(error));
   }
 }
 

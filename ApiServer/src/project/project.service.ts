@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './project.schema';
 import { Model } from 'mongoose';
@@ -8,15 +8,16 @@ import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { AttachmentService } from 'src/attachment/attachment.service';
 import { User } from 'src/user/user.schema';
 import { ProjectSubmissionStatus } from './project.schema';
-import { LaunchProjectDTO } from './dto/launchProject.dto';
 import { ServiceBase } from 'src/common/serviceBase';
 import * as sharp from 'sharp';
+import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
 import { MarketService } from 'src/market/market.service';
 
 @Injectable()
 export class ProjectService extends ServiceBase {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
     private readonly attachmentService: AttachmentService,
+    private readonly marketFactoryService: MarketFactoryService,
     private readonly marketService: MarketService) {
     super(ProjectService.name);
   }
@@ -129,7 +130,6 @@ export class ProjectService extends ServiceBase {
   async approveProject(projectId: any, user: User) {
     const project = await this.projectRepository.findById(projectId);
     project.status = ProjectSubmissionStatus.accepted;
-    project.reviewedBy = user.id;
     await project.save();
     return project.toObject();
   }
@@ -142,11 +142,28 @@ export class ProjectService extends ServiceBase {
     return project.toObject();
   }
 
-  async launchProject(projectId: any, projectData: LaunchProjectDTO, user: User) {
-    const project = await this.projectRepository.findById(projectId);
-    project.chainData = { ...projectData };
-    project.status = ProjectSubmissionStatus.started;
-    await project.save();
-    return project.toObject();
+  async launchProject(projectId: any, user: User) {
+    this.logger.info(`Deploying market for project ${projectId}`);
+    const project = await this.projectRepository.findById(projectId).populate(Schemas.User);
+    project.reviewedBy = user.id;
+
+    try {
+      const deploymentResult = await this.marketFactoryService.deployMarket(
+        project.researchPhases.map(value => value.fundingGoal),
+        project.researchPhases.map(value => value.duration),
+        //@ts-ignore
+        project.user.ethAddress,
+        0,
+        15,
+      );
+      project.chainData = deploymentResult;
+      project.status = ProjectSubmissionStatus.started;
+      await project.save();
+      return project.toObject();
+    } catch (error) {
+      this.logger.error(`Something went wrong deploying project ${project.id}`);
+      this.logger.error(error);
+      throw new InternalServerErrorException(`Something went wrong deploying project ${project.id}`, error);
+    }
   }
 }

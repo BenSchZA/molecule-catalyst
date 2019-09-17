@@ -52,14 +52,6 @@ export class ProjectController {
     return result;
   }
 
-  @Get(':projectId/approve')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserType.Admin)
-  async approveProject(@Param('projectId') projectId, @Req() req: Request & { user: User }) {
-    const result = await this.projectService.approveProject(projectId, req.user);
-    return result;
-  }
-
   @Get(':projectId/reject')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
@@ -73,10 +65,8 @@ export class ProjectController {
   @Roles(UserType.Admin)
   async launchProject(
     @Param('projectId') projectId,
-    @Req() req: Request & { user: User },
-    @Body() reqBody: LaunchProjectDTO) {
-      
-    const result = await this.projectService.launchProject(projectId, reqBody, req.user);
+    @Req() req: Request & { user: User }) {
+    const result = await this.projectService.launchProject(projectId, req.user);
     return result;
   }
 }
