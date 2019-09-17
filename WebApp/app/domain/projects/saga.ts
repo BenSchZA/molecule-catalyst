@@ -88,6 +88,19 @@ export function* withdrawHoldings(action) {
   }
 }
 
+export function* withdrawFunding(action) {
+  const projectId = action.payload;
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+
+  try {
+    yield call(withdrawAvailable, project.chainData.vaultAddress, project.vaultData.phases);
+    yield put(ProjectActions.withdrawFunding.success(projectId));
+  } catch (error) {
+    yield put(ProjectActions.withdrawFunding.failure(projectId));
+    console.log(error);
+  }
+}
+
 export function* getMarketData(projectId) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
   
@@ -122,4 +135,5 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
   yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
+  yield takeLatest(getType(ProjectActions.withdrawFunding.request), withdrawFunding);
 }

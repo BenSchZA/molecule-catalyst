@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { withStyles, WithStyles, Container, Typography, Button, Paper, Divider, Grid, Avatar, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
-import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus, FundingState } from 'domain/projects/types';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
@@ -17,6 +17,7 @@ import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
 import { ethers } from 'ethers';
 import styles from './styles';
+import { bigNumberify } from 'ethers/utils';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
@@ -60,7 +61,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   const holdingsValue = project.chainData.marketData ? 
     Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
-  const contributionValue = project.marketData.netContributions[userAddress] ?
+  const contributionValue = project.marketData.netContributions && project.marketData.netContributions[userAddress] ?
     Number(formatEtherPossiblyNegative(project.marketData.netContributions[userAddress]._hex)) : 0;
 
   return (
@@ -148,7 +149,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Released
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {(project.vaultData.activePhase == 0 ? 0 : project.researchPhases[1].fundingGoal).toLocaleString()} USD
+                {ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0)))
+                } USD
               </Typography>
             </div>
             <div>

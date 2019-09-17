@@ -53,13 +53,13 @@ export function MarketReducer(state: MarketState = initialState, action) {
         totalMinted: state.totalMinted.add(action.payload.amountMinted),
         netContributions: {
           ...state.netContributions,
-          [action.payload.userAddress]: (state.netContributions[action.payload.userAddress]) ? 
+          [action.payload.userAddress]: state.netContributions && (state.netContributions[action.payload.userAddress]) ? 
             state.netContributions[action.payload.userAddress].sub(action.payload.collateralAmount) : 
             action.payload.collateralAmount.mul(bigNumberify(-1))
         },
         balances: {
           ...state.balances,
-          [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 
+          [action.payload.userAddress]: state.balances && (state.balances[action.payload.userAddress]) ? 
             state.balances[action.payload.userAddress].add(action.payload.amountMinted) : 
             action.payload.amountMinted
         },

@@ -1,5 +1,5 @@
 import { getType } from "typesafe-actions";
-import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase } from "./vault.actions";
+import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase, setOutstandingWithdraw } from "./vault.actions";
 import { BigNumber, bigNumberify } from "ethers/utils";
 
 export enum PhaseState {
@@ -12,6 +12,7 @@ export enum PhaseState {
 export interface VaultState {
   lastBlockUpdated: number,
   totalRaised: BigNumber,
+  outstandingWithdraw: BigNumber,
   activePhase: number,
   phases: Array<{
     fundingThreshold: BigNumber,
@@ -24,6 +25,7 @@ export interface VaultState {
 
 export const initialState: VaultState = {
   lastBlockUpdated: 0,
+  outstandingWithdraw: bigNumberify(0),
   totalRaised: bigNumberify(0),
   activePhase: 0,
   phases: [],
@@ -54,6 +56,11 @@ export function VaultReducer(state = initialState, action) {
       return {
         ...state,
         phases: updateObjectInArray(state.phases, action.payload)
+      }
+    case getType(setOutstandingWithdraw):
+      return {
+        ...state,
+        outstandingWithdraw: action.payload,
       }
     default:
       return state;

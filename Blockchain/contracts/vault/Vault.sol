@@ -113,7 +113,7 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
-      * @dev            Allows a creator to withdraw a specific runds funds
+      * @dev            Allows a creator to withdraw a specific round's funds
       * @notice         The state of the currentPhase_ will not be 0 untill the last
       *                 phase, where the terminate function will be called.
       * @param _phase   : uint256 - The phase the fund rasing is currently on.

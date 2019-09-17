@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
-import { IMarketRegistry, IMarketFactory, IMarket } from "@molecule-protocol/catalyst-contracts";
-import { MarketDataLegacy } from './types';
+import { IMarketRegistry, IMarketFactory, IMarket, IVault } from "@molecule-protocol/catalyst-contracts";
+import { MarketDataLegacy, PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
 
@@ -190,4 +190,21 @@ export async function burn(marketAddress) {
     to: targetLog.values.to,
     value: targetLog.values.value._hex,
   }
+}
+
+export async function withdrawAvailable(vaultAddress, phases) {
+  // Get blockchain objects
+  const { signer } = await getBlockchainObjects();
+
+  // Get contract instances
+  const vault = await new ethers.Contract(vaultAddress, JSON.stringify(IVault), signer);
+
+  // Withdraw all available funds
+  await phases.forEach(async (phase: PhaseData) => {
+    if (phase.state === FundingState.ENDED) {
+      await vault.withdraw(phase.index);
+    }
+  });
+
+  return true;
 }
