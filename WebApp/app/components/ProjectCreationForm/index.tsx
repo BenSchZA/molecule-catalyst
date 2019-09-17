@@ -84,8 +84,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
@@ -121,8 +120,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='approach'>Approach</InputLabel>
@@ -137,8 +135,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='collaborators'>Collaborators</InputLabel>
@@ -265,8 +262,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           component={TextField}
                           variant='filled'
                           multiline
-                          rows='5'
-                          rowsMax='5'
+                          rows='10'
                           fullWidth
                           margin="dense" />
                         <InputLabel htmlFor='result'>Result</InputLabel>
@@ -280,6 +276,8 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           placeholder='Enter a result.'
                           component={TextField}
                           variant='filled'
+                          multiline
+                          rows='10'
                           fullWidth
                           margin="dense" />
                         <Grid container>
