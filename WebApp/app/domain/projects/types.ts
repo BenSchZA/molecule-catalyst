@@ -110,6 +110,7 @@ enum TransactionType {
 interface VaultData {
   lastBlockUpdated: number,
   totalRaised: BigNumber,
+  outstandingWithdraw: BigNumber,
   activePhase: number,
   phases: Array<PhaseData>,
 }
@@ -120,7 +121,14 @@ interface PhaseData {
   fundingRaised: BigNumber,
   phaseDuration: number,
   startDate: string,
-  state: number
+  state: FundingState
+}
+
+enum FundingState { 
+  NOT_STARTED, 
+  STARTED, 
+  ENDED, 
+  PAID 
 }
 
 interface MarketDataLegacy {
@@ -149,4 +157,13 @@ type DomainState = ProjectsState;
 type DomainActions = ProjectActions;
 type Project = IProject
 
-export { RootState, DomainState, DomainActions, Project, ProjectSubmissionStatus, ChainData as LaunchProjectData, MarketData, MarketDataLegacy };
+export { 
+  RootState, DomainState, DomainActions, 
+  Project, 
+  ProjectSubmissionStatus, 
+  ChainData as LaunchProjectData, 
+  MarketData, 
+  MarketDataLegacy, 
+  PhaseData, 
+  FundingState 
+};

@@ -27,6 +27,7 @@ const rehydrateMarketData = (source) => {
 const rehydrateVaultData = (source) => {
   let vd = source;
   vd.totalRaised = source.totalRaised ? bigNumberify(source.totalRaised._hex.toString()) : bigNumberify(0);
+  vd.outstandingWithdraw = source.outstandingWithdraw ? bigNumberify(source.outstandingWithdraw._hex.toString()) : bigNumberify(0);
   vd.phases = source.phases.map(p => {
     let resultItem = p;
     for (const prop in p) {

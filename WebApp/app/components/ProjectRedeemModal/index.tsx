@@ -44,11 +44,11 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
               <Typography variant="body1">
                 Your Incentive Pool Holdings Value:
               </Typography>
-              <Typography variant="body1">{holdingsValue} DAI</Typography>
+              <Typography variant="body1">{holdingsValue} Dai</Typography>
               <Typography variant="body1">
                 Your Incentive Pool Contribution Value:
               </Typography>
-              <Typography variant="body1">{contributionValue} DAI</Typography>
+              <Typography variant="body1">{contributionValue} Dai</Typography>
             </div>
             <Divider />
             <div className={classes.table}>
