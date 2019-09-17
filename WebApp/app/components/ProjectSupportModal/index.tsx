@@ -109,7 +109,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
     formikProps,
   }: Props) => {
 
-  const displayPrecision = 4;
+  const displayPrecision = 2;
   const toResearcher = Number((formikProps.values.contribution * contributionRate/100).toFixed(displayPrecision));
   const toIncentivePool = Number((formikProps.values.contribution -  formikProps.values.contribution*contributionRate/100).toFixed(displayPrecision));
 
