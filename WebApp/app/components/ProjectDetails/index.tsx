@@ -234,7 +234,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   Phase 0{i+1}: {p.title}
                 </Typography>
                 <div className={classes.phaseDateChip}>
-                <Typography className={classes.phaseDates} align="center">{dayjs(project.createdAt).format('DD MMMM YYYY').toUpperCase() + ' - ' + dayjs(project.createdAt).add(p.duration, 'month').format('DD MMMM YYYY').toUpperCase()}</Typography>
+                <Typography className={classes.phaseDates} align="center">{(dayjs(project.vaultData.phases[i].startDate).format('DD MMMM YYYY').toUpperCase() + ' - ' + dayjs(project.vaultData.phases[i].startDate).add(p.duration, 'month').format('DD MMMM YYYY').toUpperCase())}</Typography>
               </div>
               </Paper>
               <div className={classes.contentWrapper}>
