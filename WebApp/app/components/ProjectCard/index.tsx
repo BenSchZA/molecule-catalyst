@@ -161,7 +161,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
          <div className={classes.abstract}>
         {truncateText(project.abstract)}
          </div>
-         <Typography className={classes.percentage}>{(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %</Typography>
+         <Typography className={classes.percentage}>{~~(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %</Typography>
          <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
       <BorderLinearProgress
         className={classes.margin}
@@ -182,7 +182,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
         </div>
         <div className={classes.avatar}>
-          <Avatar src='http://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
+          <Avatar src='https://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
         </div>
       </CardActions>
     </Card>

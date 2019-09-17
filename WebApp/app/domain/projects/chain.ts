@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
 import { IMarketRegistry, IMarketFactory, IMarket } from "@molecule-protocol/catalyst-contracts";
-import { MarketData } from './types';
+import { MarketDataLegacy } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
 
@@ -72,17 +72,19 @@ export async function getProjectTokenDetails(marketAddress: string) {
     const totalSupply: BigNumber = await market.totalSupply();
     const decimals: BigNumber = await market.decimals();
     const taxationRate: BigNumber = await market.taxationRate();
+    const tokenPrice: BigNumber = await market.priceToMint(ethers.utils.parseEther('1'));
+    const poolValue: BigNumber = await market.rewardForBurn(totalSupply);
+    const holdingsValue: BigNumber = await market.rewardForBurn(balance);
 
-    const rawTokenPrice: BigNumber = await market.priceToMint(ethers.utils.parseEther('1'));
-    const tokenPrice: BigNumber = rawTokenPrice.div(taxationRate.div(100).add(1));
-
-    const result: MarketData = {
+    const result: MarketDataLegacy = {
       active: active,
       balance: balance.toString(),
       totalSupply: totalSupply.toString(),
       decimals: decimals.toNumber(),
       taxationRate: taxationRate.toNumber(),
       tokenPrice: tokenPrice.toString(),
+      poolValue: poolValue.toString(),
+      holdingsValue: holdingsValue.toString(),
     };
 
     return result;
@@ -104,8 +106,7 @@ export async function mint(marketAddress, contribution) {
     ethers.utils.parseUnits(`${contribution}`, 18)
   );
 
-  // Approve, adding room
-  await approve(marketAddress, ethers.utils.parseUnits(`${contribution*1.05}`, 18));
+  await approve(marketAddress, ethers.utils.parseUnits(contribution.toString(), 18));
 
   const txReceipt = await market.mint(
     signerAddress, tokenValue,
@@ -156,5 +157,37 @@ async function approve(address, value: BigNumber) {
   } else {
     console.log("Allowance already set");
     return false;
+  }
+}
+
+export async function burn(marketAddress) {
+  // Get blockchain objects
+  const { signer } = await getBlockchainObjects();
+  const signerAddress = await signer.getAddress();
+
+  // Get contract instances
+  const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), signer);
+
+  // Burn all tokens
+  const balance = await market.balanceOf(signerAddress);
+  const txReceipt = await market.burn(
+    balance,
+    { gasPrice: await getGasPrice() }
+  );
+  const txResult = await (txReceipt).wait();
+
+  // Parse event logs
+  // event Transfer(address indexed from, address indexed to, uint value);
+  let parsedLogs = txResult.logs
+    .map(log => market.interface.parseLog(log))
+    .filter(parsedLog => parsedLog != null);
+  let targetLog = parsedLogs
+    .filter(log => log.signature == market.interface.events.Transfer.signature)
+    .filter(parsedEvent => parsedEvent.values.to == signerAddress)[0];
+
+  return {
+    from: targetLog.values.from,
+    to: targetLog.values.to,
+    value: targetLog.values.value._hex,
   }
 }

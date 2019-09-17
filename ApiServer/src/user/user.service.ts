@@ -8,14 +8,12 @@ import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
 import { ServiceBase } from 'src/common/serviceBase';
 import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
-import { MarketRegistryService } from 'src/marketRegistry/marketRegistry.service';
 
 @Injectable()
 export class UserService extends ServiceBase {
 
   constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
     private readonly marketFactoryService: MarketFactoryService,
-    private readonly marketRegistryService: MarketRegistryService
     ) {
     super(UserService.name);
   }

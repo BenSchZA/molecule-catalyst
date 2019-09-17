@@ -5,6 +5,9 @@ import { BigNumber, bigNumberify } from "ethers/utils";
 export interface MarketState {
   lastBlockUpdated: number,
   totalMinted: BigNumber,
+  netContributions: {
+    [s: string]: BigNumber 
+  },
   balances: {
     [s: string]: BigNumber 
   },
@@ -21,6 +24,7 @@ export interface MarketState {
 export const initialState: MarketState = {
   lastBlockUpdated: 0,
   totalMinted: bigNumberify(0),
+  netContributions: {},
   balances: {},
   transactions: [],
 }
@@ -47,6 +51,12 @@ export function MarketReducer(state: MarketState = initialState, action) {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
         totalMinted: state.totalMinted.add(action.payload.amountMinted),
+        netContributions: {
+          ...state.netContributions,
+          [action.payload.userAddress]: (state.netContributions[action.payload.userAddress]) ? 
+            state.netContributions[action.payload.userAddress].sub(action.payload.collateralAmount) : 
+            action.payload.collateralAmount.mul(bigNumberify(-1))
+        },
         balances: {
           ...state.balances,
           [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 
@@ -62,10 +72,18 @@ export function MarketReducer(state: MarketState = initialState, action) {
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
-        totalMinted: state.totalMinted.sub(action.payload.amount),
+        totalMinted: state.totalMinted.sub(action.payload.amountBurnt),
+        netContributions: {
+          ...state.netContributions,
+          [action.payload.userAddress]: (state.netContributions[action.payload.userAddress]) ? 
+            state.netContributions[action.payload.userAddress].add(action.payload.collateralReturned) :
+            action.payload.collateralReturned
+        },
         balances: {
           ...state.balances,
-          [action.payload.userAddress]: state.balances[action.payload.userAddress].sub(action.payload.amountBurnt)
+          [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 
+            state.balances[action.payload.userAddress].sub(action.payload.amountBurnt) :
+            action.payload.amountBurnt
         },
         transactions: [
           ...state.transactions,

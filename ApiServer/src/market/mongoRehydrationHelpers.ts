@@ -14,8 +14,11 @@ const rehydrateMarketData = (source) => {
     }
     return resultItem;
   })
-  for (const userBalance in source.balances) {
-    md.balances[userBalance] = bigNumberify(source.balances[userBalance]._hex.toString());
+  for (const address in source.netContributions) {
+    md.netContributions[address] = bigNumberify(source.netContributions[address]._hex.toString());;
+  }
+  for (const address in source.balances) {
+    md.balances[address] = bigNumberify(source.balances[address]._hex.toString());
   }
 
   return md;

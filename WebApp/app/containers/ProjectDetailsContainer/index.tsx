@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 
@@ -17,7 +17,7 @@ import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { ApplicationRootState } from 'types';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import { supportProject } from 'domain/projects/actions';
+import { supportProject, withdrawHoldings } from 'domain/projects/actions';
 
 interface RouteParams {
   projectId: string;
@@ -32,33 +32,47 @@ interface DispatchProps {
 interface StateProps {
   project: Project,
   daiBalance: number,
+  userAddress: string,
   contribution: number,
   supportProject(projectId: string, contribution: number): void,
+  withdrawHoldings(projectId: string): void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
 
-  const onSubmit = (values, { setSubmitting }) => {
-    console.log("Submit");
+  const [modal, setModal] = useState(0);
+
+  const initialValues = modal == 0 ? { 
+    contribution: 0,
+  } : {};
+
+  const onSubmit = modal == 0 ? (values, { setSubmitting }) => {
+    setSubmitting(true);
     props.supportProject(props.project.id, values.contribution);
-    // setTimeout(() => {
-    //   alert(JSON.stringify(values, null, 2));
-    //   setSubmitting(false);
-    // }, 1000);
+    setSubmitting(false);
+  } : (values, { setSubmitting }) => {
+    setSubmitting(true);
+    props.withdrawHoldings(props.project.id);
+    setSubmitting(false);
   };
 
-  const validationSchema = Yup.object().shape({
-    contribution: Yup.number().positive('Invalid value').min(1).required('Required').test('Check funds', 'Not enough funds', (value) => {
-      return value <= props.daiBalance;
+  const validationSchema = modal == 0 ? Yup.object().shape({
+    contribution: Yup.number()
+      .positive('Invalid value')
+      .min(1)
+      .required('Required')
+      .test('Check funds', 'Not enough funds', (value) => {
+        return value <= props.daiBalance;
     }),
-  });
+  }) : Yup.object().shape({});
 
   return (
     <div>
       <Formik
-        initialValues={{ contribution: 0 }}
+        enableReinitialize={true}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
         >
@@ -66,7 +80,9 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
           <ProjectDetails
             project={props.project}
             daiBalance={props.daiBalance}
+            userAddress={props.userAddress}
             formikProps={formikProps}
+            selectModal={setModal}
           />
         )}
       </Formik>
@@ -77,6 +93,7 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
 const mapStateToProps = (state: ApplicationRootState, props) => ({
   project: state.projects[props.match.params.projectId],
   daiBalance: state.authentication.daiBalance,
+  userAddress: state.authentication.ethAddress,
 });
 
 const mapDispatchToProps = (
@@ -84,6 +101,7 @@ const mapDispatchToProps = (
   ownProps: OwnProps,
 ): DispatchProps => ({
   supportProject: (projectId, contribution) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
+  withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
 });
 
 const withConnect = connect(
