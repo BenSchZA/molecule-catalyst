@@ -125,7 +125,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <article className={classes.fundingStatusSection} >
             <div>
               <Typography className={classes.projectProgress}>
-              {~~(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %
+                {
+                  (() => {
+                    const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+                    const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
+                      total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                    return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+                  })()
+                } %
               </Typography>
             </div>
             <div>
@@ -133,7 +140,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Funding Goal
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} DAI
+                {
+                  Math.ceil(project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0)).toLocaleString()
+                } DAI
               </Typography>
             </div>
             <div>
@@ -141,7 +150,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Pledged
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {(~~ethers.utils.formatEther(project.vaultData.totalRaised)).toLocaleString()} DAI
+                {
+                  Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
+                } DAI
               </Typography>
             </div>
             <div>
@@ -149,8 +160,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Released
               </Typography>
               <Typography className={classes.fundingAmount}>
-                {ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
-                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))).toLocaleString()
+                {
+                  Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                    (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
                 } DAI
               </Typography>
             </div>
@@ -159,7 +171,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 Total Duration Left
               </Typography>
               <Typography className={classes.fundingAmount}>
-               {dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')} days
+                {
+                 dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')
+                } days
               </Typography>
             </div>
           </article>
@@ -168,8 +182,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
                 <ProjectPhaseStatus key={i+1} phase={{
                   index: i+1,
-                  fundedAmount: ~~ethers.utils.formatEther(p.fundingRaised),
-                  fundingGoal: project.researchPhases[i].fundingGoal,
+                  fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
+                  fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
                   title: project.researchPhases[i].title,
                   startDate: p.startDate,
                   state: p.state,
