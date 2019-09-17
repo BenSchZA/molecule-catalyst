@@ -105,6 +105,21 @@ export class VaultState extends ServiceBase {
           index: parseInt(phase.index) 
         }));
       });
+
+    this.vaultContract.on(this.vaultContract.filters.FundingWithdrawn(), async (index, amount, _) => {
+      this.logger.info(`Phase ${parseInt(index)} funding withdrawn: ${parseInt(amount)}`);
+      const updatedPhase = parseInt(await this.vaultContract.currentPhase());
+      this.vaultState.dispatch(setCurrentPhaseAction(updatedPhase));
+
+      const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
+      this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
+
+      const phase = await this.getPhaseData(updatedPhase);
+      this.vaultState.dispatch(updatePhase({
+        ...phase,
+        index: parseInt(phase.index) 
+      }));
+    });
   }
 
   async getPhaseData(phaseNo) {

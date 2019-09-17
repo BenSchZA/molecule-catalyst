@@ -200,11 +200,8 @@ export async function withdrawAvailable(vaultAddress, phases) {
   const vault = await new ethers.Contract(vaultAddress, JSON.stringify(IVault), signer);
 
   // Withdraw all available funds
-  await phases.forEach(async (phase: PhaseData) => {
-    if (phase.state === FundingState.ENDED) {
-      await vault.withdraw(phase.index);
-    }
-  });
+  await phases.filter(phase => phase.state === FundingState.ENDED)
+    .forEach(async (phase: PhaseData) => await vault.withdraw(phase.index));
 
   return true;
 }
