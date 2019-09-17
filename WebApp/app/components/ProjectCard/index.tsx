@@ -149,16 +149,31 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         subheader={switchStatus(project.status)}
       />
        <CardContent>
-         <div className={classes.abstract}>
-        {truncateText(project.abstract)}
-         </div>
-         <Typography className={classes.percentage}>{~~(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)} %</Typography>
-         <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
+        <div className={classes.abstract}>{truncateText(project.abstract)}</div>
+        <Typography className={classes.percentage}>
+          {
+            (() => {
+              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
+                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+            })()
+          } %
+        </Typography>
+        <Chip color="primary" label={'Funded of ' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
       <BorderLinearProgress
         className={classes.margin}
         variant="determinate"
         color="secondary"
-        value={(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised)) / project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0) * 100)}  />
+        value={
+          (()=> {
+            const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+            const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
+              total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+            return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+          })()
+        }  
+      />
       </CardContent>
       <CardMedia
         className={classes.cardImage}
