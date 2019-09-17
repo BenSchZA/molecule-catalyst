@@ -4,6 +4,8 @@ import { Theme, WithStyles, Container, Divider } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Project } from 'domain/projects/types';
 import ProjectCard from 'components/ProjectCard';
+import BackedProjectCard from 'components/BackedProjectCard';
+//import { forwardTo } from 'utils/history';
 
 const marginForGrid = 20;
 
@@ -34,13 +36,13 @@ interface OwnProps extends WithStyles<typeof styles> {
   projects: Array<Project>;
 }
 
-const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
+const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
       <div>
-        <ProjectCard key={index} project={p}/>
+        <BackedProjectCard key={index} project={p}/>
         </div>
       )}
     </div>
@@ -49,4 +51,4 @@ const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: Own
 
 export default compose(
   withStyles(styles, { withTheme: true }),
-)(ProjectGrid);
+)(BackedProjectsGrid);

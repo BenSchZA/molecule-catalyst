@@ -2,6 +2,7 @@ import { Reducer, Store } from 'redux';
 import { DomainState as AuthenticationState } from '../domain/authentication/types';
 import { DomainState as ProjectsState } from '../domain/projects/types';
 import { ContainerState as DiscoverState } from '../containers/DiscoverContainer/types';
+import { ContainerState as BackedProjects } from '../containers/PortfolioContainer/types';
 import { ContainerState as CreatorApplicationState } from '../containers/CreatorApplicationContainer/types'
 import { ContainerState as AdminUserListingState } from '../containers/AdminUserListingContainer/types'
 import { ContainerState as CreateProjectContainerState } from '../containers/CreateProjectContainer/types'
@@ -34,6 +35,7 @@ export interface ApplicationRootState {
   readonly creatorApplication: CreatorApplicationState;
   readonly adminDashboard: AdminUserListingState;
   readonly adminProjectListing: AdminProjectListingState;
+  readonly backedProjects: BackedProjects;
   readonly createProjectContainer: never;
   readonly adminUserViewContainer: never;
   readonly adminProjectReviewContainer: never;
