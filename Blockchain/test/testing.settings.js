@@ -58,6 +58,11 @@ let marketSettings = {
         ethers.utils.parseUnits("10000000", 18),
         ethers.utils.parseUnits("15000000", 18)
     ],
+    fundingGoalsWithTax: [
+        ethers.utils.parseUnits("5750000", 18),
+        ethers.utils.parseUnits("11500000", 18),
+        ethers.utils.parseUnits("17250000", 18)
+    ],
     phaseDuration: [
         ethers.utils.parseUnits("12", 0),
         ethers.utils.parseUnits("8", 0),
@@ -65,6 +70,57 @@ let marketSettings = {
     ],
     curveType: ethers.utils.parseUnits("0", 0),
     taxationRate: ethers.utils.parseUnits("15", 0)
+}
+
+let marketSettingsStress = {
+    fundingGoals: [
+        ethers.utils.parseUnits("1000", 18),
+        ethers.utils.parseUnits("2000", 18),
+        ethers.utils.parseUnits("3000", 18)
+    ],
+    fundingGoalsWithTax: [
+        ethers.utils.parseUnits("1150", 18),
+        ethers.utils.parseUnits("2300", 18),
+        ethers.utils.parseUnits("3450", 18)
+    ],
+    rollOverAmounts: [
+        "173529411764705882352",
+        "3167647058823529411763"
+    ],
+    vaultBalances: [
+        "1323529411764705882352",
+        "6617647058823529411763",
+        "21176470588235294117645"
+    ],
+    creatorBalances: [
+        ethers.utils.parseUnits("1000", 18),
+        ethers.utils.parseUnits("3000", 18),
+        ethers.utils.parseUnits("6000", 18)
+    ],
+    marketBalances: [
+        "7500000000000000000000",
+        "37500000000000000000000",
+        "120000000000000000000000"
+    ],
+    vaultBalanceWithdraws: [
+        "173529411764705882352",
+        "5467647058823529411763",
+        "3167647058823529411763",
+        "17726470588235294117645"
+    ],
+    molVaultBalances: [
+        "150000000000000000000",
+        "450000000000000000000",
+        "900000000000000000000"
+    ],
+    phaseDuration: [
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0)
+    ],
+    curveType: ethers.utils.parseUnits("0", 0),
+    taxationRate: ethers.utils.parseUnits("15", 0),
+    remainingFunding: "1049999999999999995924"
 }
 
 let vaultMarketSettings = {
@@ -106,6 +162,7 @@ module.exports = {
     VaultAbi,
     MoleculeVaultAbi,
     marketSettings,
+    marketSettingsStress,
     vaultMarketSettings,
     daiSettings,
     defaultDaiPurchase,
