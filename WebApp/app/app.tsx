@@ -30,6 +30,7 @@ import { loadState, saveState } from './utils/localStorage';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { Router } from 'react-router';
 import theme from 'theme';
+import ScrollToTop from './scrollToTop';
 
 const persistedState = loadState();
 const store = configureStore(persistedState);
@@ -46,7 +47,9 @@ const render = (Component = App) => {
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
         <Router history={history}>
-          <Component />
+          <ScrollToTop>
+            <Component />
+          </ScrollToTop>
         </Router>
       </MuiThemeProvider>
     </Provider>,
