@@ -144,7 +144,7 @@ describe('Market stress test', async () => {
             //
             for(let i = 0; i < sequences; i++){
                 try{
-                    const state = (await vaultInstance.fundingPhase(0))[4]
+                    let state = (await vaultInstance.fundingPhase(0))[4]
                     if(state == 2){ // Ended
                         break;
                     }
@@ -164,11 +164,6 @@ describe('Market stress test', async () => {
                     const postMintBalance = await marketInstance.balanceOf(accounts[0].signer.address);
                     assert.ok(pastBalance[0].lt(postMintBalance));
 
-                    // TODO: not sure whats happening here
-                    if(i < 10) {
-                        await (await marketInstance.from(accounts[i]).mint(accounts[i].signer.address, ethers.utils.parseUnits("500", 18))).wait();
-                    }
-
                     // Other accounts mint
                     const transferValue = postMintBalance.sub(pastBalance[0]).div(4)
 
@@ -178,6 +173,11 @@ describe('Market stress test', async () => {
                     // Receiver burns half
                     const rewardForBurn = await marketInstance.rewardForBurn(transferValue.div(2))
                     await assert.notRevert(marketInstance.from(accounts[1]).burn(transferValue.div(2)));
+
+                    state = (await vaultInstance.fundingPhase(0))[4]
+                    if(state == 2){ // Ended
+                        break;
+                    }
 
                     // Mints with the result of the burn to account 3
                     await (await marketInstance.from(accounts[1]).mint(accounts[2].signer.address, transferValue.div(2))).wait();
@@ -203,6 +203,7 @@ describe('Market stress test', async () => {
                     await (await marketInstance.from(accounts[7]).transfer(accounts[9].signer.address, account8SendingShare))
                 }
                 catch(e){
+                    console.log(e)
                     console.log(`${i} Had a crash`)
                 }
             }
