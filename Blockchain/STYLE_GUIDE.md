@@ -10,6 +10,8 @@
     * [Private & internal functions](#private-internal-functions)
     * [Public & external functions](#public-external-functions)
 #### [Documentation formatting](#documentation-formatting)
+* [State variables](#state-variables)
+* [Contract and functions](#contract-and-functions)
 #### [Function layout](#function-layout)
 
 # Naming convention
@@ -77,6 +79,17 @@ function mint() {
 ```
 
 # Documentation formatting 
+
+## State variables
+All state variables are documented for ease of understanding. A one line description is added above the declaration with a `//`.
+
+```
+// The total amount of collateral held by the contract
+uint256 internal _poolBalance;
+```
+
+## Contract and functions
+
 For the Molecule Alpha contracts NatSpec docs are used. The `/** */` is used over `///`.
 Tags are listed in the following order:
 

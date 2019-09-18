@@ -75,7 +75,7 @@ describe('Market stress test', async () => {
             curveIntegralInstance.contract.address,
             "linear: (1/20000)*x + 0.5"
         )).wait();
-
+        console.log("0")
         marketFactoryInstance = await deployer.deploy(
             MarketFactoryAbi,
             false,
@@ -84,9 +84,9 @@ describe('Market stress test', async () => {
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
-
+        console.log("0")
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
-
+        console.log("0")
         // Creating a market
         await (await marketFactoryInstance.from(molAdmin).deployMarket(
             marketSettingsStress.fundingGoals,
@@ -95,9 +95,9 @@ describe('Market stress test', async () => {
             marketSettingsStress.curveType,
             marketSettingsStress.taxationRate
         )).wait()
-
+        console.log("0")
         const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
-        
+        console.log("0")
         marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
         vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
 

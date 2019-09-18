@@ -83,6 +83,11 @@ let marketSettingsStress = {
         ethers.utils.parseUnits("2300", 18),
         ethers.utils.parseUnits("3450", 18)
     ],
+    phaseDuration: [
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0)
+    ],
     rollOverAmounts: [
         "173529411764705882352",
         "3167647058823529411763"
@@ -112,11 +117,6 @@ let marketSettingsStress = {
         "150000000000000000000",
         "450000000000000000000",
         "900000000000000000000"
-    ],
-    phaseDuration: [
-        ethers.utils.parseUnits("1", 0),
-        ethers.utils.parseUnits("1", 0),
-        ethers.utils.parseUnits("1", 0)
     ],
     curveType: ethers.utils.parseUnits("0", 0),
     taxationRate: ethers.utils.parseUnits("15", 0),
