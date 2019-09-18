@@ -209,7 +209,7 @@ describe('Vault stress test', async () => {
             // TODO after automating market end, add tests here 
         });
 
-        it("Round roll over and withdraw tests", async () => {
+        it("Round rollover and withdraw tests", async () => {
             let mintAmount = ethers.utils.parseUnits("10000", 18);
             let phaseOne = await vaultInstance.fundingPhase(0);
             let phaseTwo = await vaultInstance.fundingPhase(1);

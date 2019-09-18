@@ -42,6 +42,8 @@ contract Vault is IVault, WhitelistAdminRole {
     uint256 internal totalRounds_;
     // The total cumulative tax received from market
     uint256 internal cumulativeReceivedTax_;
+    // If the vault has been initialized
+    bool internal _active;
     
     // All funding phases information to their position in mapping
     mapping(uint256 => FundPhase) internal fundingPhases_;
@@ -104,13 +106,6 @@ contract Vault is IVault, WhitelistAdminRole {
             );
             // Saving the funding threashold with tax
             fundingPhases_[i].fundingThreshold = withTax;
-            // Adding all previous rounds funding goals to the cumulative goal
-            fundingPhases_[i].cumulativeFundingThreshold.add(withTax);
-            // for(uint8 index = i; index >= 0; index--) {
-            //     fundingPhases_[i].cumulativeFundingThreshold.add(
-            //         fundingPhases_[index].fundingThreshold
-            //     );
-            // }
             // Setting the amount of funding raised so far
             fundingPhases_[i].fundingRaised = 0;
             // Setting the phase duration
@@ -118,6 +113,7 @@ contract Vault is IVault, WhitelistAdminRole {
             // Counter for the total number of rounds
             totalRounds_ = totalRounds_.add(1);
         }
+
         // Sets the start time to the current time
         fundingPhases_[0].startDate = block.timestamp;
         // Setting the state of the current phase to started
@@ -135,9 +131,19 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
+      * @notice Ensures that the vault gets initialized before use.
+      */
+    modifier isActive() {
+        require(_active, "Vault has not been initialized.");
+        _;
+    }
+
+    /**
       * @dev    Initialized the contract, sets up owners and gets the market
       *         address. This function exists becuase the Vault does not have
-      *         an address untill the constructor has funished running.
+      *         an address untill the constructor has funished running. The
+      *         cumulative funding threshold is set here becuse of gas issues
+      *         within the constructor.
       * @param _market : The market that will be sending this vault it's
       *         collateral.
       */
@@ -153,6 +159,20 @@ contract Vault is IVault, WhitelistAdminRole {
         market_ = IMarket(_market);
         // Removes the market factory contract as an admin
         super.renounceWhitelistAdmin();
+
+        // Adding all previous rounds funding goals to the cumulative goal
+        for(uint8 i = 0; i > totalRounds_; i++) {
+            if(i == 0) {
+                fundingPhases_[i].cumulativeFundingThreshold.add(
+                    fundingPhases_[i].fundingThreshold
+                );
+            }
+            fundingPhases_[i].cumulativeFundingThreshold.add(
+                fundingPhases_[i-1].cumulativeFundingThreshold
+            );
+        }
+        _active = true;
+
         return true;
     }
 
@@ -169,6 +189,7 @@ contract Vault is IVault, WhitelistAdminRole {
         uint256 _phase
     )
         external
+        isActive()
         onlyWhitelistAdmin()
         returns(bool)
     {
@@ -220,7 +241,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @notice Allows the market to check that the funding
       * @dev 
       */
-    function validateFunding(uint256 _receivedFunding) external onlyMarket() returns(bool){
+    function validateFunding(uint256 _receivedFunding) external isActive() onlyMarket() returns(bool){
         require(fundingPhases_[currentPhase_].state == FundingState.STARTED, "Funding inactive");
 
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate.addMonths(fundingPhases_[currentPhase_].phaseDuration);
@@ -274,6 +295,7 @@ contract Vault is IVault, WhitelistAdminRole {
        */
     function terminateMarket()
         public
+        isActive()
         onlyWhitelistAdmin()
     {
         uint256 remainingBalance = collateralToken_.balanceOf(address(this));
@@ -282,13 +304,13 @@ contract Vault is IVault, WhitelistAdminRole {
 
         // // This checks if all funding phases completed successfully
         // // Checks if ended or paid for conclusion of phase
-        if(fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= FundingState.ENDED)) {
-            if(outstandingWithdraw_ > 0) {
-                uint256 marketOverflow = remainingBalance.sub(outstandingWithdraw_);
-                require(collateralToken_.transfer(creator_, outstandingWithdraw_), "Transfering of funds failed");
-                outstandingWithdraw_ = 0;
-                require(collateralToken_.transfer(address(market_), marketOverflow), "Transfering of funds failed");
-            }
+        // if(fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED && (fundingPhases_[currentPhase_ - 1].state >= FundingState.ENDED)) {
+            // if(outstandingWithdraw_ > 0) {
+            //     uint256 marketOverflow = remainingBalance.sub(outstandingWithdraw_);
+            //     require(collateralToken_.transfer(creator_, outstandingWithdraw_), "Transfering of funds failed");
+            //     outstandingWithdraw_ = 0;
+            //     require(collateralToken_.transfer(address(market_), marketOverflow), "Transfering of funds failed");
+            // }
             
         //     // Works out the molecule tax amount
         //     // uint256 molTax = remainingBalance.mul(moleculeTaxRate_).div(moleculeTaxRate_.add(100));
@@ -303,11 +325,11 @@ contract Vault is IVault, WhitelistAdminRole {
         //     // emit FundingWithdrawn(currentPhase_, remainingBalance);
         //     require(collateralToken_.transfer(address(market_), remainingBalance), "Transfering of funds failed");
             
-        } else {
+        // } else {
             outstandingWithdraw_ = 0;
         //     // Transferes remaining balance to the market
             require(collateralToken_.transfer(address(market_), remainingBalance), "Transfering of funds failed");
-        }
+        // }
         
         // Sends any funds in the vault to the market
         // require(collateralToken_.transfer(address(market_), remainingBalance), "Transfering of funds failed");
