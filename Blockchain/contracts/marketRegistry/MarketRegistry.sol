@@ -50,10 +50,10 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     /// @param _reason                  :string Log text for tracking purposes
     /// @author Ryan
     function removeMarketDeployer(
-        address _deployerToRemove, 
+        address _deployerToRemove,
         string calldata _reason
-    ) 
-        external 
+    )
+        external
         onlyWhitelistAdmin()
     {
         require(deployer_[_deployerToRemove] != false, "Already inactive");

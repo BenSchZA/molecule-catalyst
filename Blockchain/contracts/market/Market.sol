@@ -65,7 +65,7 @@ contract Market is IMarket, IERC20 {
     /**
       * @param  _taxationRate : The percentage for taxation i.e 20
       * @param  _creatorVault : The vault for taxation to go to
-      * @param  _curveLibrary : Vyper math module
+      * @param  _curveLibrary : Math module.
       * @param  _collateralToken : The ERC20 collateral tokem
       */
     constructor(
@@ -256,7 +256,7 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @dev    Allows for a token holder to get collateral in return for
-      *         their tokens after the market has endedd.
+      *         their tokens after the market has ended.
       */
     function withdraw(uint256 _amount) public returns(bool) {
         // Ensures withdraw can only be called in an inactive market
@@ -296,9 +296,9 @@ contract Market is IMarket, IERC20 {
         uint256 collateral = _curveIntegral(
                 totalSupply_.add(_numTokens)
             ).sub(balance);
-        // Sets the base unit for decimal shift??? todo
+        // Sets the base unit for decimal shift
         uint256 baseUnit = 100;
-        // Removes the tax amount??? todo
+        // Adds the tax amount
         uint256 result = collateral.mul(100).div(baseUnit.sub(taxationRate_));
         return result;
     }

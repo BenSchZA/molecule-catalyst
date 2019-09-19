@@ -325,7 +325,6 @@ describe('Vault stress test', async () => {
             }
 
             let balanceVaultW3 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
-            let balanceMarketW3 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
             let balanceMolVaultW3 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfCreatorW3 = await pseudoDaiInstance.balanceOf(creator.signer.address);
             let phaseOneM3 = await vaultInstance.fundingPhase(0);

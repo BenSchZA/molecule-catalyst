@@ -125,7 +125,7 @@ contract Vault is IVault, WhitelistAdminRole {
     /**
       * @notice Ensures that only the market may call the function.
       */
-    modifier onlyMarket(){
+    modifier onlyMarket() {
         require(msg.sender == address(market_), "Invalid requesting account");
         _;
     }
@@ -329,6 +329,9 @@ contract Vault is IVault, WhitelistAdminRole {
         onlyWhitelistAdmin()
     {
         uint256 remainingBalance = collateralToken_.balanceOf(address(this));
+
+        // todo remove outstanding withdraw from the remaining balance
+        
         // Setting outstanding withdraw to 0
         outstandingWithdraw_ = 0;
         // Transferes remaining balance to the market
