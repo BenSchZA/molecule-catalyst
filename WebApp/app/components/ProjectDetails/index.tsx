@@ -95,22 +95,26 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         )
       : 0;
 
-  return project && project.chainData && project.chainData.marketData ? (
+  return (
     <Container maxWidth="lg">
-      <ProjectSupportModal
-        closeModal={handleClose}
-        modalState={open}
-        formikProps={formikProps}
-        daiBalance={daiBalance}
-        contributionRate={project.chainData.marketData.taxationRate}
-      />
-      <ProjectRedeemModal
-        closeModal={handleClose}
-        modalState={openRedeem}
-        formikProps={formikProps}
-        holdingsValue={holdingsValue}
-        contributionValue={contributionValue}
-      />
+      {project && project.chainData && project.chainData.marketData &&
+        <div>
+          <ProjectSupportModal
+            closeModal={handleClose}
+            modalState={open}
+            formikProps={formikProps}
+            daiBalance={daiBalance}
+            contributionRate={project.chainData.marketData.taxationRate}
+          />
+          <ProjectRedeemModal
+            closeModal={handleClose}
+            modalState={openRedeem}
+            formikProps={formikProps}
+            holdingsValue={holdingsValue}
+            contributionValue={contributionValue}
+          />
+        </div>
+      }
       <div className={classes.bannerWrapper}>
         <img
           src={apiUrlBuilder.attachmentStream(project.featuredImage)}
@@ -274,7 +278,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography className={classes.sectionTitleText} align="center">
             Market
           </Typography>
-          <MarketChartLayout display={true} project={project} />
+          {project && project.chainData && project.chainData.marketData &&
+            <MarketChartLayout display={true} project={project} />
+          }
         </div>
       </Paper>
       <Paper className={classes.projectSection} square>
@@ -408,9 +414,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         </div>
       </Paper>
     </Container>
-  ) : (
-    <Container>Loading data</Container>
-  );
+  )
 };
 
 export default withStyles(styles, { withTheme: true })(ProjectDetails);
