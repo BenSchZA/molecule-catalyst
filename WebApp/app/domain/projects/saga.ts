@@ -5,7 +5,8 @@ import {
 } from 'api';
 import { normalize } from "normalizr";
 import projects from './schema';
-import * as ProjectActions from './actions'
+import * as ProjectActions from './actions';
+import * as NotificationActions from '../notification/actions';
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
@@ -63,8 +64,20 @@ export function* supportProject(action) {
   try {
     yield call(mint, project.chainData.marketAddress, contribution);
     yield put(ProjectActions.supportProject.success(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Successfully funded project', 
+      options: { 
+        variant: 'success'
+      }}
+    ));
   } catch (error) {
     yield put(ProjectActions.supportProject.failure(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'The transaction was not successful', 
+      options: { 
+        variant: 'error'
+      }}
+    ));
     console.log(error);
   }
 }
@@ -81,8 +94,20 @@ export function* withdrawHoldings(action) {
   try {
     yield call(burn, project.chainData.marketAddress);
     yield put(ProjectActions.withdrawHoldings.success(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Successfully withdrew holdings', 
+      options: { 
+        variant: 'success',
+      }}
+    ));
   } catch (error) {
     yield put(ProjectActions.withdrawHoldings.failure(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Error withdrawing holdings', 
+      options: { 
+        variant: 'error'
+      }}
+    ));
     console.log(error);
   }
 }
@@ -94,8 +119,20 @@ export function* withdrawFunding(action) {
   try {
     yield call(withdrawAvailable, project.chainData.vaultAddress, project.vaultData.phases);
     yield put(ProjectActions.withdrawFunding.success(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Successfully withdrew funding', 
+      options: { 
+        variant: 'success',
+      }}
+    ));
   } catch (error) {
     yield put(ProjectActions.withdrawFunding.failure(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Error withdrawing holdings', 
+      options: { 
+        variant: 'error'
+      }}
+    ));
     console.log(error);
   }
 }
