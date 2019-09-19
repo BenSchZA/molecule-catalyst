@@ -231,7 +231,7 @@ contract Vault is IVault, WhitelistAdminRole {
         if(
             fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED
         ) {
-            if(market_.active()) {
+            if(market_.active() && outstandingWithdraw_ == 0) {
                 // This will transfer any remianing funding to the market
                 terminateMarket();
             }
