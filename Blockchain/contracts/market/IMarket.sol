@@ -45,7 +45,7 @@ interface IMarket {
 
     /**
       * @dev	We have modified the minting function to divert a portion of the
-	  *			collateral for the purchased tokens to the vault.
+	    *			  collateral for the purchased tokens to the vault.
       * @param 	_to : Address to mint tokens to.
       * @param 	_numTokens : The number of tokens you want to mint/
       */
@@ -153,7 +153,7 @@ interface IMarket {
 
     /**
       * @return	uint256 : representing the total supply of tokens in this
-	  *			market.
+	    *			    market.
       */
     function totalSupply() external view returns (uint256);
 
@@ -164,7 +164,7 @@ interface IMarket {
 
     /**
       * @dev 	The rate of taxation the market pays towards the vault on token
-	  *			purchases.
+	    *			  purchases.
       */
     function taxationRate() external view returns(uint256);
 
@@ -175,7 +175,7 @@ interface IMarket {
 
     /**
       * @return	bool : The active stat of the market. Inactive markets have
-	  *			ended.
+	    *			    ended.
       */
     function active() external view returns(bool);
 }

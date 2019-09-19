@@ -7,13 +7,18 @@ import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
 
 /**
-  * @author Veronica & Ryan of Linum Labs
-  * @title Market
+  * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
+  * @title  Creation and storage of project tokens, fills vault with tax.
+  * @notice The market will send a portion of all collateral on mint to the
+  *         vault to fill the funding rounds.
+  * @dev    Checks with vault on every mint to ensure rounds are still active,
+  *         goal has not been met, and that the round has not expired.
   */
 contract Market is IMarket, IERC20 {
+    // For math functions with overflow & underflow checks
     using SafeMath for uint256;
 
-    //Allows market to be deactivated after funding
+    // Allows market to be deactivated after funding
     bool internal active_ = true;
     // Vault that recives taxation
     IVault internal creatorVault_;
@@ -33,19 +38,35 @@ contract Market is IMarket, IERC20 {
     // Balances of token holders
     mapping(address => uint256) internal balances;
 
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    // Emitted when a spender is approved
+    event Approval(
+      address indexed owner,
+      address indexed spender,
+      uint256 value
+    );
     event Transfer(address indexed from, address indexed to, uint value);
-    // the address reciving the tokens, the amount of tokens minted, the amount of DAI spent, the tax donatedd (in DAI)
-    event Mint(address indexed to, uint256 amountMinted, uint256 collateralAmount, uint256 researchContribution);
-    // the address burning the tokens, the amount of tokens burnt, the amount of DAI being recived (in DAI)
-    event Burn(address indexed from, uint256 amountBurnt, uint256 collateralReturned);
+    // the address reciving the tokens, the amount of tokens minted, the amount
+    // of DAI spent, the tax donatedd (in DAI)
+    event Mint(
+      address indexed to,
+      uint256 amountMinted,
+      uint256 collateralAmount,
+      uint256 researchContribution
+    );
+    // the address burning the tokens, the amount of tokens burnt, the amount of
+    // DAI being recived (in DAI)
+    event Burn(
+      address indexed from,
+      uint256 amountBurnt,
+      uint256 collateralReturned
+    );
     event MarketTerminated();
 
     /**
-      * @param _taxationRate        : uint256 - The percentage for taxation i.e 20
-      * @param _creatorVault        : address - The vault for taxation to go to
-      * @param _curveLibrary        : address - Vyper math module
-      * @param _collateralToken     : address - The ERC20 collateral tokem
+      * @param  _taxationRate : The percentage for taxation i.e 20
+      * @param  _creatorVault : The vault for taxation to go to
+      * @param  _curveLibrary : Vyper math module
+      * @param  _collateralToken : The ERC20 collateral tokem
       */
     constructor(
         uint256 _taxationRate,
@@ -55,27 +76,35 @@ contract Market is IMarket, IERC20 {
     )
         public
     {
+        // Sets the storage variables
         taxationRate_ = _taxationRate;
         creatorVault_ = IVault(_creatorVault);
         curveLibrary_ = ICurveFunctions(_curveLibrary);
         collateralToken_ = IERC20(_collateralToken);
     }
 
+    /**
+      * @notice Ensures the market's key functionality is only available when
+      *         the market is active.
+      */
     modifier onlyActive(){
         require(active_, "Market inactive");
         _;
     }
 
+    /**
+      * @notice Enaures a function is only callable by the vault.
+      */
     modifier onlyVault(){
         require(msg.sender == address(creatorVault_), "Invalid requestor");
         _;
     }
 
     /**
-      * @dev                Approves transfers for a given address
-      * @param _spender     : address - The account that will receive the funds.
-      * @param _value       : uint256 - The value of funds accessed.
-      * @return             : boolean - Indicating the action was successful.
+      * @notice Approves transfers for a given address.
+      * @param  _spender : The account that will receive the funds.
+      * @param  _value : The value of funds accessed.
+      * @return boolean : Indicating the action was successful.
       */
     function approve(
         address _spender,
@@ -90,11 +119,14 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
-      * @dev                Selling tokens back to the bonding curve for collateral
-      * @param _numTokens   The number of tokens that you want to burn
+      * @dev    Selling tokens back to the bonding curve for collateral.
+      * @param  _numTokens: The number of tokens that you want to burn.
       */
     function burn(uint256 _numTokens) external onlyActive() returns(bool) {
-        require(balances[msg.sender] >= _numTokens, "Not enough tokens available");
+        require(
+            balances[msg.sender] >= _numTokens,
+            "Not enough tokens available"
+        );
 
         uint256 reward = rewardForBurn(_numTokens);
 
@@ -114,22 +146,36 @@ contract Market is IMarket, IERC20 {
         return true;
     }
 
-    /// @dev                Mint new tokens with ether
-    /// @param _to          :address Address to mint tokens to
-    /// @param _numTokens   :uint256 The number of tokens you want to mint
-    /// @dev                We have modified the minting function to divert a portion of the purchase tokens
-    function mint(address _to, uint256 _numTokens) external onlyActive() returns(bool) {
+    /**
+      * @dev	We have modified the minting function to divert a portion of the
+      *         collateral for the purchased tokens to the vault.
+      * @param  _to : Address to mint tokens to.
+      * @param  _numTokens : The number of tokens you want to mint.
+      */
+    function mint(
+        address _to,
+        uint256 _numTokens
+    )
+        external
+        onlyActive()
+        returns(bool)
+    {
+        // Gets the price (in collateral) for the tokens
         uint256 priceForTokens = priceToMint(_numTokens);
+        // Ensures there is no overflow
         require(priceForTokens > 0, "Tokens requested too low");
-
+        // Works out how much tax needs to be sent to the vault
         uint256 tax = priceForTokens.mul(taxationRate_).div(100);
-
-        collateralToken_.transferFrom(
-            msg.sender,
-            address(this),
-            priceForTokens
+        // Sends the collateral from the buyer to this market
+        require(
+            collateralToken_.transferFrom(
+                msg.sender,
+                address(this),
+                priceForTokens
+            ),
+            "Collateral transfer failed"
         );
-
+        // Sends the tax to the vault
         require(
             collateralToken_.transfer(
                 address(creatorVault_),
@@ -138,11 +184,16 @@ contract Market is IMarket, IERC20 {
             "Vault tax not transferred"
         );
 
+        // Adds the tokens to the total supply
         totalSupply_ = totalSupply_.add(_numTokens);
+        // Adds the tokens to the balance of the buyer
         balances[msg.sender] = balances[msg.sender].add(_numTokens);
-
-        require(creatorVault_.validateFunding(tax), "Funding validation failed");
-
+        // Validates the funding with the vault
+        require(
+            creatorVault_.validateFunding(tax),
+            "Funding validation failed"
+        );
+        // Works out the vaule of the tokens without the tax
         uint256 priceWithoutTax = priceForTokens.sub(tax);
 
         emit Transfer(address(0), _to, _numTokens);
@@ -150,11 +201,11 @@ contract Market is IMarket, IERC20 {
         return true;
     }
 
-    // [ERC20 functions]
-
-    /// @dev                        Transfer ownership token from msg.sender to a specified address
-    /// @param _to                  : address The address to transfer to.
-    /// @param _value               : uint256 The amount to be transferred.
+    /**
+      * @notice Transfer ownership token from msg.sender to a specified address.
+      * @param  _to : The address to transfer to.
+      * @param  _value : The amount to be transferred.
+      */
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(_value <= balances[msg.sender], "Insufficient funds");
         require(_to != address(0), "Target account invalid");
@@ -165,10 +216,12 @@ contract Market is IMarket, IERC20 {
         return true;
     }
 
-    /// @dev                Transfer tokens from one address to another
-    /// @param _from        :address The address which you want to send tokens from
-    /// @param _to          :address The address which you want to transfer to
-    /// @param _value       :uint256 the amount of tokens to be transferred
+    /**
+      * @notice Transfer tokens from one address to another.
+      * @param  _from : The address which you want to send tokens from.
+      * @param  _to : The address which you want to transfer to.
+      * @param  _value : The amount of tokens to be transferred.
+      */
     function transferFrom(
         address _from,
         address _to,
@@ -202,68 +255,124 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
-      * @dev Allows for a token holder to get collateral in return for
-      *      their tokens after the market has endedd.
+      * @dev    Allows for a token holder to get collateral in return for
+      *         their tokens after the market has endedd.
       */
     function withdraw(uint256 _amount) public returns(bool) {
+        // Ensures withdraw can only be called in an inactive market
         require(active_ == false, "Market not finalised");
+        // Ensures the sender has enough tokens
         require(_amount <= balances[msg.sender], "Insufficient funds");
+        // Ensures there are no anomaly withdraws that might break calculations
         require(_amount > 0, "Cannot withdraw 0");
 
+        // Removes amount from user balance
         balances[msg.sender] = balances[msg.sender].sub(_amount);
-
+        // Gets the balance of the market (vault may send excess funding)
         uint256 balance = collateralToken_.balanceOf(address(this));
 
         // Performs a flat linear 100% collateralized sale
         uint256 daiToTransfer = balance.mul(_amount).div(totalSupply_);
+        // Removes token amount from the total supply
         totalSupply_ = totalSupply_.sub(_amount);
 
-        require(collateralToken_.transfer(msg.sender, daiToTransfer), "Dai transfer failed");
+        // Ensures the sender is sent their collateral amount
+        require(
+            collateralToken_.transfer(msg.sender, daiToTransfer),
+            "Dai transfer failed"
+        );
 
         emit Transfer(address(this), msg.sender, _amount);
     }
 
-    // [Pricing functions]
-    /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
-    /// @return             :uint256 Required collateral
+    /**
+      * @return uint256 : The required collateral amount for a volume of bonding
+      *         curve tokens.
+      */
     function priceToMint(uint256 _numTokens) public view returns(uint256) {
+        // Gets the balance of the market
         uint256 balance = collateralToken_.balanceOf(address(this));
-        uint256 collateral = _curveIntegral(totalSupply_.add(_numTokens)).sub(balance);
+        // Performs the curve intergral with the relavant vaules
+        uint256 collateral = _curveIntegral(
+                totalSupply_.add(_numTokens)
+            ).sub(balance);
+        // Sets the base unit for decimal shift??? todo
         uint256 baseUnit = 100;
+        // Removes the tax amount??? todo
         uint256 result = collateral.mul(100).div(baseUnit.sub(taxationRate_));
         return result;
     }
 
-    /// @dev                Returns the required collateral amount for a volume of bonding curve tokens
-    /// @return             Potential return collateral
+    /**
+      * @return uint256 : The required collateral amount for a volume of bonding
+      *         curve tokens.
+      */
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
+        // Gets the curent balance of the market
         uint256 poolBalanceFetched = collateralToken_.balanceOf(address(this));
-        return poolBalanceFetched.sub(_curveIntegral(totalSupply_.sub(_numTokens)));
+        // Returns the pool balance minus the curve intergral of the removed
+        // tokens
+        return poolBalanceFetched.sub(
+            _curveIntegral(totalSupply_.sub(_numTokens))
+        );
     }
 
-    /// @dev                This function returns the amount of tokens one can receive for a specified amount of collateral token
-    /// @param  _collateralTokenOffered  :uint256 Amount of reserve token offered for purchase
-    function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256) {
+    /**
+      * @notice This function returns the amount of tokens one can receive for a
+      *         specified amount of collateral token.
+      * @param  _collateralTokenOffered : Amount of reserve token offered for
+      *         purchase.
+      * @return uint256 : The amount of tokens once can purchase with the
+      *         specified collateral.
+      */
+    function collateralToTokenBuying(
+        uint256 _collateralTokenOffered
+    )
+        external
+        view
+        returns(uint256)
+    {
+        // Works out the amount of collateral for tax
         uint256 tax = _collateralTokenOffered.mul(taxationRate_).div(100);
+        // Removes the tax amount from the collateral offered
         uint256 amountLessTax = _collateralTokenOffered.sub(tax);
-        return _inverseCurveIntegral(_curveIntegral(totalSupply_).add(amountLessTax)).sub(totalSupply_);
+        // Works out the inverse curve of the pool with the tax removed amount
+        return _inverseCurveIntegral(
+                _curveIntegral(totalSupply_).add(amountLessTax)
+            ).sub(totalSupply_);
     }
 
-    /// @dev                            This function returns the amount of tokens needed to be burnt to withdraw a specified amount of reserve token
-    /// @param  _collateralTokenNeeded  :uint256 Amount of dai to be withdraw
-    function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256) {
+    /**
+      * @notice This function returns the amount of tokens needed to be burnt to
+      *         withdraw a specified amount of reserve token.
+      * @param  _collateralTokenNeeded : Amount of dai to be withdraw.
+      */
+    function collateralToTokenSelling(
+        uint256 _collateralTokenNeeded
+    )
+        external
+        view
+        returns(uint256)
+    {
         return uint256(
             totalSupply_.sub(
-                _inverseCurveIntegral(_curveIntegral(totalSupply_).sub(_collateralTokenNeeded))
+                _inverseCurveIntegral(
+                    _curveIntegral(totalSupply_).sub(_collateralTokenNeeded)
+                )
             )
         );
     }
 
-    /// @dev                Gets the value of the current allowance specifed for that account
-    /// @param _owner       :address The account sending the funds.
-    /// @param _spender     :address The account that will receive the funds.
-    /// @return             An uint256 representing the amount owned by the passed address.
-    function allowance(address _owner, address _spender)
+    /**
+      * @notice Gets the value of the current allowance specifed for that
+      *         account.
+      * @param  _owner : The account sending the funds.
+      * @param  _spender : The account that will receive the funds.
+      */
+    function allowance(
+        address _owner,
+        address _spender
+    )
         external
         view
         returns (uint256)
@@ -271,52 +380,70 @@ contract Market is IMarket, IERC20 {
         return allowed[_owner][_spender];
     }
 
-    /// @dev                Gets the balance of the specified address.
-    /// @param _owner       :address The address to query the the balance of.
-    /// @return             An uint256 representing the amount owned by the passed address.
+    /**
+      * @notice Gets the balance of the specified address.
+      * @param  _owner : The address to query the the balance of.
+      * @return  uint256 : Represents the amount owned by the passed address.
+      */
     function balanceOf(address _owner) external view returns (uint256) {
         return balances[_owner];
     }
 
-    /// @dev                Total collateral backing the curve
-    /// @return             A uint256 representing the total collateral backing the curve
+    /**
+      * @notice Total collateral backing the curve.
+      * @return uint256 : Represents the total collateral backing the curve.
+      */
     function poolBalance() external view returns (uint256){
         return collateralToken_.balanceOf(address(this));
     }
 
-    /// @dev                Total number of tokens in existence
-    /// @return             A uint256 representing the total supply of tokens in this market
+    /**
+      * @notice Total number of tokens in existence
+      * @return uint256 : Represents the total supply of tokens in this market.
+      */
     function totalSupply() external view returns (uint256) {
         return totalSupply_;
     }
 
-    /// @dev                Returns the contribution rate for the market on Token purchase
-    /// @return             :uint256 The percentage of incoming collateral collected as revenue
+    /**
+      * @dev 	The rate of taxation the market pays towards the vault on token
+	  *         purchases.
+      */
     function taxationRate() external view returns(uint256) {
         return taxationRate_;
     }
 
-    /// @dev                Returns the decimals set for the market
-    /// @return             :uint256 The decimals set for the market
+    /**
+      * @return	uint256 : The decimals set for the market
+      */
     function decimals() external view returns(uint256) {
         return decimals_;
     }
 
+    /**
+      * @return	bool : The active stat of the market. Inactive markets have
+	  *         ended.
+      */
     function active() external view returns(bool){
         return active_;
     }
 
-    // Private
-    /// @dev                Calculate the integral from 0 to x tokens supply
-    /// @param _x            The number of tokens supply to integrate to
-    /// @return             The total supply in tokens, not wei
+    /**
+      * @dev    Calculate the integral from 0 to x tokens supply. Calls the
+      *         curve integral function on the math library.
+      * @param  _x : The number of tokens supply to integrate to.
+      * @return he total supply in tokens, not wei.
+      */
     function _curveIntegral(uint256 _x) internal view returns (uint256) {
         return curveLibrary_.curveIntegral(_x);
     }
 
-    /// @dev                Inverse integral to convert the incoming colateral value to token volume
-    /// @param _x           :uint256 The volume to identify the root off
-    function _inverseCurveIntegral(uint256 _x) internal view returns(uint256){
+    /**
+      * @dev    Inverse integral to convert the incoming colateral value to
+      *         token volume.
+      * @param  _x : The volume to identify the root off
+      */
+    function _inverseCurveIntegral(uint256 _x) internal view returns(uint256) {
         return curveLibrary_.inverseCurveIntegral(_x);
     }
 }
