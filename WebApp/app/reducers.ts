@@ -10,6 +10,7 @@ import Redux from 'redux';
 // tslint:disable-next-line:no-implicit-dependencies
 import authenticationReducer from './domain/authentication/reducer';
 import projectReducer from 'domain/projects/reducer';
+import notificationReducer from 'domain/notification/reducer';
 
 /**
  * Creates the main reducer with the dynamically injected ones
@@ -17,6 +18,7 @@ import projectReducer from 'domain/projects/reducer';
 export default function createReducer(injectedReducers: Redux.ReducersMapObject = {}): Redux.Reducer<any> {
   return combineReducers({
     authentication: authenticationReducer,
+    notification: notificationReducer,
     projects: projectReducer,
     ...injectedReducers,
   });
