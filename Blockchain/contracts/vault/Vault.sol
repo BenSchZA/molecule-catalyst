@@ -329,11 +329,11 @@ contract Vault is IVault, WhitelistAdminRole {
         onlyWhitelistAdmin()
     {
         uint256 remainingBalance = collateralToken_.balanceOf(address(this));
-
-        // todo remove outstanding withdraw from the remaining balance
-        
-        // Setting outstanding withdraw to 0
-        outstandingWithdraw_ = 0;
+        // This ensures that if the creator has any outstanding funds, that
+        // those funds do not get sent to the market.
+        if(outstandingWithdraw_ > 0) {
+            remainingBalance = remainingBalance.sub(outstandingWithdraw_);
+        }
         // Transferes remaining balance to the market
         require(
             collateralToken_.transfer(address(market_), remainingBalance),

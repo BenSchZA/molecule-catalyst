@@ -348,6 +348,88 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM3[4].toString(), 3, "Round state is incorrect");
         });
 
+        it("Outstanding withdraws not lost with market termination", async () => {
+            let mintAmount = ethers.utils.parseUnits("10000", 18);
+            let phaseOne = await vaultInstance.fundingPhase(0);
+            let phaseTwo = await vaultInstance.fundingPhase(1);
+            let phaseThree = await vaultInstance.fundingPhase(2);
+            let balanceVault = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceMarket = await pseudoDaiInstance.balanceOf(marketInstance.contract.address); 
+            let balanceMolVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+
+            assert.equal(balanceMolVault.toString(), 0, "Mol vault has pre-existing funds");
+            assert.equal(balanceVault.toString(), 0, "Vault has pre-existing funding");
+            assert.equal(balanceMarket.toString(), 0, "Market has pre-existing funds");
+            // Round 1 checks
+            assert.equal(phaseOne[0].toString(), marketSettingsStress.fundingGoalsWithTax[0].toString(), "Funding threshold incorrect");
+            assert.equal(phaseOne[1].toString(), 0, "Round funding raised incorrect");
+            assert.equal(phaseOne[4].toString(), 1, "Round state is incorrect");
+            // Round 2 checks
+            assert.equal(phaseTwo[0].toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Funding threshold incorrect");
+            assert.equal(phaseTwo[1].toString(), 0, "Round funding raised incorrect");
+            assert.equal(phaseTwo[4].toString(), 0, "Round state is incorrect");
+            // Round 3 checks
+            assert.equal(phaseThree[0].toString(), marketSettingsStress.fundingGoalsWithTax[2].toString(), "Funding threshold incorrect");
+            assert.equal(phaseThree[1].toString(), 0, "Round funding raised incorrect");
+            assert.equal(phaseThree[4].toString(), 0, "Round state is incorrect");
+
+            // Round One
+            await (await marketInstance.from(user1).mint(user1.signer.address, mintAmount)).wait();
+
+            let balanceVaultM1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceMarketM1 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+            let balanceOfCreatorM1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+            let phaseOneM1 = await vaultInstance.fundingPhase(0);
+            let phaseTwoM1 = await vaultInstance.fundingPhase(1);
+            let phaseThreeM1 = await vaultInstance.fundingPhase(2);
+
+            assert.equal(balanceVaultM1.toString(), marketSettingsStress.vaultBalances[0], "Vault balance incorrect");
+            assert.equal(balanceMarketM1.toString(), marketSettingsStress.marketBalances[0], "Market balance incorrect");
+            assert.equal(balanceOfCreatorM1.toString(), 0, "Creator has pre-existing funds")
+            // Round 1 checks
+            assert.equal(phaseOneM1[0].toString(), marketSettingsStress.fundingGoalsWithTax[0].toString(), "Funding threshold incorrect");
+            assert.equal(phaseOneM1[1].toString(), marketSettingsStress.fundingGoalsWithTax[0].toString(), "Round funding raised incorrect");
+            assert.equal(phaseOneM1[4].toString(), 2, "Round state is incorrect");
+            // Round 2 checks
+            assert.equal(phaseTwoM1[0].toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Funding threshold incorrect");
+            assert.equal(phaseTwoM1[1].toString(), marketSettingsStress.rollOverAmounts[0].toString(), "Round funding raised incorrect");
+            assert.equal(phaseTwoM1[4].toString(), 1, "Round state is incorrect");
+            // Round 3 checks
+            assert.equal(phaseThreeM1[0].toString(), marketSettingsStress.fundingGoalsWithTax[2].toString(), "Funding threshold incorrect");
+            assert.equal(phaseThreeM1[1].toString(), 0, "Round funding raised incorrect");
+            assert.equal(phaseThreeM1[4].toString(), 0, "Round state is incorrect");
+
+            // Round Two
+            mintAmount = ethers.utils.parseUnits("20000", 18);
+            await (await marketInstance.from(user1).mint(user1.signer.address, mintAmount)).wait();
+            let marketActivity = await marketInstance.active();
+            // Terminating the market
+            await vaultInstance.from(creator).terminateMarket();
+            let marketActivityAfter = await marketInstance.active();
+            let balanceVaultT = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceOfCreatorM2 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+
+            assert.equal(marketActivity, true, "The market was not active before termination");
+            assert.equal(marketActivityAfter, false, "Market not terminated with termination call");
+            assert.equal(balanceOfCreatorM2.toString(), 0, "Creator balance is incorrect");
+            assert(balanceVaultT.toString() >= marketSettingsStress.vaultBalanceWithdraws[4].toString(), "Vault has incorrect balance");
+
+            // Making sure the creator can still claim their funding
+            await vaultInstance.from(creator).withdraw(0);
+            let balanceVaultW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceOfCreatorW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+
+            assert.equal(balanceVaultW1.toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Vault balance incorrect");
+            assert.equal(balanceOfCreatorW1.toString(), marketSettingsStress.creatorBalances[0].toString(), "Creator balance incorrect");
+             
+            await vaultInstance.from(creator).withdraw(1);
+            let balanceVaultW2 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceOfCreatorW2 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+
+            assert.equal(balanceVaultW2.toString(), 0, "Vault balance incorrect");
+            assert.equal(balanceOfCreatorW2.toString(), marketSettingsStress.creatorBalances[1].toString(), "Creator balance incorrect")
+        });
+
         it("Multiple rounds being bought at once", async () => {
             let currentPhase = await vaultInstance.currentPhase();
             assert.equal(currentPhase.toString(), 0, "Phase invalid");
