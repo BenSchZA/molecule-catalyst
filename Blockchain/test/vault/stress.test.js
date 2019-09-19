@@ -311,7 +311,21 @@ describe('Vault stress test', async () => {
 
             await vaultInstance.from(creator).withdraw(2);
 
+            try {
+                await vaultInstance.from(creator).withdraw(2);
+                assert.equal(true, false, "Creator could withdraw round twice")
+            } catch (error) {
+                assert.equal(true, true, "Creator could not withdraw funds twice")
+            }
+            try {
+                await vaultInstance.from(creator).withdraw(3);
+                assert.equal(true, false, "Creator could withdraw round that does not exist")
+            } catch (error) {
+                assert.equal(true, true, "Creator could withdraw round that does not exist")
+            }
+
             let balanceVaultW3 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceMarketW3 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
             let balanceMolVaultW3 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfCreatorW3 = await pseudoDaiInstance.balanceOf(creator.signer.address);
             let phaseOneM3 = await vaultInstance.fundingPhase(0);
