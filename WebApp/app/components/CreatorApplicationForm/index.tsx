@@ -9,7 +9,7 @@ import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLa
 import { Save } from '@material-ui/icons';
 import { Form, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
-import UploadImageField from 'components/UploadImageField';
+import UploadImageTextField from 'components/UploadImageTextField';
 import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
@@ -80,7 +80,7 @@ const CreatorApplicationForm: React.FunctionComponent<OwnProps> = (props: OwnPro
             margin="dense" />
           <InputLabel htmlFor='profileImage'>Profile Image</InputLabel>
           <Field
-            component={UploadImageField}
+            component={UploadImageTextField}
             name='profileImage' />
           <InputLabel htmlFor='biography'>About You</InputLabel>
           <Field
