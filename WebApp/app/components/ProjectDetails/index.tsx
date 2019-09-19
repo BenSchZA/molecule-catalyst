@@ -95,7 +95,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         )
       : 0;
 
-  return (
+  return project ? (
     <Container maxWidth="lg">
       {project && project.chainData && project.chainData.marketData &&
         <div>
@@ -419,7 +419,11 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         </div>
       </Paper>
     </Container>
-  )
+  ) : (
+    <Container>
+      Loading data
+    </Container>
+  );
 };
 
 export default withStyles(styles, { withTheme: true })(ProjectDetails);
