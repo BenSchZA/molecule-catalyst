@@ -1,4 +1,4 @@
-import { WithStyles, Modal, Typography, Paper, Divider } from '@material-ui/core';
+import { WithStyles, Modal, Typography, Paper, Divider, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
@@ -14,29 +14,33 @@ interface Props extends WithStyles<typeof styles> {
   formikProps: FormikProps<FormikValues>,
   holdingsValue: number,
   contributionValue: number,
+  txInProgress: boolean,
 }
 
 const ProjectRedeemModal: React.FunctionComponent<Props> = ({
-    classes, 
-    modalState, 
-    closeModal,
-    formikProps,
-    holdingsValue,
-    contributionValue,
-  }: Props) => {
+  classes,
+  modalState,
+  closeModal,
+  formikProps,
+  holdingsValue,
+  contributionValue,
+  txInProgress,
+}: Props) => {
 
   const displayPrecision = 2;
   const valueChange = contributionValue > 0 ?
-    Number(((holdingsValue - contributionValue)*100 / contributionValue)).toFixed(displayPrecision) : 0;
+    Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
 
   return (
     <Fragment>
       <Form>
         <Modal
           open={modalState}
-          onClose={closeModal}
-        >
+          onClose={closeModal}>
           <Paper square={false} className={classes.modal}>
+            <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
+              <CircularProgress className={classes.spinner} />
+            </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Redeem Incentive Pool Holdings</Typography>
             </div>

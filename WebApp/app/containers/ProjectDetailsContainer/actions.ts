@@ -1,12 +1,8 @@
-/*
- *
- * ProjectDetailsContainer actions
- *
- */
-
-import { action } from 'typesafe-actions';
-import {} from './types';
-
+import { createStandardAction } from 'typesafe-actions';
 import ActionTypes from './constants';
 
-export const defaultAction = () => action(ActionTypes.DEFAULT_ACTION);
+/**
+ * Sets the `currentlySending` state, which displays a loading indicator during requests
+ * @param  {boolean} sending True means we're sending a request, false means we're not
+ */
+export const setTxInProgress = createStandardAction(ActionTypes.SET_TX_IN_PROGRESS)<boolean>();

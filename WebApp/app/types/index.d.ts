@@ -6,6 +6,7 @@ import { ContainerState as CreatorApplicationState } from '../containers/Creator
 import { ContainerState as AdminUserListingState } from '../containers/AdminUserListingContainer/types'
 import { ContainerState as CreateProjectContainerState } from '../containers/CreateProjectContainer/types'
 import { ContainerState as AdminProjectListingState } from '../containers/AdminProjectListingContainer/types'
+import { ContainerState as ProjectDetailsState } from '../containers/ProjectDetailsContainer/types';
 
 export interface LifeStore extends Store<ApplicationRootState> {
   injectedReducers: any;
@@ -38,5 +39,5 @@ export interface ApplicationRootState {
   readonly adminUserViewContainer: never;
   readonly adminProjectReviewContainer: never;
   readonly myProjectsContainer: never;
-  readonly projectDetailsContainer: never;
+  readonly projectDetailsContainer: ProjectDetailsState;
 }

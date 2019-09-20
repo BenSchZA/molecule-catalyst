@@ -42,6 +42,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   daiBalance: number;
   userAddress: string;
   formikProps: FormikProps<FormikValues>;
+  txInProgress: boolean;
   selectModal(modal: number): void;
 }
 
@@ -52,6 +53,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   classes,
   formikProps,
   selectModal,
+  txInProgress,
 }: OwnProps) => {
   const [open, setOpenModal] = React.useState(false);
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
@@ -105,6 +107,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             formikProps={formikProps}
             daiBalance={daiBalance}
             contributionRate={project.chainData.marketData.taxationRate}
+            txInProgress={txInProgress}
           />
           <ProjectRedeemModal
             closeModal={handleClose}
@@ -112,6 +115,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             formikProps={formikProps}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
+            txInProgress={txInProgress}
           />
         </div>
       }
