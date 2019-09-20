@@ -1,8 +1,11 @@
 pragma solidity 0.5.10;
 
+/**
+  * @author Veronica - @veronicalc
+  * @title  The interface for the market factory
+  */
 interface IMarketFactory {
     /**
-      * @author Veronica - @veronicalc
       * @dev    This function allows for the creation of a
       *         new market, consisting of a curve and vault
       * @notice Vyper cannot handle arrays of unknown length,
