@@ -54,7 +54,7 @@ contract CurveRegistry is WhitelistAdminRole {
       * @dev            Sets the curve to active
       * @param _index   : uint256 - The index of the curve
       */
-    function reactivateCurve(uint256 _index) external onlyWhitelistAdmin {
+    function reactivateCurve(uint256 _index) external onlyWhitelistAdmin() {
         require(curveContracts_[_index].active == false, "Curve already activated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = true;
@@ -68,7 +68,7 @@ contract CurveRegistry is WhitelistAdminRole {
       *                 curve module, or vunrability
       * @param _index   : uint256 - The index of the curve
       */
-    function deactivateCurve(uint256 _index) external onlyWhitelistAdmin {
+    function deactivateCurve(uint256 _index) external onlyWhitelistAdmin() {
         require(curveContracts_[_index].active == true, "Curve already deactivated");
         require(curveContracts_[_index].libraryAddress != address(0), "Curve not registered");
         curveContracts_[_index].active = false;
