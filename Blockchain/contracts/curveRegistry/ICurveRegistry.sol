@@ -1,7 +1,7 @@
 pragma solidity 0.5.10;
 
 /**
-  * @author Veronica - @veronicalc & Ryan Nobel - @RyRy
+  * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  The interface for the curve registry.
   */
 interface ICurveRegistry {
