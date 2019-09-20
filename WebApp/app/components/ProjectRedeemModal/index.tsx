@@ -39,7 +39,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           onClose={closeModal}>
           <Paper square={false} className={classes.modal}>
             <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
-              <CircularProgress className={classes.spinner} />
+              <CircularProgress className={classes.spinner} color='secondary' />
             </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Redeem Incentive Pool Holdings</Typography>

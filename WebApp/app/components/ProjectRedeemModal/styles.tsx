@@ -85,10 +85,9 @@ const styles = (theme: Theme) => createStyles({
     zIndex: 3,
   },
   spinner: {
-    zIndex: 4,
     position: 'fixed',
-    top: '50%',
-    left: '50%',
+    top: '47%',
+    left: '47%',
   }
 });
 

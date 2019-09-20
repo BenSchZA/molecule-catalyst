@@ -100,10 +100,9 @@ const styles = (theme: Theme) => createStyles({
     zIndex: 3,
   },
   spinner: {
-    zIndex: 4,
     position: 'fixed',
-    top: '50%',
-    left: '50%',
+    top: '47%',
+    left: '47%',
   }
 });
 
@@ -135,10 +134,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       <Form>
         <Modal
           open={modalState}
-          onClose={closeModal}>
+          onClose={closeModal}
+          disableBackdropClick={txInProgress}>
           <Paper square={false} className={classes.modal}>
             <div className={classes.overlay} style={{display: (txInProgress)? "block":"none"}}>
-              <CircularProgress className={classes.spinner} />
+              <CircularProgress className={classes.spinner} color='secondary' />
             </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Support Project</Typography>

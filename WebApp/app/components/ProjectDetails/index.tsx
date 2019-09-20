@@ -19,6 +19,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  CircularProgress,
 } from '@material-ui/core';
 import {
   Project,
@@ -425,7 +426,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     </Container>
   ) : (
     <Container>
-      Loading data
+      <CircularProgress className={classes.loadingSpinner}/>
     </Container>
   );
 };
