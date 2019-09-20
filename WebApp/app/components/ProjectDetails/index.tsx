@@ -40,7 +40,8 @@ import { bigNumberify } from 'ethers/utils';
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
   daiBalance: number;
-  userAddress: string;
+  holdingsValue: number;
+  contributionValue: number;
   formikProps: FormikProps<FormikValues>;
   selectModal(modal: number): void;
 }
@@ -48,10 +49,11 @@ interface OwnProps extends WithStyles<typeof styles> {
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   daiBalance,
-  userAddress,
   classes,
   formikProps,
   selectModal,
+  holdingsValue,
+  contributionValue
 }: OwnProps) => {
   const [open, setOpenModal] = React.useState(false);
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
@@ -70,30 +72,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setOpenModal(false);
     setOpenRedeemModal(false);
   };
-
-  const formatEtherPossiblyNegative = (possiblyNegativeHex: string): string => {
-    return possiblyNegativeHex.includes('-')
-      ? ethers.utils.formatEther(possiblyNegativeHex.replace('-', ''))
-      : ethers.utils.formatEther(possiblyNegativeHex);
-  };
-
-  const holdingsValue = project && project.chainData && project.chainData.marketData
-    ? Number(
-        ethers.utils.formatEther(project.chainData.marketData.holdingsValue),
-      )
-    : 0;
-  const contributionValue =
-    userAddress &&
-    project && 
-    project.marketData && 
-    project.marketData.netContributions && 
-    project.marketData.netContributions[userAddress]
-      ? Number(
-          formatEtherPossiblyNegative(
-            project.marketData.netContributions[userAddress]._hex,
-          ),
-        )
-      : 0;
 
   return project ? (
     <Container maxWidth="lg">

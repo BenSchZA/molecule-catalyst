@@ -18,6 +18,7 @@ import { ApplicationRootState } from 'types';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import { supportProject, withdrawHoldings } from 'domain/projects/actions';
+import { ethers } from 'ethers';
 
 interface RouteParams {
   projectId: string;
@@ -41,6 +42,7 @@ interface StateProps {
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
+  const {project, userAddress} = props;
 
   const [modal, setModal] = useState(0);
 
@@ -68,6 +70,18 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
     }),
   }) : Yup.object().shape({});
 
+  const holdingsValue = project && project.chainData && project.chainData.marketData
+    ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
+
+  const contributionValue =
+    userAddress &&
+    project && 
+    project.marketData && 
+    project.marketData.netCost && 
+    project.marketData.netCost[userAddress]
+    ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+    * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+
   return (
     <div>
       <Formik
@@ -80,7 +94,8 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
           <ProjectDetails
             project={props.project}
             daiBalance={props.daiBalance}
-            userAddress={props.userAddress}
+            holdingsValue={holdingsValue}
+            contributionValue={contributionValue}
             formikProps={formikProps}
             selectModal={setModal}
           />
