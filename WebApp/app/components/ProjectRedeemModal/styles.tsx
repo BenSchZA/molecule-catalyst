@@ -86,8 +86,9 @@ const styles = (theme: Theme) => createStyles({
   },
   spinner: {
     position: 'fixed',
-    top: '47%',
-    left: '47%',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   }
 });
 

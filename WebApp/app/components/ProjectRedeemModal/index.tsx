@@ -1,4 +1,4 @@
-import { WithStyles, Modal, Typography, Paper, Divider, CircularProgress } from '@material-ui/core';
+import { WithStyles, Modal, Typography, Paper, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Form, FormikProps, FormikValues } from 'formik';
 import { PositiveButton, NegativeButton } from '../custom';
 import styles from './styles';
+import MoleculeSpinner from 'components/MoleculeSpinner';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -39,7 +40,9 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           onClose={closeModal}>
           <Paper square={false} className={classes.modal}>
             <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
-              <CircularProgress className={classes.spinner} color='secondary' />
+              <div className={classes.spinner}>
+                <MoleculeSpinner />
+              </div>
             </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Redeem Incentive Pool Holdings</Typography>

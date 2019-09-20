@@ -1,13 +1,15 @@
-import { WithStyles, Theme, Modal, Typography, Paper, Divider, CircularProgress } from '@material-ui/core';
+import { WithStyles, Theme, Modal, Typography, Paper, Divider } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
 import { Info } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import { colors } from 'theme';
 import { Field, Form, FormikProps, FormikValues } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { NegativeButton, PositiveButton } from 'components/custom';
+import { colors } from 'theme';
+import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
+
 
 
 const titleHeight = 40;
@@ -101,8 +103,9 @@ const styles = (theme: Theme) => createStyles({
   },
   spinner: {
     position: 'fixed',
-    top: '47%',
-    left: '47%',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   }
 });
 
@@ -137,8 +140,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           onClose={closeModal}
           disableBackdropClick={txInProgress}>
           <Paper square={false} className={classes.modal}>
-            <div className={classes.overlay} style={{display: (txInProgress)? "block":"none"}}>
-              <CircularProgress className={classes.spinner} color='secondary' />
+            <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
+              <div className={classes.spinner}>
+                <MoleculeSpinner />
+              </div>
             </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Support Project</Typography>
