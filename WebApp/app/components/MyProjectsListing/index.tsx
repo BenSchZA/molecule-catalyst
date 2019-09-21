@@ -12,10 +12,13 @@ import { PositiveButton, NegativeButton } from 'components/custom';
 import styles from './styles';
 import { ethers } from 'ethers';
 import { bigNumberify } from 'ethers/utils';
+import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
+
 
 interface OwnProps extends WithStyles<typeof styles> {
   myProjects: Array<Project>,
   withdrawFunding(projectId: string): void,
+  txInProgress: boolean,
 }
 
 const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
@@ -34,16 +37,16 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
     setWithdrawDetails(() => {
       const currentProject = props.myProjects.filter((item) => item.id === projectId)[0] as Project;
 
-      const availableFundingBN = currentProject ? 
-      currentProject.vaultData.phases.filter(value => value.state == FundingState.ENDED).reduce((previousValue, currentValue, currentIndex, array) => {
-        return bigNumberify(previousValue).add(currentValue.fundingThreshold);
-      }, bigNumberify(0)) : bigNumberify(0);
-  
+      const availableFundingBN = currentProject ?
+        currentProject.vaultData.phases.filter(value => value.state == FundingState.ENDED).reduce((previousValue, currentValue, currentIndex, array) => {
+          return bigNumberify(previousValue).add(currentValue.fundingThreshold);
+        }, bigNumberify(0)) : bigNumberify(0);
+
       const availableFunding = currentProject ?
         Number(ethers.utils.formatEther(availableFundingBN)) : 0;
-      const outstandingWithdraw = currentProject ? 
+      const outstandingWithdraw = currentProject ?
         Number(ethers.utils.formatEther(currentProject.vaultData.outstandingWithdraw)) : 0;
-    
+
       const fee = availableFunding - outstandingWithdraw;
       const withdrawalAmount = availableFunding - fee;
 
@@ -68,6 +71,11 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
   return (
     <Fragment>
       <Paper className={props.classes.banner} elevation={0}>
+        <div className={props.classes.overlay} style={{ display: (props.txInProgress) ? "block" : "none" }}>
+          <div className={props.classes.spinner}>
+            <MoleculeSpinner />
+          </div>
+        </div>
         <Typography variant='h5'>Projects</Typography>
         <Paper>
           <Table>
@@ -106,9 +114,9 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
         </Paper>
       </Paper>
       <Modal
-          onClose={handleClose} 
-          open={open}
-        >
+        onClose={handleClose}
+        open={open}
+      >
         <Paper square={false} className={props.classes.modal}>
           <div className={props.classes.modalTitle}>
             <Typography variant="h2">Withdraw Funding</Typography>

@@ -13,14 +13,14 @@ interface OwnProps { }
 const MoleculeSpinner: React.FunctionComponent<OwnProps> = (
   props: OwnProps,
 ) => (
-    <Lottie options={{
-      loop: true,
-      autoplay: true,
-      animationData: MoleculeLoader,
-      rendererSettings: {
-        preserveAspectRatio: 'xMidYMid slice'
-      },
-    }}
+    <Lottie
+      options={{
+        loop: true,
+        animationData: MoleculeLoader,
+        rendererSettings: {
+          preserveAspectRatio: 'xMidYMid slice'
+        },
+      }}
       height={100}
       width={100}
       isClickToPauseDisabled />)

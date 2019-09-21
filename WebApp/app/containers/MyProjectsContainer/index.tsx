@@ -28,6 +28,7 @@ interface DispatchProps {
 
 export interface StateProps {
   myProjects: Array<Project>,
+  txInProgress: boolean,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
