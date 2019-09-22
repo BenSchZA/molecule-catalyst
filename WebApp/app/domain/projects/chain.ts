@@ -139,7 +139,6 @@ async function allowance(spender) {
   const daiContract = await getDaiContract();
   const allowance = await daiContract.allowance(signerAddress, spender);
 
-  console.log(allowance);
   return allowance;
 }
 
@@ -151,8 +150,7 @@ async function approve(address, value: BigNumber) {
     // Get contract instances
     const daiContract = await getDaiContract();
     const txReceipt = await daiContract.approve(address, value);
-    const result = await (txReceipt).wait();
-    console.log(result);
+    await (txReceipt).wait();
     return true;
   } else {
     console.log("Allowance already set");

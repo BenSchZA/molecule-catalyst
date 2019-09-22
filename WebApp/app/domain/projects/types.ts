@@ -67,7 +67,7 @@ interface ChainData {
 interface MarketData {
   lastBlockUpdated: number,
   totalMinted: BigNumber,
-  netContributions: Map<string, BigNumber>,
+  netCost: Map<string, BigNumber>,
   balances: Map<string, BigNumber>,
   transactions: Array<MintTX | BurnTX | TransferTX>,
 }
