@@ -12,7 +12,7 @@ import { LaunchProjectDTO } from './dto/launchProject.dto';
 
 @Controller('project')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService) { }
 
   // Public getter provides filtered list of projects that are displayed to all users.
   @Get()
@@ -32,7 +32,7 @@ export class ProjectController {
   @Get('my')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.ProjectCreator)
-  async getUserProjects(@Req() req: Request & {user: User}) {
+  async getUserProjects(@Req() req: Request & { user: User }) {
     const result = await this.projectService.getUserProjects(req.user.id);
     return result;
   }
@@ -44,7 +44,7 @@ export class ProjectController {
     name: 'featuredImage',
     maxCount: 1,
     type: FileOptions.PICTURE,
-  }))  
+  }))
   async submitProject(@Req() req: Request & { user: User },
     @Body() reqBody: SubmitProjectDTO,
     @UploadedFile() file) {
@@ -67,6 +67,17 @@ export class ProjectController {
     @Param('projectId') projectId,
     @Req() req: Request & { user: User }) {
     const result = await this.projectService.launchProject(projectId, req.user);
+    return result;
+  }
+
+  @Post(':projectId/update')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.ProjectCreator)
+  async addResearchUpdate(
+    @Param('projectId') projectId,
+    @Body() body,
+    @Req() req: Request & { user: User }) {
+    const result = await this.projectService.addResearchUpdate(projectId, body, req.user);
     return result;
   }
 }

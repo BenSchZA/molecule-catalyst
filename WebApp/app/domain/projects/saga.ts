@@ -172,4 +172,5 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
   yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
   yield takeLatest(getType(ProjectActions.withdrawFunding.request), withdrawFunding);
+  yield takeLatest(getType(ProjectActions.addResearchUpdate.request), addResearchUpdate);
 }
