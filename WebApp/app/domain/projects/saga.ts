@@ -173,9 +173,11 @@ export function* addResearchUpdate(action) {
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
     yield call(addResearchUpdateAPI, projectId, update, apiKey);
     yield put(ProjectActions.addResearchUpdate.success());
+    yield put(NotificationActions.enqueueSnackbar({message: 'Update successfully added', options: { variant: 'success' }}))
     // yield call(forwardTo, '/admin/projects');
   } catch (error) {
     put(ProjectActions.addResearchUpdate.failure(error));
+    put(NotificationActions.enqueueSnackbar({message: 'Something went wrong. Please contact the admin', options: { variant: 'error' }}))
   }
 }
 
