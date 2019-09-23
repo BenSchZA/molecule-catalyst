@@ -14,14 +14,14 @@ import saga from './saga';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { Project } from 'domain/projects/types';
 import { Container } from '@material-ui/core';
-import { launchProject, withdrawFunding } from 'domain/projects/actions';
+import { withdrawFunding, addResearchUpdate } from 'domain/projects/actions';
 import MyProjectsListing from 'components/MyProjectsListing';
 
 interface OwnProps {}
 
 interface DispatchProps {
-  launchProject(projectId: string): void;
   withdrawFunding(projectId: string): void;
+  addResearchUpdate(projectId: string, researchUpdate: string): void;
 }
 
 export interface StateProps {
@@ -43,8 +43,8 @@ const mapDispatchToProps = (
   ownProps: OwnProps,
 ): DispatchProps => {
   return {
-    launchProject: (projectId: string) => dispatch(launchProject.request(projectId)),
     withdrawFunding: (projectId: string) => dispatch(withdrawFunding.request(projectId)),
+    addResearchUpdate: (projectId: string, researchUpdate: string) => dispatch(addResearchUpdate.request({projectId: projectId, update: researchUpdate})),
   };
 };
 
