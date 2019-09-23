@@ -98,7 +98,7 @@ export async function launchProject(projectId: string, apiToken: string) {
 }
 
 export async function addResearchUpdate(projectId: string, update: string, apiToken: string) {
-  const body = JSON.stringify(update);
+  const body = JSON.stringify({researchUpdate: update});
   return apiRequest(
     RequestMethod.POST,
     apiUrlBuilder.addResearchUpdate(projectId),

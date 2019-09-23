@@ -81,6 +81,7 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
   function handleSubmitResearchUpdate() {
     props.addResearchUpdate(projectId, researchUpdate);
     setWithdrawlModalOpen(false);
+    setResearchUpdate('');
   }
 
   return (

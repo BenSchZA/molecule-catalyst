@@ -77,7 +77,7 @@ export class ProjectController {
     @Param('projectId') projectId,
     @Body() body,
     @Req() req: Request & { user: User }) {
-    const result = await this.projectService.addResearchUpdate(projectId, body, req.user);
+    const result = await this.projectService.addResearchUpdate(projectId, body.researchUpdate, req.user);
     return result;
   }
 }
