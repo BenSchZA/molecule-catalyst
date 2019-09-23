@@ -19,6 +19,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  CircularProgress,
 } from '@material-ui/core';
 import {
   Project,
@@ -43,6 +44,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   holdingsValue: number;
   contributionValue: number;
   formikProps: FormikProps<FormikValues>;
+  txInProgress: boolean;
   selectModal(modal: number): void;
 }
 
@@ -52,6 +54,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   classes,
   formikProps,
   selectModal,
+  txInProgress,
   holdingsValue,
   contributionValue
 }: OwnProps) => {
@@ -83,6 +86,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             formikProps={formikProps}
             daiBalance={daiBalance}
             contributionRate={project.chainData.marketData.taxationRate}
+            txInProgress={txInProgress}
           />
           <ProjectRedeemModal
             closeModal={handleClose}
@@ -90,6 +94,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             formikProps={formikProps}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
+            txInProgress={txInProgress}
           />
         </div>
       }
@@ -399,7 +404,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     </Container>
   ) : (
     <Container>
-      Loading data
+      <CircularProgress className={classes.loadingSpinner}/>
     </Container>
   );
 };

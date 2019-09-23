@@ -12,11 +12,14 @@ import { PositiveButton, NegativeButton } from 'components/custom';
 import styles from './styles';
 import { ethers } from 'ethers';
 import { bigNumberify } from 'ethers/utils';
+import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
+
 
 interface OwnProps extends WithStyles<typeof styles> {
   myProjects: Array<Project>,
   withdrawFunding(projectId: string): void,
   addResearchUpdate(projectId: string, researchUpdate: string): void;
+  txInProgress: boolean,
 }
 
 const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
@@ -87,6 +90,11 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
   return (
     <Fragment>
       <Paper className={props.classes.banner} elevation={0}>
+        <div className={props.classes.overlay} style={{ display: (props.txInProgress) ? "block" : "none" }}>
+          <div className={props.classes.spinner}>
+            <MoleculeSpinner />
+          </div>
+        </div>
         <Typography variant='h5'>Projects</Typography>
         <Paper>
           <Table>
@@ -125,8 +133,7 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
       </Paper>
       <Modal
         onClose={handleCloseWithdraw}
-        open={withdrawlModalOpen}
-      >
+        open={withdrawlModalOpen} >
         <Paper square={false} className={props.classes.modal}>
           <div className={props.classes.modalTitle}>
             <Typography variant="h2">Withdraw Funding</Typography>
