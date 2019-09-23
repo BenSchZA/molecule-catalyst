@@ -73,18 +73,13 @@ class Notifier extends Component<Props> {
   }
 
   render() {
-    console.log('in render');
     return null;
   }
 }
 
-const mapStateToProps = state => {
-  console.log('in map state to props');
-  console.log(state.notification);
-  return {
-    notifications: state.notification.notifications,
-  }
-};
+const mapStateToProps = state => ({
+  notifications: state.notification.notifications,
+})
 
 const mapDispatchToProps = dispatch => bindActionCreators({ removeSnackbar }, dispatch);
 

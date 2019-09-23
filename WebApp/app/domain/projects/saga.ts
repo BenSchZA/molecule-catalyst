@@ -86,7 +86,7 @@ export function* withdrawHoldings(action) {
   const projectId = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(!project.chainData.index || project.chainData.marketAddress == "0x") { 
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
     console.log("Invalid project blockchain data");
     return;
   }
