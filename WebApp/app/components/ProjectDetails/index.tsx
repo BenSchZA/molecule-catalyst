@@ -410,7 +410,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             project.researchUpdates.sort((a, b) => a.date < b.date ? 1 :
               a.date === b.date ? 0 : -1).map((update, index) =>
                 <div key={index}>
-                  {update.date} - {update.update}
+                  <Typography className={classes.lastUpdated}>
+                    {dayjs(update.date)
+                      .format('DD MMM YYYY h:mm ')
+                      .toUpperCase()}
+                  </Typography>
+                  <Typography  className={classes.contentText}>
+                    {update.update}
+                  </Typography>
                 </div>
               )
           }
