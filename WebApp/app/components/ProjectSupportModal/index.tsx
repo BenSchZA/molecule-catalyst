@@ -2,17 +2,13 @@ import { WithStyles, Theme, Modal, Typography, Paper, Divider } from '@material-
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
-import { Info } from '@material-ui/icons';
+import { Info, Close } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { Field, Form, FormikProps, FormikValues } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { NegativeButton, PositiveButton } from 'components/custom';
 import { colors } from 'theme';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
-
-
-
-const titleHeight = 40;
 
 const styles = (theme: Theme) => createStyles({
   layout: {
@@ -34,30 +30,33 @@ const styles = (theme: Theme) => createStyles({
   },
   modal: {
     position: 'absolute',
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
     padding: theme.spacing(2, 4, 3),
-    overflow: "hidden",
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    "&:before": {
-      content: "''",
-      display: "block",
-      width: "100%",
-      height: titleHeight,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: -1,
-      backgroundColor: colors.grey,
-    }
+    width: '534px',
+    boxShadow: '20px 20px 60px #00000071',
+    border: '2px solid #FFFFFF',
+    borderRadius: '10px',
+    opacity: 1,
+  },
+  closeModal: {
+    position: 'absolute',
+    top: 0,
+    left: '100%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
+    borderRadius: '50%',
+    padding: '3px'
   },
   modalTitle: {
     "& h2": {
-      fontSize: "16px",
+      fontSize: "30px",
       textTransform: "uppercase",
-      textAlign: "left",
+      textAlign: "center",
       margin: 0,
       padding: 0
     }
@@ -148,6 +147,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <div className={classes.modalTitle}>
               <Typography variant="h2">Support Project</Typography>
             </div>
+            <Divider />
             <div className={classes.table}>
               <Typography variant="body1">
                 Your Account Balance:
@@ -169,7 +169,6 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
                 }}
               />
             </div>
-            <Divider />
             <div className={classes.table}>
               <Typography variant="body1">
                 To Researcher:
@@ -195,6 +194,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <div className={classes.buttons}>
               <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
               <PositiveButton type='submit' disabled={formikProps.isSubmitting} onClick={formikProps.submitForm}>Support Project</PositiveButton>
+            </div>
+            <div className={classes.closeModal}>
+              <Close style={{padding: '0px'}}/>
             </div>
           </Paper>
         </Modal>
