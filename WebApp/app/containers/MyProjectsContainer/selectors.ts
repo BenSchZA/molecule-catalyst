@@ -4,6 +4,7 @@ import { makeSelectUserId } from 'domain/authentication/selectors';
 import { selectAllProjects } from 'domain/projects/selectors';
 import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
+import { ApplicationRootState } from 'types';
 
 const makeSelectMyProjects = createSelector(
     selectAllProjects,
@@ -13,8 +14,16 @@ const makeSelectMyProjects = createSelector(
     },
   );
 
+const makeSelectTxInProgress = createSelector(
+  (state: ApplicationRootState) => state.myProjectsContainer.txInProgress,
+  (txinProgress) => {
+    return txinProgress;
+  }
+)
+
 const selectMyProjects = createStructuredSelector<RootState, StateProps>({
-  myProjects: makeSelectMyProjects
+  myProjects: makeSelectMyProjects,
+  txInProgress: makeSelectTxInProgress,
 });
 
 export default selectMyProjects;

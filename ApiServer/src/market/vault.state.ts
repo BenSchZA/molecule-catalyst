@@ -7,7 +7,7 @@ import { IVault, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import throttle = require('lodash/throttle');
 import { VaultReducer } from './vault.reducer';
 import { VaultDocument } from './vault.schema';
-import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase } from './vault.actions';
+import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase, setOutstandingWithdraw } from './vault.actions';
 import { rehydrateVaultData } from './mongoRehydrationHelpers';
 
 
@@ -42,7 +42,10 @@ export class VaultState extends ServiceBase {
     // get all logs from latest block in DB up until the current block, and update fixture state
     const marketAddress = await this.vaultContract.market();
 
-    if (this.stateDocument.isNew) {
+    const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
+    this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
+
+    if (this.stateDocument.isNew) {  
       // Get all the phases, and store them in state
       const totalPhases = await this.vaultContract.getTotalRounds();
       for (let i = 0; i < totalPhases; i++) {
@@ -63,7 +66,7 @@ export class VaultState extends ServiceBase {
         ...parsedLog,
         blockNumber: log.blockNumber,
         value: parsedLog.value
-      }))
+      }));
     });
 
     const currentPhase = await this.vaultContract.currentPhase();
@@ -77,23 +80,51 @@ export class VaultState extends ServiceBase {
             blockNumber: event.blockNumber,
             value: value,
           }));
+
           const phase = await this.getPhaseData(this.stateDocument.vaultData.activePhase);
           this.logger.info(`Updating phase ${phase.index + 1} data`);
-          this.vaultState.dispatch(updatePhase({ ...phase, index: parseInt(phase.index) }))
+          this.vaultState.dispatch(updatePhase({
+            ...phase,
+            index: parseInt(phase.index),
+          }));
         }
       });
+    
     this.vaultContract.on(this.vaultContract.filters.PhaseFinalised(),
       async (index, amount, event) => {
         this.logger.info(`Phase ${parseInt(index)} finalised`);
         const updatedPhase = parseInt(await this.vaultContract.currentPhase());
         this.vaultState.dispatch(setCurrentPhaseAction(updatedPhase));
+
+        const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
+        this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
+
         const phase = await this.getPhaseData(updatedPhase);
-        this.vaultState.dispatch(updatePhase({ ...phase, index: parseInt(phase.index) }))
+        this.vaultState.dispatch(updatePhase({
+          ...phase,
+          index: parseInt(phase.index) 
+        }));
       });
+
+    this.vaultContract.on(this.vaultContract.filters.FundingWithdrawn(), async (index, amount, _) => {
+      this.logger.info(`Phase ${parseInt(index)} funding withdrawn: ${parseInt(amount)}`);
+      const updatedPhase = parseInt(await this.vaultContract.currentPhase());
+      this.vaultState.dispatch(setCurrentPhaseAction(updatedPhase));
+
+      const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
+      this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
+
+      const phase = await this.getPhaseData(updatedPhase);
+      this.vaultState.dispatch(updatePhase({
+        ...phase,
+        index: parseInt(phase.index) 
+      }));
+    });
   }
 
   async getPhaseData(phaseNo) {
     const rawPhase = await this.vaultContract.fundingPhase(phaseNo);
+
     return {
       index: phaseNo,
       fundingThreshold: rawPhase[0],

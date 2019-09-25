@@ -29,3 +29,8 @@ export const withdrawHoldings = createAsyncAction(
   ActionTypes.WITHDRAW_HOLDINGS_SUCCESS,
   ActionTypes.WITHDRAW_HOLDINGS_FAILURE)
   <string, string, Error>();
+export const withdrawFunding = createAsyncAction(
+  ActionTypes.WITHDRAW_FUNDING_REQUEST,
+  ActionTypes.WITHDRAW_FUNDING_SUCCESS,
+  ActionTypes.WITHDRAW_FUNDING_FAILURE)
+  <string, string, Error>();

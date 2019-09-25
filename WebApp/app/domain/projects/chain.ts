@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
-import { IMarketRegistry, IMarketFactory, IMarket } from "@molecule-protocol/catalyst-contracts";
-import { MarketDataLegacy } from './types';
+import { IMarketRegistry, IMarketFactory, IMarket, IVault } from "@molecule-protocol/catalyst-contracts";
+import { MarketDataLegacy, PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
 
@@ -139,7 +139,6 @@ async function allowance(spender) {
   const daiContract = await getDaiContract();
   const allowance = await daiContract.allowance(signerAddress, spender);
 
-  console.log(allowance);
   return allowance;
 }
 
@@ -151,8 +150,7 @@ async function approve(address, value: BigNumber) {
     // Get contract instances
     const daiContract = await getDaiContract();
     const txReceipt = await daiContract.approve(address, value);
-    const result = await (txReceipt).wait();
-    console.log(result);
+    await (txReceipt).wait();
     return true;
   } else {
     console.log("Allowance already set");
@@ -190,4 +188,18 @@ export async function burn(marketAddress) {
     to: targetLog.values.to,
     value: targetLog.values.value._hex,
   }
+}
+
+export async function withdrawAvailable(vaultAddress, phases) {
+  // Get blockchain objects
+  const { signer } = await getBlockchainObjects();
+
+  // Get contract instances
+  const vault = await new ethers.Contract(vaultAddress, JSON.stringify(IVault), signer);
+
+  // Withdraw all available funds
+  await Promise.all(phases.filter(phase => phase.state === FundingState.ENDED)
+    .map(async (phase: PhaseData) => vault.withdraw(phase.index)));
+
+  return true;
 }

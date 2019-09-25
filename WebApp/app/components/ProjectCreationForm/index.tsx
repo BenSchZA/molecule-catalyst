@@ -8,9 +8,9 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
 import { Form, Field, FieldArray } from 'formik';
 import { TextField } from 'formik-material-ui';
-import UploadImageField from 'components/UploadImageField';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
+import UploadImageTextField from 'components/UploadImageTextField';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -84,14 +84,13 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
           <InputLabel htmlFor='featuredImage' shrink>Upload a relevant visualization that will be used to represent your project across the platform.</InputLabel>
           <Field
-            component={UploadImageField}
+            component={UploadImageTextField}
             name='featuredImage' />
         </Paper>
       </Container>
@@ -121,8 +120,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='approach'>Approach</InputLabel>
@@ -137,8 +135,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             component={TextField}
             variant='filled'
             multiline
-            rows='5'
-            rowsMax='5'
+            rows='10'
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='collaborators'>Collaborators</InputLabel>
@@ -265,8 +262,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           component={TextField}
                           variant='filled'
                           multiline
-                          rows='5'
-                          rowsMax='5'
+                          rows='10'
                           fullWidth
                           margin="dense" />
                         <InputLabel htmlFor='result'>Result</InputLabel>
@@ -280,6 +276,8 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           placeholder='Enter a result.'
                           component={TextField}
                           variant='filled'
+                          multiline
+                          rows='10'
                           fullWidth
                           margin="dense" />
                         <Grid container>

@@ -343,11 +343,10 @@ describe('Market test', async () => {
 
             const balance = await marketInstance.balanceOf(user1.signer.address);
 
-            // event Mint(address indexed to, uint256 amountMinted, uint256 collateralAmount, uint256 researchContribution);
             assert.equal(transfers[0].values.to, user1.signer.address, "User address not in event");
             assert.equal(balance.toString(), transfers[0].values.amountMinted.toString(), "User balance does not match event");
-            assert.notEqual(transfers[0].values.collateralAmount.toString(), 0, "Collateral amount is 0");
-            assert.notEqual(transfers[0].values.researchContribution.toString(), 0, "Research contribution is 0");
+            assert.notEqual(transfers[0].values.collateralAmount.toString(), 0, "Amount spent is 0");
+            assert.notEqual(transfers[0].values.researchContribution.toString(), 0, "Tax is 0");
         });
 
         it('Emits Transfer in burn', async () => {
@@ -370,7 +369,6 @@ describe('Market test', async () => {
             const balance = await marketInstance.balanceOf(user1.signer.address);
             
             const txReceipt = await (await marketInstance.from(user1).burn(balance)).wait();
-            console.log("\nBurn");
             
             const transfers = (await(txReceipt.events.filter(
                 event => event.topics[0] == marketInstance.interface.events.Burn.topic

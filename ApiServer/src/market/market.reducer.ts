@@ -1,11 +1,25 @@
 import { transferAction, mintAction, burnAction } from "./market.actions";
 import { getType } from "typesafe-actions";
 import { BigNumber, bigNumberify } from "ethers/utils";
+import { ethers } from "ethers";
+
+const calculateNetCost = (transactionsState, action): BigNumber => {
+  const transactions = [
+    ...transactionsState,
+    {txType: action.type, ...action.payload}
+  ];
+  const mints = transactions.filter(tx => tx.txType === 'MINT'
+    && tx.userAddress === action.payload.userAddress);
+
+  return mints.length > 0 ? mints.reduce((prev, current) => {
+    return prev.add((current.collateralAmount.mul(ethers.utils.parseEther('1'))).div(current.amountMinted))
+  }, bigNumberify(0)).div(bigNumberify(mints.length)) : bigNumberify(0);
+}
 
 export interface MarketState {
   lastBlockUpdated: number,
   totalMinted: BigNumber,
-  netContributions: {
+  netCost: {
     [s: string]: BigNumber 
   },
   balances: {
@@ -24,7 +38,7 @@ export interface MarketState {
 export const initialState: MarketState = {
   lastBlockUpdated: 0,
   totalMinted: bigNumberify(0),
-  netContributions: {},
+  netCost: {},
   balances: {},
   transactions: [],
 }
@@ -46,20 +60,18 @@ export function MarketReducer(state: MarketState = initialState, action) {
           {txType: action.type, ...action.payload}
         ]
       }
-    case getType(mintAction):      
+    case getType(mintAction):
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
         totalMinted: state.totalMinted.add(action.payload.amountMinted),
-        netContributions: {
-          ...state.netContributions,
-          [action.payload.userAddress]: (state.netContributions[action.payload.userAddress]) ? 
-            state.netContributions[action.payload.userAddress].sub(action.payload.collateralAmount) : 
-            action.payload.collateralAmount.mul(bigNumberify(-1))
+        netCost: {
+          ...state.netCost,
+          [action.payload.userAddress]: calculateNetCost(state.transactions, action)
         },
         balances: {
           ...state.balances,
-          [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 
+          [action.payload.userAddress]: state.balances && (state.balances[action.payload.userAddress]) ? 
             state.balances[action.payload.userAddress].add(action.payload.amountMinted) : 
             action.payload.amountMinted
         },
@@ -73,12 +85,6 @@ export function MarketReducer(state: MarketState = initialState, action) {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
         totalMinted: state.totalMinted.sub(action.payload.amountBurnt),
-        netContributions: {
-          ...state.netContributions,
-          [action.payload.userAddress]: (state.netContributions[action.payload.userAddress]) ? 
-            state.netContributions[action.payload.userAddress].add(action.payload.collateralReturned) :
-            action.payload.collateralReturned
-        },
         balances: {
           ...state.balances,
           [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 

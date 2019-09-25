@@ -212,6 +212,8 @@ const styles = ({ spacing, palette }: Theme) =>
       color: '#000000DE',
       opacity: 1.0,
       paddingTop: spacing(2),
+      paddingLeft: spacing(2),
+      paddingRight: spacing(2),
       marginTop: spacing(2)
     },
     avatar: {
@@ -344,6 +346,11 @@ const styles = ({ spacing, palette }: Theme) =>
       font: 'Bold 14px/24px Montserrat',
       letterSpacing: '0.18px',
       color: '#FFFFFF'
+    },
+    loadingSpinner: {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
     }
   });
 

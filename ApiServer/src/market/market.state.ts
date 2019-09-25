@@ -7,7 +7,7 @@ import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
 import { mintAction, burnAction, transferAction } from './market.actions';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber, bigNumberify } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
 

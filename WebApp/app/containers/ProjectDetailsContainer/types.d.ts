@@ -4,7 +4,7 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface ProjectDetailsContainerState {
-  readonly default: any;
+  readonly txInProgress: boolean;
 }
 
 /* --- ACTIONS --- */

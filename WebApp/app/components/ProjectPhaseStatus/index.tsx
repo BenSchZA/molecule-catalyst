@@ -89,13 +89,20 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}:
   <Typography className={classes.label}>PHASE 0{phase.index}</Typography>
   <Typography className={classes.largeText}>{phase.title}</Typography>
   <Typography className={classes.label}>FUNDING GOAL</Typography>
-  <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} USD</Typography>
-  <Typography className={classes.progress}>{phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).add(phase.duration, 'month').diff(dayjs(), 'day')} DAYS LEFT`}</Typography>
+  <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} DAI</Typography>
+  <Typography className={classes.progress}>
+    {phase.fundedAmount >= phase.fundingGoal ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).add(phase.duration, 'month').diff(dayjs(), 'day')} DAYS LEFT`)}
+  </Typography>
   <BorderLinearProgress
-        variant="determinate"
-        color="secondary"
-        value={phase.fundedAmount/phase.fundingGoal*100}  />
-  <Typography className={classes.projectProgress}>{`${(phase.fundedAmount/phase.fundingGoal)*100} %`}</Typography>
+    variant="determinate"
+    color="secondary"
+    value={phase.fundedAmount >= phase.fundingGoal ? 100 : phase.fundedAmount/phase.fundingGoal*100}
+  />
+  <Typography className={classes.projectProgress}>
+    {
+      phase.fundedAmount >= phase.fundingGoal ? 100 : Math.ceil((phase.fundedAmount/phase.fundingGoal)*100)
+    } %
+  </Typography>
   <Chip className={classes.chip} label={phase.index-1 < phase.activePhase  ? 'RELEASED' : 'NOT RELEASED'}/>
   <br></br>
   <br></br>
