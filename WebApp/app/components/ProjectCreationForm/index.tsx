@@ -8,9 +8,9 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
 import { Form, Field, FieldArray } from 'formik';
 import { TextField } from 'formik-material-ui';
-import UploadImageField from 'components/UploadImageField';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
+import UploadImageTextField from 'components/UploadImageTextField';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -90,7 +90,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
           <InputLabel htmlFor='featuredImage' shrink>Upload a relevant visualization that will be used to represent your project across the platform.</InputLabel>
           <Field
-            component={UploadImageField}
+            component={UploadImageTextField}
             name='featuredImage' />
         </Paper>
       </Container>

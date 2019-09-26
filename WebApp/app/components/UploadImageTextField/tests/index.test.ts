@@ -2,8 +2,8 @@
 // import { mount } from 'enzyme';
 // import { enzymeFind } from 'styled-components/test-utils';
 
-// import UploadImageField from '../index';
+// import UploadImageTextField from '../index';
 
-describe('<UploadImageField />', () => {
+describe('<UploadImageTextField />', () => {
   test.todo('Expect to have unit tests specified')
 });

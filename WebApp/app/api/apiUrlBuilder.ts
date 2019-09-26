@@ -26,6 +26,7 @@ const apiUrlBuilder = {
   approveProject: (projectId: string) => generateUri(`project/${projectId}/approve`),
   rejectProject: (projectId: string) => generateUri(`project/${projectId}/reject`),
   launchProject: (projectId: string) => generateUri(`project/${projectId}/launch`),
+  addResearchUpdate: (projectId: string) => generateUri(`project/${projectId}/update`),
 };
 
 export default apiUrlBuilder;

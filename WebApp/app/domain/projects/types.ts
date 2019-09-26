@@ -26,7 +26,8 @@ interface IProject {
   reviewedBy: string,
   chainData: ChainData,
   marketData: MarketData,
-  vaultData: VaultData
+  vaultData: VaultData,
+  researchUpdates: ResearchUpdate[],
 }
 
 interface Collaborator {
@@ -41,6 +42,11 @@ interface ResearchPhase {
   result: string,
   fundingGoal: number,
   duration: number,
+}
+
+interface ResearchUpdate {
+  update: string,
+  date: Date,
 }
 
 interface User {
@@ -67,7 +73,7 @@ interface ChainData {
 interface MarketData {
   lastBlockUpdated: number,
   totalMinted: BigNumber,
-  netContributions: Map<string, BigNumber>,
+  netCost: Map<string, BigNumber>,
   balances: Map<string, BigNumber>,
   transactions: Array<MintTX | BurnTX | TransferTX>,
 }

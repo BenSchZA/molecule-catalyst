@@ -4,10 +4,13 @@ import React, { Fragment } from 'react';
 import { compose } from 'redux';
 import { Info } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import { colors } from 'theme';
 import { Field, Form, FormikProps, FormikValues } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { NegativeButton, PositiveButton } from 'components/custom';
+import { colors } from 'theme';
+import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
+
+
 
 const titleHeight = 40;
 
@@ -24,22 +27,21 @@ const styles = (theme: Theme) => createStyles({
     flexDirection: 'row',
     justifyContent: "center",
     alignItems: 'center',
-    "& > *":{
+    "& > *": {
       width: 200,
       margin: "0 20px"
     }
   },
   modal: {
     position: 'absolute',
-    // width: "",
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    overflow:"hidden",
+    overflow: "hidden",
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    "&:before":{
+    "&:before": {
       content: "''",
       display: "block",
       width: "100%",
@@ -52,7 +54,7 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   modalTitle: {
-    "& h2":{
+    "& h2": {
       fontSize: "16px",
       textTransform: "uppercase",
       textAlign: "left",
@@ -60,23 +62,23 @@ const styles = (theme: Theme) => createStyles({
       padding: 0
     }
   },
-  table:{
+  table: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
     margin: "20px 0",
-    "& > *":{
+    "& > *": {
       margin: "10px 0",
       padding: 0,
       width: "50%",
-      "&:nth-child(even)":{
+      "&:nth-child(even)": {
         textAlign: "right"
       }
     }
   },
-  input:{
+  input: {
     justifyContent: "flex-end",
     width: 150,
   },
@@ -89,6 +91,21 @@ const styles = (theme: Theme) => createStyles({
     paddingBottom: '16px',
     paddingLeft: '8px',
     paddingRight: '8px'
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    left: 0,
+    zIndex: 3,
+  },
+  spinner: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   }
 });
 
@@ -98,20 +115,22 @@ interface Props extends WithStyles<typeof styles> {
   daiBalance: number,
   contributionRate: number,
   formikProps: FormikProps<FormikValues>,
+  txInProgress: boolean,
 }
 
 const ProjectSupportModal: React.FunctionComponent<Props> = ({
-    classes, 
-    daiBalance, 
-    modalState, 
-    closeModal,
-    contributionRate,
-    formikProps,
-  }: Props) => {
+  classes,
+  daiBalance,
+  modalState,
+  closeModal,
+  contributionRate,
+  formikProps,
+  txInProgress,
+}: Props) => {
 
   const displayPrecision = 2;
-  const toResearcher = Number((formikProps.values.contribution * contributionRate/100).toFixed(displayPrecision));
-  const toIncentivePool = Number((formikProps.values.contribution -  formikProps.values.contribution*contributionRate/100).toFixed(displayPrecision));
+  const toResearcher = Number((formikProps.values.contribution * contributionRate / 100).toFixed(displayPrecision));
+  const toIncentivePool = Number((formikProps.values.contribution - formikProps.values.contribution * contributionRate / 100).toFixed(displayPrecision));
 
   return (
     <Fragment>
@@ -119,8 +138,13 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <Modal
           open={modalState}
           onClose={closeModal}
-        >
+          disableBackdropClick={txInProgress}>
           <Paper square={false} className={classes.modal}>
+            <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
+              <div className={classes.spinner}>
+                <MoleculeSpinner />
+              </div>
+            </div>
             <div className={classes.modalTitle}>
               <Typography variant="h2">Support Project</Typography>
             </div>
@@ -132,10 +156,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
               <Typography variant="body1">
                 Enter Contribution Amount
               </Typography>
-              <Field 
+              <Field
                 className={classes.input}
                 name="contribution"
-                type="number" 
+                type="number"
                 placeholder="Dai"
                 component={TextField}
                 InputProps={{
@@ -175,7 +199,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </Paper>
         </Modal>
       </Form>
-    </Fragment>
+    </Fragment >
   );
 };
 

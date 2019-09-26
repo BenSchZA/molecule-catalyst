@@ -19,6 +19,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  CircularProgress,
 } from '@material-ui/core';
 import {
   Project,
@@ -40,18 +41,22 @@ import { bigNumberify } from 'ethers/utils';
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
   daiBalance: number;
-  userAddress: string;
+  holdingsValue: number;
+  contributionValue: number;
   formikProps: FormikProps<FormikValues>;
+  txInProgress: boolean;
   selectModal(modal: number): void;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   daiBalance,
-  userAddress,
   classes,
   formikProps,
   selectModal,
+  txInProgress,
+  holdingsValue,
+  contributionValue
 }: OwnProps) => {
   const [open, setOpenModal] = React.useState(false);
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
@@ -71,46 +76,28 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setOpenRedeemModal(false);
   };
 
-  const formatEtherPossiblyNegative = (possiblyNegativeHex: string): string => {
-    return possiblyNegativeHex.includes('-')
-      ? ethers.utils.formatEther(possiblyNegativeHex.replace('-', ''))
-      : ethers.utils.formatEther(possiblyNegativeHex);
-  };
-
-  const holdingsValue = project && project.chainData && project.chainData.marketData
-    ? Number(
-        ethers.utils.formatEther(project.chainData.marketData.holdingsValue),
-      )
-    : 0;
-  const contributionValue =
-    userAddress &&
-    project && 
-    project.marketData && 
-    project.marketData.netContributions && 
-    project.marketData.netContributions[userAddress]
-      ? Number(
-          formatEtherPossiblyNegative(
-            project.marketData.netContributions[userAddress]._hex,
-          ),
-        )
-      : 0;
-
-  return project && project.chainData && project.chainData.marketData ? (
+  return project ? (
     <Container maxWidth="lg">
-      <ProjectSupportModal
-        closeModal={handleClose}
-        modalState={open}
-        formikProps={formikProps}
-        daiBalance={daiBalance}
-        contributionRate={project.chainData.marketData.taxationRate}
-      />
-      <ProjectRedeemModal
-        closeModal={handleClose}
-        modalState={openRedeem}
-        formikProps={formikProps}
-        holdingsValue={holdingsValue}
-        contributionValue={contributionValue}
-      />
+      {project && project.chainData && project.chainData.marketData &&
+        <div>
+          <ProjectSupportModal
+            closeModal={handleClose}
+            modalState={open}
+            formikProps={formikProps}
+            daiBalance={daiBalance}
+            contributionRate={project.chainData.marketData.taxationRate}
+            txInProgress={txInProgress}
+          />
+          <ProjectRedeemModal
+            closeModal={handleClose}
+            modalState={openRedeem}
+            formikProps={formikProps}
+            holdingsValue={holdingsValue}
+            contributionValue={contributionValue}
+            txInProgress={txInProgress}
+          />
+        </div>
+      }
       <div className={classes.bannerWrapper}>
         <img
           src={apiUrlBuilder.attachmentStream(project.featuredImage)}
@@ -121,12 +108,17 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             {project.title}
           </Typography>
           <div>
-            <Button className={classes.supportProject} onClick={handleOpen}>
+            <Button
+              className={classes.supportProject}
+              onClick={handleOpen}
+              disabled={!(project && project.chainData && project.chainData.marketData)}
+            >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
+              disabled={!(project && project.chainData && project.chainData.marketData)}
             >
               Redeem Holdings
             </Button>
@@ -147,8 +139,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography variant="h6">
               {project.user.fullName &&
                 project.user.fullName.toUpperCase() +
-                  ', ' +
-                  project.user.professionalTitle.toUpperCase()}
+                ', ' +
+                project.user.professionalTitle.toUpperCase()}
             </Typography>
           </div>
           <div>
@@ -193,88 +185,90 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
               project.user.fullName.toUpperCase() +
-                ', ' +
-                project.user.professionalTitle.toUpperCase()}
+              ', ' +
+              project.user.professionalTitle.toUpperCase()}
           </Typography>
         </div>
         <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
-          <article className={classes.fundingStatusSection} >
-            <div>
-              <Typography className={classes.projectProgress}>
-                {
-                  (() => {
-                    const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-                    const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
-                      total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-                    return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-                  })()
-                } %
+        <article className={classes.fundingStatusSection} >
+          <div>
+            <Typography className={classes.projectProgress}>
+              {
+                (() => {
+                  const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+                  const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
+                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                  return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+                })()
+              } %
               </Typography>
-            </div>
-            <div>
-              <Typography className={classes.fundingLabels}> 
-                Total Funding Goal
-              </Typography>
-              <Typography className={classes.fundingAmount}>
-                {
-                  Math.ceil(project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0)).toLocaleString()
-                } DAI
-              </Typography>
-            </div>
-            <div>
-              <Typography className={classes.fundingLabels}>
-                Total Pledged
-              </Typography>
-              <Typography className={classes.fundingAmount}>
-                {
-                  Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
-                } DAI
-              </Typography>
-            </div>
-            <div>
-              <Typography className={classes.fundingLabels}>
-                Total Released
-              </Typography>
-              <Typography className={classes.fundingAmount}>
-                {
-                  Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
-                    (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
-                } DAI
-              </Typography>
-            </div>
-            <div>
-              <Typography className={classes.fundingLabels}>
-                Total Duration Left
-              </Typography>
-              <Typography className={classes.fundingAmount}>
-                {
-                 dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')
-                } days
-              </Typography>
-            </div>
-          </article>
-          <div className={classes.contentWrapper}>
-            <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
-              {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-                <ProjectPhaseStatus key={i+1} phase={{
-                  index: i+1,
-                  fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
-                  fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
-                  title: project.researchPhases[i].title,
-                  startDate: p.startDate,
-                  state: p.state,
-                  duration: p.phaseDuration,
-                  activePhase: project.vaultData.activePhase
-                }} />
-              )}
-            </Grid>
           </div>
+          <div>
+            <Typography className={classes.fundingLabels}>
+              Total Funding Goal
+              </Typography>
+            <Typography className={classes.fundingAmount}>
+              {
+                Math.ceil(project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0)).toLocaleString()
+              } DAI
+              </Typography>
+          </div>
+          <div>
+            <Typography className={classes.fundingLabels}>
+              Total Pledged
+              </Typography>
+            <Typography className={classes.fundingAmount}>
+              {
+                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
+              } DAI
+              </Typography>
+          </div>
+          <div>
+            <Typography className={classes.fundingLabels}>
+              Total Released
+              </Typography>
+            <Typography className={classes.fundingAmount}>
+              {
+                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
+              } DAI
+              </Typography>
+          </div>
+          <div>
+            <Typography className={classes.fundingLabels}>
+              Total Duration Left
+              </Typography>
+            <Typography className={classes.fundingAmount}>
+              {
+                dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')
+              } days
+              </Typography>
+          </div>
+        </article>
+        <div className={classes.contentWrapper}>
+          <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
+            {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
+              <ProjectPhaseStatus key={i + 1} phase={{
+                index: i + 1,
+                fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
+                fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
+                title: project.researchPhases[i].title,
+                startDate: p.startDate,
+                state: p.state,
+                duration: p.phaseDuration,
+                activePhase: project.vaultData.activePhase
+              }} />
+            )}
+          </Grid>
+        </div>
 
         <div className={classes.contentWrapper}>
           <Typography className={classes.sectionTitleText} align="center">
             Market
           </Typography>
-          <MarketChartLayout display={true} project={project} />
+          {project && project.chainData && project.chainData.marketData &&
+            <MarketChartLayout display={true} project={project} />
+          }
         </div>
       </Paper>
       <Paper className={classes.projectSection} square>
@@ -386,8 +380,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
               project.user.fullName.toUpperCase() +
-                ', ' +
-                project.user.professionalTitle.toUpperCase()}
+              ', ' +
+              project.user.professionalTitle.toUpperCase()}
           </Typography>
           <Typography className={classes.contentTitleText}>Approach</Typography>
           <Typography className={classes.lastUpdated}>
@@ -402,15 +396,39 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
               project.user.fullName.toUpperCase() +
-                ', ' +
-                project.user.professionalTitle.toUpperCase()}
+              ', ' +
+              project.user.professionalTitle.toUpperCase()}
           </Typography>
+        </div>
+      </Paper>
+      <Paper className={classes.projectSection} square>
+        <div className={classes.contentWrapper}>
+          <Typography className={classes.sectionTitleText} align="center">
+            Research Updates
+          </Typography>
+          {project.researchUpdates &&
+            project.researchUpdates.sort((a, b) => a.date < b.date ? 1 :
+              a.date === b.date ? 0 : -1).map((update, index) =>
+                <div key={index}>
+                  <Typography className={classes.lastUpdated}>
+                    {dayjs(update.date)
+                      .format('DD MMM YYYY h:mm ')
+                      .toUpperCase()}
+                  </Typography>
+                  <Typography  className={classes.contentText}>
+                    {update.update}
+                  </Typography>
+                </div>
+              )
+          }
         </div>
       </Paper>
     </Container>
   ) : (
-    <Container>Loading data</Container>
-  );
+      <Container>
+        <CircularProgress className={classes.loadingSpinner} />
+      </Container>
+    );
 };
 
 export default withStyles(styles, { withTheme: true })(ProjectDetails);

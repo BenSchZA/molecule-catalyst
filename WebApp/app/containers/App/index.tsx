@@ -27,6 +27,7 @@ import saga from './saga';
 import selectApp from './selectors';
 import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
+import Notifier from '../../domain/notification/notifier';
 import { forwardTo } from 'utils/history';
 
 interface OwnProps { }
@@ -71,19 +72,22 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
   );
 
   return (
-    <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
-      <Switch>
-        {routes.map(r => (
-          <RoleRoute path={r.path} exact
-            component={r.component}
-            isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
-            key={r.path} />)
-        )}
-        <Route path='/unauthorized' exact component={UnauthorizedPage} />
-        <Route path='/404' exact component={NotFoundPage} />
-        <Route component={NotFoundRedirect} />
-      </Switch>
-    </AppWrapper>
+    <>
+      <Notifier />
+      <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
+        <Switch>
+          {routes.map(r => (
+            <RoleRoute path={r.path} exact
+              component={r.component}
+              isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
+              key={r.path} />)
+          )}
+          <Route path='/unauthorized' exact component={UnauthorizedPage} />
+          <Route path='/404' exact component={NotFoundPage} />
+          <Route component={NotFoundRedirect} />
+        </Switch>
+      </AppWrapper>
+    </>
   );
 };
 

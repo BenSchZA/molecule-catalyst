@@ -346,6 +346,11 @@ const styles = ({ spacing, palette }: Theme) =>
       font: 'Bold 14px/24px Montserrat',
       letterSpacing: '0.18px',
       color: '#FFFFFF'
+    },
+    loadingSpinner: {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
     }
   });
 

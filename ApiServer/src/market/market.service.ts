@@ -32,9 +32,11 @@ export class MarketService extends ServiceBase {
   }
 
   private async getAllDeployedMarkets() {
-    const marketCreatedFilter = this.marketRegistryContract.filters.MarketCreated() as any;
-    marketCreatedFilter.fromBlock = 0;
-    marketCreatedFilter.toBlock = 'latest';
+    const marketCreatedFilter = {
+      ...this.marketRegistryContract.filters.MarketCreated(),
+      fromBlock: 0,
+      toBlock: 'latest',
+    }
     const marketCreatedLogs = await this.ethersProvider.getLogs(marketCreatedFilter);
     marketCreatedLogs.map(log => this.marketRegistryContract.interface.parseLog(log).values)
       .map(async marketDeployed => {
@@ -47,7 +49,6 @@ export class MarketService extends ServiceBase {
     const marketDocument = (await this.marketRepository.findOne({marketAddress: marketAddress})) ? 
       await this.marketRepository.findOne({marketAddress: marketAddress}) : 
       await new this.marketRepository({marketAddress: marketAddress})
-
     
     return new MarketState(marketAddress, marketDocument, this.ethersProvider, this.config);
   }

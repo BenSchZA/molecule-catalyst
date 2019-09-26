@@ -30,13 +30,16 @@ import { loadState, saveState } from './utils/localStorage';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { Router } from 'react-router';
 import theme from 'theme';
+import { SnackbarProvider } from 'notistack';
+import ScrollToTop from './scrollToTop';
 
 const persistedState = loadState();
 const store = configureStore(persistedState);
 
 store.subscribe(throttle(() => {
   saveState({
-    authentication: store.getState().authentication});
+    authentication: store.getState().authentication
+  });
 }, 1000));
 
 const MOUNT_NODE = document.getElementById('app') as HTMLElement;
@@ -45,9 +48,20 @@ const render = (Component = App) => {
   ReactDOM.render(
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
-        <Router history={history}>
-          <Component />
-        </Router>
+        <SnackbarProvider
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          autoHideDuration={10000}
+          maxSnack={5} >
+          <Router history={history}>
+            <ScrollToTop>
+              <Component />
+            </ScrollToTop>
+          </Router>
+        </SnackbarProvider>
+
       </MuiThemeProvider>
     </Provider>,
     MOUNT_NODE,
