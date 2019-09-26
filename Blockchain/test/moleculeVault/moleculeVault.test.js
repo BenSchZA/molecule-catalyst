@@ -242,10 +242,71 @@ describe("Molecule vault test", async () => {
             assert.equal(balanceOfMarketInstanceW1.toString(), molVaultSettings.marketBalances[1], "Market balance incorrect");
             assert.equal(balanceOfVaultInstanceW1.toString(), molVaultSettings.vaultBalances[1], "Market balance incorrect");
         });
+
+        it('Changing tax rate will not affect existing markets', async () => {
+            // Changing taxation rate for the first time
+            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
+            let taxRate = await moleculeVaultInstance.taxRate();
+
+            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+
+            await (await marketFactoryInstance.from(molAdmin).deployMarket(
+                marketSettings.fundingGoals,
+                marketSettings.phaseDuration,
+                creator.signer.address,
+                marketSettings.curveType,
+                marketSettings.taxationRate
+            )).wait()
+            
+            const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(1);
+            marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+            vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
+            let phaseOne = await vaultInstance.fundingPhase(0);
+
+            // Changing taxation rate for the seccond time
+            await moleculeVaultInstance.from(molAdmin).updateTaxRate(80);
+            let taxRateM2 = await moleculeVaultInstance.taxRate();
+
+            assert.equal(taxRateM2.toString(), 80, "Taxation rate not set to 80");
+
+            await (await marketFactoryInstance.from(molAdmin).deployMarket(
+                marketSettings.fundingGoals,
+                marketSettings.phaseDuration,
+                creator.signer.address,
+                marketSettings.curveType,
+                marketSettings.taxationRate
+            )).wait()
+            
+            const secondMarketDataObj = await marketRegistryInstance.from(creator).getMarket(2);
+            let vaultInstanceM2 = await etherlime.ContractAt(VaultAbi, secondMarketDataObj[1]);
+            let phaseOneM2 = await vaultInstanceM2.fundingPhase(0);
+            
+            // Changing taxation rate a third time
+            await moleculeVaultInstance.from(molAdmin).updateTaxRate(20);
+            let taxRateM3 = await moleculeVaultInstance.taxRate();
+
+            assert.equal(taxRateM3.toString(), 20, "Taxation rate not set to 80");
+
+            await (await marketFactoryInstance.from(molAdmin).deployMarket(
+                marketSettings.fundingGoals,
+                marketSettings.phaseDuration,
+                creator.signer.address,
+                marketSettings.curveType,
+                marketSettings.taxationRate
+            )).wait()
+            
+            const thirdMarketDataObj = await marketRegistryInstance.from(creator).getMarket(3);
+            let vaultInstanceM3 = await etherlime.ContractAt(VaultAbi, thirdMarketDataObj[1]);
+            let phaseOneM3 = await vaultInstanceM3.fundingPhase(0);
+
+            assert.equal(phaseOne[0].toString(), marketSettings.fundingGoals[0].toString(), "Incorrect mol tax was added to market");
+            assert.equal(phaseOneM2[0].toString(), molVaultSettings.fundingValue[0], "Molecule taxation rate change does not reflect in new market");
+            assert.equal(phaseOneM3[0].toString(), molVaultSettings.fundingValue[1], "Molecule taxation rate change does not reflect in new market");
+        });
     });
 
     describe("Meta data", async () => {
-        it('Get collateralToken', async () =>{
+        it('Get collateralToken', async () => {
             const collateralToken = await moleculeVaultInstance.collateralToken();
             assert.equal(collateralToken, pseudoDaiInstance.contract.address, "Collateral token invalid")
         });
