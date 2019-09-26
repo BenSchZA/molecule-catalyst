@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ethers, Wallet, Contract } from 'ethers';
 import { Modules } from 'src/app.constants';
-import { IMarketFactory, IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
+import { MarketFactory, IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
 import { ConfigService } from '../config/config.service';
 import { ServiceBase } from 'src/common/serviceBase';
 import { TransactionReceipt } from 'ethers/providers';
@@ -16,10 +16,10 @@ export class MarketFactoryService extends ServiceBase {
     private readonly config: ConfigService) {
     super(MarketFactoryService.name);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-    const marktetFactoryContract = new Contract(this.config.get('contracts').marketFactory, IMarketFactory, this.ethersProvider);
-    this.marketFactoryContract = marktetFactoryContract.connect(serverAccountWallet);
-    const marktetRegistryContract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider);
-    this.marketRegistryContract = marktetRegistryContract.connect(serverAccountWallet);
+    const marketFactoryContract = new Contract(this.config.get('contracts').marketFactory, MarketFactory, this.ethersProvider);
+    this.marketFactoryContract = marketFactoryContract.connect(serverAccountWallet);
+    const marketRegistryContract = new Contract(this.config.get('contracts').marketRegistry, IMarketRegistry, this.ethersProvider);
+    this.marketRegistryContract = marketRegistryContract.connect(serverAccountWallet);
   }
 
   public async addUserToAdminWhitelist(userAddress: string): Promise<void> {
