@@ -86,6 +86,9 @@ const styles = (theme: Theme) => createStyles({
       }
     }
   },
+  modalContent: {
+    margin: "20px 0"
+  },
   input:{
     justifyContent: "flex-end",
     width: 150,

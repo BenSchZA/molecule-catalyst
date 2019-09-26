@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './project.schema';
 import { Model } from 'mongoose';
@@ -164,6 +164,24 @@ export class ProjectService extends ServiceBase {
       this.logger.error(`Something went wrong deploying project ${project.id}`);
       this.logger.error(error);
       throw new InternalServerErrorException(`Something went wrong deploying project ${project.id}`, error);
+    }
+  }
+
+  async addResearchUpdate(projectId: any, update: string, user: User) {
+    const project = await this.projectRepository.findById(projectId).populate(Schemas.User);
+
+    //@ts-ignore
+    if (project.user.id !== user.id) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+    try {
+      this.logger.info(`Adding update to project ${projectId}`);
+      project.researchUpdates.push({ update: update, date: new Date() })
+      await project.save();
+    } catch (error) {
+      this.logger.error(`Something went wrong adding updates to project ${project.id}`);
+      this.logger.error(error);
+      throw new InternalServerErrorException(`Something went wrong adding updates to project ${project.id}`, error);
     }
   }
 }
