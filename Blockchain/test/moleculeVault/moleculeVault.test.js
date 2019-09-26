@@ -9,6 +9,7 @@ const {
     etherlime, 
     daiSettings,
     moleculeVaultSettings,
+    molVaultSettings,
     marketSettings,
     MarketAbi,
     VaultAbi,
@@ -100,18 +101,9 @@ describe("Molecule vault test", async () => {
             await (await pseudoDaiInstance.from(accounts[i]).approve(
                 marketInstance.contract.address,
                 ethers.constants.MaxUint256
-            ))
+            ));
         }
     });
-
-    /**
-        // console.log(moleculeVaultInstance);
-        console.log("       xxx Market Factory - No mol vault functions work");
-        let test = await moleculeVaultInstance.from(molAdmin).collateralToken();
-        // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
-        // 0xDEa9F30B1593aC9f780f2ce69E51eF218f34B168
-        console.log(">>>>>>>>>>>>>>>> " + test);
-     */
 
     describe("Admin functions", async () => {
         beforeEach(async () => {
@@ -184,12 +176,71 @@ describe("Molecule vault test", async () => {
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
             
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
             
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
             
             assert.ok(balanceOfMoleculeVault.eq(targetBalance), "Tokens not transfered")
+        });
+    });
+
+    describe("Molecule tax update tests", async () => {
+        it("Vault and market deploy correctly with a 0% molecule tax", async () => {
+            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
+            let taxRate = await moleculeVaultInstance.taxRate();
+
+            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+
+            await (await marketFactoryInstance.from(molAdmin).deployMarket(
+                marketSettings.fundingGoals,
+                marketSettings.phaseDuration,
+                creator.signer.address,
+                marketSettings.curveType,
+                marketSettings.taxationRate
+            )).wait()
+            
+            const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(1);
+            marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+            vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
+            let phaseOne = await vaultInstance.fundingPhase(0);
+
+            assert.equal(phaseOne[0].toString(), marketSettings.fundingGoals[0].toString(), "Mol tax was added to funding goal");
+
+            let daiToSpendForPhase = (phaseOne[0].div(marketSettings.taxationRate)).mul(101)
+            let balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            let balanceOfMarketInstance = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+            let balanceOfVaultInstance = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+
+            assert.equal(balanceOfMoleculeVault.toString(), 0, "Tokens already in the mol vault");
+            assert.equal(balanceOfMarketInstance.toString(), 0, "Tokens already in the market");
+            assert.equal(balanceOfVaultInstance.toString(), 0, "Tokens already in the vault");
+
+            let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
+            // Approving the new market as a spender
+            await (await pseudoDaiInstance.from(user1).approve(
+                marketInstance.contract.address,
+                ethers.constants.MaxUint256
+            ));
+            // Minting tokens
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+            let balanceOfMoleculeVaultM1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            let balanceOfMarketInstanceM1 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+            let balanceOfVaultInstanceM1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+
+            assert.equal(balanceOfMoleculeVaultM1.toString(), 0, "Tokens already in the mol vault");
+            assert.equal(balanceOfMarketInstanceM1.toString(), molVaultSettings.marketBalances[0], "Market balance incorrect");
+            assert.equal(balanceOfVaultInstanceM1.toString(), molVaultSettings.vaultBalances[0], "Market balance incorrect");
+            
+            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
+
+            let balanceOfMoleculeVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+            let balanceOfMarketInstanceW1 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+            let balanceOfVaultInstanceW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+
+            assert.equal(balanceOfMoleculeVaultW1.toString(), 0, "Tokens already in the mol vault");
+            assert.equal(balanceOfMarketInstanceW1.toString(), molVaultSettings.marketBalances[1], "Market balance incorrect");
+            assert.equal(balanceOfVaultInstanceW1.toString(), molVaultSettings.vaultBalances[1], "Market balance incorrect");
         });
     });
 

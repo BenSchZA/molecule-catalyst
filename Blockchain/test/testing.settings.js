@@ -124,6 +124,17 @@ let marketSettingsStress = {
     remainingFunding: "1049999999999999995924"
 }
 
+let molVaultSettings = {
+    vaultBalances: [
+        "5049999999999999999877965",
+        "49999999999999999877965"  
+    ],
+    marketBalances: [
+        "28616666666666666665975135",
+        "28616666666666666665975135"
+    ]
+}
+
 let vaultMarketSettings = {
     fundingGoals: [
         ethers.utils.parseUnits("5000000", 18)
@@ -164,6 +175,7 @@ module.exports = {
     MoleculeVaultAbi,
     marketSettings,
     marketSettingsStress,
+    molVaultSettings,
     vaultMarketSettings,
     daiSettings,
     defaultDaiPurchase,
