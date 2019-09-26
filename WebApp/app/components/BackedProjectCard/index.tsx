@@ -5,10 +5,11 @@
  */
 
 import React, { Fragment, useState } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardActions, Grid, Button } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Grid, Button, Typography } from '@material-ui/core';
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
+import { ethers } from 'ethers';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -55,51 +56,61 @@ const styles = (theme: Theme) =>
       marginTop: '10px',
     },
     label:{
-      font: 'Bold 12px/15px Montserrat',
-      fontWeight: 'bolder',
-      letterSpacing: '1.07px',
-      color: 'black',
+      textAlign: 'left',
+      font: 'Bold 18px/24px Montserrat',
+      letterSpacing: 0,
+      color: '#000000DE',
+      paddingBottom: 8
+    },
+    labelSmall: {
+      textAlign: 'left',
+      font: '14px/18px Roboto',
+      letterSpacing: '0.46px',
+      color: '#00000099',
       paddingBottom: 8
     },
     largeText:{
-      font: '20px/27px Roboto',
-      fontWeight: 'normal',
-      letterSpacing: '0.62px',
-      color: '#00000099',
-      paddingBottom: 8
-    },
-    progress: {
-      font: '12px/15px Montserrat',
-      letterSpacing: '1.88px',
-      color: '#00000099',
-      opacity: 1
+      textAlign: 'left',
+      font: '25px/30px Montserrat',
+      fontWeight: 'lighter',
+      letterSpacing: '-0.22px',
+      color: '#003E52',
+      paddingBottom: 4
     },
     metricContainer:{
       paddingLeft: '24px',
+      flexGrow: 1,
     },
     supportProject: {
-      background: '#FFFFFF 0% 0% no-repeat padding-box',
-      boxShadow: '0px 1px 3px #00000033',
-      borderRadius: '4px',
-      textAlign: 'center',
-      font: 'Bold 14px/24px Montserrat',
-      letterSpacing: '0.18px',
-      color: '#003E52',
-    },
-    redeemHoldings: {
-      background: '#03DAC6 0% 0% no-repeat padding-box',
+      background: '#003E52 0% 0% no-repeat padding-box',
       boxShadow: '0px 1px 3px #00000033',
       borderRadius: '4px',
       textAlign: 'center',
       font: 'Bold 14px/24px Montserrat',
       letterSpacing: '0.18px',
       color: '#FFFFFF',
-      float: 'right'
+      width: '170px',
+      height: '39px',
+      margin: '6px 0 0 0!important'
+    },
+    redeemHoldings: {
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      background: '#0EBCAC 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      letterSpacing: '0.18px',
+      color: '#FFFFFF',
+      float: 'right',
+      width: '170px',
+      height: '39px',
+      margin: '6px 0 0 0!important'
     },
     buttonContainer:{
       paddingRight: '16px',
       float: 'right',
-      width: '400px'
+      width: '380px',
+      margin: 0
     },
     cardHeaderTitle: {
       paddingBottom: '24px',
@@ -111,9 +122,8 @@ const styles = (theme: Theme) =>
       width: '558px',
     },
     cardHeader: {
-      
-      marginRight: '0px'
-    }
+      padding: '20px'
+    },
 
   });
 
@@ -152,31 +162,65 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
       />
         
        <CardContent className={classes.cardContent}>
-       {/* 
        <Grid className={classes.metricContainer} container spacing={1}>
-       <Grid item xs={3}>
+        <Grid container spacing={2}>
+       <Grid item xs>
+        <Typography className={classes.label}>Funding Progress</Typography>
+        <Typography className={classes.labelSmall}>Progress of entire project including all phases</Typography>
+        </Grid>
+        <Grid item xs>
         <Typography className={classes.label}>Price</Typography>
-        <Typography className={classes.largeText}>1.2 DAI</Typography><Typography className={classes.progress}>{'(+10.8%)'}</Typography>
+        <Typography className={classes.labelSmall}>Current price of project token (in DAI)</Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs>
         <Typography className={classes.label}>Tokens</Typography>
-        <Typography className={classes.largeText}>500y</Typography>
+        <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs>
         <Typography className={classes.label}>Value</Typography>
-        <Typography className={classes.largeText}>$ 608.2</Typography><Typography className={classes.progress}>{'(+10.8%)'}</Typography>
+        <Typography className={classes.labelSmall}>Value of project token (in DAI)</Typography>
         </Grid>
-        <Grid item xs={3}>
-        <Typography className={classes.label}>Contributed</Typography>
-        <Typography className={classes.largeText}>500 DAI</Typography>
+         <Grid item xs>
+        <Typography className={classes.label}>Change %</Typography>
+        <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
         </Grid>
         </Grid>
-         <Typography className={classes.percentage}>55%</Typography>
-        */}
+        <Grid container spacing={2}>
+       <Grid item xs>
+        <Typography className={classes.largeText}>{
+            (() => {
+              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
+                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+            })()
+          } %</Typography>
+        </Grid>
+        <Grid item xs>
+        <Typography className={classes.largeText}>{project.chainData.marketData.tokenPrice ?  Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice)) : '-' } DAI</Typography>
+        </Grid>
+        <Grid item xs>
+        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.chainData.marketData.balance))}</Typography>
+        </Grid>
+        <Grid item xs>
+        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue))} DAI</Typography>
+        </Grid>
+         <Grid item xs>
+        <Typography className={classes.largeText}>{
+          (() => {
+            const displayPrecision = 2;
+            const contributionValue = Number(ethers.utils.formatEther(project.chainData.marketData.poolValue));
+            const holdingsValue = Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue));
+         
+            return contributionValue > 0 ?
+            Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+
+          })()
+        } %</Typography>
+        </Grid>
+        </Grid>
+        </Grid>
       </CardContent>
-      <CardActions>
-      
-      </CardActions>
     </Card>
   </Fragment>);
 };
