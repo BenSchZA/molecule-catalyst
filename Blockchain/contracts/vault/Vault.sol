@@ -372,7 +372,15 @@ contract Vault is IVault, WhitelistAdminRole {
         if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
             // Setting active phase state to Started
             fundingPhases_[currentPhase_].state = FundingState.STARTED;
-            fundingPhases_[currentPhase_].startDate = block.timestamp;
+            // This works out the end time of the previous round
+            uint256 endTime = fundingPhases_[currentPhase_
+                .sub(1)].startDate
+                .addMonths(fundingPhases_[currentPhase_].phaseDuration);
+            // This works out the remaining time
+            uint256 remaining = endTime.sub(block.timestamp);
+            // This sets the start date to the end date of the previous round
+            fundingPhases_[currentPhase_].startDate = block.timestamp
+                .add(remaining);
         }
 
         emit PhaseFinalised(
