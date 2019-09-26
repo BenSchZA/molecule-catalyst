@@ -1,4 +1,5 @@
 import DiscoverContainer from 'containers/DiscoverContainer';
+import PortfolioContainer from 'containers/PortfolioContainer';
 import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminUserListingContainer from 'containers/AdminUserListingContainer';
@@ -40,12 +41,12 @@ const routes: AppRoute[] = [{
   showNavForRoles:[UserType.Standard, UserType.ProjectCreator, UserType.Admin],
   requireAuth: false
 }, {
-  name: 'Portfolio',
-  path: '/portfolio',
-  component: DiscoverContainer,
+  name: 'My Projects',
+  path: '/myprojects',
+  component: PortfolioContainer,
   roleRequirement: UserType.Standard,
   isNavRequired: true,
-  showNavForRoles:[UserType.Standard, UserType.ProjectCreator, UserType.Admin],
+  showNavForRoles:[UserType.Standard, UserType.Admin],
   requireAuth: true
 }, {
   name: 'Create Project',

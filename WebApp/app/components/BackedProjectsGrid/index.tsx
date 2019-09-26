@@ -1,9 +1,8 @@
 import React from 'react';
 import { compose } from 'redux';
-import { Theme, WithStyles, Container, Divider } from '@material-ui/core';
+import { Theme, WithStyles, Container, Divider, Typography } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Project } from 'domain/projects/types';
-import ProjectCard from 'components/ProjectCard';
 import BackedProjectCard from 'components/BackedProjectCard';
 //import { forwardTo } from 'utils/history';
 
@@ -19,7 +18,7 @@ const styles = (theme: Theme) => createStyles({
   },
   grid: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     justifyContent: "center",
     padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
@@ -38,12 +37,12 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
+    <Typography variant='h2' className={classes.header}>My Projects</Typography>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
-      <div>
+
         <BackedProjectCard key={index} project={p}/>
-        </div>
       )}
     </div>
   </Container>

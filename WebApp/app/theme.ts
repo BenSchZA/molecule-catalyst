@@ -227,7 +227,6 @@ const theme = (createMuiTheme as any)({
     },
     MuiCard: {
       root: {
-        maxWidth: 647,
         maxHeight: 712.02
       },
     },

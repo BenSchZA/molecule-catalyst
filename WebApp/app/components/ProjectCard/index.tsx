@@ -84,6 +84,7 @@ const styles = (theme: Theme) =>
     },
     card: {
       cursor: 'pointer',
+      maxWidth: '647px'
     },
     cardImage: {
       paddingTop: 36,

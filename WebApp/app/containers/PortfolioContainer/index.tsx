@@ -13,7 +13,6 @@ import reducer from './reducer';
 import saga from './saga';
 import selectPortfolioContainer from './selectors';
 import { ApplicationRootState } from 'types';
-import ProjectSearch from 'components/ProjectSearch';
 import BackedProjectsGrid from 'components/BackedProjectsGrid';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { setFilter } from './actions';
@@ -35,9 +34,8 @@ export interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const DiscoverContainer: React.FunctionComponent<Props> = ({filter, setFilter, projects}: Props) => (
+const PortfolioContainer: React.FunctionComponent<Props> = ({filter, setFilter, projects}: Props) => (
   <Fragment>
-    <ProjectSearch setFilter={setFilter} filter={filter} />
     <BackedProjectsGrid projects={projects} />
   </Fragment>
 )
@@ -69,4 +67,4 @@ export default compose(
   withReducer,
   withSaga,
   withConnect,
-)(DiscoverContainer);
+)(PortfolioContainer);

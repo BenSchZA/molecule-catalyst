@@ -5,9 +5,7 @@
  */
 
 import React, { Fragment, useState } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Typography, CardActions, Chip, Grid, Button } from '@material-ui/core';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { lighten } from '@material-ui/core/styles';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, CardActions, Grid, Button } from '@material-ui/core';
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
@@ -29,6 +27,8 @@ const styles = (theme: Theme) =>
     },
     card: {
       cursor: 'pointer',
+      width: '1020px',
+      height: '268px'
     },
     cardImage: {
       paddingTop: 36,
@@ -97,42 +97,31 @@ const styles = (theme: Theme) =>
       float: 'right'
     },
     buttonContainer:{
-      paddingRight: '16px'
+      paddingRight: '16px',
+      float: 'right',
+      width: '400px'
+    },
+    cardHeaderTitle: {
+      paddingBottom: '24px',
+      textAlign: 'left',
+      font: '25px/30px Montserrat',
+      letterSpacing: '-0.22px',
+      color: '#000000DE',
+      opacity: 1,
+      width: '558px',
     },
     cardHeader: {
-      paddingBottom: '24px'
+      
+      marginRight: '0px'
     }
 
   });
-
-const BorderLinearProgress = withStyles({
-    root: {
-      height: 5,
-      width: '647px',
-      backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
-      paddingleft: '0px',
-      marginTop: '84px!important',
-      marginBottom: '0px!important',
-      marginLeft: '0px!important',
-      marginRight: '0px!important'
-    },
-    bar: {
-      borderRadius: 20,
-      backgroundColor: colors.moleculeBranding.third,
-    }
-  })(LinearProgress);
 
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project
 }
 
-const switchStatus = (status) => {
-  switch(status){
-      default :
-        return 'ONGOING';
-  }
-};
 
 const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => {
   const [raised, setRaised] = useState(true);
@@ -141,16 +130,29 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
     <Fragment>
      <Card
       className={classes.card}
-      onClick={() => forwardTo(`project/${project.id}`)}
       onMouseOver={() => setRaised(true)}
       onMouseOut={() => setRaised(false)}
       raised={raised}>
       <CardHeader
         title={project.title}
-        subheader={switchStatus(project.status)}
-        className={classes.cardHeader}
+        classes={{
+          title: classes.cardHeaderTitle,
+          root: classes.cardHeader
+        }}
+        action= {
+          <Grid className={classes.buttonContainer} container>
+          <Grid item xs={6}>
+          <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
+          </Grid>
+          <Grid item xs={6}>
+          <Button className={classes.redeemHoldings} onClick={() => console.log('sell')}>Withdraw Stake</Button>
+          </Grid>
+          </Grid>
+        }
       />
+        
        <CardContent className={classes.cardContent}>
+       {/* 
        <Grid className={classes.metricContainer} container spacing={1}>
        <Grid item xs={3}>
         <Typography className={classes.label}>Price</Typography>
@@ -170,23 +172,10 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
         </Grid>
         </Grid>
          <Typography className={classes.percentage}>55%</Typography>
-         <Chip color="primary" label={'Funded of $' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
-      <BorderLinearProgress
-        className={classes.margin}
-        variant="determinate"
-        color="secondary"
-        value={50}  />
-       
+        */}
       </CardContent>
       <CardActions>
-        <Grid className={classes.buttonContainer} container>
-          <Grid item xs={6}>
-          <Button className={classes.supportProject} onClick={() => console.log('buy')}>Support Project</Button>
-          </Grid>
-          <Grid item xs={6}>
-          <Button className={classes.redeemHoldings} onClick={() => console.log('sell')}>Redeem Holdings</Button>
-          </Grid>
-       </Grid>
+      
       </CardActions>
     </Card>
   </Fragment>);
