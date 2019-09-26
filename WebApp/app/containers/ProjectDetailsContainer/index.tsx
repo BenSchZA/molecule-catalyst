@@ -8,8 +8,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { Formik, FormikProps, FormikValues } from 'formik';
-import * as Yup from 'yup';
 
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
@@ -47,27 +45,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
   const {project, userAddress} = props;
 
-  const [modal, setModal] = useState(0);
-
-  const initialValues = modal == 0 ? { 
-    contribution: 0,
-  } : {};
-
-  const onSubmit = modal == 0 ? (values) => {
-    props.supportProject(props.project.id, values.contribution);
-  } : (values) => {
-    props.withdrawHoldings(props.project.id);
-  };
-
-  const validationSchema = modal == 0 ? Yup.object().shape({
-    contribution: Yup.number()
-      .positive('Invalid value')
-      .min(1)
-      .required('Required')
-      .test('Check funds', 'Not enough funds', (value) => {
-        return value <= props.daiBalance;
-    }),
-  }) : Yup.object().shape({});
+  const [, setModal] = useState(0);
 
   const holdingsValue = project && project.chainData && project.chainData.marketData
     ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
@@ -83,24 +61,16 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
 
   return (
     <div>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        >
-        {(formikProps: FormikProps<FormikValues>) => (
           <ProjectDetails
             project={props.project}
             daiBalance={props.daiBalance}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
-            formikProps={formikProps}
             selectModal={setModal}
             txInProgress={props.txInProgress}
+            supportProject={props.supportProject}
+            redeemHoldings={props.withdrawHoldings}
           />
-        )}
-      </Formik>
     </div>
   );
 };
@@ -116,8 +86,8 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  supportProject: (projectId, contribution) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
-  withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
+  supportProject: (projectId: string, contribution: number) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
+  withdrawHoldings: (projectId: string) => dispatch(withdrawHoldings.request(projectId)),
 });
 
 const withReducer = injectReducer<OwnProps>({

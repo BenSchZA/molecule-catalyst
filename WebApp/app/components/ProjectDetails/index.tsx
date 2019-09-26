@@ -30,7 +30,6 @@ import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import ProjectSupportModal from 'components/ProjectSupportModal';
-import { FormikProps, FormikValues } from 'formik';
 import ProjectRedeemModal from 'components/ProjectRedeemModal';
 import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
@@ -43,20 +42,22 @@ interface OwnProps extends WithStyles<typeof styles> {
   daiBalance: number;
   holdingsValue: number;
   contributionValue: number;
-  formikProps: FormikProps<FormikValues>;
   txInProgress: boolean;
   selectModal(modal: number): void;
+  supportProject(projectId: string, contributionAmount: number): void;
+  redeemHoldings(projectId: string): void;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   daiBalance,
   classes,
-  formikProps,
   selectModal,
   txInProgress,
   holdingsValue,
-  contributionValue
+  contributionValue,
+  supportProject,
+  redeemHoldings,
 }: OwnProps) => {
   const [open, setOpenModal] = React.useState(false);
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
@@ -76,6 +77,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setOpenRedeemModal(false);
   };
 
+  const handleSupportProject = (contributionAmount: number) => supportProject(project.id, contributionAmount);
+  const handleRedeemContribution = () => redeemHoldings(project.id);
+
   return project ? (
     <Container maxWidth="lg">
       {project && project.chainData && project.chainData.marketData &&
@@ -83,18 +87,18 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <ProjectSupportModal
             closeModal={handleClose}
             modalState={open}
-            formikProps={formikProps}
             daiBalance={daiBalance}
             contributionRate={project.chainData.marketData.taxationRate}
             txInProgress={txInProgress}
+            supportProject={handleSupportProject}
           />
           <ProjectRedeemModal
             closeModal={handleClose}
             modalState={openRedeem}
-            formikProps={formikProps}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
             txInProgress={txInProgress}
+            redeemHoldings={handleRedeemContribution}
           />
         </div>
       }
@@ -111,15 +115,13 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.supportProject} 
               onClick={handleOpen}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
-            >
+              disabled={!(project && project.chainData && project.chainData.marketData)} >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
-            >
+              disabled={!(project && project.chainData && project.chainData.marketData)} >
               Redeem Holdings
             </Button>
           </div>
@@ -248,7 +250,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <div className={classes.contentWrapper}>
             <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
               {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-                <ProjectPhaseStatus key={i+1} phase={{
+                <ProjectPhaseStatus key={i} phase={{
                   index: i+1,
                   fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
                   fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),

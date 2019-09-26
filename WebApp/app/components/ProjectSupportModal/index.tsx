@@ -1,22 +1,13 @@
-import { WithStyles, Theme, Modal, Typography, Paper, Divider } from '@material-ui/core';
+import { WithStyles, Theme, Modal, Typography, Paper, TextField, InputAdornment, Grid } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
-import React, { Fragment } from 'react';
-import { compose } from 'redux';
+import React, { useState } from 'react';
 import { Info, Close } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import { Field, Form, FormikProps, FormikValues } from 'formik';
-import { TextField } from 'formik-material-ui';
 import { NegativeButton, PositiveButton } from 'components/custom';
-import { colors } from 'theme';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
+import DaiIcon from 'components/DaiIcon/Loadable';
 
 const styles = (theme: Theme) => createStyles({
-  layout: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   buttons: {
     paddingTop: theme.spacing(4),
     display: 'flex',
@@ -41,6 +32,7 @@ const styles = (theme: Theme) => createStyles({
     border: '2px solid #FFFFFF',
     borderRadius: '10px',
     opacity: 1,
+    textAlign: 'center',
   },
   closeModal: {
     position: 'absolute',
@@ -50,7 +42,8 @@ const styles = (theme: Theme) => createStyles({
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.primary.main,
     borderRadius: '50%',
-    padding: '3px'
+    padding: '3px',
+    cursor: 'pointer',
   },
   modalTitle: {
     "& h2": {
@@ -78,18 +71,26 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   input: {
-    justifyContent: "flex-end",
-    width: 150,
+    width: 170,
+    marginTop: theme.spacing(2),
+    padding: 0,
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    border: '1px solid #FFFFFF',
+    borderRadius: '2px',
+    '& > *': {
+      color: theme.palette.common.white,
+      padding: theme.spacing(1, 1),
+      '& > *': {
+        padding: theme.spacing(0)
+      }
+    }
+  },
+  inputAdornment: {
+    color: theme.palette.common.white,
+    minWidth: 'max-content',
   },
   link: {
     textDecoration: 'none',
-  },
-  body1: {
-    fontWeight: 'bold',
-    color: colors.textBlack,
-    paddingBottom: '16px',
-    paddingLeft: '8px',
-    paddingRight: '8px'
   },
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -98,23 +99,27 @@ const styles = (theme: Theme) => createStyles({
     height: "100%",
     top: 0,
     left: 0,
-    zIndex: 3,
+    borderRadius: '10px',
   },
   spinner: {
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+  },
+  divider: {
+    width: '259px',
+    backgroundColor: theme.palette.common.white,
   }
 });
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
-  closeModal(): void,
   daiBalance: number,
   contributionRate: number,
-  formikProps: FormikProps<FormikValues>,
   txInProgress: boolean,
+  closeModal(): void,
+  supportProject(contributionAmount: number): void;
 }
 
 const ProjectSupportModal: React.FunctionComponent<Props> = ({
@@ -123,90 +128,111 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   modalState,
   closeModal,
   contributionRate,
-  formikProps,
   txInProgress,
+  supportProject,
 }: Props) => {
+  const [state, setState] = useState({
+    contribution: 0,
+    projectTokenAmount: 0
+  });
 
   const displayPrecision = 2;
-  const toResearcher = Number((formikProps.values.contribution * contributionRate / 100).toFixed(displayPrecision));
-  const toIncentivePool = Number((formikProps.values.contribution - formikProps.values.contribution * contributionRate / 100).toFixed(displayPrecision));
+  const toResearcher = Number((state.contribution * contributionRate / 100).toFixed(displayPrecision));
+  const toIncentivePool = Number((state.contribution - (state.contribution * contributionRate / 100)).toFixed(displayPrecision));
+
+  const validateContribution = (value: string) => {
+    const newValue = parseFloat(value);
+    !isNaN(newValue) && setState({ ...state, contribution: newValue });
+  }
 
   return (
-    <Fragment>
-      <Form>
-        <Modal
-          open={modalState}
-          onClose={closeModal}
-          disableBackdropClick={txInProgress}>
-          <Paper square={false} className={classes.modal}>
-            <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
-              <div className={classes.spinner}>
-                <MoleculeSpinner />
-              </div>
-            </div>
-            <div className={classes.modalTitle}>
-              <Typography variant="h2">Support Project</Typography>
-            </div>
-            <Divider />
-            <div className={classes.table}>
-              <Typography variant="body1">
-                Your Account Balance:
-              </Typography>
-              <Typography variant="body1">{daiBalance ? daiBalance.toFixed(displayPrecision) : 0} DAI</Typography>
-              <Typography variant="body1">
-                Enter Contribution Amount
-              </Typography>
-              <Field
-                className={classes.input}
-                name="contribution"
-                type="number"
-                placeholder="Dai"
-                component={TextField}
-                InputProps={{
-                  inputProps: {
-                    min: 0,
-                  },
-                }}
-              />
-            </div>
-            <div className={classes.table}>
-              <Typography variant="body1">
-                To Researcher:
-              </Typography>
-              <Typography variant="body1">
-                {toResearcher} DAI
-              </Typography>
-              <Typography variant="body1">
-                To Incentive Pool:
-              </Typography>
-              <Typography variant="body1">
-                {toIncentivePool} DAI
-              </Typography>
-            </div>
-            <Link className={classes.link} color="primary" to="/">
-              <Fragment>
-                <Info />
-                <span>
-                  Read more about our trading technology
-                </span>
-              </Fragment>
-            </Link>
-            <div className={classes.buttons}>
-              <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
-              <PositiveButton type='submit' disabled={formikProps.isSubmitting} onClick={formikProps.submitForm}>Support Project</PositiveButton>
-            </div>
-            <div className={classes.closeModal}>
-              <Close style={{padding: '0px'}}/>
-            </div>
-          </Paper>
-        </Modal>
-      </Form>
-    </Fragment >
+    <Modal
+      open={modalState}
+      onClose={closeModal}
+      disableBackdropClick={txInProgress}>
+      <Paper square={false} className={classes.modal}>
+        <div className={classes.modalTitle}>
+          <Typography variant="h2">Support Project</Typography>
+        </div>
+        <DaiIcon />
+        <Typography>{daiBalance ? daiBalance.toFixed(displayPrecision) : 0}</Typography>
+        <Typography>
+          Your Account Balance
+        </Typography>
+        <TextField
+          autoFocus
+          error={(daiBalance < state.contribution) ? true : false}
+          helperText={(daiBalance < state.contribution) && 'You do not have enough DAI'}
+          value={state.contribution}
+          onChange={(e) => validateContribution(e.target.value)}
+          className={classes.input}
+          inputProps={{
+            min: 0,
+            max: daiBalance.toFixed(displayPrecision),
+          }}
+          InputProps={{
+            endAdornment: <InputAdornment position='end' className={classes.inputAdornment}>DAI</InputAdornment>,
+          }} />
+        <Typography>
+          Enter Contribution Amount
+        </Typography>
+        <Typography>
+          PLEASE NOTE: Your contribution will be split into two portions.
+          The first portion will go directly to the project owner.
+          The second portion represents your stake in the research project
+          and will be added to a communal pool that grows proportionally
+          with more project contributions.
+        </Typography>
+        <Grid container>
+          <Grid item xs={6}>
+            <DaiIcon height={30} />
+            <Typography>{toResearcher}</Typography>
+            <Typography>
+              Research Funding
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <DaiIcon height={30} />
+            <Typography>
+              {toIncentivePool}
+            </Typography>
+            <Typography>
+              Project Stake
+            </Typography>
+          </Grid>
+        </Grid>
+
+
+        <Typography>
+          In return for your contribution,
+          you will receive tokens priced according to the project bonding curve.
+          <br />
+          These tokens can always be redeemed for their current value.
+        </Typography>
+
+        <div className={classes.buttons}>
+          <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
+          <PositiveButton disabled={txInProgress || daiBalance < state.contribution} onClick={() => supportProject(state.contribution)}>
+            Support Project
+          </PositiveButton>
+        </div>
+        <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
+          <Close style={{ padding: '0px' }} />
+        </div>
+        <Link className={classes.link} to="/">
+          <Info />
+          <span>
+            Need more information?
+            </span>
+        </Link>
+        <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
+          <div className={classes.spinner}>
+            <MoleculeSpinner />
+          </div>
+        </div>
+      </Paper>
+    </Modal>
   );
 };
 
-const composeWithStyles = withStyles(styles, { withTheme: true });
-
-export default compose(
-  composeWithStyles,
-)(ProjectSupportModal);
+export default withStyles(styles, { withTheme: true })(ProjectSupportModal);
