@@ -10,7 +10,7 @@
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
-    "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999",
+    "test-one": "etherlime test test/moleculeVault/moleculeVault.test.js --output=none --timeout 100000 --gas-report=true --runs=999",
     "test-debug": "node --inspect-brk ./node_modules/etherlime/cli.js test --timeout 100000ms",
     "test-debug-idea": "node $NODE_DEBUG_OPTION ./node_modules/etherlime/cli.js test --timeout 100000",
     "eth-ver": "etherlime --help"

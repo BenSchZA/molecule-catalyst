@@ -99,13 +99,17 @@ contract Vault is IVault, WhitelistAdminRole {
 
         // Saving the funding rounds into storage
         uint256 loopLength = _fundingGoals.length;
-        for(uint8 i = 0; i < loopLength; i++){
-            // Works out the rounds tax
-            uint256 withTax = _fundingGoals[i].add(
-                _fundingGoals[i].mul(moleculeTaxRate_).div(100)
-            );
-            // Saving the funding threashold with tax
-            fundingPhases_[i].fundingThreshold = withTax;
+        for(uint8 i = 0; i < loopLength; i++) {
+            if(moleculeTaxRate_ == 0) {
+                fundingPhases_[i].fundingThreshold = _fundingGoals[i];
+            } else {
+                // Works out the rounds tax
+                uint256 withTax = _fundingGoals[i].add(
+                    _fundingGoals[i].mul(moleculeTaxRate_).div(100)
+                );
+                // Saving the funding threashold with tax
+                fundingPhases_[i].fundingThreshold = withTax;
+            }
             // Setting the amount of funding raised so far
             fundingPhases_[i].fundingRaised = 0;
             // Setting the phase duration
@@ -257,6 +261,7 @@ contract Vault is IVault, WhitelistAdminRole {
             fundingPhases_[currentPhase_].state == FundingState.STARTED,
             "Funding inactive"
         );
+
         // Works out the time the phase should end
         uint256 endOfPhase = fundingPhases_[currentPhase_].startDate
             .addMonths(fundingPhases_[currentPhase_].phaseDuration);
@@ -265,6 +270,7 @@ contract Vault is IVault, WhitelistAdminRole {
             terminateMarket();
             return false;
         }
+        
         // Gets the balance of the vault against the collateral token
         uint256 balance = collateralToken_.balanceOf(address(this));
         // Adds the tax to the funding raised for this round
@@ -273,6 +279,7 @@ contract Vault is IVault, WhitelistAdminRole {
             .fundingRaised.add(_receivedFunding);
         // Adds received funding to the cumulative record of tax received
         cumulativeReceivedTax_.add(_receivedFunding);
+
         // Ensures the total tax recived finishes the current round
         if(
             fundingPhases_[currentPhase_].cumulativeFundingThreshold <=
@@ -372,7 +379,15 @@ contract Vault is IVault, WhitelistAdminRole {
         if(fundingPhases_[currentPhase_].fundingThreshold > 0) {
             // Setting active phase state to Started
             fundingPhases_[currentPhase_].state = FundingState.STARTED;
-            fundingPhases_[currentPhase_].startDate = block.timestamp;
+            // This works out the end time of the previous round
+            uint256 endTime = fundingPhases_[currentPhase_
+                .sub(1)].startDate
+                .addMonths(fundingPhases_[currentPhase_].phaseDuration);
+            // This works out the remaining time
+            uint256 remaining = endTime.sub(block.timestamp);
+            // This sets the start date to the end date of the previous round
+            fundingPhases_[currentPhase_].startDate = block.timestamp
+                .add(remaining);
         }
 
         emit PhaseFinalised(

@@ -84,6 +84,26 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
+      * @notice Allows the admin to update the taxation rate charged by the
+      *         molecule vault.
+      * @param  _newTaxRate : The new taxation rate.
+      */
+    function updateTaxRate(
+        uint256 _newTaxRate
+    )
+        external
+        onlyWhitelistAdmin()
+        returns(bool)
+    {
+        require(
+            taxRate_ != _newTaxRate,
+            "New taxation rate cannot be the same as old taxation rate"
+        );
+
+        taxRate_ = _newTaxRate;
+    }
+
+    /**
       * @return address : The address of the collateral token.
       */
     function collateralToken() public view returns(address) {

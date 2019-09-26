@@ -462,6 +462,45 @@ describe('Vault stress test', async () => {
             assert.equal(currentPhase.toString(), 2, "Phase invalid");
         });
 
+        it("Time rollover of rounds correct", async () => {
+            let currentPhase = await vaultInstance.currentPhase();
+            assert.equal(currentPhase.toString(), 0, "Phase invalid");
+            
+            let phaseOne = await vaultInstance.fundingPhase(0);
+            let phaseTwo = await vaultInstance.fundingPhase(1);
+            let phaseThree = await vaultInstance.fundingPhase(2);
+
+            assert.equal(phaseOne[1].toString(), 0, "Round has pre-existing funds");
+            assert.equal(phaseOne[4].toString(), 1, "Round has not started");
+            assert.equal(phaseTwo[1].toString(), 0, "Round has pre-existing funds");
+            assert.equal(phaseTwo[4].toString(), 0, "Round state is incorrect");
+            assert.equal(phaseThree[1].toString(), 0, "Round has pre-existing funds");
+            assert.equal(phaseThree[4].toString(), 0, "Round state is incorrect");
+            // Time tests
+            assert.equal(phaseTwo[3].toString(), 0, "Phase 2 start date incorrect");
+            assert.equal(phaseThree[3].toString(), 0, "Phase 3 start date incorrect");
+
+            let estimateTokens = await marketInstance.collateralToTokenBuying(ethers.utils.parseUnits("30000", 18));
+            // Making a purchase that ends multiple rounds
+            await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
+            currentPhase = await vaultInstance.currentPhase();
+            let phaseOneM1 = await vaultInstance.fundingPhase(0);
+            let phaseTwoM1 = await vaultInstance.fundingPhase(1);
+            let phaseThreeM1 = await vaultInstance.fundingPhase(2);
+            
+            assert.equal(phaseOneM1[1].toString(), marketSettingsStress.fundingGoalsWithTax[0].toString(), "Funding collected is larger than round");
+            assert.equal(phaseOneM1[4].toString(), 2, "Round has not ended");
+            assert.equal(phaseTwoM1[1].toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Funding collected is larger than round");
+            assert.equal(phaseTwoM1[4].toString(), 2, "Round has not ended");
+            assert.equal(phaseThreeM1[1].toString(), marketSettingsStress.remainingFunding, "Round funding incorrect");
+            assert.equal(phaseThreeM1[4].toString(), 1, "Round state is incorrect");
+            assert.equal(currentPhase.toString(), 2, "Phase invalid");
+            // Time tests
+            assert(phaseOneM1[3] < phaseTwoM1[3], "Phases have the same start time");
+            assert(phaseTwoM1[3] < phaseThreeM1[3], "Phases have the same start time");
+            assert(phaseOne[3].toString() == phaseOneM1[3].toString(), "Phase one has inconsistent start time");
+        });
+
         it("Blocks minting if too much time has passed", async () => {
             let currentPhase = await vaultInstance.currentPhase();
             assert.equal(currentPhase.toString(), 0, "Phase invalid");
