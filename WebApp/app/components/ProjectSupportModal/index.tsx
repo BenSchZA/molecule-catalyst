@@ -233,7 +233,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           These tokens can always be redeemed for their current value.
         </Typography>
         <Avatar>
-          <Blockies seed={marketAddress || '0x'} size={5} />
+          <Blockies seed={marketAddress || '0x'} size={10} />
         </Avatar>
         <Typography>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
         <Typography>Project Tokens</Typography>
