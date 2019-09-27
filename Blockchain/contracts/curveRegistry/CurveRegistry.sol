@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)

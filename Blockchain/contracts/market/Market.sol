@@ -1,9 +1,9 @@
 pragma solidity 0.5.10;
 
-import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import { SafeMath } from "../_resources/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import { IMarket } from "./IMarket.sol";
 import { IVault } from "../vault/IVault.sol";
-import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { ICurveFunctions } from "../_curveIntegrals/v1/ICurveFunctions.sol";
 
 /**

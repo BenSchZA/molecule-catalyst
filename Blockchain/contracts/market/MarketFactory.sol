@@ -3,11 +3,11 @@ pragma solidity 0.5.10;
 import { Market } from "./Market.sol";
 import { IMarketFactory } from "./IMarketFactory.sol";
 import { Vault } from "../vault/Vault.sol";
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
-import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)

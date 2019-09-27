@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import { SafeMath } from "../_resources/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // @author Ben Scholtz @ Linum Labs
 // @title Bonding curve functions

@@ -1,9 +1,9 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
-import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import { IERC20 } from "../_resources/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { SafeMath } from "../_resources/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import { BokkyPooBahsDateTimeLibrary } from "../_resources/BokkyPooBahsDateTimeLibrary.sol";
 import { IVault } from "./IVault.sol";
 import { IMarket } from "../market/IMarket.sol";
@@ -270,7 +270,7 @@ contract Vault is IVault, WhitelistAdminRole {
             terminateMarket();
             return false;
         }
-        
+
         // Gets the balance of the vault against the collateral token
         uint256 balance = collateralToken_.balanceOf(address(this));
         // Adds the tax to the funding raised for this round
