@@ -79,7 +79,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   const handleSupportProject = (contributionAmount: number) => supportProject(project.id, contributionAmount);
   const handleRedeemContribution = () => redeemHoldings(project.id);
-
   return project ? (
     <Container maxWidth="lg">
       {project && project.chainData && project.chainData.marketData &&
@@ -91,6 +90,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             contributionRate={project.chainData.marketData.taxationRate}
             txInProgress={txInProgress}
             supportProject={handleSupportProject}
+            marketAddress={project.chainData.marketAddress}
+            maxResearchContribution={Number(ethers.utils.formatUnits(
+              project.vaultData.phases.reduce((total, phase) => total.add(phase.fundingThreshold), ethers.utils.bigNumberify(0))
+              .sub(project.vaultData.totalRaised), 18))}
           />
           <ProjectRedeemModal
             closeModal={handleClose}
