@@ -1,7 +1,4 @@
 import { Theme, createStyles } from '@material-ui/core';
-import { colors } from 'theme';
-
-const titleHeight = 40;
 
 const styles = (theme: Theme) => createStyles({
   layout: {
@@ -23,31 +20,35 @@ const styles = (theme: Theme) => createStyles({
   },
   modal: {
     position: 'absolute',
-    // width: "",
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
     padding: theme.spacing(2, 4, 3),
-    overflow:"hidden",
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    "&:before":{
-      content: "''",
-      display: "block",
-      width: "100%",
-      height: titleHeight,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: -1,
-      backgroundColor: colors.grey,
-    }
+    width: '534px',
+    boxShadow: '20px 20px 60px #00000071',
+    border: '2px solid #FFFFFF',
+    borderRadius: '10px',
+    opacity: 1,
+    textAlign: 'center',
+  },
+  closeModal: {
+    position: 'absolute',
+    top: 0,
+    left: '100%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
+    borderRadius: '50%',
+    padding: '3px',
+    cursor: 'pointer',
   },
   modalTitle: {
     "& h2": {
-      fontSize: "16px",
+      fontSize: "30px",
       textTransform: "uppercase",
-      textAlign: "left",
+      textAlign: "center",
       margin: 0,
       padding: 0
     }

@@ -2,7 +2,7 @@ import { WithStyles, Modal, Typography, Paper, Divider } from '@material-ui/core
 import { withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
-import { Info } from '@material-ui/icons';
+import { Info, Close } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { PositiveButton, NegativeButton } from '../custom';
 import styles from './styles';
@@ -76,6 +76,9 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <div className={classes.buttons}>
           <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton type='submit' disabled={txInProgress} onClick={redeemHoldings}>Withdraw</PositiveButton>
+        </div>
+        <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
+          <Close style={{ padding: '0px' }} />
         </div>
       </Paper>
     </Modal>

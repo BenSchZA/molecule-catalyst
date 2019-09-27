@@ -1,4 +1,4 @@
-import { WithStyles, Theme, Modal, Typography, Paper, TextField, InputAdornment, Grid } from '@material-ui/core';
+import { WithStyles, Theme, Modal, Typography, Paper, TextField, InputAdornment, Grid, Avatar } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
 import { Info, Close } from '@material-ui/icons';
@@ -9,6 +9,8 @@ import DaiIcon from 'components/DaiIcon/Loadable';
 import { ethers } from 'ethers';
 import { getBlockchainObjects } from 'blockchainResources';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
+import useDebounce from './useDebounce';
+import Blockies from 'react-blockies';
 
 const styles = (theme: Theme) => createStyles({
   buttons: {
@@ -141,23 +143,28 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const [contribution, setContribution] = useState(0);
   const [projectTokenAmount, setProjectTokenAmount] = useState(0);
 
+  const debouncedContribution = useDebounce(contribution, 100);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { signer } = await getBlockchainObjects();
-      const market = new ethers.Contract(marketAddress, IMarket, signer);
-    
-      const tokenValue = await market.collateralToTokenBuying(
-        ethers.utils.parseUnits(`${contribution}`, 18)
-      );
-      setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
-    };
-    contribution > 0 ? fetchData() : setProjectTokenAmount(0);
-  }, [contribution]);
-  
+    if (debouncedContribution) {
+      const fetchData = async () => {
+        const { signer } = await getBlockchainObjects();
+        const market = new ethers.Contract(marketAddress, IMarket, signer);
+
+        const tokenValue = await market.collateralToTokenBuying(
+          ethers.utils.parseUnits(`${debouncedContribution}`, 18)
+        );
+        setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
+      };
+      debouncedContribution > 0 ? fetchData() : setProjectTokenAmount(0);
+    }
+  }, [debouncedContribution]);
+
   const displayPrecision = 2;
   const toResearcher = Number((contribution * contributionRate / 100).toFixed(displayPrecision));
   const toIncentivePool = Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision));
   const maxProjectContribution = Math.min(maxResearchContribution / contributionRate * 100, daiBalance);
+
   const validateContribution = (value: string) => {
     const newValue = parseFloat(value);
     !isNaN(newValue) && setContribution(newValue);
@@ -179,7 +186,6 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <TextField
           autoFocus
-          type='number'
           error={(daiBalance < contribution) ? true : false}
           helperText={(daiBalance < contribution) && 'You do not have enough DAI'}
           value={contribution}
@@ -204,8 +210,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <Grid container>
           <Grid item xs={6}>
-            <DaiIcon height={30} />
-            <Typography>{toResearcher}</Typography>
+            <div>
+              <DaiIcon height={30} />
+              <Typography>{toResearcher}</Typography>
+            </div>
             <Typography>
               Research Funding
             </Typography>
@@ -220,30 +228,34 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             </Typography>
           </Grid>
         </Grid>
-
-
         <Typography>
-          In return for your contribution,
-          you will receive tokens priced according to the project bonding curve.
-          <br />
+          In return for your contribution, you will receive tokens priced according to the project bonding curve.
           These tokens can always be redeemed for their current value.
         </Typography>
+        <Avatar>
+          <Blockies seed={marketAddress || '0x'} size={5} />
+        </Avatar>
         <Typography>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
+        <Typography>Project Tokens</Typography>
+        <Typography>You can keep up to date with the value of your project tokens in the <Link to='/myProjects'>My Projects</Link> tab</Typography>
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
-          <PositiveButton disabled={txInProgress || daiBalance < contribution} onClick={() => supportProject(contribution)}>
+          <PositiveButton
+            disabled={txInProgress || daiBalance < contribution || contribution >= maxProjectContribution}
+            onClick={() => supportProject(contribution)}>
             Support Project
           </PositiveButton>
         </div>
-        <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
-          <Close style={{ padding: '0px' }} />
-        </div>
+
         <Link className={classes.link} to="/">
           <Info />
           <span>
             Need more information?
             </span>
         </Link>
+        <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
+          <Close style={{ padding: '0px' }} />
+        </div>
         <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
           <div className={classes.spinner}>
             <MoleculeSpinner />

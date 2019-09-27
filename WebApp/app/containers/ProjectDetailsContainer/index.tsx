@@ -25,7 +25,7 @@ interface RouteParams {
 }
 
 interface OwnProps extends RouteComponentProps<RouteParams>,
-React.Props<RouteParams> { }
+  React.Props<RouteParams> { }
 
 interface DispatchProps {
 }
@@ -43,7 +43,7 @@ interface StateProps {
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
-  const {project, userAddress} = props;
+  const { project, userAddress } = props;
 
   const [, setModal] = useState(0);
 
@@ -52,25 +52,25 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
 
   const contributionValue =
     userAddress &&
-    project && 
-    project.marketData && 
-    project.marketData.netCost && 
-    project.marketData.netCost[userAddress]
-    ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-    * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+      project &&
+      project.marketData &&
+      project.marketData.netCost &&
+      project.marketData.netCost[userAddress]
+      ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+      * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
 
   return (
     <div>
-          <ProjectDetails
-            project={props.project}
-            daiBalance={props.daiBalance}
-            holdingsValue={holdingsValue}
-            contributionValue={contributionValue}
-            selectModal={setModal}
-            txInProgress={props.txInProgress}
-            supportProject={props.supportProject}
-            redeemHoldings={props.withdrawHoldings}
-          />
+      <ProjectDetails
+        project={props.project}
+        daiBalance={props.daiBalance}
+        holdingsValue={holdingsValue}
+        contributionValue={contributionValue}
+        selectModal={setModal}
+        txInProgress={props.txInProgress}
+        supportProject={props.supportProject}
+        redeemHoldings={props.withdrawHoldings}
+      />
     </div>
   );
 };
