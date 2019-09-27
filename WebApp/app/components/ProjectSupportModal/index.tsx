@@ -1,11 +1,14 @@
 import { WithStyles, Theme, Modal, Typography, Paper, TextField, InputAdornment, Grid } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Info, Close } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { NegativeButton, PositiveButton } from 'components/custom';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 import DaiIcon from 'components/DaiIcon/Loadable';
+import { ethers } from 'ethers';
+import { getBlockchainObjects } from 'blockchainResources';
+import { IMarket } from "@molecule-protocol/catalyst-contracts";
 
 const styles = (theme: Theme) => createStyles({
   buttons: {
@@ -118,6 +121,8 @@ interface Props extends WithStyles<typeof styles> {
   daiBalance: number,
   contributionRate: number,
   txInProgress: boolean,
+  marketAddress: string,
+  maxResearchContribution: number,
   closeModal(): void,
   supportProject(contributionAmount: number): void;
 }
@@ -130,19 +135,32 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   contributionRate,
   txInProgress,
   supportProject,
+  marketAddress,
+  maxResearchContribution,
 }: Props) => {
-  const [state, setState] = useState({
-    contribution: 0,
-    projectTokenAmount: 0
-  });
+  const [contribution, setContribution] = useState(0);
+  const [projectTokenAmount, setProjectTokenAmount] = useState(0);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const { signer } = await getBlockchainObjects();
+      const market = new ethers.Contract(marketAddress, IMarket, signer);
+    
+      const tokenValue = await market.collateralToTokenBuying(
+        ethers.utils.parseUnits(`${contribution}`, 18)
+      );
+      setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
+    };
+    contribution > 0 ? fetchData() : setProjectTokenAmount(0);
+  }, [contribution]);
+  
   const displayPrecision = 2;
-  const toResearcher = Number((state.contribution * contributionRate / 100).toFixed(displayPrecision));
-  const toIncentivePool = Number((state.contribution - (state.contribution * contributionRate / 100)).toFixed(displayPrecision));
-
+  const toResearcher = Number((contribution * contributionRate / 100).toFixed(displayPrecision));
+  const toIncentivePool = Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision));
+  const maxProjectContribution = Math.min(maxResearchContribution / contributionRate * 100, daiBalance);
   const validateContribution = (value: string) => {
     const newValue = parseFloat(value);
-    !isNaN(newValue) && setState({ ...state, contribution: newValue });
+    !isNaN(newValue) && setContribution(newValue);
   }
 
   return (
@@ -161,14 +179,15 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <TextField
           autoFocus
-          error={(daiBalance < state.contribution) ? true : false}
-          helperText={(daiBalance < state.contribution) && 'You do not have enough DAI'}
-          value={state.contribution}
+          type='number'
+          error={(daiBalance < contribution) ? true : false}
+          helperText={(daiBalance < contribution) && 'You do not have enough DAI'}
+          value={contribution}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
           inputProps={{
             min: 0,
-            max: daiBalance.toFixed(displayPrecision),
+            max: maxProjectContribution,
           }}
           InputProps={{
             endAdornment: <InputAdornment position='end' className={classes.inputAdornment}>DAI</InputAdornment>,
@@ -209,10 +228,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           <br />
           These tokens can always be redeemed for their current value.
         </Typography>
-
+        <Typography>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
-          <PositiveButton disabled={txInProgress || daiBalance < state.contribution} onClick={() => supportProject(state.contribution)}>
+          <PositiveButton disabled={txInProgress || daiBalance < contribution} onClick={() => supportProject(contribution)}>
             Support Project
           </PositiveButton>
         </div>
