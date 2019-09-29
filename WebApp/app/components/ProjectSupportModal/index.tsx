@@ -1,122 +1,18 @@
-import { WithStyles, Theme, Modal, Typography, Paper, TextField, InputAdornment, Grid, Avatar } from '@material-ui/core';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
+import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Grid, Avatar } from '@material-ui/core';
 import { Info, Close } from '@material-ui/icons';
+import { IMarket } from "@molecule-protocol/catalyst-contracts";
+import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
-import { NegativeButton, PositiveButton } from 'components/custom';
+import Blockies from 'react-blockies';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 import DaiIcon from 'components/DaiIcon/Loadable';
-import { ethers } from 'ethers';
 import { getBlockchainObjects } from 'blockchainResources';
-import { IMarket } from "@molecule-protocol/catalyst-contracts";
-import useDebounce from './useDebounce';
-import Blockies from 'react-blockies';
 
-const styles = (theme: Theme) => createStyles({
-  buttons: {
-    paddingTop: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: "center",
-    alignItems: 'center',
-    "& > *": {
-      width: 200,
-      margin: "0 20px"
-    }
-  },
-  modal: {
-    position: 'absolute',
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    padding: theme.spacing(2, 4, 3),
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '534px',
-    boxShadow: '20px 20px 60px #00000071',
-    border: '2px solid #FFFFFF',
-    borderRadius: '10px',
-    opacity: 1,
-    textAlign: 'center',
-  },
-  closeModal: {
-    position: 'absolute',
-    top: 0,
-    left: '100%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.primary.main,
-    borderRadius: '50%',
-    padding: '3px',
-    cursor: 'pointer',
-  },
-  modalTitle: {
-    "& h2": {
-      fontSize: "30px",
-      textTransform: "uppercase",
-      textAlign: "center",
-      margin: 0,
-      padding: 0
-    }
-  },
-  table: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: "20px 0",
-    "& > *": {
-      margin: "10px 0",
-      padding: 0,
-      width: "50%",
-      "&:nth-child(even)": {
-        textAlign: "right"
-      }
-    }
-  },
-  input: {
-    width: 170,
-    marginTop: theme.spacing(2),
-    padding: 0,
-    background: '#00212CBC 0% 0% no-repeat padding-box',
-    border: '1px solid #FFFFFF',
-    borderRadius: '2px',
-    '& > *': {
-      color: theme.palette.common.white,
-      padding: theme.spacing(1, 1),
-      '& > *': {
-        padding: theme.spacing(0)
-      }
-    }
-  },
-  inputAdornment: {
-    color: theme.palette.common.white,
-    minWidth: 'max-content',
-  },
-  link: {
-    textDecoration: 'none',
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    left: 0,
-    borderRadius: '10px',
-  },
-  spinner: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-  },
-  divider: {
-    width: '259px',
-    backgroundColor: theme.palette.common.white,
-  }
-});
+import { NegativeButton, PositiveButton } from 'components/custom';
+import useDebounce from './useDebounce';
+import styles from './styles';
+import { withStyles } from '@material-ui/styles';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -208,12 +104,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           and will be added to a communal pool that grows proportionally
           with more project contributions.
         </Typography>
-        <Grid container>
+        <Grid container direction="row">
           <Grid item xs={6}>
-            <div>
-              <DaiIcon height={30} />
-              <Typography>{toResearcher}</Typography>
-            </div>
+            <DaiIcon height={30} />
+            <Typography>{toResearcher.toFixed(displayPrecision)}</Typography>
             <Typography>
               Research Funding
             </Typography>
@@ -221,7 +115,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           <Grid item xs={6}>
             <DaiIcon height={30} />
             <Typography>
-              {toIncentivePool}
+              {toIncentivePool.toFixed(displayPrecision)}
             </Typography>
             <Typography>
               Project Stake
@@ -232,7 +126,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           In return for your contribution, you will receive tokens priced according to the project bonding curve.
           These tokens can always be redeemed for their current value.
         </Typography>
-        <Avatar>
+        <Avatar className={classes.blockie}>
           <Blockies seed={marketAddress || '0x'} size={10} />
         </Avatar>
         <Typography>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
@@ -246,12 +140,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             Support Project
           </PositiveButton>
         </div>
-
         <Link className={classes.link} to="/">
           <Info />
           <span>
             Need more information?
-            </span>
+          </span>
         </Link>
         <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
           <Close style={{ padding: '0px' }} />

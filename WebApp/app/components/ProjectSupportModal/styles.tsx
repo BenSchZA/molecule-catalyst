@@ -1,12 +1,6 @@
-import { Theme, createStyles } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core';
 
 const styles = (theme: Theme) => createStyles({
-  layout: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   buttons: {
     paddingTop: theme.spacing(4),
     display: 'flex',
@@ -45,10 +39,12 @@ const styles = (theme: Theme) => createStyles({
     cursor: 'pointer',
   },
   modalTitle: {
-    fontSize: "30px",
-    textAlign: "center",
-    margin: 0,
-    padding: 0
+    "& h2": {
+      fontSize: "30px",
+      textAlign: "center",
+      margin: 0,
+      padding: 0
+    }
   },
   table: {
     display: "flex",
@@ -67,8 +63,23 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   input: {
-    justifyContent: "flex-end",
-    width: 150,
+    width: 170,
+    marginTop: theme.spacing(2),
+    padding: 0,
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    border: '1px solid #FFFFFF',
+    borderRadius: '2px',
+    '& > *': {
+      color: theme.palette.common.white,
+      padding: theme.spacing(1, 1),
+      '& > *': {
+        padding: theme.spacing(0)
+      }
+    }
+  },
+  inputAdornment: {
+    color: theme.palette.common.white,
+    minWidth: 'max-content',
   },
   link: {
     textDecoration: 'none',
@@ -81,7 +92,7 @@ const styles = (theme: Theme) => createStyles({
     height: "100%",
     top: 0,
     left: 0,
-    zIndex: 3,
+    borderRadius: '10px',
   },
   spinner: {
     position: 'fixed',
@@ -89,21 +100,13 @@ const styles = (theme: Theme) => createStyles({
     left: '50%',
     transform: 'translate(-50%, -50%)',
   },
+  divider: {
+    width: '259px',
+    backgroundColor: theme.palette.common.white,
+  },
   blockie: {
     margin: 'auto',
-    width: '57px',
-    height: '57px',
   },
-  assetPerformance: {
-    fontSize: '40px',
-    color: theme.palette.secondary.main
-  },
-  tokenBalance: {
-    fontSize: '40px',
-  },
-  daiValues: {
-    fontSize: '30px',
-  }
 });
 
 export default (styles);

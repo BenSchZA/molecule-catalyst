@@ -42,8 +42,8 @@ interface OwnProps extends WithStyles<typeof styles> {
   daiBalance: number;
   holdingsValue: number;
   contributionValue: number;
+  tokenBalance: number;
   txInProgress: boolean;
-  selectModal(modal: number): void;
   supportProject(projectId: string, contributionAmount: number): void;
   redeemHoldings(projectId: string): void;
 }
@@ -52,10 +52,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   daiBalance,
   classes,
-  selectModal,
   txInProgress,
   holdingsValue,
   contributionValue,
+  tokenBalance,
   supportProject,
   redeemHoldings,
 }: OwnProps) => {
@@ -63,12 +63,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
 
   const handleOpen = () => {
-    selectModal(0);
     setOpenModal(true);
   };
 
   const handleOpenRedeemModal = () => {
-    selectModal(1);
     setOpenRedeemModal(true);
   };
 
@@ -81,7 +79,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   const handleRedeemContribution = () => redeemHoldings(project.id);
   return project ? (
     <Container maxWidth="lg">
-      {project && project.chainData && project.chainData.marketData &&
+      {project.chainData && project.chainData.marketData &&
         <div>
           <ProjectSupportModal
             closeModal={handleClose}
@@ -98,10 +96,12 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <ProjectRedeemModal
             closeModal={handleClose}
             modalState={openRedeem}
+            tokenBalance={tokenBalance}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
             txInProgress={txInProgress}
             redeemHoldings={handleRedeemContribution}
+            marketAddress={project.chainData.marketAddress}
           />
         </div>
       }

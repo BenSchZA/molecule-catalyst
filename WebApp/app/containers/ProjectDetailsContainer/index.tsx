@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -45,8 +45,6 @@ type Props = StateProps & DispatchProps & OwnProps;
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
   const { project, userAddress } = props;
 
-  const [, setModal] = useState(0);
-
   const holdingsValue = project && project.chainData && project.chainData.marketData
     ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
 
@@ -59,19 +57,25 @@ const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) =
       ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
       * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
 
+  const tokenBalance =
+    userAddress &&
+      project &&
+      project.marketData &&
+      project.marketData.balances &&
+      project.marketData.balances[userAddress]
+      ? Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+
   return (
-    <div>
-      <ProjectDetails
-        project={props.project}
-        daiBalance={props.daiBalance}
-        holdingsValue={holdingsValue}
-        contributionValue={contributionValue}
-        selectModal={setModal}
-        txInProgress={props.txInProgress}
-        supportProject={props.supportProject}
-        redeemHoldings={props.withdrawHoldings}
-      />
-    </div>
+    <ProjectDetails
+      project={props.project}
+      daiBalance={props.daiBalance}
+      tokenBalance={tokenBalance}
+      holdingsValue={holdingsValue}
+      contributionValue={contributionValue}
+      txInProgress={props.txInProgress}
+      supportProject={props.supportProject}
+      redeemHoldings={props.withdrawHoldings}
+    />
   );
 };
 
