@@ -31,6 +31,7 @@ interface IProject {
   status: ProjectSubmissionStatus,
   reviewedBy: User | ObjectId | string,
   chainData: ChainData,
+  researchUpdates: ResearchUpdate[],
 }
 
 interface ChainData {
@@ -63,37 +64,50 @@ interface ResearchPhase {
   duration: number,
 }
 
-let CollaboratorSchema = new Schema({
+interface ResearchUpdate {
+  update: string,
+  date: Date,
+}
+
+const ResearchUpdateSchema = new Schema({
+  update: { type: String, required: true },
+  date: { type: Date, required: true }
+}, {
+  _id: false,
+  id: false
+});
+
+const CollaboratorSchema = new Schema({
   fullName: { type: String, required: true },
   professionalTitle: { type: String, required: true },
   affiliatedOrganisation: { type: String, required: true },
 }, {
-    _id: false,
-    id: false
-  });
+  _id: false,
+  id: false
+});
 
-let ResearchPhaseSchema = new Schema({
+const ResearchPhaseSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   result: { type: String, required: true },
   fundingGoal: { type: Number, required: true },
   duration: { type: Number, required: true },
 }, {
-    _id: false,
-    id: false
-  });
+  _id: false,
+  id: false
+});
 
-let ChainDataSchema = new Schema({
+const ChainDataSchema = new Schema({
   block: { type: Number, required: true, default: -1 },
   index: { type: Number, required: true, default: -1 },
   marketAddress: { type: String, required: true, default: "0x" },
   vaultAddress: { type: String, required: true, default: "0x" },
   creatorAddress: { type: String, required: true, default: "0x" },
-}, 
-{
-  _id: false,
-  id: false
-});
+},
+  {
+    _id: false,
+    id: false
+  });
 
 export interface ProjectDocument extends IProject, Document { }
 
@@ -109,25 +123,26 @@ export const ProjectSchema = new Schema({
   status: { type: Number, required: true, default: ProjectSubmissionStatus.created, enum: [...spreadEnumKeys(ProjectSubmissionStatus)] },
   reviewedBy: { type: Schema.Types.ObjectId, ref: Schemas.User, required: false },
   chainData: { type: ChainDataSchema, required: true, default: defaultChainData },
+  researchUpdates: { type: [ResearchUpdateSchema], required: false },
 }, {
-    timestamps: true,
-    toJSON: {
-      getters: true,
-      versionKey: false,
-      transform: (doc, ret) => {
-        ret.id = String(ret._id);
-        delete ret._id;
-        return ret;
-      },
-      virtuals: true,
+  timestamps: true,
+  toJSON: {
+    getters: true,
+    versionKey: false,
+    transform: (doc, ret) => {
+      ret.id = String(ret._id);
+      delete ret._id;
+      return ret;
     },
-    toObject: {
-      getters: true,
-      versionKey: false,
-      transform: (doc, ret) => {
-        ret.id = String(ret._id);
-        delete ret._id;
-        return ret;
-      },
+    virtuals: true,
+  },
+  toObject: {
+    getters: true,
+    versionKey: false,
+    transform: (doc, ret) => {
+      ret.id = String(ret._id);
+      delete ret._id;
+      return ret;
     },
-  });
+  },
+});

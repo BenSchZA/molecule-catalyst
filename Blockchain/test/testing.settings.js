@@ -83,6 +83,11 @@ let marketSettingsStress = {
         ethers.utils.parseUnits("2300", 18),
         ethers.utils.parseUnits("3450", 18)
     ],
+    phaseDuration: [
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0),
+        ethers.utils.parseUnits("1", 0)
+    ],
     rollOverAmounts: [
         "173529411764705882352",
         "3167647058823529411763"
@@ -106,21 +111,32 @@ let marketSettingsStress = {
         "173529411764705882352",
         "5467647058823529411763",
         "3167647058823529411763",
-        "17726470588235294117645"
+        "17726470588235294117645",
+        "3450000000000000000000"
     ],
     molVaultBalances: [
         "150000000000000000000",
         "450000000000000000000",
         "900000000000000000000"
     ],
-    phaseDuration: [
-        ethers.utils.parseUnits("1", 0),
-        ethers.utils.parseUnits("1", 0),
-        ethers.utils.parseUnits("1", 0)
-    ],
     curveType: ethers.utils.parseUnits("0", 0),
     taxationRate: ethers.utils.parseUnits("15", 0),
     remainingFunding: "1049999999999999995924"
+}
+
+let molVaultSettings = {
+    vaultBalances: [
+        "5049999999999999999877965",
+        "49999999999999999877965"  
+    ],
+    marketBalances: [
+        "28616666666666666665975135",
+        "28616666666666666665975135"
+    ],
+    fundingValue: [
+        "9000000000000000000000000",
+        "6000000000000000000000000"
+    ]
 }
 
 let vaultMarketSettings = {
@@ -163,6 +179,7 @@ module.exports = {
     MoleculeVaultAbi,
     marketSettings,
     marketSettingsStress,
+    molVaultSettings,
     vaultMarketSettings,
     daiSettings,
     defaultDaiPurchase,

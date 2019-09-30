@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './project.schema';
 import { Model } from 'mongoose';
@@ -12,6 +12,8 @@ import { ServiceBase } from 'src/common/serviceBase';
 import * as sharp from 'sharp';
 import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
 import { MarketService } from 'src/market/market.service';
+import { Vault } from 'src/market/vault.schema';
+import { PhaseState } from 'src/market/vault.reducer';
 
 @Injectable()
 export class ProjectService extends ServiceBase {
@@ -48,90 +50,18 @@ export class ProjectService extends ServiceBase {
       .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])
       .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
 
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async getAllProjects() {
     this.logger.info('Getting all projects');
     const projects = await this.projectRepository.find().populate(Schemas.User);
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async getUserProjects(userId: string) {
     const projects = await this.projectRepository.find({ user: userId }).populate(Schemas.User);
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
-  }
-
-  async findById(projectId: string) {
-    const projectDoc = await this.projectRepository.findById(projectId);
-    if (!projectDoc) {
-      return false;
-    } else {
-      const project = projectDoc.toObject();
-      if (project.chainData.marketAddress !== '0x' && project.chainData.vaultAddress !== '0x') {
-        const marketData = await this.marketService.getMarketData(project.chainData.marketAddress);
-        const vaultData = await this.marketService.getVaultData(project.chainData.vaultAddress)
-        return {
-          ...project,
-          marketData: marketData.marketData,
-          vaultData: vaultData.vaultData,
-        }
-      } else {
-        return project;
-      }
-    }
-  }
-
-  async approveProject(projectId: any, user: User) {
-    const project = await this.projectRepository.findById(projectId);
-    project.status = ProjectSubmissionStatus.accepted;
-    await project.save();
-    return project.toObject();
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async rejectProject(projectId: any, user: User) {
@@ -164,6 +94,58 @@ export class ProjectService extends ServiceBase {
       this.logger.error(`Something went wrong deploying project ${project.id}`);
       this.logger.error(error);
       throw new InternalServerErrorException(`Something went wrong deploying project ${project.id}`, error);
+    }
+  }
+
+  async addResearchUpdate(projectId: any, update: string, user: User) {
+    const project = await this.projectRepository.findById(projectId).populate(Schemas.User);
+
+    //@ts-ignore
+    if (project.user.id !== user.id) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+    try {
+      this.logger.info(`Adding update to project ${projectId}`);
+      project.researchUpdates.push({ update: update, date: new Date() })
+      await project.save();
+    } catch (error) {
+      this.logger.error(`Something went wrong adding updates to project ${project.id}`);
+      this.logger.error(error);
+      throw new InternalServerErrorException(`Something went wrong adding updates to project ${project.id}`, error);
+    }
+  }
+
+  private async getMarketVaultData(projectDoc: ProjectDocument): Promise<Project> {
+    if (projectDoc.chainData.marketAddress !== '0x' && projectDoc.chainData.vaultAddress !== '0x') {
+      const marketData = await this.marketService.getMarketData(projectDoc.chainData.marketAddress);
+      const vaultData = await this.marketService.getVaultData(projectDoc.chainData.vaultAddress)
+      if (projectDoc.status === ProjectSubmissionStatus.started) {
+        await this.validateProjectStatus(projectDoc, vaultData);
+      }
+      return {
+        ...projectDoc.toObject(),
+        marketData: marketData.marketData,
+        vaultData: vaultData.vaultData,
+      }
+    } else {
+      return projectDoc.toObject();
+    }
+  }
+
+  private async validateProjectStatus(project: ProjectDocument, vault: Vault): Promise<ProjectDocument> {
+    try {
+      // Check if there are any ongoing phases
+      const ongoingPhases = vault.vaultData.phases.filter(value => value.state <= PhaseState.STARTED);
+      if (!ongoingPhases.length) {
+        this.logger.info(`Status for project ${project.id} updated to 'ended'`);
+        project.status = ProjectSubmissionStatus.ended;
+        await project.save();
+      }
+      return project;
+    } catch (error) {
+      this.logger.error(`Something went wrong validating status for project ${project.id}`);
+      this.logger.error(error);
+      return project;
     }
   }
 }

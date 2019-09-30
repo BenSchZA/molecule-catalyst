@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
-import { Project } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
 
@@ -138,8 +138,10 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const switchStatus = (status) => {
   switch(status){
-      default :
-        return 'ONGOING';
+    case ProjectSubmissionStatus.ended:
+      return 'ENDED';
+    default :
+      return 'ONGOING';
   }
 };
 

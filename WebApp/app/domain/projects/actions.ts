@@ -34,3 +34,8 @@ export const withdrawFunding = createAsyncAction(
   ActionTypes.WITHDRAW_FUNDING_SUCCESS,
   ActionTypes.WITHDRAW_FUNDING_FAILURE)
   <string, string, Error>();
+export const addResearchUpdate = createAsyncAction(
+  ActionTypes.ADD_RESEARCH_UPDATE_REQUEST,
+  ActionTypes.ADD_RESEARCH_UPDATE_SUCCESS,
+  ActionTypes.ADD_RESEARCH_UPDATE_FAILURE)
+  <{projectId: string, update: string}, undefined, Error>();
