@@ -1,4 +1,4 @@
-import { WithStyles, Modal, Typography, Paper, Divider, Avatar } from '@material-ui/core';
+import { WithStyles, Modal, Typography, Paper, Avatar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { Info, Close } from '@material-ui/icons';
