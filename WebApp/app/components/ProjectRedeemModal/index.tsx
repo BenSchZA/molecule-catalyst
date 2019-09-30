@@ -85,12 +85,13 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.modalText}>
           Change % since initial contribution
         </Typography>
+        <hr className={classes.divider} />
         <Typography className={classes.modalText}>
           PLEASE NOTE: Due to numerous interactions in the project market (such as: other people contributing to the project, withdrawing their stakes, or the fundraising campaign having ended),
           the value of your project tokens will be subject to change
           according to the price set by the bonding curve.
-          <br />
         </Typography>
+        <hr className={classes.divider} />
         <Typography className={classes.modalText}>
           You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
