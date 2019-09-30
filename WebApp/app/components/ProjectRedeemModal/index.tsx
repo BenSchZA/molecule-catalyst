@@ -51,12 +51,12 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.tokenBalance}>
           {tokenBalance ? tokenBalance.toFixed(displayPrecision) : 0}
         </Typography>
-        <Typography>
+        <Typography className={classes.modalText}>
           Your current project token balance
         </Typography>
         <hr className={classes.divider} />
         <section className={classes.daiValuesContainer}>
-          <div>
+          <div style={{width: '50%'}}>
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
@@ -67,7 +67,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
               Value of Project Tokens at the Point of Contribution
             </Typography>
           </div>
-          <div>
+          <div style={{width: '50%'}}>
             <div className={classes.currency} >
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
@@ -82,12 +82,17 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.assetPerformance}>
           {valueChange} %
         </Typography>
-        <Typography>
+        <Typography className={classes.modalText}>
           Change % since initial contribution
         </Typography>
         <Typography className={classes.modalText}>
-          In return for your contribution, you will receive tokens priced according to the project bonding curve.
-          These tokens can always be redeemed for their current value.
+          PLEASE NOTE: Due to numerous interactions in the project market (such as: other people contributing to the project, withdrawing their stakes, or the fundraising campaign having ended),
+          the value of your project tokens will be subject to change
+          according to the price set by the bonding curve.
+          <br />
+        </Typography>
+        <Typography className={classes.modalText}>
+          You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
         <div className={classes.buttons}>
           <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
