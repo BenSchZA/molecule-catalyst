@@ -96,3 +96,14 @@ export async function rejectProject(projectId: string, apiToken: string) {
 export async function launchProject(projectId: string, apiToken: string) {
   return apiRequest(RequestMethod.POST, apiUrlBuilder.launchProject(projectId), undefined, 'application/json', true, apiToken);
 }
+
+export async function addResearchUpdate(projectId: string, update: string, apiToken: string) {
+  const body = JSON.stringify({researchUpdate: update});
+  return apiRequest(
+    RequestMethod.POST,
+    apiUrlBuilder.addResearchUpdate(projectId),
+    body,
+    'application/json', // The Content-Type header is set automatically via the FormData object.
+    true,
+    apiToken);
+}

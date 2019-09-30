@@ -5,7 +5,7 @@
  */
 
 import React, { Fragment } from 'react';
-import { withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, Modal, Divider } from '@material-ui/core';
+import { withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, Modal, Divider, TextField } from '@material-ui/core';
 import { ProjectSubmissionStatus, Project, FundingState } from '../../domain/projects/types';
 import dayjs from 'dayjs'
 import { PositiveButton, NegativeButton } from 'components/custom';
@@ -18,12 +18,15 @@ import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 interface OwnProps extends WithStyles<typeof styles> {
   myProjects: Array<Project>,
   withdrawFunding(projectId: string): void,
+  addResearchUpdate(projectId: string, researchUpdate: string): void;
   txInProgress: boolean,
 }
 
 const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) => {
-  const [open, setOpen] = React.useState(false);
+  const [withdrawlModalOpen, setWithdrawlModalOpen] = React.useState(false);
+  const [researchUpdateModalOpen, setResearchUpdateModalOpen] = React.useState(false);
   const [projectId, setProjectId] = React.useState('');
+  const [researchUpdate, setResearchUpdate] = React.useState('');
   const [withdrawDetails, setWithdrawDetails] = React.useState({
     outstandingWithdraw: 0,
     availableFunding: 0,
@@ -31,8 +34,8 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
     withdrawalAmount: 0,
   });
 
-  function handleOpen(projectId: string) {
-    setOpen(true);
+  function handleOpenWithdraw(projectId: string) {
+    setWithdrawlModalOpen(true);
     setProjectId(projectId);
     setWithdrawDetails(() => {
       const currentProject = props.myProjects.filter((item) => item.id === projectId)[0] as Project;
@@ -59,13 +62,29 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
     });
   }
 
-  function handleClose() {
-    setOpen(false);
+  function handleCloseWithdraw() {
+    setWithdrawlModalOpen(false);
   }
 
   function handleWithdraw() {
     props.withdrawFunding(projectId);
-    setOpen(false);
+    setWithdrawlModalOpen(false);
+  }
+
+  function handleOpenResearchUpdateModal(projectId: string) {
+    setResearchUpdateModalOpen(true);
+    setResearchUpdate('');
+    setProjectId(projectId);
+  }
+
+  function handleCloseResearchUpdateModal() {
+    setResearchUpdateModalOpen(false);
+  }
+
+  function handleSubmitResearchUpdate() {
+    props.addResearchUpdate(projectId, researchUpdate);
+    setWithdrawlModalOpen(false);
+    setResearchUpdate('');
   }
 
   return (
@@ -94,15 +113,14 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
                   <TableCell className={props.classes.rowText}>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                   <TableCell className={props.classes.rowText}>{ProjectSubmissionStatus[project.status].toUpperCase()}</TableCell>
                   <TableCell>
-                    {(() => {
-                      switch (project.status) {
-                        case ProjectSubmissionStatus.started:
-                          return Number(ethers.utils.formatEther(bigNumberify(project.vaultData.outstandingWithdraw))) > 0 ?
-                            <Button className={props.classes.actionButton} onClick={() => handleOpen(project.id)}>Withdraw</Button> : '-';
-                        default:
-                          return '-';
-                      }
-                    })()}
+                    {project.status === ProjectSubmissionStatus.started &&
+                      project.vaultData && project.vaultData.outstandingWithdraw &&
+                      bigNumberify(project.vaultData.outstandingWithdraw).gt(0) &&
+                      <Button className={props.classes.actionButton} onClick={() => handleOpenWithdraw(project.id)}>Withdraw</Button>
+                    }
+                    {project.status === ProjectSubmissionStatus.started &&
+                      <Button className={props.classes.actionButton} onClick={() => handleOpenResearchUpdateModal(project.id)}>Update</Button>
+                    }
                   </TableCell>
                 </TableRow>
               )) :
@@ -114,9 +132,8 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
         </Paper>
       </Paper>
       <Modal
-        onClose={handleClose}
-        open={open}
-      >
+        onClose={handleCloseWithdraw}
+        open={withdrawlModalOpen} >
         <Paper square={false} className={props.classes.modal}>
           <div className={props.classes.modalTitle}>
             <Typography variant="h2">Withdraw Funding</Typography>
@@ -141,8 +158,32 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
             </Typography>
           </div>
           <div className={props.classes.buttons}>
-            <NegativeButton onClick={handleClose}>Cancel</NegativeButton>
+            <NegativeButton onClick={handleCloseWithdraw}>Cancel</NegativeButton>
             <PositiveButton disabled={false} onClick={handleWithdraw}>Withdraw</PositiveButton>
+          </div>
+        </Paper>
+      </Modal>
+      <Modal
+        onClose={handleCloseResearchUpdateModal}
+        open={researchUpdateModalOpen} >
+        <Paper square={false} className={props.classes.modal}>
+          <div className={props.classes.modalTitle}>
+            <Typography variant="h2">Add Research Update</Typography>
+          </div>
+          <div className={props.classes.modalContent}>
+            <TextField
+              onChange={(e) => setResearchUpdate(e.target.value)}
+              type='text'
+              placeholder="Please provide a reseach update"
+              variant='filled'
+              multiline
+              rows='10'
+              fullWidth
+              value={researchUpdate} />
+          </div>
+          <div className={props.classes.buttons}>
+            <NegativeButton onClick={handleCloseResearchUpdateModal}>Cancel</NegativeButton>
+            <PositiveButton disabled={false} onClick={handleSubmitResearchUpdate}>Publish</PositiveButton>
           </div>
         </Paper>
       </Modal>

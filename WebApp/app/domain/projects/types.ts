@@ -26,7 +26,8 @@ interface IProject {
   reviewedBy: string,
   chainData: ChainData,
   marketData: MarketData,
-  vaultData: VaultData
+  vaultData: VaultData,
+  researchUpdates: ResearchUpdate[],
 }
 
 interface Collaborator {
@@ -41,6 +42,11 @@ interface ResearchPhase {
   result: string,
   fundingGoal: number,
   duration: number,
+}
+
+interface ResearchUpdate {
+  update: string,
+  date: Date,
 }
 
 interface User {
