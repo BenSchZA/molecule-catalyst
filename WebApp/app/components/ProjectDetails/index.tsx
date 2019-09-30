@@ -111,14 +111,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.supportProject}
               onClick={handleOpen}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
+              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
+              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Redeem Holdings
             </Button>

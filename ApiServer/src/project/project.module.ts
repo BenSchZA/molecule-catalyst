@@ -8,10 +8,14 @@ import { AttachmentModule } from 'src/attachment/attachment.module';
 import { UserModule } from 'src/user/user.module';
 import { MarketModule } from 'src/market/market.module';
 import { MarketFactoryModule } from 'src/marketFactory/marketFactory.module';
+import { VaultSchema } from 'src/market/vault.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Schemas.Project, schema: ProjectSchema }]),
+    MongooseModule.forFeature([
+      { name: Schemas.Project, schema: ProjectSchema }, 
+      { name: Schemas.Vault, schema: VaultSchema }
+    ]),
     AttachmentModule,
     UserModule,
     MarketFactoryModule,
