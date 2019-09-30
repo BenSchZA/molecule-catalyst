@@ -41,6 +41,12 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
 
   const debouncedContribution = useDebounce(contribution, 100);
 
+  const resetModalState = () => {
+    setContribution(0);
+    setProjectTokenAmount(0);
+    closeModal();
+  }
+  
   useEffect(() => {
     if (debouncedContribution) {
       const fetchData = async () => {
@@ -69,7 +75,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   return (
     <Modal
       open={modalState}
-      onClose={closeModal}
+      onClose={resetModalState}
       disableBackdropClick={txInProgress}>
       <Paper square={false} className={classes.modal}>
         <div className={classes.modalTitle}>
@@ -154,13 +160,18 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             Support Project
           </PositiveButton>
         </div>
-        <Link className={classes.link} to="/">
-          <Info />
-          <span>
-            Need more information?
+        <div className={classes.moreInfo}>
+          <Link className={classes.link} to="/">
+            <Info />
+            <span>
+              Need more information?
           </span>
-        </Link>
-        <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
+          </Link>
+        </div>
+        <div 
+          className={classes.closeModal} 
+          onClick={resetModalState} 
+          style={{ display: (!txInProgress) ? "block" : "none" }}>
           <Close style={{ padding: '0px' }} />
         </div>
         <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
