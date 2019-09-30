@@ -105,13 +105,15 @@ const styles = (theme: Theme) => createStyles({
   },
   divider: {
     width: '259px',
-    backgroundColor: theme.palette.common.white,
+    color: theme.palette.common.white,
+    marginTop: '12px',
+    marginBottom: '42px',
   },
   blockie: {
     margin: 'auto',
     width: '30px',
     height: '30px',
-    marginRight: theme.spacing(3),
+    marginRight: theme.spacing(1),
   },
   daiBalance: {
     fontSize: '40px',
@@ -124,16 +126,21 @@ const styles = (theme: Theme) => createStyles({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    margin: "0 auto"
+    margin: "15px auto"
   },
   currency:{
     display: "inline-flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    "& > *:first-child": {
-      marginRight: 0
-    }
+  },
+  modalText: {
+    fontSize: '14px',
+    fontFamily: 'Roboto',
+    letterSpacing: '0.46px',
+  },
+  projectTokens: {
+    margin: "15px auto"
   }
 });
 

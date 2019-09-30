@@ -75,9 +75,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <div className={classes.modalTitle}>
           <Typography variant="h2">Support Project</Typography>
         </div>
+        <hr className={classes.divider} />
         <DaiIcon />
         <Typography className={classes.daiBalance}>{daiBalance ? daiBalance.toFixed(displayPrecision) : 0}</Typography>
-        <Typography>
+        <Typography className={classes.modalText}>
           Your Account Balance
         </Typography>
         <TextField
@@ -94,10 +95,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           InputProps={{
             endAdornment: <InputAdornment position='end' className={classes.inputAdornment}>DAI</InputAdornment>,
           }} />
-        <Typography>
+        <Typography className={classes.modalText}>
           Enter Contribution Amount
         </Typography>
-        <Typography>
+        <hr className={classes.divider} />
+        <Typography className={classes.modalText}>
           PLEASE NOTE: Your contribution will be split into two portions.
           The first portion will go directly to the project owner.
           The second portion represents your stake in the research project
@@ -110,7 +112,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>{toResearcher.toFixed(displayPrecision)}</Typography>
             </div>
-            <Typography>
+            <Typography className={classes.modalText}>
               Research Funding
             </Typography>
           </div>
@@ -121,25 +123,29 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
                 {toIncentivePool.toFixed(displayPrecision)}
               </Typography>
             </div>
-            <Typography>
+            <Typography className={classes.modalText}>
               Project Stake
             </Typography>
           </div>
         </section>
-        <Typography>
+        <Typography className={classes.modalText}>
           In return for your contribution, you will receive tokens priced according to the project bonding curve.
           These tokens can always be redeemed for their current value.
         </Typography>
-        <div className={classes.currency}>
-
-          <Avatar className={classes.blockie}>
-            <Blockies seed={marketAddress || '0x'} size={10} />
-          </Avatar>
-          <Typography className={classes.daiValues}>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
-        </div>
-
-        <Typography>Project Tokens</Typography>
-        <Typography>You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab</Typography>
+        <section className={classes.projectTokens}>
+          <div className={classes.currency}>
+            <Avatar className={classes.blockie}>
+              <Blockies seed={marketAddress || '0x'} size={10} />
+            </Avatar>
+            <Typography className={classes.daiValues}>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
+          </div>
+          <Typography className={classes.modalText}>
+            Project Tokens
+          </Typography>
+        </section>
+        <Typography className={classes.modalText}>
+          You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
+        </Typography>
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton
