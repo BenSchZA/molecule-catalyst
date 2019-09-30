@@ -112,6 +112,9 @@ const styles = (theme: Theme) => createStyles({
     fontFamily: 'Roboto',
     letterSpacing: '0.46px',
   },
+  moreInfo: {
+    marginTop: '15px',
+  },
 });
 
 export default (styles);

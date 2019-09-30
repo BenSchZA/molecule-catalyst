@@ -141,7 +141,10 @@ const styles = (theme: Theme) => createStyles({
   },
   projectTokens: {
     margin: "15px auto"
-  }
+  },
+  moreInfo: {
+    marginTop: '15px',
+  },
 });
 
 export default (styles);

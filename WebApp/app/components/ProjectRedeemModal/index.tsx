@@ -98,12 +98,14 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton type='submit' disabled={txInProgress} onClick={redeemHoldings}>Withdraw</PositiveButton>
         </div>
-        <Link className={classes.link} to="/">
-          <Info />
-          <span>
-            Need more information?
+        <div className={classes.moreInfo}>
+          <Link className={classes.link} to="/">
+            <Info />
+            <span>
+              Need more information?
           </span>
-        </Link>
+          </Link>
+        </div>
         <div className={classes.closeModal} onClick={closeModal} style={{ display: (!txInProgress) ? "block" : "none" }}>
           <Close style={{ padding: '0px' }} />
         </div>
