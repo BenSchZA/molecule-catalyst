@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Avatar } from '@material-ui/core';
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
+import { withStyles } from '@material-ui/styles';
 import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import Blockies from 'react-blockies';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
-import DaiIcon from 'components/DaiIcon/Loadable';
 import { getBlockchainObjects } from 'blockchainResources';
+import useDebounce from 'utils/useDebounce';
 
 import { NegativeButton, PositiveButton } from 'components/custom';
-import useDebounce from './useDebounce';
+import DaiIcon from 'components/DaiIcon/Loadable';
 import styles from './styles';
-import { withStyles } from '@material-ui/styles';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -41,12 +41,6 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
 
   const debouncedContribution = useDebounce(contribution, 100);
 
-  const resetModalState = () => {
-    setContribution(0);
-    setProjectTokenAmount(0);
-    closeModal();
-  }
-  
   useEffect(() => {
     if (debouncedContribution) {
       const fetchData = async () => {
@@ -72,6 +66,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
     !isNaN(newValue) && setContribution(newValue);
   }
 
+  const resetModalState = () => {
+    setContribution(0);
+    setProjectTokenAmount(0);
+    closeModal();
+  }
   return (
     <Modal
       open={modalState}
@@ -122,6 +121,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
               Research Funding
             </Typography>
           </div>
+          <hr className={classes.verticalDivider} />
           <div>
             <div className={classes.currency}>
               <DaiIcon height={30} />

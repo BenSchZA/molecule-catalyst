@@ -45,7 +45,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   tokenBalance: number;
   txInProgress: boolean;
   supportProject(projectId: string, contributionAmount: number): void;
-  redeemHoldings(projectId: string): void;
+  redeemHoldings(projectId: string, tokenAmount: number): void;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
@@ -76,7 +76,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   };
 
   const handleSupportProject = (contributionAmount: number) => supportProject(project.id, contributionAmount);
-  const handleRedeemContribution = () => redeemHoldings(project.id);
+  const handleRedeemContribution = (tokenAmount: number) => redeemHoldings(project.id, tokenAmount);
   return project ? (
     <Container maxWidth="lg">
       {project.chainData && project.chainData.marketData &&

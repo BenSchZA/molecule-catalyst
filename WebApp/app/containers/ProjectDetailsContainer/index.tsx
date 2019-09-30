@@ -37,7 +37,7 @@ interface StateProps {
   contribution: number,
   txInProgress: boolean,
   supportProject(projectId: string, contribution: number): void,
-  withdrawHoldings(projectId: string): void,
+  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -91,7 +91,7 @@ const mapDispatchToProps = (
   ownProps: OwnProps,
 ): DispatchProps => ({
   supportProject: (projectId: string, contribution: number) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
-  withdrawHoldings: (projectId: string) => dispatch(withdrawHoldings.request(projectId)),
+  withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
 });
 
 const withReducer = injectReducer<OwnProps>({

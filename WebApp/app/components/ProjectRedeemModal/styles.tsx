@@ -51,8 +51,19 @@ const styles = (theme: Theme) => createStyles({
     padding: 0
   },
   input: {
-    justifyContent: "flex-end",
-    width: 150,
+    width: 170,
+    marginTop: theme.spacing(2),
+    padding: 0,
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    border: '1px solid #FFFFFF',
+    borderRadius: '2px',
+    '& > *': {
+      color: theme.palette.common.white,
+      padding: theme.spacing(1, 1),
+      '& > *': {
+        padding: theme.spacing(0)
+      }
+    }
   },
   link: {
     textDecoration: 'none',
@@ -94,6 +105,12 @@ const styles = (theme: Theme) => createStyles({
     marginTop: '12px',
     marginBottom: '42px',
   },
+  verticalDivider: {
+    width: '1px',
+    color: theme.palette.common.white,
+    height: '59px',
+    margin: 0,
+  },
   daiValuesContainer: {
     display: "flex",
     flexDirection: "row",
@@ -114,6 +131,13 @@ const styles = (theme: Theme) => createStyles({
   },
   moreInfo: {
     marginTop: '15px',
+  },
+  inputAdornment: {
+    color: theme.palette.common.white,
+    minWidth: 'max-content',
+    '& > *': {
+      color: theme.palette.common.white,
+    }
   },
 });
 

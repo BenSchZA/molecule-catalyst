@@ -109,6 +109,11 @@ const styles = (theme: Theme) => createStyles({
     marginTop: '12px',
     marginBottom: '42px',
   },
+  verticalDivider: {
+    width: '1px',
+    color: theme.palette.common.white,
+    height: '59px'
+  },
   blockie: {
     margin: 'auto',
     width: '30px',
