@@ -80,6 +80,9 @@ const styles = (theme: Theme) => createStyles({
   inputAdornment: {
     color: theme.palette.common.white,
     minWidth: 'max-content',
+    '& > *': {
+      color: theme.palette.common.white,
+    }
   },
   link: {
     textDecoration: 'none',
@@ -106,7 +109,32 @@ const styles = (theme: Theme) => createStyles({
   },
   blockie: {
     margin: 'auto',
+    width: '30px',
+    height: '30px',
+    marginRight: theme.spacing(3),
   },
+  daiBalance: {
+    fontSize: '40px',
+  },
+  daiValues: {
+    fontSize: '30px',
+  },
+  fundingSplit:{
+    display:"flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    margin: "0 auto"
+  },
+  currency:{
+    display: "inline-flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    "& > *:first-child": {
+      marginRight: 0
+    }
+  }
 });
 
 export default (styles);

@@ -50,22 +50,6 @@ const styles = (theme: Theme) => createStyles({
     margin: 0,
     padding: 0
   },
-  table: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: "20px 0",
-    "& > *": {
-      margin: "10px 0",
-      padding: 0,
-      width: "50%",
-      "&:nth-child(even)": {
-        textAlign: "right"
-      }
-    }
-  },
   input: {
     justifyContent: "flex-end",
     width: 150,

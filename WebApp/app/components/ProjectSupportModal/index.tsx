@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Grid, Avatar } from '@material-ui/core';
+import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Avatar } from '@material-ui/core';
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import { ethers } from 'ethers';
@@ -76,7 +76,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           <Typography variant="h2">Support Project</Typography>
         </div>
         <DaiIcon />
-        <Typography>{daiBalance ? daiBalance.toFixed(displayPrecision) : 0}</Typography>
+        <Typography className={classes.daiBalance}>{daiBalance ? daiBalance.toFixed(displayPrecision) : 0}</Typography>
         <Typography>
           Your Account Balance
         </Typography>
@@ -104,34 +104,42 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           and will be added to a communal pool that grows proportionally
           with more project contributions.
         </Typography>
-        <Grid container direction="row">
-          <Grid item xs={6}>
-            <DaiIcon height={30} />
-            <Typography>{toResearcher.toFixed(displayPrecision)}</Typography>
+        <section className={classes.fundingSplit}>
+          <div>
+            <div className={classes.currency}>
+              <DaiIcon height={30} />
+              <Typography className={classes.daiValues}>{toResearcher.toFixed(displayPrecision)}</Typography>
+            </div>
             <Typography>
               Research Funding
             </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <DaiIcon height={30} />
-            <Typography>
-              {toIncentivePool.toFixed(displayPrecision)}
-            </Typography>
+          </div>
+          <div>
+            <div className={classes.currency}>
+              <DaiIcon height={30} />
+              <Typography className={classes.daiValues}>
+                {toIncentivePool.toFixed(displayPrecision)}
+              </Typography>
+            </div>
             <Typography>
               Project Stake
             </Typography>
-          </Grid>
-        </Grid>
+          </div>
+        </section>
         <Typography>
           In return for your contribution, you will receive tokens priced according to the project bonding curve.
           These tokens can always be redeemed for their current value.
         </Typography>
-        <Avatar className={classes.blockie}>
-          <Blockies seed={marketAddress || '0x'} size={10} />
-        </Avatar>
-        <Typography>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
+        <div className={classes.currency}>
+
+          <Avatar className={classes.blockie}>
+            <Blockies seed={marketAddress || '0x'} size={10} />
+          </Avatar>
+          <Typography className={classes.daiValues}>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
+        </div>
+
         <Typography>Project Tokens</Typography>
-        <Typography>You can keep up to date with the value of your project tokens in the <Link to='/myProjects'>My Projects</Link> tab</Typography>
+        <Typography>You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab</Typography>
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton
