@@ -1,4 +1,4 @@
-import { WithStyles, Modal, Typography, Paper, Divider, Avatar, Grid } from '@material-ui/core';
+import { WithStyles, Modal, Typography, Paper, Divider, Avatar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { Info, Close } from '@material-ui/icons';
@@ -44,7 +44,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.modalTitle}>
           Withdraw Project Stake
         </Typography>
-        <Divider />
+        <hr className={classes.divider} />
         <Avatar className={classes.blockie}>
           <Blockies seed={marketAddress || '0x'} size={15} />
         </Avatar>
@@ -54,34 +54,40 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography>
           Your current project token balance
         </Typography>
-        <Grid container direction="row">
-          <Grid item xs={6}>
-            <DaiIcon height={30} />
-            <Typography className={classes.daiValues}>
-              {contributionValue.toFixed(displayPrecision)}
-            </Typography>
+        <hr className={classes.divider} />
+        <section className={classes.daiValuesContainer}>
+          <div>
+            <div className={classes.currency}>
+              <DaiIcon height={30} />
+              <Typography className={classes.daiValues}>
+                {contributionValue.toFixed(displayPrecision)}
+              </Typography>
+            </div>
             <Typography>
               Value of Project Tokens at the Point of Contribution
             </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <DaiIcon height={30} />
-            <Typography className={classes.daiValues}>
-              {holdingsValue.toFixed(displayPrecision)}
-            </Typography>
+          </div>
+          <div>
+            <div className={classes.currency} >
+              <DaiIcon height={30} />
+              <Typography className={classes.daiValues}>
+                {holdingsValue.toFixed(displayPrecision)}
+              </Typography>
+            </div>
             <Typography>
               Current Value of Project Tokens
             </Typography>
-          </Grid>
-        </Grid>
-        <Typography variant="body1"></Typography>
-        <Typography variant="body1"></Typography>
-        <Divider />
+          </div>
+        </section>
         <Typography className={classes.assetPerformance}>
           {valueChange} %
         </Typography>
         <Typography>
           Change % since initial contribution
+        </Typography>
+        <Typography className={classes.modalText}>
+          In return for your contribution, you will receive tokens priced according to the project bonding curve.
+          These tokens can always be redeemed for their current value.
         </Typography>
         <div className={classes.buttons}>
           <NegativeButton onClick={closeModal}>Cancel</NegativeButton>
@@ -102,7 +108,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </div>
         </div>
       </Paper>
-    </Modal>
+    </Modal >
   );
 };
 

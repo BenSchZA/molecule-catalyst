@@ -84,7 +84,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <TextField
           autoFocus
           error={(daiBalance < contribution) ? true : false}
-          helperText={(daiBalance < contribution) && 'You do not have enough DAI'}
+          helperText={(daiBalance < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}

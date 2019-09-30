@@ -87,7 +87,31 @@ const styles = (theme: Theme) => createStyles({
   },
   daiValues: {
     fontSize: '30px',
-  }
+  },
+  divider: {
+    width: '259px',
+    color: theme.palette.common.white,
+    marginTop: '12px',
+    marginBottom: '42px',
+  },
+  daiValuesContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    margin: "15px auto"
+  },
+  currency: {
+    display: "inline-flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: '14px',
+    fontFamily: 'Roboto',
+    letterSpacing: '0.46px',
+  },
 });
 
 export default (styles);
