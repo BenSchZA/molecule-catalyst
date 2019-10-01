@@ -94,8 +94,8 @@ interface OwnProps extends WithStyles<typeof styles> {
   isLoggedIn: boolean;
   userRole: number;
   walletUnlocked: boolean;
+  approvedNetwork: boolean;
   ethAddress: string;
-  selectedNetworkName: string;
   navRoutes: Array<AppRoute>;
 }
 
@@ -113,6 +113,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   logOut,
   userRole,
   location,
+  approvedNetwork,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
   const [adminMenuAnchorEl, setAdminMenuAnchorEl] = useState<EventTarget | null>(null);
@@ -154,7 +155,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
               </List>
               {!isLoggedIn ? (
                 <div className={classes.connectButton}>
-                  <Button onClick={() => onConnect()} disabled={!walletUnlocked}>CONNECT</Button>
+                  <Button onClick={() => onConnect()} disabled={!walletUnlocked || !approvedNetwork}>CONNECT</Button>
                 </div>
               ) : (
                   <Fragment>

@@ -5,12 +5,13 @@ import { UserType } from 'containers/App/routes';
 
 /* --- STATE --- */
 interface AuthenticationState {
+  approvedNetwork: boolean,
+  walletUnlocked: boolean,
   accessToken: string,
   ethAddress: string,
   daiBalance: number,
   signedPermit: string,
-  walletUnlocked: boolean,
-  selectedNetworkId?: number,
+  networkId: number,
   errorMessage: string,
   userRole: number,
   userId: string,

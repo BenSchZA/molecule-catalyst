@@ -6,7 +6,7 @@ import { forwardTo } from 'utils/history';
 import { getPermit as getPermitApi, login } from '../../api';
 import * as authenticationActions from './actions';
 import ActionTypes from './constants';
-import { getBlockchainObjects, signMessage } from 'blockchainResources';
+import { getBlockchainObjects, signMessage, BlockchainResources } from 'blockchainResources';
 import { getType } from 'typesafe-actions';
 import { getDaiBalance, getDaiContract } from './chain';
 
@@ -86,12 +86,13 @@ export function* loginFlow() {
 
 export function* connectWallet() {
   try {
-    const { signerAddress, provider } = yield call(getBlockchainObjects);
+    const { signerAddress, provider, networkId, approvedNetwork }: BlockchainResources = yield call(getBlockchainObjects);
     if (provider) {
-      yield put(authenticationActions.setEthAddress(signerAddress));
-      const network = yield call([provider, provider.getNetwork]);
-      yield put(authenticationActions.setNetworkId(network.chainId));
-      yield put(authenticationActions.connectWallet.success());
+      yield put(authenticationActions.connectWallet.success({
+        approvedNetwork: approvedNetwork,
+        ethAddress: signerAddress,
+        networkId: networkId,
+      }));
     } else {
       yield put(authenticationActions.connectWallet.failure('Non-Ethereum browser detected. You should consider trying MetaMask!'));
     }
