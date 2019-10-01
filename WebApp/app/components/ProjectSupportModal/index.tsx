@@ -59,7 +59,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const displayPrecision = 2;
   const toResearcher = Number((contribution * contributionRate / 100).toFixed(displayPrecision));
   const toIncentivePool = Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision));
-  const maxProjectContribution = Math.min(maxResearchContribution / contributionRate * 100, daiBalance);
+  const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + 0.01, daiBalance);
 
   const validateContribution = (value: string) => {
     const newValue = parseFloat(value);
@@ -155,7 +155,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton
-            disabled={txInProgress || contribution >= maxProjectContribution}
+            disabled={txInProgress || contribution > maxProjectContribution}
             onClick={() => supportProject(contribution)}>
             Support Project
           </PositiveButton>

@@ -86,12 +86,13 @@ export function* loginFlow() {
 
 export function* connectWallet() {
   try {
-    const { signerAddress, provider, networkId, approvedNetwork }: BlockchainResources = yield call(getBlockchainObjects);
+    const { signerAddress, provider, networkId, approvedNetwork, approvedNetworkName }: BlockchainResources = yield call(getBlockchainObjects);
     if (provider) {
       yield put(authenticationActions.connectWallet.success({
         approvedNetwork: approvedNetwork,
         ethAddress: signerAddress,
         networkId: networkId,
+        approvedNetworkName: approvedNetworkName,
       }));
     } else {
       yield put(authenticationActions.connectWallet.failure('Non-Ethereum browser detected. You should consider trying MetaMask!'));

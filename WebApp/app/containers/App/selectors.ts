@@ -9,6 +9,7 @@ import {
   makeSelectDaiBalance,
   makeSelectUserRole,
   makeSelectApprovedNetwork,
+  makeSelectApprovedNetworkName,
 } from 'domain/authentication/selectors';
 
 /**
@@ -33,6 +34,7 @@ const selectApp = createStructuredSelector<RootState, StateProps>({
   daiBalance: makeSelectDaiBalance,
   userRole: makeSelectUserRole, 
   approvedNetwork: makeSelectApprovedNetwork,
+  approvedNetworkName: makeSelectApprovedNetworkName,
 });
 
 export default selectApp;

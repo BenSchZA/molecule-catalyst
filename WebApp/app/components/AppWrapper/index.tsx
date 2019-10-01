@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { List, ListItem, Button, Menu, MenuItem, Avatar, Container } from '@material-ui/core';
+import { List, ListItem, Button, Menu, MenuItem, Avatar, Container, Tooltip } from '@material-ui/core';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -67,7 +67,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   },
   connectButton: {
     marginRight: spacing(3),
-    "& > *":{
+    "& > *": {
       margin: 0
     }
   },
@@ -78,13 +78,13 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     left: 0,
     width: "100%",
     zIndex: -1,
-    "& img":{
+    "& img": {
       width: "100%"
     },
-    "& ~ *":{
+    "& ~ *": {
       zIndex: 0
     }
-  }
+  },
 });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -97,6 +97,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   approvedNetwork: boolean;
   ethAddress: string;
   navRoutes: Array<AppRoute>;
+  approvedNetworkName: string;
 }
 
 
@@ -114,6 +115,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   userRole,
   location,
   approvedNetwork,
+  approvedNetworkName,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<EventTarget | null>(null);
   const [adminMenuAnchorEl, setAdminMenuAnchorEl] = useState<EventTarget | null>(null);
@@ -154,9 +156,18 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                   </Fragment>}
               </List>
               {!isLoggedIn ? (
-                <div className={classes.connectButton}>
-                  <Button onClick={() => onConnect()} disabled={!walletUnlocked || !approvedNetwork}>CONNECT</Button>
-                </div>
+                (walletUnlocked && approvedNetwork) ?
+                  <div className={classes.connectButton}>
+                    <Button onClick={() => onConnect()}>CONNECT</Button>
+                  </div> :
+                  <Tooltip 
+                    title={`Please ensure you have Metamask installed, 
+                    you have allowed this site to connect to Metamask 
+                    and the ${approvedNetworkName} network is selected in Metamask`}>
+                    <div className={classes.connectButton}>
+                      <Button onClick={() => { }} disabled>CONNECT</Button>
+                    </div>
+                  </Tooltip>
               ) : (
                   <Fragment>
                     <Avatar onClick={(e) => setAnchorEl(e.currentTarget)} className={classes.avatar}>
@@ -187,7 +198,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
       <ErrorBoundary>
         <main className={classes.content}>
           <div className={classes.background}>
-            <img src="Seperator-02.png" alt=""/>
+            <img src="Seperator-02.png" alt="" />
           </div>
           {children}
         </main>

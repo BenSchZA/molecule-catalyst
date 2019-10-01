@@ -39,6 +39,7 @@ export interface StateProps {
   ethAddress: string;
   daiBalance: number,
   userRole: number;
+  approvedNetworkName: string;
 }
 
 export interface DispatchProps {

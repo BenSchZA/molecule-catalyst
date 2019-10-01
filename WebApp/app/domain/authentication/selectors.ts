@@ -75,5 +75,10 @@ export const makeSelectUserRole = createSelector(selectUserRole, substate => {
 
 export const makeSelectApprovedNetwork = createSelector(
   (state: ApplicationRootState) => state.authentication.approvedNetwork,
-  approvedNetwork => {return approvedNetwork}
+  approvedNetwork => { return approvedNetwork }
+)
+
+export const makeSelectApprovedNetworkName = createSelector(
+  (state: ApplicationRootState) => state.authentication.approvedNetworkName,
+  approvedNetworkName => { return approvedNetworkName }
 )

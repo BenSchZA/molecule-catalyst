@@ -21,5 +21,10 @@ export const connectWallet = createAsyncAction(
   ActionTypes.CONNECT_WALLET_SUCCESS,
   ActionTypes.CONNECT_WALLET_FAILURE)
   <void, 
-  { ethAddress: string, networkId: number, approvedNetwork: boolean }, 
+  { 
+    ethAddress: string, 
+    networkId: number, 
+    approvedNetwork: boolean, 
+    approvedNetworkName: string 
+  }, 
   string>();

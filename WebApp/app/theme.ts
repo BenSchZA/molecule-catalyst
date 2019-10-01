@@ -291,6 +291,11 @@ const theme = (createMuiTheme as any)({
         fontSize: '14px',
         fontWeight: '600',
       }
+    },
+    MuiTooltip: {
+      tooltip: {
+        fontSize: "1em",
+      }
     }
   }
 });

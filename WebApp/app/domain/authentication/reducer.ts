@@ -5,6 +5,7 @@ import { DomainActions, DomainState } from './types';
 
 export const initialState: DomainState = {
   approvedNetwork: false,
+  approvedNetworkName: '',
   walletUnlocked: false,
   userId: '',
   ethAddress: '',
