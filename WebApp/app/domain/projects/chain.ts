@@ -158,7 +158,7 @@ async function approve(address, value: BigNumber) {
   }
 }
 
-export async function burn(marketAddress) {
+export async function burn(marketAddress: string, tokenAmount: number) {
   // Get blockchain objects
   const { signer } = await getBlockchainObjects();
   const signerAddress = await signer.getAddress();
@@ -167,9 +167,8 @@ export async function burn(marketAddress) {
   const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), signer);
 
   // Burn all tokens
-  const balance = await market.balanceOf(signerAddress);
   const txReceipt = await market.burn(
-    balance,
+    ethers.utils.parseUnits(tokenAmount.toString(), 18),
     { gasPrice: await getGasPrice() }
   );
   const txResult = await (txReceipt).wait();

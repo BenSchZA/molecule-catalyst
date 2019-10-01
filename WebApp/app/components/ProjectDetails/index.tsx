@@ -30,7 +30,6 @@ import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import ProjectSupportModal from 'components/ProjectSupportModal';
-import { FormikProps, FormikValues } from 'formik';
 import ProjectRedeemModal from 'components/ProjectRedeemModal';
 import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
@@ -43,31 +42,31 @@ interface OwnProps extends WithStyles<typeof styles> {
   daiBalance: number;
   holdingsValue: number;
   contributionValue: number;
-  formikProps: FormikProps<FormikValues>;
+  tokenBalance: number;
   txInProgress: boolean;
-  selectModal(modal: number): void;
+  supportProject(projectId: string, contributionAmount: number): void;
+  redeemHoldings(projectId: string, tokenAmount: number): void;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   daiBalance,
   classes,
-  formikProps,
-  selectModal,
   txInProgress,
   holdingsValue,
-  contributionValue
+  contributionValue,
+  tokenBalance,
+  supportProject,
+  redeemHoldings,
 }: OwnProps) => {
   const [open, setOpenModal] = React.useState(false);
   const [openRedeem, setOpenRedeemModal] = React.useState(false);
 
   const handleOpen = () => {
-    selectModal(0);
     setOpenModal(true);
   };
 
   const handleOpenRedeemModal = () => {
-    selectModal(1);
     setOpenRedeemModal(true);
   };
 
@@ -76,25 +75,33 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setOpenRedeemModal(false);
   };
 
+  const handleSupportProject = (contributionAmount: number) => supportProject(project.id, contributionAmount);
+  const handleRedeemContribution = (tokenAmount: number) => redeemHoldings(project.id, tokenAmount);
   return project ? (
     <Container maxWidth="lg">
-      {project && project.chainData && project.chainData.marketData &&
+      {project.chainData && project.chainData.marketData &&
         <div>
           <ProjectSupportModal
             closeModal={handleClose}
             modalState={open}
-            formikProps={formikProps}
             daiBalance={daiBalance}
             contributionRate={project.chainData.marketData.taxationRate}
             txInProgress={txInProgress}
+            supportProject={handleSupportProject}
+            marketAddress={project.chainData.marketAddress}
+            maxResearchContribution={Number(ethers.utils.formatUnits(
+              project.vaultData.phases.reduce((total, phase) => total.add(phase.fundingThreshold), ethers.utils.bigNumberify(0))
+              .sub(project.vaultData.totalRaised), 18))}
           />
           <ProjectRedeemModal
             closeModal={handleClose}
             modalState={openRedeem}
-            formikProps={formikProps}
+            tokenBalance={tokenBalance}
             holdingsValue={holdingsValue}
             contributionValue={contributionValue}
             txInProgress={txInProgress}
+            redeemHoldings={handleRedeemContribution}
+            marketAddress={project.chainData.marketAddress}
           />
         </div>
       }

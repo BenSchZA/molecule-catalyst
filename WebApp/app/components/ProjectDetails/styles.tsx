@@ -317,7 +317,6 @@ const styles = ({ spacing, palette }: Theme) =>
       alignSelf: 'center',
       verticalAlign: 'middle',
       height: 2,
-      width: 1150
     },
     projectTitle:{
       textAlign: "center",
