@@ -88,8 +88,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <TextField
           autoFocus
-          error={(daiBalance < contribution) ? true : false}
-          helperText={(daiBalance < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
+          error={(maxProjectContribution < contribution) ? true : false}
+          helperText={(maxProjectContribution < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
@@ -155,7 +155,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <div className={classes.buttons}>
           <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
           <PositiveButton
-            disabled={txInProgress || daiBalance < contribution || contribution >= maxProjectContribution}
+            disabled={txInProgress || contribution >= maxProjectContribution}
             onClick={() => supportProject(contribution)}>
             Support Project
           </PositiveButton>
