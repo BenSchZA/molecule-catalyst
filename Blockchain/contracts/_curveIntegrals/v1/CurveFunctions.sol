@@ -56,10 +56,10 @@ contract CurveFunctions {
 		else if (_x <= 3) return 1;
 		uint256 z = (_x + 1) / 2;
 		uint256 y = _x;
-		while (z < y)
-		{
-		y = z;
-		z = (_x / z + z) / 2;
+		
+		while (z < y) {
+			y = z;
+			z = (_x / z + z) / 2;
 		}
 		return y;
 	}

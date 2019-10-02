@@ -14,7 +14,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     // The collateral token being used by the vaults and markets
     IERC20 internal collateralToken_;
     // The tax rate of the molecule vault
-    uint256 internal taxRate_;
+    uint256 internal taxRate_ = 0;
 
     /**
       * @notice Setts the state variables for the contract.
@@ -101,6 +101,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         );
 
         taxRate_ = _newTaxRate;
+        return true;
     }
 
     /**

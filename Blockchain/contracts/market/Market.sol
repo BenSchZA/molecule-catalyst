@@ -283,6 +283,7 @@ contract Market is IMarket, IERC20 {
         );
 
         emit Transfer(address(this), msg.sender, _amount);
+        return true;
     }
 
     /**
