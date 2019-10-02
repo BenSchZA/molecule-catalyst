@@ -171,7 +171,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               </Grid>
               <Grid item xs>
                 <Typography className={classes.label}>Price</Typography>
-                <Typography className={classes.labelSmall}>Current price of project token (in DAI)</Typography>
+                <Typography className={classes.labelSmall}>Current price of project token</Typography>
               </Grid>
               <Grid item xs>
                 <Typography className={classes.label}>Tokens</Typography>
@@ -179,7 +179,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               </Grid>
               <Grid item xs>
                 <Typography className={classes.label}>Value</Typography>
-                <Typography className={classes.labelSmall}>Value of project token (in DAI)</Typography>
+                <Typography className={classes.labelSmall}>Value of project tokens</Typography>
               </Grid>
               <Grid item xs>
                 <Typography className={classes.label}>Change %</Typography>
