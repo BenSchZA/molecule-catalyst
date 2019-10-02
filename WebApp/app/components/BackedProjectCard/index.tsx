@@ -200,8 +200,8 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               <Grid item xs>
                 <Typography className={classes.largeText}>
                   {(project.chainData && project.chainData.marketData) ? 
-                    Number(ethers.utils.formatUnits(project.chainData.marketData.tokenPrice, 18)).toFixed(2) : 
-                    ''
+                    Number(ethers.utils.formatUnits(project.chainData.marketData.tokenPrice, 18)).toFixed(2) 
+                    : ''
                   } DAI
                 </Typography>
               </Grid>
@@ -212,7 +212,9 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               </Grid>
               <Grid item xs>
                 <Typography className={classes.largeText}>
-                  {(project.chainData && project.chainData.marketData) ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0} DAI
+                  {(project.chainData && project.chainData.marketData) ? 
+                    Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)).toFixed(2) 
+                    : ''} DAI
                 </Typography>
               </Grid>
               <Grid item xs>
