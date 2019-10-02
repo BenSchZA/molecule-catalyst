@@ -127,43 +127,45 @@ export function* addressChangeListener() {
 
 export function* daiBalanceListener() {
   const { signerAddress } = yield call(getBlockchainObjects);
-  const daiContract = yield call(getDaiContract);
-  
-  // event Transfer(
-  //     address indexed from,
-  //     address indexed to,
-  //     uint256 value
-  // );
-  // The null field indicates any value matches, this specifies
-  // "any Transfer from any to signerAddress"
-  const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
-  const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
+  if (signerAddress) {
+    const daiContract = yield call(getDaiContract);
 
-  daiContract.removeAllListeners(filterTo);
-  daiContract.removeAllListeners(filterFrom);
+    // event Transfer(
+    //     address indexed from,
+    //     address indexed to,
+    //     uint256 value
+    // );
+    // The null field indicates any value matches, this specifies
+    // "any Transfer from any to signerAddress"
+    const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
+    const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
 
-  const transferEventChannel = eventChannel(emit => {
-    try {
-      // Listen for filtered results
-      daiContract.on(filterTo, (from, to, value) => {
-        console.log('Received ' + value.toString() + ' Dai from ' + from);
-        emit(value);
-      });
-      daiContract.on(filterFrom, (from, to, value) => {
-        console.log('Sent ' + value.toString() + ' Dai to ' + to);
-        emit(value);
-      });
+    daiContract.removeAllListeners(filterTo);
+    daiContract.removeAllListeners(filterFrom);
+
+    const transferEventChannel = eventChannel(emit => {
+      try {
+        // Listen for filtered results
+        daiContract.on(filterTo, (from, to, value) => {
+          console.log('Received ' + value.toString() + ' Dai from ' + from);
+          emit(value);
+        });
+        daiContract.on(filterFrom, (from, to, value) => {
+          console.log('Sent ' + value.toString() + ' Dai to ' + to);
+          emit(value);
+        });
+      }
+      catch (e) {
+        console.log(e);
+      }
+      return () => { };
+    });
+
+    while (true) {
+      const daiBalance = yield call(getDaiBalance);
+      yield put(authenticationActions.setDaiBalance(daiBalance));
+      yield take(transferEventChannel);
     }
-    catch (e) {
-      console.log(e);
-    }
-    return () => { };
-  });
-
-  while (true) {
-    const daiBalance = yield call(getDaiBalance);
-    yield put(authenticationActions.setDaiBalance(daiBalance));
-    yield take(transferEventChannel);
   }
 }
 
