@@ -1,12 +1,6 @@
-import { Theme, createStyles } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core';
 
 const styles = (theme: Theme) => createStyles({
-  layout: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   buttons: {
     paddingTop: theme.spacing(4),
     display: 'flex',
@@ -45,10 +39,28 @@ const styles = (theme: Theme) => createStyles({
     cursor: 'pointer',
   },
   modalTitle: {
-    fontSize: "30px",
-    textAlign: "center",
-    margin: 0,
-    padding: 0
+    "& h2": {
+      fontSize: "30px",
+      textAlign: "center",
+      margin: 0,
+      padding: 0
+    }
+  },
+  table: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: "20px 0",
+    "& > *": {
+      margin: "10px 0",
+      padding: 0,
+      width: "50%",
+      "&:nth-child(even)": {
+        textAlign: "right"
+      }
+    }
   },
   input: {
     width: 170,
@@ -65,6 +77,13 @@ const styles = (theme: Theme) => createStyles({
       }
     }
   },
+  inputAdornment: {
+    color: theme.palette.common.white,
+    minWidth: 'max-content',
+    '& > *': {
+      color: theme.palette.common.white,
+    }
+  },
   link: {
     textDecoration: 'none',
     color: theme.palette.secondary.main,
@@ -76,28 +95,13 @@ const styles = (theme: Theme) => createStyles({
     height: "100%",
     top: 0,
     left: 0,
-    zIndex: 3,
+    borderRadius: '10px',
   },
   spinner: {
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-  },
-  blockie: {
-    margin: 'auto',
-    width: '57px',
-    height: '57px',
-  },
-  assetPerformance: {
-    fontSize: '40px',
-    color: theme.palette.secondary.main
-  },
-  tokenBalance: {
-    fontSize: '40px',
-  },
-  daiValues: {
-    fontSize: '30px',
   },
   divider: {
     width: '259px',
@@ -108,17 +112,28 @@ const styles = (theme: Theme) => createStyles({
   verticalDivider: {
     width: '1px',
     color: theme.palette.common.white,
-    height: '59px',
-    margin: 0,
+    height: '59px'
   },
-  daiValuesContainer: {
-    display: "flex",
+  blockie: {
+    margin: 'auto',
+    width: '30px',
+    height: '30px',
+    marginRight: theme.spacing(1),
+  },
+  daiBalance: {
+    fontSize: '40px',
+  },
+  daiValues: {
+    fontSize: '30px',
+  },
+  fundingSplit:{
+    display:"flex",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     margin: "15px auto"
   },
-  currency: {
+  currency:{
     display: "inline-flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -129,15 +144,11 @@ const styles = (theme: Theme) => createStyles({
     fontFamily: 'Roboto',
     letterSpacing: '0.46px',
   },
+  projectTokens: {
+    margin: "15px auto"
+  },
   moreInfo: {
     marginTop: '15px',
-  },
-  inputAdornment: {
-    color: theme.palette.common.white,
-    minWidth: 'max-content',
-    '& > *': {
-      color: theme.palette.common.white,
-    }
   },
 });
 

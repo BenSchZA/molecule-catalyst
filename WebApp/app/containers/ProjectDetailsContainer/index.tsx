@@ -4,12 +4,10 @@
  *
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router-dom';
-import { Formik, FormikProps, FormikValues } from 'formik';
-import * as Yup from 'yup';
 
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
@@ -27,7 +25,7 @@ interface RouteParams {
 }
 
 interface OwnProps extends RouteComponentProps<RouteParams>,
-React.Props<RouteParams> { }
+  React.Props<RouteParams> { }
 
 interface DispatchProps {
 }
@@ -39,69 +37,45 @@ interface StateProps {
   contribution: number,
   txInProgress: boolean,
   supportProject(projectId: string, contribution: number): void,
-  withdrawHoldings(projectId: string): void,
+  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
-  const {project, userAddress} = props;
-
-  const [modal, setModal] = useState(0);
-
-  const initialValues = modal == 0 ? { 
-    contribution: 0,
-  } : {};
-
-  const onSubmit = modal == 0 ? (values) => {
-    props.supportProject(props.project.id, values.contribution);
-  } : (values) => {
-    props.withdrawHoldings(props.project.id);
-  };
-
-  const validationSchema = modal == 0 ? Yup.object().shape({
-    contribution: Yup.number()
-      .positive('Invalid value')
-      .min(1)
-      .required('Required')
-      .test('Check funds', 'Not enough funds', (value) => {
-        return value <= props.daiBalance;
-    }),
-  }) : Yup.object().shape({});
+  const { project, userAddress } = props;
 
   const holdingsValue = project && project.chainData && project.chainData.marketData
     ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
 
   const contributionValue =
     userAddress &&
-    project && 
-    project.marketData && 
-    project.marketData.netCost && 
-    project.marketData.netCost[userAddress]
-    ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-    * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+      project &&
+      project.marketData &&
+      project.marketData.netCost &&
+      project.marketData.netCost[userAddress]
+      ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+      * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+
+  const tokenBalance =
+    userAddress &&
+      project &&
+      project.marketData &&
+      project.marketData.balances &&
+      project.marketData.balances[userAddress]
+      ? Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
 
   return (
-    <div>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        >
-        {(formikProps: FormikProps<FormikValues>) => (
-          <ProjectDetails
-            project={props.project}
-            daiBalance={props.daiBalance}
-            holdingsValue={holdingsValue}
-            contributionValue={contributionValue}
-            formikProps={formikProps}
-            selectModal={setModal}
-            txInProgress={props.txInProgress}
-          />
-        )}
-      </Formik>
-    </div>
+    <ProjectDetails
+      project={props.project}
+      daiBalance={props.daiBalance}
+      tokenBalance={tokenBalance}
+      holdingsValue={holdingsValue}
+      contributionValue={contributionValue}
+      txInProgress={props.txInProgress}
+      supportProject={props.supportProject}
+      redeemHoldings={props.withdrawHoldings}
+    />
   );
 };
 
@@ -116,8 +90,8 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  supportProject: (projectId, contribution) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
-  withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
+  supportProject: (projectId: string, contribution: number) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
+  withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
 });
 
 const withReducer = injectReducer<OwnProps>({

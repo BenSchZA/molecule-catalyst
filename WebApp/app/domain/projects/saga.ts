@@ -54,8 +54,7 @@ export function* launchProject(action) {
 }
 
 export function* supportProject(action) {
-  const projectId = action.payload.projectId;
-  const contribution = action.payload.contribution;
+  const {projectId, contribution} = action.payload;
 
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
@@ -86,7 +85,7 @@ export function* supportProject(action) {
 }
 
 export function* withdrawHoldings(action) {
-  const projectId = action.payload;
+  const {projectId, tokenAmount} = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
   if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
@@ -95,7 +94,7 @@ export function* withdrawHoldings(action) {
   }
 
   try {
-    yield call(burn, project.chainData.marketAddress);
+    yield call(burn, project.chainData.marketAddress, tokenAmount);
     yield put(ProjectActions.withdrawHoldings.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
       message: 'Successfully withdrew holdings', 
