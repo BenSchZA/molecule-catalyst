@@ -1,26 +1,34 @@
-import { Web3Provider, JsonRpcSigner } from "ethers/providers";
-import { ethers } from "ethers";
+import { BaseProvider } from "ethers/providers";
+import { ethers, utils, Signer, getDefaultProvider } from "ethers";
+import { getNetwork } from "ethers/utils";
 
 export interface BlockchainResources {
+  initialized: boolean,
   approvedNetwork: boolean,
+  approvedNetworkName: string,
+  approvedNetworkId: number,
   networkId: number,
+  networkName: string,
   marketRegistryAddress: string,
   marketFactoryAddress: string,
   daiAddress: string,
-  signer: JsonRpcSigner,
-  provider: Web3Provider,
+  signer: Signer,
+  provider: BaseProvider,
   signerAddress: string,
   ethereum: any,
   isStatus: boolean,
   isToshi: boolean,
   isMetaMask: boolean,
   isCipher: boolean,
-  signedMsgRegex: RegExp
 }
 
 export let blockchainResources: BlockchainResources = {
+  initialized: false,
   approvedNetwork: false,
+  approvedNetworkName: utils.getNetwork(parseInt(process.env.CHAIN_ID || '1')).name,
+  approvedNetworkId: parseInt(process.env.CHAIN_ID || '1'),
   networkId: 0,
+  networkName: '',
   daiAddress: "0x",
   marketRegistryAddress: "0x",
   marketFactoryAddress: "0x",
@@ -31,66 +39,62 @@ export let blockchainResources: BlockchainResources = {
   isMetaMask: false,
   isStatus: false,
   isToshi: false,
-  signedMsgRegex: /0x[A-Fa-f0-9]+/
 };
 
 async function fetchFromWindow() {
   const { web3 } = window as any;
   blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
   // @ts-ignore
-  await blockchainResources.provider.ready;
-  // const signer = await provider.getSigner();
-  const signer = await blockchainResources.provider.getSigner();
-  blockchainResources.signer = signer;
-  blockchainResources.signerAddress = await signer.getAddress();
+  const web3Provider = new ethers.providers.Web3Provider(web3.currentProvider);
+  blockchainResources.signer = await web3Provider.getSigner();
+  blockchainResources.signerAddress = await blockchainResources.signer.getAddress();
 }
 
 export async function initBlockchainResources() {
   const { web3, ethereum } = window as any;
-
   try {
+    blockchainResources.provider = getDefaultProvider(getNetwork(parseInt(`${process.env.CHAIN_ID}`)))
+    if (web3) {
+      blockchainResources.isToshi = !!web3.currentProvider.isToshi;
+      blockchainResources.isCipher = !!web3.currentProvider.isCipher;
+      blockchainResources.isMetaMask = !!web3.currentProvider.isMetaMask;
+      let isStatus = false;
 
-    blockchainResources.isToshi = !!web3.currentProvider.isToshi;
-    blockchainResources.isCipher = !!web3.currentProvider.isCipher;
-    blockchainResources.isMetaMask = !!web3.currentProvider.isMetaMask;
-    let isStatus = false;
+      let accountArray: string[] | any = [];
+      if (blockchainResources.isMetaMask) {
+        accountArray = await ethereum.send('eth_requestAccounts');
+        if (accountArray.code && accountArray.code == 4001) {
+          throw ("Connection rejected");
+        }
+      } else if (blockchainResources.isToshi) {
+        // Unlocked already
+      } else if (blockchainResources.isCipher) {
 
-    let accountArray: string[] | any = [];
-    if (blockchainResources.isMetaMask) {
-      accountArray = await ethereum.send('eth_requestAccounts');
-      if (accountArray.code && accountArray.code == 4001) {
-        throw ("Connection rejected");
-      }
-    } else if (blockchainResources.isToshi) {
-      // Unlocked already
-    } else if (blockchainResources.isCipher) {
-
-    } else {
-      if (ethereum) {
-        blockchainResources.isStatus = !!ethereum.isStatus;
-        if (isStatus) {
-          await ethereum.enable();
+      } else {
+        if (ethereum) {
+          blockchainResources.isStatus = !!ethereum.isStatus;
+          if (isStatus) {
+            await ethereum.enable();
+          }
         }
       }
-    }
-    
-    blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
-    // @ts-ignore
-    await blockchainResources.provider.ready;
-    blockchainResources.signer = await blockchainResources.provider.getSigner();
-    blockchainResources.signerAddress = await blockchainResources.signer.getAddress();
 
-    const chainId = (await blockchainResources.provider.getNetwork()).chainId;
-    blockchainResources.networkId = chainId;
+      // @ts-ignore
+      await blockchainResources.provider.ready;
+      const web3Provider = new ethers.providers.Web3Provider(web3.currentProvider);
+      blockchainResources.signer = await web3Provider.getSigner();
+      blockchainResources.signerAddress = await blockchainResources.signer.getAddress();
 
-    blockchainResources.marketRegistryAddress = `${process.env.MARKET_REGISTRY_ADDRESS}`;
-    blockchainResources.marketFactoryAddress = `${process.env.MARKET_FACTORY_ADDRESS}`;
-
-    if (chainId == parseInt(`${process.env.CHAIN_ID}`)) {
+      blockchainResources.networkId = (await web3Provider.getNetwork()).chainId;
+      blockchainResources.networkName = utils.getNetwork(blockchainResources.networkId).name;
+      blockchainResources.marketRegistryAddress = `${process.env.MARKET_REGISTRY_ADDRESS}`;
+      blockchainResources.marketFactoryAddress = `${process.env.MARKET_FACTORY_ADDRESS}`;
       blockchainResources.daiAddress = `${process.env.DAI_CONTRACT_ADDRESS}`;
-      blockchainResources.approvedNetwork = true;
-    } else {
-      throw "Invalid network"
+      ``
+      if (blockchainResources.networkId == parseInt(`${process.env.CHAIN_ID}`)) {
+        blockchainResources.approvedNetwork = true;
+      }
+      blockchainResources.initialized = true;
     }
   }
   catch (e) {
@@ -110,9 +114,8 @@ export async function resetBlockchainObjects() {
 export async function signMessage(message: string) {
   try {
     const data = ethers.utils.toUtf8Bytes(message);
-    const signer = await blockchainResources.provider.getSigner();
-    const addr = await signer.getAddress();
-    const sig = await blockchainResources.provider.send('personal_sign', [ethers.utils.hexlify(data), addr.toLowerCase()]);
+    const signer = blockchainResources.signer;
+    const sig = await signer.signMessage(data)
     return sig;
   }
   catch (e) {

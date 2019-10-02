@@ -35,10 +35,11 @@ interface OwnProps { }
 export interface StateProps {
   isLoggedIn: boolean;
   walletUnlocked: boolean;
+  approvedNetwork: boolean;
   ethAddress: string;
   daiBalance: number,
-  selectedNetworkName: string;
   userRole: number;
+  approvedNetworkName: string;
 }
 
 export interface DispatchProps {
