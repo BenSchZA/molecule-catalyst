@@ -84,6 +84,7 @@ const styles = (theme: Theme) =>
     },
     card: {
       cursor: 'pointer',
+      maxWidth: '647px'
     },
     cardImage: {
       paddingTop: 36,
@@ -94,6 +95,15 @@ const styles = (theme: Theme) =>
       paddingTop: '8px',
       paddingBottom: '8px',
       paddingLeft: '30%'
+    },
+    cardContent: {
+      fontSize: '0.9rem',
+      fontWeight: 'normal',
+      color: colors.darkGrey,
+      paddingTop: '12px',
+      height: '184px',
+      paddingLeft: '0px',
+      fontFamily: 'Roboto'
     }
 
   });

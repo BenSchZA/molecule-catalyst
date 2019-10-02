@@ -1,9 +1,10 @@
 import React from 'react';
 import { compose } from 'redux';
-import { Theme, WithStyles, Container, Divider } from '@material-ui/core';
+import { Theme, WithStyles, Container, Divider, Typography } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Project } from 'domain/projects/types';
-import ProjectCard from 'components/ProjectCard';
+import BackedProjectCard from 'components/BackedProjectCard';
+//import { forwardTo } from 'utils/history';
 
 const marginForGrid = 20;
 
@@ -15,9 +16,22 @@ const styles = (theme: Theme) => createStyles({
   divider: {
     margin: "40px auto 10px"
   },
+  heading: {
+    textAlign: 'center',
+    maxWidth: '40vw',
+    minWidth: '300px',
+    paddingBottom: theme.spacing(4),
+    margin: 'auto'
+  },
+  header:{
+    font: 'Light 40px/48px Montserrat',
+    fontWeight: 'lighter',
+    letterSpacing: '0.29px',
+    color: '#000000DE'
+  },
   grid: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     justifyContent: "center",
     padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
@@ -30,18 +44,22 @@ const styles = (theme: Theme) => createStyles({
 });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  classes: any;
-  projects: Array<Project>;
+  classes: any,
+  projects: Array<Project>,
+  userAddress: string
 }
 
-const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
+const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, userAddress, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
+    <Typography variant='h2' className={classes.header}>My Projects</Typography>
+    <Typography variant='body1' className={classes.heading}>
+    Keep up to date with how your projects are developing and the value of your project tokens.
+      </Typography>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
-      <div>
-        <ProjectCard key={index} project={p}/>
-        </div>
+
+        <BackedProjectCard key={index} project={p} userAddress={userAddress}/>
       )}
     </div>
   </Container>
@@ -49,4 +67,4 @@ const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: Own
 
 export default compose(
   withStyles(styles, { withTheme: true }),
-)(ProjectGrid);
+)(BackedProjectsGrid);
