@@ -5,28 +5,22 @@
  */
 
 import { ContainerState, ContainerActions } from './types';
-import * as PortfolioActions from './actions';
+import { setTxInProgress } from './actions';
 import { getType } from 'typesafe-actions';
 
 export const initialState: ContainerState = {
-  filter: {
-    text: '',
-    projectStatus: -1,
-  }
+  txInProgress: false,
 };
 
-function projectReducer(state: ContainerState = initialState, action: ContainerActions ) {
+function portfolioReducer(state = initialState, action: ContainerActions) {
   switch (action.type) {
-    case getType(PortfolioActions.setFilter):
-      return {...state,
-        filter: {
-          ...state.filter,
-          ...action.payload,
-        }
-      };
+    case getType(setTxInProgress):
+      return {
+        txInProgress: action.payload
+      }
     default:
       return state;
   }
 }
 
-export default projectReducer;
+export default portfolioReducer;

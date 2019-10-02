@@ -11,46 +11,46 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
 import saga from './saga';
-import selectPortfolioContainer from './selectors';
 import { ApplicationRootState } from 'types';
 import BackedProjectsGrid from 'components/BackedProjectsGrid';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
-import { setFilter } from './actions';
 import { Project } from 'domain/projects/types';
+import { withdrawHoldings } from 'domain/projects/actions';
 
 interface OwnProps {}
 
 interface DispatchProps {
-  setFilter: (filter) => void
 }
 
 export interface StateProps {
-  filter: {
-    text: string,
-    projectStatus: number,
-  }
-  projects: Array<Project>
+  projects: Array<Project>,
+  userAddress: string,
+  withdrawHoldings(projectId: string): void,
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = StateProps  & OwnProps & DispatchProps;
 
-const PortfolioContainer: React.FunctionComponent<Props> = ({filter, setFilter, projects}: Props) => (
+const PortfolioContainer: React.FunctionComponent<Props> = ({userAddress, projects}: Props) => (
   <Fragment>
-    <BackedProjectsGrid projects={projects} />
+    <BackedProjectsGrid projects={projects} userAddress={userAddress}/>
   </Fragment>
 )
 
-const mapStateToProps = (state: ApplicationRootState) => selectPortfolioContainer(state);
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  ownProps: OwnProps,
+): DispatchProps => ({
+  withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
+});
 
-function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
-  return {
-    setFilter: (filter) => dispatch(setFilter(filter)),
-  };
-}
+const mapStateToProps = (state: ApplicationRootState) => ({
+  projects: state.projects,
+  userAddress: state.authentication.ethAddress,
+});
 
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 );
 
 const withReducer = injectReducer<OwnProps>({

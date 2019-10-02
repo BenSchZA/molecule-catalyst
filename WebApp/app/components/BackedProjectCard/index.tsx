@@ -129,11 +129,12 @@ const styles = (theme: Theme) =>
 
 
 interface OwnProps extends WithStyles<typeof styles> {
-  project: Project
+  project: Project,
+  userAddress: string,
 }
 
 
-const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: OwnProps) => {
+const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress,  classes }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
   return (
@@ -197,10 +198,10 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
           } %</Typography>
         </Grid>
         <Grid item xs>
-        <Typography className={classes.largeText}>{project.chainData.marketData.tokenPrice ?  Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice)) : '-' } DAI</Typography>
+        <Typography className={classes.largeText}>10 DAI</Typography>
         </Grid>
         <Grid item xs>
-        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.chainData.marketData.balance))}</Typography>
+        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.marketData.balances[userAddress]))}</Typography>
         </Grid>
         <Grid item xs>
         <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue))} DAI</Typography>
@@ -209,8 +210,24 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes
         <Typography className={classes.largeText}>{
           (() => {
             const displayPrecision = 2;
-            const contributionValue = Number(ethers.utils.formatEther(project.chainData.marketData.poolValue));
-            const holdingsValue = Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue));
+            const contributionValue =
+                  userAddress &&
+                  project && 
+                  project.marketData && 
+                  project.marketData.netCost && 
+                  project.marketData.netCost[userAddress]
+                  ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+                  * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+                    project &&
+                    project.marketData &&
+                    project.marketData.netCost &&
+                    project.marketData.netCost[userAddress]
+                    ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+                    * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+
+            const holdingsValue = project && project.chainData && project.chainData.marketData
+                                  ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
+
          
             return contributionValue > 0 ?
             Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;

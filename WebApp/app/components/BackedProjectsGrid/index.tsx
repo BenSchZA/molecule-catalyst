@@ -33,16 +33,17 @@ const styles = (theme: Theme) => createStyles({
 interface OwnProps extends WithStyles<typeof styles> {
   classes: any;
   projects: Array<Project>;
+  userAddress: string;
 }
 
-const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
+const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, userAddress, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
     <Typography variant='h2' className={classes.header}>My Projects</Typography>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
 
-        <BackedProjectCard key={index} project={p}/>
+        <BackedProjectCard key={index} project={p} userAddress={userAddress}/>
       )}
     </div>
   </Container>

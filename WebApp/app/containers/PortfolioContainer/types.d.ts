@@ -4,10 +4,7 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface PortfolioContainerState {
-  filter: {
-    text: string,
-    projectStatus: number,
-  }
+  readonly txInProgress: boolean;
 }
 
 /* --- ACTIONS --- */
