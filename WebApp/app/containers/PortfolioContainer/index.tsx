@@ -16,17 +16,20 @@ import BackedProjectsGrid from 'components/BackedProjectsGrid';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { Project } from 'domain/projects/types';
 import { withdrawHoldings } from 'domain/projects/actions';
+import selectPortfolioContainer from './selectors';
 
-interface OwnProps {}
+interface OwnProps {
+  withdrawHoldings(projectId: string): void,
+  txInProgress: boolean
+}
 
 interface DispatchProps {
+ 
 }
 
 export interface StateProps {
   projects: Array<Project>,
   userAddress: string,
-  txInProgress: boolean,
-  withdrawHoldings(projectId: string): void,
 }
 
 type Props = StateProps  & OwnProps & DispatchProps;
@@ -44,11 +47,7 @@ const mapDispatchToProps = (
   withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
 });
 
-const mapStateToProps = (state: ApplicationRootState) => ({
-  projects: state.projects,
-  userAddress: state.authentication.ethAddress,
-  txInProgress: state.portfolioContainer.txInProgress
-});
+const mapStateToProps = (state: ApplicationRootState) => selectPortfolioContainer(state);
 
 const withConnect = connect(
   mapStateToProps,
