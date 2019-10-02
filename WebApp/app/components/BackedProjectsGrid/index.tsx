@@ -16,6 +16,19 @@ const styles = (theme: Theme) => createStyles({
   divider: {
     margin: "40px auto 10px"
   },
+  heading: {
+    textAlign: 'center',
+    maxWidth: '40vw',
+    minWidth: '300px',
+    paddingBottom: theme.spacing(4),
+    margin: 'auto'
+  },
+  header:{
+    font: 'Light 40px/48px Montserrat',
+    fontWeight: 'lighter',
+    letterSpacing: '0.29px',
+    color: '#000000DE'
+  },
   grid: {
     display: "flex",
     flexDirection: "column",
@@ -39,6 +52,9 @@ interface OwnProps extends WithStyles<typeof styles> {
 const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, userAddress, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
     <Typography variant='h2' className={classes.header}>My Projects</Typography>
+    <Typography variant='body1' className={classes.heading}>
+    Keep up to date with how your projects are developing and the value of your project tokens.
+      </Typography>
      <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
