@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "../_resources/openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
 import { IMarketRegistry } from "./IMarketRegistry.sol";
 
 /**
