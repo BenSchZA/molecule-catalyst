@@ -198,7 +198,12 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 } %</Typography>
               </Grid>
               <Grid item xs>
-                <Typography className={classes.largeText}>10 DAI</Typography>
+                <Typography className={classes.largeText}>
+                  {(project.chainData && project.chainData.marketData) ? 
+                    Number(ethers.utils.formatUnits(project.chainData.marketData.tokenPrice, 18)).toFixed(2) : 
+                    ''
+                  } DAI
+                </Typography>
               </Grid>
               <Grid item xs>
                 <Typography className={classes.largeText}>
