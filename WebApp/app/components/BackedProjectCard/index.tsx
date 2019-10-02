@@ -201,7 +201,9 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Typography className={classes.largeText}>10 DAI</Typography>
               </Grid>
               <Grid item xs>
-                <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.marketData.balances[userAddress]))}</Typography>
+                <Typography className={classes.largeText}>
+                  {Number(ethers.utils.formatEther(project.marketData.balances[userAddress])).toFixed(2)}
+                </Typography>
               </Grid>
               <Grid item xs>
                 <Typography className={classes.largeText}>
