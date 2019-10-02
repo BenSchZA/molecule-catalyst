@@ -8,7 +8,7 @@ export async function getDaiContract() {
     const { provider, daiAddress } = await getBlockchainObjects();
 
     // Get contract instances
-    const daiContract = await new ethers.Contract(daiAddress, JSON.stringify(ERC20Detailed), provider);
+    const daiContract = new ethers.Contract(daiAddress, JSON.stringify(ERC20Detailed), provider);
 
     return daiContract;
   } catch (error) {
@@ -20,8 +20,7 @@ export async function getDaiContract() {
 export async function getDaiBalance() {
   try {
     // Get blockchain objects
-    const { signer } = await getBlockchainObjects();
-    const signerAddress = await signer.getAddress();
+    const { signerAddress } = await getBlockchainObjects();
 
     if(!signerAddress) {
       return 0.0;

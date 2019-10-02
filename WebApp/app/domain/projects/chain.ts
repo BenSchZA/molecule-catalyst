@@ -1,6 +1,6 @@
 import { ethers, constants } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
-import { IMarket, IVault } from "@molecule-protocol/catalyst-contracts";
+import { IMarket, IVault, ERC20Detailed } from "@molecule-protocol/catalyst-contracts";
 import { MarketDataLegacy, PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
@@ -11,7 +11,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
     const { provider, signerAddress } = await getBlockchainObjects();
 
     // Get contract instances
-    const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), provider);
+    const market = await new ethers.Contract(marketAddress, IMarket, provider);
 
     // Get data
     const active = await market.active();
@@ -43,8 +43,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
 
 export async function mint(marketAddress, contribution) {
   // Get blockchain objects
-  const { signer } = await getBlockchainObjects();
-  const signerAddress = await signer.getAddress();
+  const { signer, signerAddress } = await getBlockchainObjects();
 
   // Get contract instances
   const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), signer);
@@ -79,23 +78,27 @@ export async function mint(marketAddress, contribution) {
 
 async function allowance(spender) {
   // Get blockchain objects
-  const { signer } = await getBlockchainObjects();
-  const signerAddress = await signer.getAddress();
+  const { signerAddress } = await getBlockchainObjects();
 
   // Get contract instances
+  if (signerAddress) {
   const daiContract = await getDaiContract();
   const allowance = await daiContract.allowance(signerAddress, spender);
 
   return allowance;
+  } else {
+    return 0.0
+  }
 }
 
 async function approve(address, value: BigNumber) {
   const allowanceValue: BigNumber = await allowance(address);
 
   if(allowanceValue.lt(value)) {
+    const {signer, daiAddress} = await getBlockchainObjects();
     console.log("Increasing allowance");
     // Get contract instances
-    const daiContract = await getDaiContract();
+    const daiContract = new ethers.Contract(daiAddress, ERC20Detailed, signer);
     const txReceipt = await daiContract.approve(address, value);
     await (txReceipt).wait();
     return true;
@@ -111,7 +114,7 @@ export async function burn(marketAddress: string, tokenAmount: number) {
   const signerAddress = await signer.getAddress();
 
   // Get contract instances
-  const market = await new ethers.Contract(marketAddress, JSON.stringify(IMarket), signer);
+  const market = await new ethers.Contract(marketAddress, IMarket, signer);
 
   // Burn all tokens
   const txReceipt = await market.burn(
@@ -141,7 +144,7 @@ export async function withdrawAvailable(vaultAddress, phases) {
   const { signer } = await getBlockchainObjects();
 
   // Get contract instances
-  const vault = await new ethers.Contract(vaultAddress, JSON.stringify(IVault), signer);
+  const vault = await new ethers.Contract(vaultAddress, IVault, signer);
 
   // Withdraw all available funds
   await Promise.all(phases.filter(phase => phase.state === FundingState.ENDED)

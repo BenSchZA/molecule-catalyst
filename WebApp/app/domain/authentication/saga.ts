@@ -8,8 +8,9 @@ import * as authenticationActions from './actions';
 import ActionTypes from './constants';
 import { getBlockchainObjects, signMessage, BlockchainResources } from 'blockchainResources';
 import { getType } from 'typesafe-actions';
-import { getDaiBalance, getDaiContract } from './chain';
-
+import { getDaiBalance } from './chain';
+import { ethers } from 'ethers';
+import { ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 
 export function* getPermit() {
   const { signerAddress } = yield call(getBlockchainObjects)
@@ -126,17 +127,10 @@ export function* addressChangeListener() {
 }
 
 export function* daiBalanceListener() {
-  const { signerAddress } = yield call(getBlockchainObjects);
+  const { signerAddress, provider, daiAddress } = yield call(getBlockchainObjects);
   if (signerAddress) {
-    const daiContract = yield call(getDaiContract);
+    const daiContract = new ethers.Contract(daiAddress, ERC20Detailed, provider);
 
-    // event Transfer(
-    //     address indexed from,
-    //     address indexed to,
-    //     uint256 value
-    // );
-    // The null field indicates any value matches, this specifies
-    // "any Transfer from any to signerAddress"
     const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
     const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
 
