@@ -31,9 +31,9 @@ const styles = (theme: Theme) => createStyles({
 });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  classes: any;
-  projects: Array<Project>;
-  userAddress: string;
+  classes: any,
+  projects: Array<Project>,
+  userAddress: string
 }
 
 const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({projects, userAddress, classes}: OwnProps) => (

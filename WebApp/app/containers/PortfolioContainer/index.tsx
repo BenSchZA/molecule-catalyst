@@ -25,6 +25,7 @@ interface DispatchProps {
 export interface StateProps {
   projects: Array<Project>,
   userAddress: string,
+  txInProgress: boolean,
   withdrawHoldings(projectId: string): void,
 }
 
@@ -46,6 +47,7 @@ const mapDispatchToProps = (
 const mapStateToProps = (state: ApplicationRootState) => ({
   projects: state.projects,
   userAddress: state.authentication.ethAddress,
+  txInProgress: state.portfolioContainer.txInProgress
 });
 
 const withConnect = connect(
@@ -54,11 +56,11 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer<OwnProps>({
-  key: 'backedProjects',
+  key: 'portfolioContainer',
   reducer: reducer,
 });
 const withSaga = injectSaga<OwnProps>({
-  key: 'backedProjects',
+  key: 'portfolioContainer',
   saga: saga,
   mode: RESTART_ON_REMOUNT
 });

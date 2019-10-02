@@ -37,7 +37,7 @@ export interface ApplicationRootState {
   readonly creatorApplication: CreatorApplicationState;
   readonly adminDashboard: AdminUserListingState;
   readonly adminProjectListing: AdminProjectListingState;
-  readonly backedProjects: BackedProjects;
+  readonly portfolioContainer: BackedProjects;
   readonly createProjectContainer: never;
   readonly adminUserViewContainer: never;
   readonly adminProjectReviewContainer: never;
