@@ -51,11 +51,11 @@ const styles = (theme: Theme) =>
       fontFamily: 'Roboto',
       padding: '0px'
     },
-    chip:{
+    chip: {
       float: 'left',
       marginTop: '10px',
     },
-    label:{
+    label: {
       textAlign: 'left',
       font: 'Bold 18px/24px Montserrat',
       letterSpacing: 0,
@@ -69,7 +69,7 @@ const styles = (theme: Theme) =>
       color: '#00000099',
       paddingBottom: 8
     },
-    largeText:{
+    largeText: {
       textAlign: 'left',
       font: '25px/30px Montserrat',
       fontWeight: 'lighter',
@@ -77,7 +77,7 @@ const styles = (theme: Theme) =>
       color: '#003E52',
       paddingBottom: 4
     },
-    metricContainer:{
+    metricContainer: {
       paddingLeft: '24px',
       flexGrow: 1,
     },
@@ -106,7 +106,7 @@ const styles = (theme: Theme) =>
       height: '39px',
       margin: '6px 0 0 0!important'
     },
-    buttonContainer:{
+    buttonContainer: {
       paddingRight: '16px',
       float: 'right',
       width: '380px',
@@ -134,112 +134,114 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 
-const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress,  classes }: OwnProps) => {
+const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
   return (
     <Fragment>
-     <Card
-      className={classes.card}
-      onMouseOver={() => setRaised(true)}
-      onMouseOut={() => setRaised(false)}
-      raised={raised}>
-      <CardHeader
-        title={project.title}
-        classes={{
-          title: classes.cardHeaderTitle,
-          root: classes.cardHeader
-        }}
-        action= {
-          <Grid className={classes.buttonContainer} container>
-          <Grid item xs={6}>
-          <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
-          </Grid>
-          <Grid item xs={6}>
-          <Button className={classes.redeemHoldings} onClick={() => console.log('sell')}>Withdraw Stake</Button>
-          </Grid>
-          </Grid>
-        }
-      />
-        
-       <CardContent className={classes.cardContent}>
-       <Grid className={classes.metricContainer} container spacing={1}>
-        <Grid container spacing={2}>
-       <Grid item xs>
-        <Typography className={classes.label}>Funding Progress</Typography>
-        <Typography className={classes.labelSmall}>Progress of entire project including all phases</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.label}>Price</Typography>
-        <Typography className={classes.labelSmall}>Current price of project token (in DAI)</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.label}>Tokens</Typography>
-        <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.label}>Value</Typography>
-        <Typography className={classes.labelSmall}>Value of project token (in DAI)</Typography>
-        </Grid>
-         <Grid item xs>
-        <Typography className={classes.label}>Change %</Typography>
-        <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
-        </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-       <Grid item xs>
-        <Typography className={classes.largeText}>{
-            (() => {
-              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
-                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-            })()
-          } %</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.largeText}>10 DAI</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.marketData.balances[userAddress]))}</Typography>
-        </Grid>
-        <Grid item xs>
-        <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue))} DAI</Typography>
-        </Grid>
-         <Grid item xs>
-        <Typography className={classes.largeText}>{
-          (() => {
-            const displayPrecision = 2;
-            const contributionValue =
-                  userAddress &&
-                  project && 
-                  project.marketData && 
-                  project.marketData.netCost && 
-                  project.marketData.netCost[userAddress]
-                  ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-                  * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+      <Card
+        className={classes.card}
+        onMouseOver={() => setRaised(true)}
+        onMouseOut={() => setRaised(false)}
+        raised={raised}>
+        <CardHeader
+          title={project.title}
+          classes={{
+            title: classes.cardHeaderTitle,
+            root: classes.cardHeader
+          }}
+          action={
+            <Grid className={classes.buttonContainer} container>
+              <Grid item xs={6}>
+                <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button className={classes.redeemHoldings} onClick={() => forwardTo(`project/${project.id}`)}>Withdraw Stake</Button>
+              </Grid>
+            </Grid>
+          }
+        />
+
+        <CardContent className={classes.cardContent}>
+          <Grid className={classes.metricContainer} container spacing={1}>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Typography className={classes.label}>Funding Progress</Typography>
+                <Typography className={classes.labelSmall}>Progress of entire project including all phases</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.label}>Price</Typography>
+                <Typography className={classes.labelSmall}>Current price of project token (in DAI)</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.label}>Tokens</Typography>
+                <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.label}>Value</Typography>
+                <Typography className={classes.labelSmall}>Value of project token (in DAI)</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.label}>Change %</Typography>
+                <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Typography className={classes.largeText}>{
+                  (() => {
+                    const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+                    const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
+                      total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                    return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+                  })()
+                } %</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.largeText}>10 DAI</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.largeText}>{Number(ethers.utils.formatEther(project.marketData.balances[userAddress]))}</Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.largeText}>
+                  {(project.chainData && project.chainData.marketData) ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0} DAI
+                </Typography>
+              </Grid>
+              <Grid item xs>
+                <Typography className={classes.largeText}>{
+                  (() => {
+                    const displayPrecision = 2;
+                    const contributionValue =
+                      userAddress &&
+                        project &&
+                        project.marketData &&
+                        project.marketData.netCost &&
+                        project.marketData.netCost[userAddress]
+                        ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+                        * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
                     project &&
-                    project.marketData &&
-                    project.marketData.netCost &&
-                    project.marketData.netCost[userAddress]
-                    ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-                    * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
+                      project.marketData &&
+                      project.marketData.netCost &&
+                      project.marketData.netCost[userAddress]
+                      ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
+                      * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
 
-            const holdingsValue = project && project.chainData && project.chainData.marketData
-                                  ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
+                    const holdingsValue = project && project.chainData && project.chainData.marketData
+                      ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
 
-         
-            return contributionValue > 0 ?
-            Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
 
-          })()
-        } %</Typography>
-        </Grid>
-        </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  </Fragment>);
+                    return contributionValue > 0 ?
+                      Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+
+                  })()
+                } %</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    </Fragment>);
 };
 
 export default withStyles(styles, { withTheme: true })(BackedProjectCard);

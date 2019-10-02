@@ -22,8 +22,10 @@ const makeSelectBackedProjects = createSelector(
   selectAllProjects,
   makeSelectAddress,
   (allProjects, address) => {
-    const allBackedProjects = allProjects.filter(p => p.marketData.balances.has(address));
-    
+    const allBackedProjects = allProjects.filter(p => {
+      return p.marketData && p.marketData.balances && 
+      p.marketData.balances[address]
+    });
     return allBackedProjects;
   },
 );
