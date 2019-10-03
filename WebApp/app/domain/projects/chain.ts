@@ -9,9 +9,8 @@ export async function getProjectTokenDetails(marketAddress: string) {
   try {
     // Get blockchain objects
     const { provider, signerAddress } = await getBlockchainObjects();
-
     // Get contract instances
-    const market = await new ethers.Contract(marketAddress, IMarket, provider);
+    const market = new ethers.Contract(marketAddress, IMarket, provider);
 
     // Get data
     const active = await market.active();
@@ -22,7 +21,7 @@ export async function getProjectTokenDetails(marketAddress: string) {
     const tokenPrice: BigNumber = await market.priceToMint(ethers.utils.parseEther('1'));
     const poolValue: BigNumber = await market.rewardForBurn(totalSupply);
     const holdingsValue: BigNumber = await market.rewardForBurn(balance);
-
+    
     const result: MarketDataLegacy = {
       active: active,
       balance: balance.toString(),

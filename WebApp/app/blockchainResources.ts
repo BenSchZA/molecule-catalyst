@@ -43,8 +43,6 @@ export let blockchainResources: BlockchainResources = {
 
 async function fetchFromWindow() {
   const { web3 } = window as any;
-  blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
-  // @ts-ignore
   const web3Provider = new ethers.providers.Web3Provider(web3.currentProvider);
   blockchainResources.signer = await web3Provider.getSigner();
   blockchainResources.signerAddress = await blockchainResources.signer.getAddress();
@@ -53,7 +51,8 @@ async function fetchFromWindow() {
 export async function initBlockchainResources() {
   const { web3, ethereum } = window as any;
   try {
-    blockchainResources.provider = getDefaultProvider(getNetwork(parseInt(`${process.env.CHAIN_ID}`)))
+    const network = getNetwork(parseInt(`${process.env.CHAIN_ID}`));
+    blockchainResources.provider = getDefaultProvider(network);
     if (web3) {
       blockchainResources.isToshi = !!web3.currentProvider.isToshi;
       blockchainResources.isCipher = !!web3.currentProvider.isCipher;
