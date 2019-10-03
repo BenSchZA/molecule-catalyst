@@ -144,8 +144,10 @@ contract Market is IMarket, IERC20 {
     {
         // Gets the price (in collateral) for the tokens
         uint256 priceForTokens = priceToMint(_numTokens);
+        
         // Ensures there is no overflow
         require(priceForTokens > 0, "Tokens requested too low");
+
         // Works out how much tax needs to be sent to the vault
         uint256 tax = priceForTokens.mul(taxationRate_).div(100);
         // Sends the collateral from the buyer to this market

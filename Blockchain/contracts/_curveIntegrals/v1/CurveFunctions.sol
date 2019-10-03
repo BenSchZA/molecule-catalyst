@@ -8,7 +8,9 @@ import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 contract CurveFunctions {
 	using SafeMath for uint256;
 
+	// Description of function (function ID)
 	string constant public curveFunction = "linear: (1/20000)*x + 0.5";
+	// Decimal place precision
 	uint256 constant public DECIMALS = 18;
 
 	/**
@@ -16,16 +18,18 @@ contract CurveFunctions {
       * @param  _x : Token value for upper limit of definite integral
       */
 	function curveIntegral(uint256 _x) public pure returns (uint256) {
+		// Validating input number
 		require(_x >= 0, 'Input argument too small');
-		require(_x < 10**41, 'Input argument too large');
+		// Ensuring that after scaling the number will not be too large
+		require(_x <= 10**40, 'Input argument too large');
 
 		// Calculate equation arguments
-		uint256 x = _x.mul(10**(DECIMALS.sub(18)));
 		uint256 a = 25*10**(DECIMALS - 6);
+		// hatch price
 		uint256 b = 5*10**(DECIMALS - 1);
 
 		// curve integral: (0.000025*x + 0.5)*x
-		return (a.mul(x).div(10**DECIMALS).add(b)).mul(x).div(10**DECIMALS);
+		return (a.mul(_x).div(10**DECIMALS).add(b)).mul(_x).div(10**DECIMALS);
 	}
 
 	/**
@@ -33,7 +37,10 @@ contract CurveFunctions {
 		* @param  _x : collateral value for upper limit of definite integral
 		*/
 	function inverseCurveIntegral(uint256 _x) public pure returns(uint256) {
+		// Validating input number
 		require(_x >= 0, 'Input argument too small');
+		// Ensuring that after scaling the number will not be too large
+		require(_x <= 10**40, 'Input argument too large');
 
 		// Use 36 decimal places for square root precision
 		uint256 DECIMALS_36 = 36;
@@ -51,6 +58,10 @@ contract CurveFunctions {
 			).div(10**DECIMALS);
 	}
 
+	/**
+	  * @notice	Square root function.
+	  *	@param	_x : Vaule getting square rooted.
+	  */
 	function sqrt(uint256 _x) public pure returns (uint256) {
 		if (_x == 0) return 0;
 		else if (_x <= 3) return 1;
@@ -61,6 +72,7 @@ contract CurveFunctions {
 			y = z;
 			z = (_x / z + z) / 2;
 		}
+
 		return y;
 	}
 }
