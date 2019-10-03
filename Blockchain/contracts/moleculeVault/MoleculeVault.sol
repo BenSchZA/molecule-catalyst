@@ -19,7 +19,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Setts the state variables for the contract.
       * @param  _collateralToken : The address of the collateral token (ERC20).
-      * @param  _taxRate : The taxation rate to be used by the vaults.
+      * @param  _feeRate : The taxation rate to be used by the vaults.
       */
     constructor(
         address _collateralToken,
@@ -86,9 +86,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows the admin to update the taxation rate charged by the
       *         molecule vault.
-      * @param  _newTaxRate : The new taxation rate.
+      * @param  _newFeeRate : The new taxation rate.
       */
-    function updateTaxRate(
+    function updateFeeRate(
         uint256 _newFeeRate
     )
         external

@@ -95,7 +95,7 @@ contract Vault is IVault, WhitelistAdminRole {
         creator_ = _creator;
         collateralToken_ = IERC20(_collateralToken);
         moleculeVault_ = IMoleculeVault(_moleculeVault);
-        moleculeTaxRate_ = moleculeVault_.taxRate();
+        moleculeTaxRate_ = moleculeVault_.feeRate();
 
         // Saving the funding rounds into storage
         uint256 loopLength = _fundingGoals.length;
