@@ -216,7 +216,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0)).toLocaleString()
+                Math.ceil(project.vaultData.phases.reduce((total, phase) => 
+                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString()
               } DAI
               </Typography>
           </div>
@@ -226,7 +227,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
+                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
               } DAI
               </Typography>
           </div>
@@ -236,7 +237,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
                   (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
               } DAI
               </Typography>
