@@ -14,7 +14,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     // The collateral token being used by the vaults and markets
     IERC20 internal collateralToken_;
     // The tax rate of the molecule vault
-    uint256 internal taxRate_ = 0;
+    uint256 internal feeRate_ = 0;
 
     /**
       * @notice Setts the state variables for the contract.
@@ -23,17 +23,17 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
       */
     constructor(
         address _collateralToken,
-        uint256 _taxRate
+        uint256 _feeRate
     )
         public
         WhitelistAdminRole()
     {
         // Ensures that the tax rate is correct
-        require(_taxRate > 0, "Taxation rate too low");
-        require(_taxRate < 100, "Taxation rate too high");
+        require(_feeRate > 0, "Taxation rate too low");
+        require(_feeRate < 100, "Taxation rate too high");
 
         collateralToken_ = IERC20(_collateralToken);
-        taxRate_ = _taxRate;
+        feeRate_ = _feeRate;
     }
 
     /**
@@ -89,18 +89,18 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
       * @param  _newTaxRate : The new taxation rate.
       */
     function updateTaxRate(
-        uint256 _newTaxRate
+        uint256 _newFeeRate
     )
         external
         onlyWhitelistAdmin()
         returns(bool)
     {
         require(
-            taxRate_ != _newTaxRate,
+            feeRate_ != _newFeeRate,
             "New taxation rate cannot be the same as old taxation rate"
         );
 
-        taxRate_ = _newTaxRate;
+        feeRate_ = _newFeeRate;
         return true;
     }
 
@@ -114,7 +114,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @return uint256 : The rate of taxation
       */
-    function taxRate() public view returns(uint256) {
-        return taxRate_;
+    function feeRate() public view returns(uint256) {
+        return feeRate_;
     }
 }

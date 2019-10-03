@@ -33,7 +33,7 @@ interface IMoleculeVault {
       *         molecule vault.
       * @param  _newTaxRate : The new taxation rate.
       */
-    function updateTaxRate(uint256 _newTaxRate) external returns(bool);
+    function updateTaxRate(uint256 _newFeeRate) external returns(bool);
 
     /**
       * @return address : The address of the collateral tokens contract (ERC20).
@@ -43,5 +43,5 @@ interface IMoleculeVault {
     /**
       * @return uint256 : The tax rate the molecule vault has.
       */
-    function taxRate() external view returns(uint256);
+    function feeRate() external view returns(uint256);
 }
