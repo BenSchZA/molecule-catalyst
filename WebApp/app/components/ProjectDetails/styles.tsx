@@ -216,6 +216,14 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingRight: spacing(2),
       marginTop: spacing(2)
     },
+    researchUpdatesSubHeading: {
+      textAlign: 'center',
+      maxWidth: '40vw',
+      minWidth: '300px',
+      paddingBottom: spacing(4),
+      margin: 'auto',
+      color: '#00000099'
+    },
     avatar: {
       paddingTop: spacing(2),
       paddingBottom: spacing(1.5),
