@@ -414,7 +414,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography className={classes.sectionTitleText} align="center">
             Research Updates
           </Typography>
-          {project.researchUpdates &&
+          { project.researchUpdates && project.researchUpdates.length > 0 ?
             project.researchUpdates.sort((a, b) => a.date < b.date ? 1 :
               a.date === b.date ? 0 : -1).map((update, index) =>
                 <div key={index}>
@@ -428,6 +428,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                   </Typography>
                 </div>
               )
+              :
+              <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
+              There are currently no research updates.
+                </Typography>
           }
         </div>
       </Paper>

@@ -128,18 +128,19 @@ const styles = (theme: Theme) =>
       margin: '0 0 10px 0',
       padding: 0,
       width: '980px',
+      backgroundColor: colors.moleculeBranding.third,
     },
     dividerVertical: {
       margin: 0,
       padding: 0,
-      width: '2px',
+      width: '1px',
       height: '90px',
       backgroundColor: colors.moleculeBranding.third,
     },
     dividerVertical2: {
       margin: 0,
       padding: 0,
-      width: '2px',
+      width: '1px',
       height: '45px',
       backgroundColor: colors.moleculeBranding.third,
     },
@@ -208,7 +209,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
               </Grid>
             </Grid>
-            <Divider variant='middle' className={classes.dividerHorizontal}></Divider>
+            <Divider className={classes.dividerHorizontal}></Divider>
             <Grid container spacing={2}>
               <Grid item xs>
                 <Typography className={classes.largeText}>{
