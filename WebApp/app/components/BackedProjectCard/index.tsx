@@ -5,7 +5,7 @@
  */
 
 import React, { Fragment, useState } from 'react';
-import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Grid, Button, Typography } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Grid, Button, Typography, Divider } from '@material-ui/core';
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
@@ -124,7 +124,25 @@ const styles = (theme: Theme) =>
     cardHeader: {
       padding: '20px'
     },
-
+    dividerHorizontal: {
+      margin: '0 0 10px 0',
+      padding: 0,
+      width: '980px',
+    },
+    dividerVertical: {
+      margin: 0,
+      padding: 0,
+      width: '2px',
+      height: '90px',
+      backgroundColor: colors.moleculeBranding.third,
+    },
+    dividerVertical2: {
+      margin: 0,
+      padding: 0,
+      width: '2px',
+      height: '45px',
+      backgroundColor: colors.moleculeBranding.third,
+    },
   });
 
 
@@ -169,23 +187,28 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Typography className={classes.label}>Funding Progress</Typography>
                 <Typography className={classes.labelSmall}>Progress of entire project including all phases</Typography>
               </Grid>
+              <Divider className={classes.dividerVertical}/>
               <Grid item xs>
                 <Typography className={classes.label}>Price</Typography>
                 <Typography className={classes.labelSmall}>Current price of project token</Typography>
               </Grid>
+              <Divider className={classes.dividerVertical}/>
               <Grid item xs>
                 <Typography className={classes.label}>Tokens</Typography>
                 <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
               </Grid>
+              <Divider className={classes.dividerVertical}/>
               <Grid item xs>
                 <Typography className={classes.label}>Value</Typography>
                 <Typography className={classes.labelSmall}>Value of project tokens</Typography>
               </Grid>
+              <Divider className={classes.dividerVertical}/>
               <Grid item xs>
                 <Typography className={classes.label}>Change %</Typography>
                 <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
               </Grid>
             </Grid>
+            <Divider variant='middle' className={classes.dividerHorizontal}></Divider>
             <Grid container spacing={2}>
               <Grid item xs>
                 <Typography className={classes.largeText}>{
@@ -197,6 +220,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                   })()
                 } %</Typography>
               </Grid>
+              <Divider className={classes.dividerVertical2}/>
               <Grid item xs>
                 <Typography className={classes.largeText}>
                   {(project.chainData && project.chainData.marketData) ? 
@@ -205,11 +229,13 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                   } DAI
                 </Typography>
               </Grid>
+              <Divider className={classes.dividerVertical2}/>
               <Grid item xs>
                 <Typography className={classes.largeText}>
                   {Number(ethers.utils.formatEther(project.marketData.balances[userAddress])).toFixed(2)}
                 </Typography>
               </Grid>
+              <Divider className={classes.dividerVertical2}/>
               <Grid item xs>
                 <Typography className={classes.largeText}>
                   {(project.chainData && project.chainData.marketData) ? 
@@ -217,6 +243,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                     : ''} DAI
                 </Typography>
               </Grid>
+              <Divider className={classes.dividerVertical2}/>
               <Grid item xs>
                 <Typography className={classes.largeText}>{
                   (() => {
