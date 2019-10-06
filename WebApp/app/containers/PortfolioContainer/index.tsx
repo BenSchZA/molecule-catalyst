@@ -15,14 +15,12 @@ import { ApplicationRootState } from 'types';
 import BackedProjectsGrid from 'components/BackedProjectsGrid';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { Project } from 'domain/projects/types';
-import { withdrawHoldings } from 'domain/projects/actions';
 import selectPortfolioContainer from './selectors';
 
 interface OwnProps {
 }
 
 interface DispatchProps {
-  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
 export interface StateProps {
@@ -32,15 +30,15 @@ export interface StateProps {
 
 type Props = StateProps  & OwnProps & DispatchProps;
 
-const PortfolioContainer: React.FunctionComponent<Props> = ({userAddress, projects, withdrawHoldings}: Props) => (
-  <BackedProjectsGrid projects={projects} userAddress={userAddress} withdrawHoldings={withdrawHoldings} />
+const PortfolioContainer: React.FunctionComponent<Props> = ({userAddress, projects}: Props) => (
+  <BackedProjectsGrid projects={projects} userAddress={userAddress} />
 )
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
+  dispatch: dispatch,
 });
 
 const mapStateToProps = (state: ApplicationRootState) => selectPortfolioContainer(state);

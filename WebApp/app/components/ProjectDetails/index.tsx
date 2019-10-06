@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   withStyles,
   WithStyles,
@@ -29,80 +29,49 @@ import {
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
-import ProjectSupportModal from 'components/ProjectSupportModal';
-import ProjectRedeemModal from 'components/ProjectRedeemModal';
 import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
 import { ethers } from 'ethers';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
+import TransactionModalContainer from 'containers/TransactionModalContainer';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
-  daiBalance: number;
-  holdingsValue: number;
-  contributionValue: number;
-  tokenBalance: number;
-  txInProgress: boolean;
-  supportProject(projectId: string, contributionAmount: number): void;
-  redeemHoldings(projectId: string, tokenAmount: number): void;
+  userAddress?: string;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
-  daiBalance,
   classes,
-  txInProgress,
-  holdingsValue,
-  contributionValue,
-  tokenBalance,
-  supportProject,
-  redeemHoldings,
+  userAddress,
 }: OwnProps) => {
-  const [open, setOpenModal] = React.useState(false);
-  const [openRedeem, setOpenRedeemModal] = React.useState(false);
+  const [modalState, setModalState] = useState(false);
+  const [modalMode, setModalMode] = useState<'support'|'redeem'>('support');
 
-  const handleOpen = () => {
-    setOpenModal(true);
+  const handleOpenSupportModal = () => {
+    setModalMode('support')
+    setModalState(true);
   };
 
   const handleOpenRedeemModal = () => {
-    setOpenRedeemModal(true);
+    setModalMode('redeem')
+    setModalState(true);
   };
 
   const handleClose = () => {
-    setOpenModal(false);
-    setOpenRedeemModal(false);
+    setModalState(false);
   };
 
-  const handleSupportProject = (contributionAmount: number) => supportProject(project.id, contributionAmount);
-  const handleRedeemContribution = (tokenAmount: number) => redeemHoldings(project.id, tokenAmount);
   return project ? (
     <Container maxWidth="lg">
-      {project.chainData && project.chainData.marketData &&
-        <div>
-          <ProjectSupportModal
-            closeModal={handleClose}
-            modalState={open}
-            daiBalance={daiBalance}
-            contributionRate={project.chainData.marketData.taxationRate}
-            txInProgress={txInProgress}
-            supportProject={handleSupportProject}
-            marketAddress={project.chainData.marketAddress}
-            maxResearchContribution={Number(ethers.utils.formatUnits(
-              project.vaultData.phases.reduce((total, phase) => total.add(phase.fundingThreshold), ethers.utils.bigNumberify(0))
-              .sub(project.vaultData.totalRaised), 18))}
-          />
-          <ProjectRedeemModal
-            closeModal={handleClose}
-            modalState={openRedeem}
-            tokenBalance={tokenBalance}
-            holdingsValue={holdingsValue}
-            contributionValue={contributionValue}
-            txInProgress={txInProgress}
-            redeemHoldings={handleRedeemContribution}
-            marketAddress={project.chainData.marketAddress} />
-        </div>
+      {project.chainData && project.chainData.marketData && userAddress &&
+        <TransactionModalContainer 
+          projectId={project.id}
+          userAddress={userAddress}
+          modalState={modalState}
+          mode={modalMode}
+          handleClose={handleClose} />
       }
       <div className={classes.bannerWrapper}>
         <img
@@ -116,7 +85,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <div>
             <Button
               className={classes.supportProject}
-              onClick={handleOpen}
+              onClick={handleOpenSupportModal}
               disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Support Project
@@ -215,7 +184,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(project.vaultData.phases.reduce((total, phase) => 
+                Math.ceil(project.vaultData.phases.reduce((total, phase) =>
                   total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString()
               } DAI
               </Typography>
@@ -413,7 +382,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography className={classes.sectionTitleText} align="center">
             Research Updates
           </Typography>
-          { project.researchUpdates && project.researchUpdates.length > 0 ?
+          {project.researchUpdates && project.researchUpdates.length > 0 ?
             project.researchUpdates.sort((a, b) => a.date < b.date ? 1 :
               a.date === b.date ? 0 : -1).map((update, index) =>
                 <div key={index}>
@@ -422,13 +391,13 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                       .format('DD MMM YYYY h:mm ')
                       .toUpperCase()}
                   </Typography>
-                  <Typography  className={classes.contentText}>
+                  <Typography className={classes.contentText}>
                     {update.update}
                   </Typography>
                 </div>
               )
-              :
-              <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
+            :
+            <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
               There are currently no research updates.
                 </Typography>
           }

@@ -47,10 +47,9 @@ interface OwnProps extends WithStyles<typeof styles> {
   classes: any,
   projects: Array<Project>,
   userAddress: string,
-  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
-const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({ projects, userAddress, withdrawHoldings, classes }: OwnProps) => {
+const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({ projects, userAddress, classes }: OwnProps) => {
   const [modalState, setModalState] = useState(false);
   const [projectId, setProjectId] = useState('');
 
@@ -64,12 +63,10 @@ const BackedProjectsGrid: React.FunctionComponent<OwnProps> = ({ projects, userA
     setModalState(true);
   }
 
-
-
   return (
     <>
       {
-        (projectId) &&
+        (projectId && userAddress) &&
         <TransactionModalContainer 
           projectId={projectId}
           userAddress={userAddress}

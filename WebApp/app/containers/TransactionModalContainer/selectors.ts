@@ -9,8 +9,10 @@ import { ethers } from 'ethers';
 const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
-    (project: Project) => Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) || 0
-  )
+    (project: Project) => {
+      debugger;
+      return Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) || 0
+  })
 
 const selectHoldingsValue = (projectId: string) =>
   createSelector(
