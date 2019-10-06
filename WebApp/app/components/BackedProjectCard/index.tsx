@@ -131,10 +131,11 @@ const styles = (theme: Theme) =>
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
   userAddress: string,
+  openModal(): void;
 }
 
 
-const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes }: OwnProps) => {
+const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes, openModal }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
   return (
@@ -156,7 +157,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button className={classes.redeemHoldings} onClick={() => forwardTo(`project/${project.id}`)}>Withdraw Stake</Button>
+                <Button className={classes.redeemHoldings} onClick={openModal}>Withdraw Stake</Button>
               </Grid>
             </Grid>
           }
@@ -212,7 +213,8 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               </Grid>
               <Grid item xs>
                 <Typography className={classes.largeText}>
-                  {(project.chainData && project.chainData.marketData) ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0} DAI
+                  {(project.chainData && project.chainData.marketData) ? 
+                    Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0} DAI
                 </Typography>
               </Grid>
               <Grid item xs>

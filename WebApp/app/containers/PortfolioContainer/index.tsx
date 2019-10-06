@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import injectSaga from 'utils/injectSaga';
@@ -19,12 +19,10 @@ import { withdrawHoldings } from 'domain/projects/actions';
 import selectPortfolioContainer from './selectors';
 
 interface OwnProps {
-  withdrawHoldings(projectId: string): void,
-  txInProgress: boolean
 }
 
 interface DispatchProps {
- 
+  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
 export interface StateProps {
@@ -34,17 +32,15 @@ export interface StateProps {
 
 type Props = StateProps  & OwnProps & DispatchProps;
 
-const PortfolioContainer: React.FunctionComponent<Props> = ({userAddress, projects}: Props) => (
-  <Fragment>
-    <BackedProjectsGrid projects={projects} userAddress={userAddress}/>
-  </Fragment>
+const PortfolioContainer: React.FunctionComponent<Props> = ({userAddress, projects, withdrawHoldings}: Props) => (
+  <BackedProjectsGrid projects={projects} userAddress={userAddress} withdrawHoldings={withdrawHoldings} />
 )
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  withdrawHoldings: (projectId) => dispatch(withdrawHoldings.request(projectId)),
+  withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
 });
 
 const mapStateToProps = (state: ApplicationRootState) => selectPortfolioContainer(state);

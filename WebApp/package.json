@@ -107,6 +107,7 @@
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
     "typesafe-actions": "4.4.0",
+    "typescript": "^3.7.0-beta",
     "validator": "^10.11.0",
     "warning": "4.0.2",
     "yup": "0.27.0"

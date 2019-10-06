@@ -54,5 +54,6 @@
   "engines": {
     "node": ">=8.0",
     "yarn": ">=1.9.4"
-  }
+  },
+  "dependencies": {}
 }

@@ -101,8 +101,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             contributionValue={contributionValue}
             txInProgress={txInProgress}
             redeemHoldings={handleRedeemContribution}
-            marketAddress={project.chainData.marketAddress}
-          />
+            marketAddress={project.chainData.marketAddress} />
         </div>
       }
       <div className={classes.bannerWrapper}>
