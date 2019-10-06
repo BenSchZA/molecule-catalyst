@@ -107,7 +107,6 @@
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
     "typesafe-actions": "4.4.0",
-    "typescript": "^3.7.0-beta",
     "validator": "^10.11.0",
     "warning": "4.0.2",
     "yup": "0.27.0"
@@ -224,7 +223,7 @@
     "tslint": "^5.11.0",
     "tslint-loader": "^3.4.3",
     "tslint-react": "^4.0.0",
-    "typescript": "^3.4.5",
+    "typescript": "^3.7.0-beta",
     "typescript-plugin-styled-components": "^1.0.0",
     "url-loader": "1.1.2",
     "webpack": "4.30.0",

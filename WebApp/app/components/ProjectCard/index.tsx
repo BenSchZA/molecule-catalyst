@@ -84,7 +84,7 @@ const styles = (theme: Theme) =>
     },
     card: {
       cursor: 'pointer',
-      maxWidth: '647px'
+      maxWidth: 647
     },
     cardImage: {
       paddingTop: 36,
@@ -160,7 +160,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         title={project.title}
         subheader={switchStatus(project.status)}
       />
-       <CardContent>
+       <CardContent className={classes.cardContent}>
         <div className={classes.abstract}>{truncateText(project.abstract)}</div>
         <Typography className={classes.percentage}>
           {
