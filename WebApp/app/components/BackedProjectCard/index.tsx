@@ -176,7 +176,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button className={classes.redeemHoldings} onClick={openModal}>Withdraw Stake</Button>
+                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!(project.chainData && project.chainData.marketData)}>Withdraw Stake</Button>
               </Grid>
             </Grid>
           }

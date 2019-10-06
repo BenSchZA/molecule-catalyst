@@ -22,11 +22,6 @@ const selectContributionValue = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      const userCost = ethers.utils.bigNumberify(project?.marketData?.netCost?.[userAddress]);
-      const userBalance = ethers.utils.bigNumberify(project?.marketData?.balances?.[userAddress]);
-      const result = userCost.mul(userBalance);
-      console.log(ethers.utils.formatEther(result));
-
       return Number(ethers.utils.formatEther(project?.marketData?.netCost?.[userAddress]))
         * Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])) || 0;
     }
