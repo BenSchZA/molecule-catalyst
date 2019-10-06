@@ -62,6 +62,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + 0.01, daiBalance);
 
   const validateContribution = (value: string) => {
+    if (value === '') {
+      setContribution(0);
+      return;
+    }
     const newValue = parseFloat(value);
     !isNaN(newValue) && setContribution(newValue);
   }
