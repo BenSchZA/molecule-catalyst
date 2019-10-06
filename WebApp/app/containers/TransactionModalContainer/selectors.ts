@@ -10,7 +10,6 @@ const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      debugger;
       return Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) || 0
   })
 
