@@ -73,8 +73,20 @@ const styles = (theme: Theme) => createStyles({
       color: theme.palette.common.white,
       padding: theme.spacing(1, 1),
       '& > *': {
-        padding: theme.spacing(0)
+        padding: theme.spacing(0),
+        '&:-webkit-inner-spin-button': { 
+          WebkitAppearance: 'none',
+          margin: 0,
+        }, 
+        '&:-webkit-outer-spin-button': { 
+          WebkitAppearance: 'none',
+          margin: 0,
+        },
       }
+    },
+    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0
     }
   },
   inputAdornment: {
@@ -122,6 +134,7 @@ const styles = (theme: Theme) => createStyles({
   },
   daiBalance: {
     fontSize: '40px',
+    cursor: 'pointer',
   },
   daiValues: {
     fontSize: '30px',
