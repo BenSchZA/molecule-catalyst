@@ -1,13 +1,13 @@
 import { createStore, Store } from 'redux';
 import { ServiceBase } from 'src/common/serviceBase';
-import { Contract, Wallet, ethers, Event } from 'ethers';
-import { Provider } from 'ethers/providers';
+import { Contract, Wallet, ethers, Event } from '@panterazar/ethers';
+import { Provider } from '@panterazar/ethers/providers';
 import { ConfigService } from 'src/config/config.service';
 import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
 import { mintAction, burnAction, transferAction } from './market.actions';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { BigNumber, bigNumberify } from '@panterazar/ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
 

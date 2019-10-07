@@ -12,7 +12,7 @@ import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
-import { ethers } from 'ethers';
+import { ethers } from '@panterazar/ethers';
 
 const styles = (theme: Theme) =>
   createStyles({

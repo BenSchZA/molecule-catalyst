@@ -3,7 +3,7 @@ import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Avatar
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import { withStyles } from '@material-ui/styles';
-import { ethers } from 'ethers';
+import { ethers } from '@panterazar/ethers';
 import { Link } from 'react-router-dom';
 import Blockies from 'react-blockies';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';

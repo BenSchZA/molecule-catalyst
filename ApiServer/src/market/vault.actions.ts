@@ -1,6 +1,6 @@
 import { createStandardAction } from 'typesafe-actions';
-import { BigNumber } from "ethers/utils";
-import { ethers } from 'ethers';
+import { BigNumber } from "@panterazar/ethers/utils";
+import { ethers } from '@panterazar/ethers';
 
 export const contributeAction = createStandardAction('CONTRIBUTE')<{ value: BigNumber, blockNumber: number }>();
 export const setCurrentPhaseAction = createStandardAction('CURRENT_PHASE')<number>();

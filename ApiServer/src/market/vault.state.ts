@@ -1,7 +1,7 @@
 import { createStore, Store } from 'redux';
 import { ServiceBase } from 'src/common/serviceBase';
-import { Contract, Wallet, ethers, Event } from 'ethers';
-import { Provider } from 'ethers/providers';
+import { Contract, Wallet, ethers, Event } from '@panterazar/ethers';
+import { Provider } from '@panterazar/ethers/providers';
 import { ConfigService } from 'src/config/config.service';
 import { IVault, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import throttle = require('lodash/throttle');
