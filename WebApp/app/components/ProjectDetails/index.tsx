@@ -31,9 +31,9 @@ import { Face } from '@material-ui/icons';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import MarketChartLayout from 'components/MarketChartLayout';
 import dayjs from 'dayjs';
-import { ethers } from 'ethers';
+import { ethers } from '@panterazar/ethers';
 import styles from './styles';
-import { bigNumberify } from 'ethers/utils';
+import { bigNumberify } from '@panterazar/ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
 
 interface OwnProps extends WithStyles<typeof styles> {

@@ -9,7 +9,7 @@ import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui
 import * as d3 from "d3";
 import './d3Style.css';
 import { Project } from 'domain/projects/types';
-import { ethers } from "ethers";
+import { ethers } from "@panterazar/ethers";
 
 const styles = (theme: Theme) =>
   createStyles({

@@ -1,9 +1,9 @@
-import { ethers, constants } from "ethers";
+import { ethers, constants } from "@panterazar/ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
 import { IMarket, IVault, ERC20Detailed } from "@molecule-protocol/catalyst-contracts";
 import { MarketDataLegacy, PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
-import { BigNumber } from "ethers/utils";
+import { BigNumber } from "@panterazar/ethers/utils";
 
 export async function getProjectTokenDetails(marketAddress: string) {
   try {

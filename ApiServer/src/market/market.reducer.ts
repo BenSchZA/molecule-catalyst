@@ -1,7 +1,7 @@
 import { transferAction, mintAction, burnAction } from "./market.actions";
 import { getType } from "typesafe-actions";
-import { BigNumber, bigNumberify } from "ethers/utils";
-import { ethers } from "ethers";
+import { BigNumber, bigNumberify } from "@panterazar/ethers/utils";
+import { ethers } from "@panterazar/ethers";
 
 const calculateNetCost = (transactionsState, action): BigNumber => {
   const transactions = [

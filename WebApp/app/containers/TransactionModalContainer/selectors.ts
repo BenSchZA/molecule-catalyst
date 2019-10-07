@@ -4,7 +4,7 @@ import { RootState } from 'containers/TransactionModalContainer/types';
 import { StateProps } from './index';
 import { selectProject } from 'domain/projects/selectors';
 import { Project } from 'domain/projects/types';
-import { ethers } from 'ethers';
+import { ethers } from '@panterazar/ethers';
 
 const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
