@@ -34,4 +34,11 @@ const selectMyProjects = createSelector(
     },
   );
 
-export { selectMyProjects, selectAllProjects };
+const selectProject = (projectId: string) => createSelector(
+  allProjects,
+  (allProjects) => {
+    return (allProjects[projectId]);
+  }
+)
+
+export { selectMyProjects, selectAllProjects, selectProject };

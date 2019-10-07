@@ -17,8 +17,6 @@ import ProjectDetails from 'components/ProjectDetails';
 import { Project } from 'domain/projects/types';
 import { RESTART_ON_REMOUNT } from 'utils/constants';
 import { ApplicationRootState } from 'types';
-import { supportProject, withdrawHoldings } from 'domain/projects/actions';
-import { ethers } from 'ethers';
 
 interface RouteParams {
   projectId: string;
@@ -32,49 +30,16 @@ interface DispatchProps {
 
 interface StateProps {
   project: Project,
-  daiBalance: number,
   userAddress: string,
-  contribution: number,
-  txInProgress: boolean,
-  supportProject(projectId: string, contribution: number): void,
-  withdrawHoldings(projectId: string, tokenAmount: number): void,
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.FunctionComponent<Props> = (props: Props) => {
-  const { project, userAddress } = props;
-
-  const holdingsValue = project && project.chainData && project.chainData.marketData
-    ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
-
-  const contributionValue =
-    userAddress &&
-      project &&
-      project.marketData &&
-      project.marketData.netCost &&
-      project.marketData.netCost[userAddress]
-      ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-      * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
-
-  const tokenBalance =
-    userAddress &&
-      project &&
-      project.marketData &&
-      project.marketData.balances &&
-      project.marketData.balances[userAddress]
-      ? Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
-
+const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress }: Props) => {
   return (
     <ProjectDetails
-      project={props.project}
-      daiBalance={props.daiBalance}
-      tokenBalance={tokenBalance}
-      holdingsValue={holdingsValue}
-      contributionValue={contributionValue}
-      txInProgress={props.txInProgress}
-      supportProject={props.supportProject}
-      redeemHoldings={props.withdrawHoldings}
+      project={project}
+      userAddress={userAddress}
     />
   );
 };
@@ -83,15 +48,13 @@ const mapStateToProps = (state: ApplicationRootState, props) => ({
   project: state.projects[props.match.params.projectId],
   daiBalance: state.authentication.daiBalance,
   userAddress: state.authentication.ethAddress,
-  txInProgress: state.projectDetailsContainer.txInProgress
 });
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  supportProject: (projectId: string, contribution: number) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
-  withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
+  dispatch: dispatch
 });
 
 const withReducer = injectReducer<OwnProps>({
