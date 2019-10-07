@@ -3,16 +3,17 @@ import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
-interface PortfolioContainerState {
+interface TransactionModalContainerState {
+  readonly txInProgress: boolean,
 }
 
 /* --- ACTIONS --- */
-type PortfolioContainerActions = ActionType<typeof actions>;
+type TransactionModalContainerActions = ActionType<typeof actions>;
 
 /* --- EXPORTS --- */
 
 type RootState = ApplicationRootState;
-type ContainerState = PortfolioContainerState;
-type ContainerActions = PortfolioContainerActions;
+type ContainerState = TransactionModalContainerState;
+type ContainerActions = TransactionModalContainerActions;
 
 export { RootState, ContainerState, ContainerActions };

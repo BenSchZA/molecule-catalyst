@@ -9,7 +9,7 @@ import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHea
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
-import { ethers } from 'ethers';
+import { ethers } from '@panterazar/ethers';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -150,10 +150,11 @@ const styles = (theme: Theme) =>
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project,
   userAddress: string,
+  openModal(): void;
 }
 
 
-const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes }: OwnProps) => {
+const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes, openModal }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
   return (
@@ -175,7 +176,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button className={classes.redeemHoldings} onClick={() => forwardTo(`project/${project.id}`)}>Withdraw Stake</Button>
+                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!(project.chainData && project.chainData.marketData)}>Withdraw Stake</Button>
               </Grid>
             </Grid>
           }

@@ -1,5 +1,5 @@
 import { MarketState } from "./market.reducer";
-import { bigNumberify } from "ethers/utils";
+import { bigNumberify } from "@panterazar/ethers/utils";
 
 const rehydrateMarketData = (source) => {
   let md = source;

@@ -1,6 +1,6 @@
-import { BaseProvider } from "ethers/providers";
-import { ethers, utils, Signer, getDefaultProvider } from "ethers";
-import { getNetwork } from "ethers/utils";
+import { BaseProvider } from "@panterazar/ethers/providers";
+import { ethers, utils, Signer, getDefaultProvider } from "@panterazar/ethers";
+import { getNetwork } from "@panterazar/ethers/utils";
 
 export interface BlockchainResources {
   initialized: boolean,

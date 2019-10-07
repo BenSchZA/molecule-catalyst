@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ethers, Wallet, Contract } from 'ethers';
+import { ethers, Wallet, Contract } from '@panterazar/ethers';
 import { Modules } from 'src/app.constants';
 import { MarketFactory, IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
 import { ConfigService } from '../config/config.service';
 import { ServiceBase } from 'src/common/serviceBase';
-import { TransactionReceipt } from 'ethers/providers';
+import { TransactionReceipt } from '@panterazar/ethers/providers';
 
 @Injectable()
 export class MarketFactoryService extends ServiceBase {

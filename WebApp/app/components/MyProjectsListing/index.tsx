@@ -10,8 +10,8 @@ import { ProjectSubmissionStatus, Project, FundingState } from '../../domain/pro
 import dayjs from 'dayjs'
 import { PositiveButton, NegativeButton } from 'components/custom';
 import styles from './styles';
-import { ethers } from 'ethers';
-import { bigNumberify } from 'ethers/utils';
+import { ethers } from '@panterazar/ethers';
+import { bigNumberify } from '@panterazar/ethers/utils';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 
 
