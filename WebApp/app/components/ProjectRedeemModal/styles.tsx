@@ -63,6 +63,10 @@ const styles = (theme: Theme) => createStyles({
       '& > *': {
         padding: theme.spacing(0)
       }
+    },
+    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0
     }
   },
   link: {
@@ -95,6 +99,7 @@ const styles = (theme: Theme) => createStyles({
   },
   tokenBalance: {
     fontSize: '40px',
+    cursor: 'pointer',
   },
   daiValues: {
     fontSize: '30px',

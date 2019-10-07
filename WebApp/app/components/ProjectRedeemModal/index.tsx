@@ -56,7 +56,12 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   }, [debouncedTokenAmount]);
 
   const validateContribution = (value: string) => {
-    const newValue = parseFloat(value);
+    if (value === '') {
+      setTokenAmount(0);
+      return;
+    }
+
+    const newValue = parseFloat((value.endsWith('.') ? value + '01' : value));
     !isNaN(newValue) && setTokenAmount(newValue);
   }
   const displayPrecision = 2;
@@ -81,13 +86,14 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Avatar className={classes.blockie}>
           <Blockies seed={marketAddress || '0x'} size={15} />
         </Avatar>
-        <Typography className={classes.tokenBalance}>
+        <Typography className={classes.tokenBalance} onClick={() => setTokenAmount(tokenBalance)}>
           {tokenBalance ? tokenBalance.toFixed(displayPrecision) : 0}
         </Typography>
         <Typography className={classes.modalText}>
           Your current project token balance
         </Typography>
         <TextField
+          type='number'
           autoFocus
           error={(tokenBalance < tokenAmount) ? true : false}
           helperText={(tokenBalance < tokenAmount) && `You only have ${tokenBalance} tokens to redeem`}

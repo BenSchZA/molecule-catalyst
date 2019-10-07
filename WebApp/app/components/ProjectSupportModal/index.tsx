@@ -62,7 +62,12 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + 0.01, daiBalance);
 
   const validateContribution = (value: string) => {
-    const newValue = parseFloat(value);
+    if (value === '') {
+      setContribution(0);
+      return;
+    }
+
+    const newValue = parseFloat((value.endsWith('.') ? value + '01' : value));
     !isNaN(newValue) && setContribution(newValue);
   }
 
@@ -82,12 +87,15 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </div>
         <hr className={classes.divider} />
         <DaiIcon />
-        <Typography className={classes.daiBalance}>{daiBalance ? daiBalance.toFixed(displayPrecision) : 0}</Typography>
+        <Typography className={classes.daiBalance} onClick={() => setContribution(maxProjectContribution)}>
+          {daiBalance ? daiBalance.toFixed(displayPrecision) : 0}
+        </Typography>
         <Typography className={classes.modalText}>
           Your Account Balance
         </Typography>
         <TextField
           autoFocus
+          type='number'
           error={(maxProjectContribution < contribution) ? true : false}
           helperText={(maxProjectContribution < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution}
@@ -96,6 +104,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           inputProps={{
             min: 0,
             max: maxProjectContribution,
+            step: 0.01
           }}
           InputProps={{
             endAdornment: <InputAdornment position='end' className={classes.inputAdornment}>DAI</InputAdornment>,
