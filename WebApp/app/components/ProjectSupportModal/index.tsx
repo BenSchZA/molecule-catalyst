@@ -66,7 +66,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       setContribution(0);
       return;
     }
-    const newValue = parseFloat(value);
+
+    const newValue = parseFloat((value.endsWith('.') ? value + '0' : value));
     !isNaN(newValue) && setContribution(newValue);
   }
 
