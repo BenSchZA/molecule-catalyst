@@ -42,18 +42,16 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const debouncedContribution = useDebounce(contribution, 100);
 
   useEffect(() => {
-    if (debouncedContribution) {
-      const fetchData = async () => {
-        const { signer } = await getBlockchainObjects();
-        const market = new ethers.Contract(marketAddress, IMarket, signer);
+    const fetchData = async () => {
+      const { signer } = await getBlockchainObjects();
+      const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-        const tokenValue = await market.collateralToTokenBuying(
-          ethers.utils.parseUnits(`${debouncedContribution}`, 18)
-        );
-        setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
-      };
-      debouncedContribution > 0 ? fetchData() : setProjectTokenAmount(0);
-    }
+      const tokenValue = await market.collateralToTokenBuying(
+        ethers.utils.parseUnits(`${debouncedContribution}`, 18)
+      );
+      setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
+    };
+    debouncedContribution && fetchData();
   }, [debouncedContribution]);
 
   const displayPrecision = 2;
@@ -64,6 +62,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const validateContribution = (value: string) => {
     if (value === '') {
       setContribution(0);
+      setProjectTokenAmount(0);
       return;
     }
     const newValue = parseFloat(value);
@@ -176,9 +175,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </span>
           </Link>
         </div>
-        <div 
-          className={classes.closeModal} 
-          onClick={resetModalState} 
+        <div
+          className={classes.closeModal}
+          onClick={resetModalState}
           style={{ display: (!txInProgress) ? "block" : "none" }}>
           <Close style={{ padding: '0px' }} />
         </div>
