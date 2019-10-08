@@ -10,8 +10,10 @@ const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      return Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) || 0
-  })
+      return (project?.marketData?.balances?.[userAddress]) ?
+        Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress]))
+        : 0
+    })
 
 const selectHoldingsValue = (projectId: string) =>
   createSelector(
@@ -23,8 +25,9 @@ const selectContributionValue = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      return Number(ethers.utils.formatEther(project?.marketData?.netCost?.[userAddress]))
-        * Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])) || 0;
+      return (project?.marketData?.netCost?.[userAddress] && project?.marketData?.balances?.[userAddress]) ?
+        Number(ethers.utils.formatEther(project?.marketData?.netCost?.[userAddress]))
+        * Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])) : 0
     }
   )
 

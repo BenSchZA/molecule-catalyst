@@ -55,13 +55,12 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     }
   }, [debouncedTokenAmount]);
 
-  const validateContribution = (value: string) => {
+  const validateTokenAmount = (value: string) => {
     if (value === '') {
       setTokenAmount(0);
       return;
     }
-
-    const newValue = parseFloat((value.endsWith('.') ? value + '01' : value));
+    const newValue = parseFloat(value);
     !isNaN(newValue) && setTokenAmount(newValue);
   }
   const displayPrecision = 2;
@@ -97,12 +96,13 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           autoFocus
           error={(tokenBalance < tokenAmount) ? true : false}
           helperText={(tokenBalance < tokenAmount) && `You only have ${tokenBalance} tokens to redeem`}
-          value={tokenAmount}
-          onChange={(e) => validateContribution(e.target.value)}
+          value={tokenAmount.toString(10)}
+          onChange={(e) => validateTokenAmount(e.target.value)}
           className={classes.input}
           inputProps={{
             min: 0,
             max: tokenBalance,
+            step: 0.01,
           }} />
         <Typography className={classes.modalText}>
           Enter the Number of tokens you want to return
