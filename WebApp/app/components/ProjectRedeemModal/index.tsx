@@ -11,7 +11,7 @@ import MoleculeSpinner from 'components/MoleculeSpinner';
 import DaiIcon from 'components/DaiIcon/Loadable';
 import useDebounce from 'utils/useDebounce';
 import { getBlockchainObjects } from 'blockchainResources';
-import {ethers} from '@panterazar/ethers';
+import { ethers } from '@panterazar/ethers';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -41,23 +41,22 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const debouncedTokenAmount = useDebounce(tokenAmount, 100);
 
   useEffect(() => {
-    if (debouncedTokenAmount) {
-      const fetchData = async () => {
-        const { signer } = await getBlockchainObjects();
-        const market = new ethers.Contract(marketAddress, IMarket, signer);
+    const fetchData = async () => {
+      const { signer } = await getBlockchainObjects();
+      const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-        const tokenValue = await market.rewardForBurn(
-          ethers.utils.parseUnits(`${debouncedTokenAmount}`, 18)
-        );
-        setDaiAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
-      };
-      debouncedTokenAmount > 0 ? fetchData() : setDaiAmount(0);
-    }
+      const tokenValue = await market.rewardForBurn(
+        ethers.utils.parseUnits(`${debouncedTokenAmount}`, 18)
+      );
+      setDaiAmount(Number(ethers.utils.formatEther(tokenValue)))
+    };
+    debouncedTokenAmount && fetchData();
   }, [debouncedTokenAmount]);
 
   const validateTokenAmount = (value: string) => {
     if (value === '') {
       setTokenAmount(0);
+      setDaiAmount(0)
       return;
     }
     const newValue = parseFloat(value);
@@ -113,7 +112,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {(contributionValue*tokenAmount/tokenBalance).toFixed(displayPrecision)}
+                {(contributionValue * tokenAmount / tokenBalance).toFixed(displayPrecision)}
               </Typography>
             </div>
             <Typography>
