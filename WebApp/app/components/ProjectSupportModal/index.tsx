@@ -66,8 +66,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       setContribution(0);
       return;
     }
-
-    const newValue = parseFloat((value.endsWith('.') ? value + '01' : value));
+    const newValue = parseFloat(value);
     !isNaN(newValue) && setContribution(newValue);
   }
 
@@ -98,7 +97,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           type='number'
           error={(maxProjectContribution < contribution) ? true : false}
           helperText={(maxProjectContribution < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
-          value={contribution}
+          value={contribution.toString(10)}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
           inputProps={{
