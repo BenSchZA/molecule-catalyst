@@ -42,14 +42,14 @@ export class ProjectService extends ServiceBase {
 
     if (file2) {
       const croppedFile = await sharp(file2.buffer)
-        .resize(60, 60, {
+        .resize(300, 300, {
           position: sharp.strategy.attention,
         }).toBuffer();
       const attachment = await this.attachmentService.create({
         filename: `${project.id}-${file2.originalname}`,
         contentType: file2.mimetype,
       }, { buffer: croppedFile });
-      project.featuredImage = attachment;
+      project.organisationImage = attachment;
     }
 
     await project.save();
