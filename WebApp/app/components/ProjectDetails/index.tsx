@@ -123,6 +123,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               {project.user.affiliatedOrganisation &&
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>
+            {
+            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
+            }
           </div>
         </div>
       </div>
