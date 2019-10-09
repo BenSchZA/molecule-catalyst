@@ -15,17 +15,17 @@ const styles = (theme: Theme) => createStyles({
   modalSurface: {
     width: '534px',
     overflow: 'visible',
+    boxShadow: '20px 20px 60px #00000071',
+    border: '2px solid #FFFFFF',
+    borderRadius: '10px',
   },
   modal: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
     padding: theme.spacing(2, 4, 3),
-    width: '534px',
-    boxShadow: '20px 20px 60px #00000071',
-    border: '2px solid #FFFFFF',
-    borderRadius: '10px',
     opacity: 1,
     textAlign: 'center',
+    borderRadius: '10px',
   },
   closeModal: {
     position: 'absolute',
