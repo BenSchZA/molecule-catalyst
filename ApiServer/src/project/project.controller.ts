@@ -53,7 +53,7 @@ export class ProjectController {
   async submitProject(@Req() req: Request & { user: User },
     @Body() reqBody: SubmitProjectDTO,
     @UploadedFiles() files) {
-    const result = await this.projectService.submit(reqBody, files[0], files[1], req.user);
+    const result = await this.projectService.submit(reqBody, files.featuredImage[0], files.organisationImage[0], req.user);
     return result;
   }
 

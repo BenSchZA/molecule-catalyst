@@ -92,7 +92,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           <Field
             component={UploadImageTextField}
             name='featuredImage' />
-            <InputLabel htmlFor='organisationImage'>Organisation Image</InputLabel>
+          <InputLabel htmlFor='organisationImage'>Organisation Image</InputLabel>
           <InputLabel htmlFor='organisationImage' shrink>Upload a relevant image of your organisation logo.</InputLabel>
           <Field
             component={UploadImageTextField}
