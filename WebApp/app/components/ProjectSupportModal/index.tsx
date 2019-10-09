@@ -164,7 +164,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
         <div className={classes.buttons}>
-          <NegativeButton disabled={txInProgress} onClick={closeModal}>Cancel</NegativeButton>
+          <NegativeButton 
+            disabled={txInProgress} 
+            onClick={resetModalState}>
+            Cancel
+          </NegativeButton>
           <PositiveButton
             disabled={txInProgress || contribution > maxProjectContribution}
             onClick={() => supportProject(contribution)}>
