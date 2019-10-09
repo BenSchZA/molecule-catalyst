@@ -34,6 +34,9 @@ const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProjec
     featuredImage: Yup.mixed().required()
       .test('fileSize', 'Maximum file size of 10MB exceeded', file => fileSizeValidation(file, MAX_FILE_SIZE))
       .test('fileType', 'Please supply an image file', file => fileTypeValidation(file, SUPPORTED_IMAGE_FORMATS)),
+    organisationImage: Yup.mixed().required()
+      .test('fileSize', 'Maximum file size of 10MB exceeded', file => fileSizeValidation(file, MAX_FILE_SIZE))
+      .test('fileType', 'Please supply an image file', file => fileTypeValidation(file, SUPPORTED_IMAGE_FORMATS)),
     researchPhases: Yup.array()
       .min(1, 'Projects must have at least 1 phase')
       .max(5, 'Projects must have at most 5 phases')
@@ -63,6 +66,7 @@ const CreateProjectContainer: React.FunctionComponent<Props> = ({ onSubmitProjec
         title: '',
         abstract: '',
         featuredImage: '',
+        organisationImage: '',
         researchPhases: [{
           title: '',
           description: '',

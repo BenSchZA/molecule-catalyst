@@ -24,18 +24,30 @@ export class ProjectService extends ServiceBase {
     super(ProjectService.name);
   }
 
-  async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
+  async submit(projectData: SubmitProjectDTO, file1: any, file2: any, user: User): Promise<Project> {
     this.logger.debug('saving new project data');
     const profiler = this.logger.startTimer();
     const project = await new this.projectRepository({ ...projectData, user: user.id });
-    if (file) {
-      const croppedFile = await sharp(file.buffer)
+    if (file1) {
+      const croppedFile = await sharp(file1.buffer)
         .resize(1366, 440, {
           position: sharp.strategy.attention,
         }).toBuffer();
       const attachment = await this.attachmentService.create({
-        filename: `${project.id}-${file.originalname}`,
-        contentType: file.mimetype
+        filename: `${project.id}-${file1.originalname}`,
+        contentType: file1.mimetype,
+      }, { buffer: croppedFile });
+      project.featuredImage = attachment;
+    }
+
+    if (file2) {
+      const croppedFile = await sharp(file2.buffer)
+        .resize(60, 60, {
+          position: sharp.strategy.attention,
+        }).toBuffer();
+      const attachment = await this.attachmentService.create({
+        filename: `${project.id}-${file2.originalname}`,
+        contentType: file2.mimetype,
       }, { buffer: croppedFile });
       project.featuredImage = attachment;
     }

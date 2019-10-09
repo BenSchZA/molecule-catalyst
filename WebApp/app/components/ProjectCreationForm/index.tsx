@@ -92,6 +92,11 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           <Field
             component={UploadImageTextField}
             name='featuredImage' />
+            <InputLabel htmlFor='organisationImage'>Organisation Image</InputLabel>
+          <InputLabel htmlFor='organisationImage' shrink>Upload a relevant image of your organisation logo.</InputLabel>
+          <Field
+            component={UploadImageTextField}
+            name='organisationImage' />
         </Paper>
       </Container>
       <Paper className={classes.banner} square={true} elevation={0}>
