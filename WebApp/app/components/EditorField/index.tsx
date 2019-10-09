@@ -7,8 +7,8 @@
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import SimpleMDEEditor from 'react-simplemde-editor';
-import { FieldProps } from 'formik';
 import "easymde/dist/easymde.min.css";
+import { FieldProps } from 'formik';
 
 const styles = (theme: Theme) =>
   createStyles({

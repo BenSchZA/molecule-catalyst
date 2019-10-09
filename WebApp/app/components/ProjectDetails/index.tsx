@@ -182,7 +182,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <div>
             <Typography className={classes.fundingLabels}>
               Total Funding Goal
-              </Typography>
+            </Typography>
             <Typography className={classes.fundingAmount}>
               {
                 Math.ceil(project.vaultData.phases.reduce((total, phase) =>
@@ -384,15 +384,13 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                       .format('DD MMM YYYY h:mm ')
                       .toUpperCase()}
                   </Typography>
-                  <Typography className={classes.contentText}>
-                    {update.update}
-                  </Typography>
+                  <ReactMarkdown source={update.update} className={classes.contentText} />
                 </div>
               )
             :
             <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
               There are currently no research updates.
-                </Typography>
+            </Typography>
           }
         </div>
       </Paper>
