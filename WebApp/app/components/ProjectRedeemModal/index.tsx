@@ -1,4 +1,4 @@
-import { WithStyles, Modal, Typography, Paper, Avatar, TextField } from '@material-ui/core';
+import { WithStyles, Typography, Paper, Avatar, TextField, Dialog } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
 import { Info, Close } from '@material-ui/icons';
@@ -73,9 +73,14 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   }
 
   return (
-    <Modal
+    <Dialog
       open={modalState}
-      onClose={resetModalState}>
+      onClose={resetModalState}
+      disableBackdropClick={txInProgress}
+      scroll='body'
+      PaperProps={{
+        className: classes.modalSurface
+      }}>
       <Paper square={false} className={classes.modal}>
         <Typography className={classes.modalTitle}>
           Withdraw Project Stake
@@ -169,7 +174,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </div>
         </div>
       </Paper>
-    </Modal >
+    </Dialog>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { WithStyles, Modal, Typography, Paper, TextField, InputAdornment, Avatar } from '@material-ui/core';
+import { WithStyles, Typography, Paper, TextField, InputAdornment, Avatar, Dialog } from '@material-ui/core';
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import { withStyles } from '@material-ui/styles';
@@ -75,10 +75,14 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
     closeModal();
   }
   return (
-    <Modal
+    <Dialog
       open={modalState}
       onClose={resetModalState}
-      disableBackdropClick={txInProgress}>
+      disableBackdropClick={txInProgress}
+      scroll='body'
+      PaperProps={{
+        className: classes.modalSurface
+      }}>
       <Paper square={false} className={classes.modal}>
         <div className={classes.modalTitle}>
           <Typography variant="h2">Support Project</Typography>
@@ -187,7 +191,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </div>
         </div>
       </Paper>
-    </Modal>
+    </Dialog>
   );
 };
 

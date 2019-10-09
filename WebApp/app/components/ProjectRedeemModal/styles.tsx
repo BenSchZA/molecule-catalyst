@@ -18,20 +18,20 @@ const styles = (theme: Theme) => createStyles({
       margin: "0 20px"
     }
   },
-  modal: {
-    position: 'absolute',
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    padding: theme.spacing(2, 4, 3),
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+  modalSurface: {
     width: '534px',
+    overflow: 'visible',
     boxShadow: '20px 20px 60px #00000071',
     border: '2px solid #FFFFFF',
     borderRadius: '10px',
+  },
+  modal: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    padding: theme.spacing(2, 4, 3),
     opacity: 1,
     textAlign: 'center',
+    borderRadius: '10px',
   },
   closeModal: {
     position: 'absolute',
