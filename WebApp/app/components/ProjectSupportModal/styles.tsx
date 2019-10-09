@@ -14,7 +14,7 @@ const styles = (theme: Theme) => createStyles({
   },
   modalSurface: {
     width: '534px',
-    overflowX: 'hidden',
+    // overflowX: 'hidden',
     overflow: 'visible',
   },
   modal: {
