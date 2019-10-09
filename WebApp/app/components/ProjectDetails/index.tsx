@@ -26,12 +26,13 @@ import {
   ProjectSubmissionStatus,
   FundingState,
 } from 'domain/projects/types';
-import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
+import { ethers } from '@panterazar/ethers';
+import dayjs from 'dayjs';
+import ReactMarkdown from "react-markdown";
+import apiUrlBuilder from 'api/apiUrlBuilder';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import MarketChartLayout from 'components/MarketChartLayout';
-import dayjs from 'dayjs';
-import { ethers } from '@panterazar/ethers';
 import styles from './styles';
 import { bigNumberify } from '@panterazar/ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
@@ -47,7 +48,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   userAddress,
 }: OwnProps) => {
   const [modalState, setModalState] = useState(false);
-  const [modalMode, setModalMode] = useState<'support'|'redeem'>('support');
+  const [modalMode, setModalMode] = useState<'support' | 'redeem'>('support');
 
   const handleOpenSupportModal = () => {
     setModalMode('support')
@@ -66,7 +67,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   return project ? (
     <Container maxWidth="lg">
       {project.chainData && project.chainData.marketData && userAddress &&
-        <TransactionModalContainer 
+        <TransactionModalContainer
           projectId={project.id}
           userAddress={userAddress}
           modalState={modalState}
@@ -184,7 +185,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <div>
             <Typography className={classes.fundingLabels}>
               Total Funding Goal
-              </Typography>
+            </Typography>
             <Typography className={classes.fundingAmount}>
               {
                 Math.ceil(project.vaultData.phases.reduce((total, phase) =>
@@ -325,15 +326,11 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 <Typography className={classes.contentTitleText}>
                   Description
                 </Typography>
-                <Typography className={classes.contentText}>
-                  {p.description}
-                </Typography>
+                <ReactMarkdown source={p.description} className={classes.contentText} />
                 <Typography className={classes.contentTitleText}>
                   Goals
                 </Typography>
-                <Typography className={classes.contentText}>
-                  {p.result}
-                </Typography>
+                <ReactMarkdown source={p.result} className={classes.contentText} />
               </div>
             </div>
           ))}
@@ -352,9 +349,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               .format('DD MMM YYYY h:mm ')
               .toUpperCase()}
           </Typography>
-          <Typography className={classes.contentText}>
-            {project.context}
-          </Typography>
+          <ReactMarkdown source={project.context} className={classes.contentText} />
           <Typography className={classes.lastUpdated} align="right">
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
@@ -368,9 +363,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               .format('DD MMM YYYY h:mm ')
               .toUpperCase()}
           </Typography>
-          <Typography className={classes.contentText}>
-            {project.approach}
-          </Typography>
+          <ReactMarkdown source={project.approach} className={classes.contentText} />
           <Typography className={classes.lastUpdated} align="right">
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
@@ -394,15 +387,13 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                       .format('DD MMM YYYY h:mm ')
                       .toUpperCase()}
                   </Typography>
-                  <Typography className={classes.contentText}>
-                    {update.update}
-                  </Typography>
+                  <ReactMarkdown source={update.update} className={classes.contentText} />
                 </div>
               )
             :
             <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
               There are currently no research updates.
-                </Typography>
+            </Typography>
           }
         </div>
       </Paper>

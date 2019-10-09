@@ -11,6 +11,7 @@ import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
 import UploadImageTextField from 'components/UploadImageTextField';
+import EditorField from 'components/EditorField';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -85,8 +86,8 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             variant='filled'
             multiline
             rows='10'
-            fullWidth
-            margin="dense" />
+            margin="dense"
+            fullWidth />
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
           <InputLabel htmlFor='featuredImage' shrink>Upload a relevant visualization that will be used to represent your project across the platform.</InputLabel>
           <Field
@@ -122,10 +123,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             name='context'
             type='text'
             placeholder='What is the context and significance of your project? Include links and pictures to support your explanations.'
-            component={TextField}
-            variant='filled'
-            multiline
-            rows='10'
+            component={EditorField}
             fullWidth
             margin="dense" />
           <InputLabel htmlFor='approach'>Approach</InputLabel>
@@ -137,7 +135,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             name='approach'
             type='text'
             placeholder='How do you plan to approach your project? Include links and pictures to support your justifications.'
-            component={TextField}
+            component={EditorField}
             variant='filled'
             multiline
             rows='10'
@@ -259,32 +257,18 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                         <InputLabel htmlFor='description'>Description</InputLabel>
                         <InputLabel htmlFor='description' shrink>
                           Write a brief description of the steps that are part of this specific research phase.
-                          </InputLabel>
+                        </InputLabel>
                         <Field
                           name={`researchPhases[${index}.description]`}
-                          type='text'
-                          placeholder='Enter a description.'
-                          component={TextField}
-                          variant='filled'
-                          multiline
-                          rows='10'
-                          fullWidth
-                          margin="dense" />
+                          component={EditorField} />
                         <InputLabel htmlFor='result'>Result</InputLabel>
                         <InputLabel htmlFor='result' shrink>
                           What can you show to your backers after this phase has been completed?
                           (e.g. experimental data, report, ...)
-                          </InputLabel>
+                        </InputLabel>
                         <Field
                           name={`researchPhases[${index}.result]`}
-                          type='text'
-                          placeholder='Enter a result.'
-                          component={TextField}
-                          variant='filled'
-                          multiline
-                          rows='10'
-                          fullWidth
-                          margin="dense" />
+                          component={EditorField} />
                         <Grid container>
                           <Grid item xs={6} className={classes.gridItem}>
                             <InputLabel htmlFor='fundingGoal'>Funding Goal</InputLabel>

@@ -154,8 +154,16 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
         <div className={classes.buttons}>
-          <NegativeButton onClick={resetModalState}>Cancel</NegativeButton>
-          <PositiveButton type='submit' disabled={txInProgress} onClick={() => redeemHoldings(tokenAmount)}>Withdraw</PositiveButton>
+          <NegativeButton 
+            disabled={txInProgress} 
+            onClick={resetModalState}>
+            Cancel
+          </NegativeButton>
+          <PositiveButton 
+            disabled={txInProgress} 
+            onClick={() => redeemHoldings(tokenAmount)}>
+            Withdraw
+          </PositiveButton>
         </div>
         <div className={classes.moreInfo}>
           <Link className={classes.link} to="/">
