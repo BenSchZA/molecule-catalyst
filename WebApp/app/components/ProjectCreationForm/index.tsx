@@ -80,7 +80,14 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           <InputLabel htmlFor='abstract' shrink>Provide a short summary of your research project.</InputLabel>
           <Field
             name='abstract'
-            component={EditorField} />
+            type='text'
+            placeholder='Enter a project abstract'
+            component={TextField}
+            variant='filled'
+            multiline
+            rows='10'
+            margin="dense"
+            fullWidth />
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
           <InputLabel htmlFor='featuredImage' shrink>Upload a relevant visualization that will be used to represent your project across the platform.</InputLabel>
           <Field
@@ -238,14 +245,14 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           name={`researchPhases[${index}.title]`}
                           type='text'
                           placeholder='Enter a project title.'
-                          component={EditorField}
+                          component={TextField}
                           variant='filled'
                           fullWidth
                           margin="dense" />
                         <InputLabel htmlFor='description'>Description</InputLabel>
                         <InputLabel htmlFor='description' shrink>
                           Write a brief description of the steps that are part of this specific research phase.
-                          </InputLabel>
+                        </InputLabel>
                         <Field
                           name={`researchPhases[${index}.description]`}
                           component={EditorField} />
@@ -253,7 +260,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                         <InputLabel htmlFor='result' shrink>
                           What can you show to your backers after this phase has been completed?
                           (e.g. experimental data, report, ...)
-                          </InputLabel>
+                        </InputLabel>
                         <Field
                           name={`researchPhases[${index}.result]`}
                           component={EditorField} />
