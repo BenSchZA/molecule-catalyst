@@ -18,6 +18,7 @@ interface IProject {
   createdAt: string,
   abstract: string,
   featuredImage: string,
+  organisationImage: string,
   context: string,
   approach: string,
   collaborators: Collaborator[],

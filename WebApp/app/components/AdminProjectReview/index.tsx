@@ -107,6 +107,16 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
           </TableRow>
           <TableRow className={classes.altRow}>
             <TableCell className={classes.altRowCell}>
+              Organisation Image
+          </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              image.png
+          </TableCell>
+          </TableRow>
+          <TableRow className={classes.altRow}>
+            <TableCell className={classes.altRowCell}>
               Background & Significance
             </TableCell>
           </TableRow>

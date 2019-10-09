@@ -358,6 +358,10 @@ const styles = ({ spacing, palette }: Theme) =>
       position: 'fixed',
       top: '50%',
       left: '50%',
+    },
+    avatarImage: {
+      width: 50,
+      height: 50,
     }
   });
 
