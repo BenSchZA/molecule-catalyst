@@ -104,6 +104,10 @@ const styles = (theme: Theme) =>
       height: '184px',
       paddingLeft: '0px',
       fontFamily: 'Roboto'
+    },
+    avatarImage: {
+      width: 50,
+      height: 50,
     }
 
   });
@@ -200,7 +204,9 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
         </div>
         <div className={classes.avatar}>
-          <Avatar src='https://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
+          {
+            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
+          }
         </div>
       </CardActions>
     </Card>

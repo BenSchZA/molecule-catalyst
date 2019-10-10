@@ -28,7 +28,7 @@ import {
 } from 'domain/projects/types';
 import { Face } from '@material-ui/icons';
 import { ethers } from '@panterazar/ethers';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import ReactMarkdown from "react-markdown";
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
@@ -40,12 +40,14 @@ import TransactionModalContainer from 'containers/TransactionModalContainer';
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
   userAddress?: string;
+  isLoggedIn: boolean;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   classes,
   userAddress,
+  isLoggedIn,
 }: OwnProps) => {
   const [modalState, setModalState] = useState(false);
   const [modalMode, setModalMode] = useState<'support' | 'redeem'>('support');
@@ -62,6 +64,30 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   const handleClose = () => {
     setModalState(false);
+  };
+
+  const getDateRange = (phaseIndex) => {
+    let startDate: Dayjs = dayjs();
+    project.vaultData.phases
+      .some((phase, index, array) => {
+        if(index <= phaseIndex) {
+          if(phase.state >= FundingState.STARTED) {
+            startDate = dayjs(phase.startDate);
+          } else {
+            startDate = startDate.add(array[index - 1].phaseDuration, 'month');
+          }
+          return false;
+        } else {
+          return true;
+        }
+    });
+    return  startDate
+              .format('DD MMMM YYYY')
+              .toUpperCase() + ' - ' + 
+            startDate
+              .add(project.vaultData.phases[phaseIndex].phaseDuration, 'month')
+              .format('DD MMMM YYYY')
+              .toUpperCase();
   };
 
   return project ? (
@@ -87,14 +113,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.supportProject}
               onClick={handleOpenSupportModal}
-              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Redeem Holdings
             </Button>
@@ -124,6 +150,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               {project.user.affiliatedOrganisation &&
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>
+            {
+            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
+            }
           </div>
         </div>
       </div>
@@ -308,14 +337,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 </Typography>
                 <div className={classes.phaseDateChip}>
                   <Typography className={classes.phaseDates} align="center">
-                    {dayjs(project.vaultData.phases[i].startDate)
-                      .format('DD MMMM YYYY')
-                      .toUpperCase() +
-                      ' - ' +
-                      dayjs(project.vaultData.phases[i].startDate)
-                        .add(p.duration, 'month')
-                        .format('DD MMMM YYYY')
-                        .toUpperCase()}
+                    {getDateRange(i)}
                   </Typography>
                 </div>
               </Paper>
