@@ -46,7 +46,7 @@ const MDEditorMUIFormik: React.SFC<OwnProps> = ({
         }}
         value={value} />
       {showError &&
-        <FormHelperText>
+        <FormHelperText error>
           {fieldError}
         </FormHelperText>}
     </FormControl>
