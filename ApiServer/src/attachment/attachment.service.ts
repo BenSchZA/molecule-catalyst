@@ -8,6 +8,7 @@ import { Stream } from 'stream';
 import * as streamifier from 'streamifier';
 import { Attachment, AttachmentDocument } from './attachment.schema';
 import { ServiceBase } from 'src/common/serviceBase';
+import sharp = require('sharp');
 
 @Injectable()
 export class AttachmentService extends ServiceBase {
@@ -31,6 +32,33 @@ export class AttachmentService extends ServiceBase {
       const fileStream = streamifier.createReadStream(file.buffer);
       const result = new Promise<Attachment>((resolve, reject) => {
         this.attachmentGridFsRepository.write(options, fileStream, (error, fileDocument: Attachment) => {
+          resolve(fileDocument);
+          reject(error);
+        });
+      });
+      return await result;
+    } catch (error) {
+      this.logger.error(`Error saving new attachment: ${error.message}`);
+    }
+  }
+
+  public async processImage(file): Promise<Attachment> {
+    this.logger.debug('Resizing and saving image');
+    try {
+      const croppedFile = await sharp(file.buffer)
+        .resize(null, null, {
+          width: 1014,
+          withoutEnlargement: true,
+        }).toBuffer();
+
+      const fileStream = streamifier.createReadStream(croppedFile.buffer);
+      const result = new Promise<Attachment>((resolve, reject) => {
+        this.attachmentGridFsRepository.write({
+          filename: `${file.originalname}`,
+          contentType: file.mimetype
+        }, 
+        fileStream, 
+        (error, fileDocument: Attachment) => {
           resolve(fileDocument);
           reject(error);
         });
@@ -69,8 +97,8 @@ export class AttachmentService extends ServiceBase {
   }
 
   public async delete(attachment: string | ObjectId | AttachmentDocument): Promise<boolean> {
-    const idToDelete = (attachment instanceof ObjectId) ? attachment : 
-        (typeof(attachment) === 'string') ? new ObjectId(attachment) : attachment._id;
+    const idToDelete = (attachment instanceof ObjectId) ? attachment :
+      (typeof (attachment) === 'string') ? new ObjectId(attachment) : attachment._id;
     const result = new Promise<boolean>((resolve, reject) => {
       this.attachmentGridFsRepository.unlinkById(idToDelete, (error, unlinkedAttachment) => {
         resolve(true);

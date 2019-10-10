@@ -9,6 +9,8 @@ import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import SimpleMDEEditor from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
 import { FieldProps } from 'formik';
+import * as api from '../../api';
+import apiUrlBuilder from 'api/apiUrlBuilder';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -23,8 +25,18 @@ const EditorField: React.SFC<OwnProps> = ({ classes, field, form: { touched, err
       {
         initialValue: field.value,
         spellChecker: false,
-        uploadImage: false,
         placeholder: "",
+        uploadImage: true,
+        imageUploadFunction: async (file, onSuccess, onError) => {
+          console.log(file.size)
+          try {
+            const apiResponse = await api.uploadSupportingDocument(file, '') //TODO: Get token from localStorage
+            console.log(apiResponse);
+            onSuccess(apiUrlBuilder.attachmentStream(apiResponse.data))
+          } catch (error) {
+            onError('Something went wrong uploading this file. Please try again');
+          }
+        },
       }
     }
     onChange={(value) => {

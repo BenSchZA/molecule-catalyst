@@ -103,7 +103,21 @@ export async function addResearchUpdate(projectId: string, update: string, apiTo
     RequestMethod.POST,
     apiUrlBuilder.addResearchUpdate(projectId),
     body,
-    'application/json', // The Content-Type header is set automatically via the FormData object.
+    'application/json', 
     true,
     apiToken);
+}
+
+export async function uploadSupportingDocument(file: File, apiToken: string) {
+  const requestData = new FormData();
+  debugger;
+  requestData.append('file', file, file.name);
+  return apiRequest(
+    RequestMethod.POST,
+    apiUrlBuilder.uploadFile,
+    requestData,
+    undefined,
+    true,
+    apiToken
+  )
 }
