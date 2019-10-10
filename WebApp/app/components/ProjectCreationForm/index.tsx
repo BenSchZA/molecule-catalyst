@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
-import { Form, FieldArray, FastField } from 'formik';
+import { Form, FieldArray, FastField, Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
