@@ -71,7 +71,7 @@ export class VaultState extends ServiceBase {
 
     const currentPhase = await this.vaultContract.currentPhase();
     this.vaultState.dispatch(setCurrentPhaseAction(parseInt(currentPhase)));
-
+    
     this.daiContract.on(this.daiContract.filters.Transfer(marketAddress, this.vaultAddress),
       async (from, to, value, event) => {
         if (event.blockNumber > this.stateDocument.vaultData.lastBlockUpdated) {
