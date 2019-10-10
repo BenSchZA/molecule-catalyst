@@ -13,8 +13,8 @@ import styles from './styles';
 import { ethers } from '@panterazar/ethers';
 import { bigNumberify } from '@panterazar/ethers/utils';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
-import SimpleMDEEditor from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
+import MDEditor from 'components/MDEditor';
 
 interface OwnProps extends WithStyles<typeof styles> {
   myProjects: Array<Project>,
@@ -172,14 +172,9 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
             <Typography variant="h2">Add Research Update</Typography>
           </div>
           <div className={props.classes.modalContent}>
-            <SimpleMDEEditor
-              options={
-                {
-                  initialValue: researchUpdate,
-                  uploadImage: false,
-                  placeholder: "Please provide a reseach update",
-                }
-              }
+            <MDEditor
+              value={researchUpdate}
+              placeholder="Please provide a reseach update"
               onChange={(value) => {
                 setResearchUpdate(value);
               }} />

@@ -11,7 +11,7 @@ import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
 import UploadImageTextField from 'components/UploadImageTextField';
-import EditorField from 'components/EditorField';
+import EditorField from 'components/MDEditorMUIFormik';
 
 const styles = (theme: Theme) =>
   createStyles({

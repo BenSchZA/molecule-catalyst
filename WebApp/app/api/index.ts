@@ -4,6 +4,27 @@ import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
 import { ProjectData } from 'containers/CreateProjectContainer/types';
 
+export class apiClient {
+  private readonly apiToken: string;
+  constructor() {
+    const state = JSON.parse(localStorage.getItem('state') || '{}');
+    this.apiToken = state?.authentication?.accessToken;
+  }
+
+  uploadSupportingDocument(file: File) {
+    const requestData = new FormData();
+    requestData.append('file', file, file.name);
+    return apiRequest(
+      RequestMethod.POST,
+      apiUrlBuilder.uploadFile,
+      requestData,
+      undefined,
+      true,
+      this.apiToken
+    )
+  }
+}
+
 export function login(signedPermit: string, ethAddress: string): Promise<any> {
   const body = JSON.stringify({ signedPermit: signedPermit, ethAddress: ethAddress});
   return apiRequest(RequestMethod.POST, apiUrlBuilder.login, body, 'application/json');
@@ -106,18 +127,4 @@ export async function addResearchUpdate(projectId: string, update: string, apiTo
     'application/json', 
     true,
     apiToken);
-}
-
-export async function uploadSupportingDocument(file: File, apiToken: string) {
-  const requestData = new FormData();
-  debugger;
-  requestData.append('file', file, file.name);
-  return apiRequest(
-    RequestMethod.POST,
-    apiUrlBuilder.uploadFile,
-    requestData,
-    undefined,
-    true,
-    apiToken
-  )
 }
