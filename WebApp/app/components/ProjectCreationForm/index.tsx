@@ -6,12 +6,12 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
-import { Form, Field, FieldArray } from 'formik';
+import { Form, FieldArray, FastField } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
 import UploadImageTextField from 'components/UploadImageTextField';
-import EditorField from 'components/EditorField';
+import EditorField from 'components/MDEditorMUIFormik';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -68,7 +68,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
         <Paper className={classes.root} square={true}>
           <InputLabel htmlFor='title'>Title</InputLabel>
           <InputLabel htmlFor='title' shrink>Write a clear, brief title that helps people quickly understand the gist of your project.</InputLabel>
-          <Field
+          <FastField
             name='title'
             type='text'
             placeholder='Enter a project title'
@@ -78,7 +78,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             fullWidth />
           <InputLabel htmlFor='abstract'>Abstract</InputLabel>
           <InputLabel htmlFor='abstract' shrink>Provide a short summary of your research project.</InputLabel>
-          <Field
+          <FastField
             name='abstract'
             type='text'
             placeholder='Enter a project abstract'
@@ -90,7 +90,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             fullWidth />
           <InputLabel htmlFor='featuredImage'>Featured Image</InputLabel>
           <InputLabel htmlFor='featuredImage' shrink>Upload a relevant visualization that will be used to represent your project across the platform.</InputLabel>
-          <Field
+          <FastField
             component={UploadImageTextField}
             name='featuredImage' />
           <InputLabel htmlFor='organisationImage'>Organisation Image</InputLabel>
@@ -119,7 +119,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             Explain the origins of this research idea and what inspired you to pursue it.
             Describe why it is worth working on, and why people should donate money for your initiative.
           </InputLabel>
-          <Field
+          <FastField
             name='context'
             type='text'
             placeholder='What is the context and significance of your project? Include links and pictures to support your explanations.'
@@ -131,7 +131,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             Describe the theory behind your approach, the design of your studies/experiments, and how you plan to gather
             and evaluate all data and results.
           </InputLabel>
-          <Field
+          <FastField
             name='approach'
             type='text'
             placeholder='How do you plan to approach your project? Include links and pictures to support your justifications.'
@@ -166,7 +166,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                       }
                       <Grid container key={index}>
                         <Grid item xs={6}>
-                          <Field
+                          <FastField
                             name={`collaborators[${index}.fullName]`}
                             type='text'
                             placeholder='Full Name'
@@ -176,7 +176,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             margin="dense" />
                         </Grid>
                         <Grid item xs={6}>
-                          <Field
+                          <FastField
                             name={`collaborators[${index}.professionalTitle]`}
                             type='text'
                             placeholder='Professional Title'
@@ -186,7 +186,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             margin="dense" />
                         </Grid>
                         <Grid item xs={12}>
-                          <Field
+                          <FastField
                             name={`collaborators[${index}.affiliatedOrganisation]`}
                             type='text'
                             placeholder='Affiliated organisation'
@@ -246,7 +246,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                         <InputLabel htmlFor='title' shrink>
                           Write a brief title for this specific research phase.
                           </InputLabel>
-                        <Field
+                        <FastField
                           name={`researchPhases[${index}.title]`}
                           type='text'
                           placeholder='Enter a project title.'
@@ -258,7 +258,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                         <InputLabel htmlFor='description' shrink>
                           Write a brief description of the steps that are part of this specific research phase.
                         </InputLabel>
-                        <Field
+                        <FastField
                           name={`researchPhases[${index}.description]`}
                           component={EditorField} />
                         <InputLabel htmlFor='result'>Result</InputLabel>
@@ -266,7 +266,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                           What can you show to your backers after this phase has been completed?
                           (e.g. experimental data, report, ...)
                         </InputLabel>
-                        <Field
+                        <FastField
                           name={`researchPhases[${index}.result]`}
                           component={EditorField} />
                         <Grid container>
@@ -275,7 +275,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             <InputLabel htmlFor='fundingGoal' shrink>
                               Amount of funding needed to complete this phase.
                             </InputLabel>
-                            <Field
+                            <FastField
                               name={`researchPhases[${index}.fundingGoal]`}
                               type='number'
                               placeholder='e.g. $10,000'
@@ -294,7 +294,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
                             <InputLabel htmlFor='duration' shrink>
                               Time needed to finish this phase.
                               </InputLabel>
-                            <Field
+                            <FastField
                               name={`researchPhases[${index}.duration]`}
                               type='number'
                               placeholder='(max. of 4 months)'

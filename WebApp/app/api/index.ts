@@ -4,6 +4,27 @@ import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
 import { ProjectData } from 'containers/CreateProjectContainer/types';
 
+export class apiClient {
+  private readonly apiToken: string;
+  constructor() {
+    const state = JSON.parse(localStorage.getItem('state') || '{}');
+    this.apiToken = state?.authentication?.accessToken;
+  }
+
+  uploadSupportingDocument(file: File) {
+    const requestData = new FormData();
+    requestData.append('file', file, file.name);
+    return apiRequest(
+      RequestMethod.POST,
+      apiUrlBuilder.uploadFile,
+      requestData,
+      undefined,
+      true,
+      this.apiToken
+    )
+  }
+}
+
 export function login(signedPermit: string, ethAddress: string): Promise<any> {
   const body = JSON.stringify({ signedPermit: signedPermit, ethAddress: ethAddress});
   return apiRequest(RequestMethod.POST, apiUrlBuilder.login, body, 'application/json');
@@ -103,7 +124,7 @@ export async function addResearchUpdate(projectId: string, update: string, apiTo
     RequestMethod.POST,
     apiUrlBuilder.addResearchUpdate(projectId),
     body,
-    'application/json', // The Content-Type header is set automatically via the FormData object.
+    'application/json', 
     true,
     apiToken);
 }
