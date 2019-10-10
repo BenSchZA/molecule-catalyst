@@ -40,12 +40,14 @@ import TransactionModalContainer from 'containers/TransactionModalContainer';
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
   userAddress?: string;
+  isLoggedIn: boolean;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
   classes,
   userAddress,
+  isLoggedIn,
 }: OwnProps) => {
   const [modalState, setModalState] = useState(false);
   const [modalMode, setModalMode] = useState<'support' | 'redeem'>('support');
@@ -111,14 +113,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.supportProject}
               onClick={handleOpenSupportModal}
-              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Redeem Holdings
             </Button>
