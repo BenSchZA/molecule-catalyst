@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
-import { Form, FieldArray, FastField, Field } from 'formik';
+import { Form, FieldArray, FastField } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
 import { colors } from 'theme';
@@ -95,7 +95,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
             name='featuredImage' />
           <InputLabel htmlFor='organisationImage'>Organisation Image</InputLabel>
           <InputLabel htmlFor='organisationImage' shrink>Upload a relevant image of your organisation logo.</InputLabel>
-          <Field
+          <FastField
             component={UploadImageTextField}
             name='organisationImage' />
         </Paper>
