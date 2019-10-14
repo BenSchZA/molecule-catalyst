@@ -197,6 +197,7 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
       {(project.status === ProjectSubmissionStatus.created) &&
         <Fragment>
           <Button onClick={() => approveProject()}>Approve</Button>
+          <Button onClick={() => forwardTo(`/admin/project/${project.id}/edit`)}>Edit</Button>
           <Button onClick={() => rejectProject()}>Decline</Button>
         </Fragment>}
     </Grid>
