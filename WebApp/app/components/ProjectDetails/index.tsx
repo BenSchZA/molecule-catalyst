@@ -66,26 +66,42 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setModalState(false);
   };
 
+  
   const getDateRange = (phaseIndex) => {
     let startDate: Dayjs = dayjs();
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+
+    const getEndDateOffset = (phases, phaseIndex) => {
+      if(phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
+        const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
+        return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day'); 
+      }
+      const months = phases.map((phase, index, array) => phase.phaseDuration)
+        .reduce((accumulator, currentValue, index, array) => index <= phaseIndex ? accumulator += currentValue : accumulator, 0);
+      return dayjs(firstPhaseDate.add(months, 'month').format('YYYY-MM-DD')).diff(firstPhaseDate.format('YYYY-MM-DD'), 'day');
+    };
+
+    const endDateOffset = getEndDateOffset(project.vaultData.phases, phaseIndex);
+
     project.vaultData.phases
       .some((phase, index, array) => {
         if(index <= phaseIndex) {
           if(phase.state >= FundingState.STARTED) {
             startDate = dayjs(phase.startDate);
           } else {
-            startDate = startDate.add(array[index - 1].phaseDuration, 'month');
+            startDate = firstPhaseDate.add(endDateOffset, 'day').subtract(array[index].phaseDuration, 'month'); 
           }
           return false;
         } else {
           return true;
         }
     });
+
     return  startDate
               .format('DD MMMM YYYY')
               .toUpperCase() + ' - ' + 
-            startDate
-              .add(project.vaultData.phases[phaseIndex].phaseDuration, 'month')
+            firstPhaseDate
+              .add(endDateOffset, 'day')
               .format('DD MMMM YYYY')
               .toUpperCase();
   };
