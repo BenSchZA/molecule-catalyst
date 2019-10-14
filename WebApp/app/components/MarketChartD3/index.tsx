@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Fragment, Container } from 'react';
+import React, { Fragment } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
