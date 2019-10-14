@@ -73,7 +73,16 @@ const AdminProjectEditContainer: React.FunctionComponent<Props> = (
   });
   return (
     <Formik
-      initialValues={project}
+    initialValues={{
+      title: project.title,
+      abstract: project.abstract,
+      featuredImage: project.featuredImage,
+      organisationImage: project.organisationImage,
+      researchPhases: project.researchPhases,
+      context: project.context,
+      approach: project.approach,
+      collaborators: project.collaborators,
+    }}
       validationSchema={CreateProjectSchema}
       onSubmit={(values) => {
         updateProject(projectId, values);

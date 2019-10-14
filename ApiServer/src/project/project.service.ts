@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './project.schema';
 import { Model } from 'mongoose';
@@ -18,53 +18,93 @@ import { PhaseState } from 'src/market/vault.reducer';
 @Injectable()
 export class ProjectService extends ServiceBase {
   constructor(@InjectModel(Schemas.Project) private readonly projectRepository: Model<ProjectDocument>,
-    private readonly attachmentService: AttachmentService,
-    private readonly marketFactoryService: MarketFactoryService,
-    private readonly marketService: MarketService) {
+  private readonly attachmentService: AttachmentService,
+  private readonly marketFactoryService: MarketFactoryService,
+  private readonly marketService: MarketService) {
     super(ProjectService.name);
   }
-
+  
   async submit(projectData: SubmitProjectDTO, file1: any, file2: any, user: User): Promise<Project> {
     this.logger.debug('saving new project data');
     const profiler = this.logger.startTimer();
     const project = await new this.projectRepository({ ...projectData, user: user.id });
     if (file1) {
       const croppedFile = await sharp(file1.buffer)
-        .resize(1366, 440, {
-          position: sharp.strategy.attention,
-        }).toBuffer();
+      .resize(1366, 440, {
+        position: sharp.strategy.attention,
+      }).toBuffer();
       const attachment = await this.attachmentService.create({
         filename: `${project.id}-${file1.originalname}`,
         contentType: file1.mimetype,
       }, { buffer: croppedFile });
       project.featuredImage = attachment;
     }
-
+    
     if (file2) {
       const croppedFile = await sharp(file2.buffer)
-        .resize(300, 300, {
-          position: sharp.strategy.attention,
-        }).toBuffer();
+      .resize(300, 300, {
+        position: sharp.strategy.attention,
+      }).toBuffer();
       const attachment = await this.attachmentService.create({
         filename: `${project.id}-${file2.originalname}`,
         contentType: file2.mimetype,
       }, { buffer: croppedFile });
       project.organisationImage = attachment;
     }
-
+    
     await project.save();
     profiler.done('project saved');
     return project.toObject();
   }
+  
+  async updateProject(projectId: any, body, files: any) {
+    this.logger.debug(`Attempting to update Project ${projectId}`);
+    const profiler = this.logger.startTimer();
+    const projectToUpdate = await this.projectRepository.findById(projectId);
+    if (!projectToUpdate) {
+      throw new NotFoundException('The project was not found');
+    } 
+    await projectToUpdate.updateOne(body);
+
+    if (files) {
+      if (files.featuredImage?.[0]) {
+        const croppedFile = await sharp(files.featuredImage[0].buffer)
+        .resize(1366, 440, {
+          position: sharp.strategy.attention,
+        }).toBuffer();
+        const attachment = await this.attachmentService.create({
+          filename: `${projectToUpdate.id}-${files.featuredImage[0].originalname}`,
+          contentType: files.featuredImage[0].mimetype,
+        }, { buffer: croppedFile });
+        projectToUpdate.featuredImage = attachment;
+      }
+
+      if (files.organisationImage?.[0]) {
+        const croppedFile = await sharp(files.organisationImage[0].buffer)
+        .resize(300, 300, {
+          position: sharp.strategy.attention,
+        }).toBuffer();
+        const attachment = await this.attachmentService.create({
+          filename: `${projectToUpdate.id}-${files.organisationImage[0].originalname}`,
+          contentType: files.organisationImage[0].mimetype,
+        }, { buffer: croppedFile });
+        projectToUpdate.organisationImage = attachment;
+      }
+
+      await projectToUpdate.save();
+    }
+    profiler.done('project saved');
+    return projectToUpdate.toObject();
+  }
 
   async getProjects() {
     const projects = await this.projectRepository
-      .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])
-      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
-
+    .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])
+    .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+    
     return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
-
+  
   async getAllProjects() {
     this.logger.info('Getting all projects');
     const projects = await this.projectRepository.find().populate(Schemas.User);
