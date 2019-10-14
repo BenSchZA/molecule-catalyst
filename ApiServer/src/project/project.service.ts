@@ -60,11 +60,13 @@ export class ProjectService extends ServiceBase {
   async updateProject(projectId: any, body, files: any) {
     this.logger.debug(`Attempting to update Project ${projectId}`);
     const profiler = this.logger.startTimer();
-    const projectToUpdate = await this.projectRepository.findById(projectId);
+    const projectToUpdate = await this.projectRepository.findById(projectId).populate('user');
     if (!projectToUpdate) {
       throw new NotFoundException('The project was not found');
     } 
-    await projectToUpdate.updateOne(body);
+    
+    Object.keys(body).forEach(key => projectToUpdate[key] = body[key])
+    await projectToUpdate.save();
 
     if (files) {
       if (files.featuredImage?.[0]) {
@@ -92,9 +94,9 @@ export class ProjectService extends ServiceBase {
       }
 
       await projectToUpdate.save();
+      profiler.done('project saved');
+      return projectToUpdate.toObject();
     }
-    profiler.done('project saved');
-    return projectToUpdate.toObject();
   }
 
   async getProjects() {

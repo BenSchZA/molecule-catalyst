@@ -128,3 +128,14 @@ export async function addResearchUpdate(projectId: string, update: string, apiTo
     true,
     apiToken);
 }
+
+export async function updateProject(projectId: string, projectData: ProjectData, apiToken: string) {
+  const requestData = formDataHelper(projectData);
+  return apiRequest(
+    RequestMethod.PATCH,
+    apiUrlBuilder.updateProject(projectId),
+    requestData,
+    undefined, // The Content-Type header is set automatically via the FormData object.
+    true,
+    apiToken);
+}

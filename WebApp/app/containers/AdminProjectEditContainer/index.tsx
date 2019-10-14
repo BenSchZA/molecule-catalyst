@@ -95,8 +95,6 @@ const AdminProjectEditContainer: React.FunctionComponent<Props> = (
 };
 
 const mapStateToProps = (state: ApplicationRootState, props: OwnProps) => {
-  console.log(state.projects);
-  console.log(props.match.params.projectId);
   return {
     project: state.projects[props.match.params.projectId],
   }

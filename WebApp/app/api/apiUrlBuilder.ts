@@ -28,6 +28,7 @@ const apiUrlBuilder = {
   launchProject: (projectId: string) => generateUri(`project/${projectId}/launch`),
   addResearchUpdate: (projectId: string) => generateUri(`project/${projectId}/update`),
   uploadFile: generateUri(`attachment/`),
+  updateProject: (projectId: string) => generateUri(`project/${projectId}`),
 };
 
 export default apiUrlBuilder;

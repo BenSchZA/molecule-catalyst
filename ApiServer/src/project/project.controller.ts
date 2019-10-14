@@ -85,7 +85,7 @@ export class ProjectController {
     return result;
   }
 
-  @Patch(':projectId/update')
+  @Patch(':projectId')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.Admin)
   @UseInterceptors(FileFieldsInterceptorHelper([{

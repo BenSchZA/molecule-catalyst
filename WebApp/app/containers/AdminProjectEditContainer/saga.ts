@@ -1,24 +1,25 @@
-// This file is just a stub showing a sample Api request saga.
-// For more information on Saga see: https://redux-saga.js.org/
+import { getType, } from "typesafe-actions";
+import * as actions from "./actions";
+import { updateProject as updateProjectApi } from "../../api"
+import { takeLatest, select, call, put } from "redux-saga/effects";
+import { ApplicationRootState } from "types";
+import { forwardTo } from "utils/history";
+import { addProject } from "domain/projects/actions";
 
-// import { take, call, put, select } from 'redux-saga/effects';
-
-// Individual exports for testing
-export function* getData() {
-  //  const username = yield
-  //  const requestURL = `http://api/getData`;
-  //
-  //  try {
-  //    // Call our request helper (see 'utils/request')
-  //    const data = yield call(request, requestURL);
-  //    //Dispatch the dataLoaded action
-  //    yield put(dataLoaded(data));
-  //  } catch (err) {
-  //    //Dispatch the dataLoadingError action
-  //    yield put(dataLoadingError(err));
-  //  }
+export function* updateProject(action) {
+  const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
+  try {
+    const result = yield call(updateProjectApi, action.payload.projectId, action.payload.data, apiKey);
+    debugger;
+    if (result.success) {
+      yield put(addProject(result.data));
+      yield call(forwardTo, `/admin/project/${action.payload.projectId}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function* adminProjectEditContainerWatcherSaga() {
-  // yield takeLatest(ActionType, getData);
+  yield takeLatest(getType(actions.updateProject.request), updateProject);
 }
