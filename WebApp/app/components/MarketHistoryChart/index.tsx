@@ -8,7 +8,9 @@ import React, { Fragment } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
-import { TransactionDatapoint } from './TransactionDatapoint';
+import { ethers } from '@panterazar/ethers';
+import dayjs from 'dayjs';
+import { MintTX, BurnTX, TransferTX, TransactionType } from 'domain/projects/types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -33,9 +35,8 @@ const styles = (theme: Theme) =>
   });
 
 interface OwnProps extends WithStyles < typeof styles > {
-  currentTokenValue: number;
-  currentTokenSupply: number;
-  marketHistory: TransactionDatapoint[];
+  spotPrice: number;
+  transactions: Array<MintTX | BurnTX | TransferTX>;
 };
 
 class MarketHistoryChart extends React.Component<OwnProps> {
@@ -47,11 +48,46 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     if (!this._rootNode) return;
 
     const {
-      currentTokenValue,
-      marketHistory,
+      spotPrice,
+      transactions,
     } = this.props;
 
-    if (marketHistory.length === 0) return;
+    if (transactions.length === 0) return;
+
+    const cleanTransactions = transactions.map(value => {
+      switch (value.txType) {
+        case TransactionType.MINT:
+          return {
+            ...value,
+            tokenAmount: Number(ethers.utils.formatEther((value as MintTX).amountMinted)),
+            daiAmount: Number(ethers.utils.formatEther((value as MintTX).collateralAmount)),
+          };
+        case TransactionType.BURN:
+          return {
+            ...value,
+            tokenAmount: Number(ethers.utils.formatEther((value as BurnTX).amountBurnt)),
+            daiAmount: Number(ethers.utils.formatEther((value as BurnTX).collateralReturned)),
+          };
+        default:
+          return {
+            ...value,
+            tokenAmount: 0,
+            daiAmount: 0,
+          };
+      }
+    });
+
+    const marketHistory = cleanTransactions.map(value => {
+      return {
+        type: value.txType,
+        timestamp: dayjs(value.timestamp).unix(),
+        blockNumber: value.blockNumber,
+        transactionHash: value.txHash,
+        tokenAmount: value.tokenAmount,
+        daiAmount: value.daiAmount,
+        firstTokenPrice: value.daiAmount/value.tokenAmount,
+      }
+    });
 
     // set the dimensions and margins of the graph
     let margin = {top: 20, right: 70, bottom: 70, left: 100},
@@ -75,7 +111,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     let market_creation_date = parseEpoch(marketHistory[0].timestamp),
       initial_price = marketHistory[0].firstTokenPrice,
       current_date = new Date(),
-      current_price = currentTokenValue;
+      current_price = spotPrice;
 
     // append the svg obgect to the body of the page
     if(this._svgNode) {
@@ -95,15 +131,17 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       first_token_price: value.firstTokenPrice,
       token_amount: value.tokenAmount,
       dai_amount: value.daiAmount,
-      type: value.daiAmount < 0 ? "BUY" : "SELL",
+      type: value.type,
     }));
 
     // add data point for current price
-    data.push({date: current_date,
-          first_token_price: current_price,
-          token_amount: 0,
-          dai_amount: 0,
-          type: ""});
+    data.push({
+      date: current_date,
+      first_token_price: current_price,
+      token_amount: 0,
+      dai_amount: 0,
+      type: TransactionType.TRANSFER,
+    });
 
     // label boxes for data points
     let tooltipLabel = d3.select(this._rootNode)
@@ -124,14 +162,14 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     let line = d3.line()
       .x(function(d) { return xscale(d.date); })
       .y(function(d) { return yscale(d.first_token_price); })
-      .curve(d3.curveStepBefore); // step curve
+      .curve(d3.curveLinear); //d3.curveStepBefore
 
     // area generator
     let area = d3.area()
       .x(function(d) { return xscale(d.date); })
       .y0(height)
       .y1(function(d) { return yscale(d.first_token_price); })
-      .curve(d3.curveStepBefore);
+      .curve(d3.curveLinear); //d3.curveStepBefore
 
     // fill area below curve
     this._svgNode.append("path")
@@ -181,7 +219,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       .attr("class", "label")
       .attr("text-anchor", "middle")
       .attr("transform", "translate(" + -1 * (margin.left / 3 * 2) + "," + (height / 2) + ")rotate(-90)")
-      .text("Price [$]");
+      .text("Price per token");
 
     this._svgNode.append("text")
       .attr("class", "label")

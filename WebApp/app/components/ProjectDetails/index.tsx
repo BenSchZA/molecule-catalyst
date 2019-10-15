@@ -283,15 +283,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             )}
           </Grid>
         </div>
-
-        <div className={classes.contentWrapper}>
-          <Typography className={classes.sectionTitleText} align="center">
-            Market
-          </Typography>
-          {project && project.chainData && project.chainData.marketData &&
-            <MarketChartLayout display={true} project={project} />
-          }
-        </div>
+      </Paper>
+      <Paper className={classes.projectSection} square>
+        <Typography className={classes.sectionTitleText} align="center">
+          Market
+        </Typography>
+        {project && project.chainData && project.chainData.marketData ?
+          <MarketChartLayout display={true} project={project} /> : <div className={classes.marketSpinner}><CircularProgress /></div>
+        }
       </Paper>
       <Paper className={classes.projectSection} square>
         <Typography className={classes.sectionTitleText} align="center">

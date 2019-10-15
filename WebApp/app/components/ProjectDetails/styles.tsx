@@ -359,6 +359,10 @@ const styles = ({ spacing, palette }: Theme) =>
       top: '50%',
       left: '50%',
     },
+    marketSpinner: {
+      display: 'flex',
+      justifyContent: 'center'
+    },
     avatarImage: {
       width: 50,
       height: 50,
