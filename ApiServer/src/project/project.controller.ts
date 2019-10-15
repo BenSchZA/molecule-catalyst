@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Post, UseInterceptors, Req, Body, Param, UploadedFiles } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, UseInterceptors, Req, Body, Param, UploadedFiles, Patch } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
@@ -8,7 +8,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileOptions, FileFieldsInterceptorHelper } from 'src/helpers/fileInterceptorHelper';
 import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { Request } from 'express';
-import { LaunchProjectDTO } from './dto/launchProject.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -83,6 +82,27 @@ export class ProjectController {
     @Body() body,
     @Req() req: Request & { user: User }) {
     const result = await this.projectService.addResearchUpdate(projectId, body.researchUpdate, req.user);
+    return result;
+  }
+
+  @Patch(':projectId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
+  @UseInterceptors(FileFieldsInterceptorHelper([{
+    name: 'featuredImage',
+    maxCount: 1,
+    type: FileOptions.PICTURE,
+  },
+  {
+    name: 'organisationImage',
+    maxCount: 1,
+    type: FileOptions.PICTURE,
+  }]))
+  async updateProject(
+    @Param('projectId') projectId,
+    @Body() body,
+    @UploadedFiles() files) {
+    const result = await this.projectService.updateProject(projectId, body, files);
     return result;
   }
 }
