@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -13,6 +13,7 @@ import ProjectDetails from 'components/ProjectDetails';
 import { Project } from 'domain/projects/types';
 import { ApplicationRootState } from 'types';
 import { makeSelectIsLoggedIn } from 'domain/authentication/selectors';
+import { getAllProjects } from 'domain/projects/actions';
 
 interface RouteParams {
   projectId: string;
@@ -22,6 +23,7 @@ interface OwnProps extends RouteComponentProps<RouteParams>,
   React.Props<RouteParams> { }
 
 interface DispatchProps {
+  getProjects(): void;
 }
 
 interface StateProps {
@@ -32,7 +34,8 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn }: Props) => {
+const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn, getProjects }: Props) => {
+  useEffect(() => getProjects(),[])
   return (
     <ProjectDetails
       project={project}
@@ -53,8 +56,9 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  dispatch: dispatch
+  getProjects: () => dispatch(getAllProjects()),
 });
+
 
 const withConnect = connect(
   mapStateToProps,
