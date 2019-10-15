@@ -91,6 +91,7 @@ interface MintTX {
 }
 
 interface BurnTX {
+  txType: TransactionType,
   userAddress: string,
   amountBurnt: BigNumber,
   collateralReturned: BigNumber,
@@ -100,6 +101,7 @@ interface BurnTX {
 }
 
 interface TransferTX {
+  txType: TransactionType,
   fromAddress: string,
   toAddress: string,
   amount: BigNumber,
@@ -172,5 +174,6 @@ export {
   MarketData, 
   MarketDataLegacy, 
   PhaseData, 
-  FundingState 
+  FundingState,
+  TransactionType, MintTX, BurnTX, TransferTX,
 };
