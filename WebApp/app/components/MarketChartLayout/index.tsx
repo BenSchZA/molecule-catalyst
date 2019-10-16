@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
 import MarketChartD3 from 'components/MarketChartD3';
-import { Link, Tabs, Tab, Paper } from '@material-ui/core';
+import { Link, Tabs, Tab, Paper, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import { Project } from 'domain/projects/types';
 import MarketHistoryChart from 'components/MarketHistoryChart';
@@ -24,8 +24,6 @@ const styles = (theme: Theme) =>
       marginRight: '10px',
       marginBottom: '20px',
       padding: theme.spacing(2),
-    },
-    charts: {
     },
     chip: {
       margin: theme.spacing(2)
@@ -61,16 +59,38 @@ const styles = (theme: Theme) =>
       color: '#000000DE',
       opacity: 1.0,
     },
+    explainerText: {
+      font: 'Regular 18px/24px Roboto',
+      paddingBottom: '28px',
+      fontWeight: theme.typography.fontWeightRegular,
+      textAlign: 'left',
+      letterSpacing: '0.17px',
+      color: '#00000099',
+      opacity: 1,
+    },
+    layout: {
+      width: 'auto',
+      // display: 'block', // Fix IE 11 issue.
+      paddingTop: theme.spacing(10),
+      paddingLeft: theme.spacing(15),
+      paddingRight: theme.spacing(15),
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      [theme.breakpoints.up(400 + theme.spacing(3 * 2))]: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+    },
   });
 
 function TabPanel(props) {
   const { children, value, index, ...classes } = props;
-  
+
   return (
-    <section hidden={value !== index} className={classes.charts}>
+    <section className={classes.layout} hidden={value !== index}>
       {children}
       <div className={classes.info}>
-        <Info fontSize="large" color="primary"/>
+        <Info fontSize="large" color="primary" />
         <Link color="primary" variant="subtitle1">Read more about our trading technology</Link>
       </div>
     </section>
@@ -140,11 +160,30 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
         </CustomTabs>
       </Paper>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.HISTORY}>
+        <Typography className={classes.explainerText}>
+          <b>The price for project tokens changes</b> when tokens are distributed 
+          for additional contributions or when contributors decide to sell the ones they own.
+        </Typography>
+        <Typography className={classes.explainerText}>
+          An <b>increasing</b> project token price shows that <b>contributors are confident</b>
+          about the Research Project and the fundraising campaign success. A 
+          <b>declining</b> price might indicate that the <b>contributors are starting 
+          to doubt</b> the research projectand are selling their project tokens.
+        </Typography>
         <MarketHistoryChart
           spotPrice={Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice))}
           transactions={project.marketData.transactions} />
       </TabPanel>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.BONDING}>
+          <Typography className={classes.explainerText}>
+            <b>The price of project tokens is determined</b> by the number of tokens that
+            are in circulation and and the accumulated amount of Dai in the project stake reserve.
+          </Typography>
+          <Typography className={classes.explainerText}>
+            Depending on this snapshot of the market below
+            <b>you can decide whether you want to buy or sell your tokens</b> and see what
+            indications they have depending on the overall performance of the project market.
+          </Typography>
         <MarketChartD3
           project={project} />
       </TabPanel>

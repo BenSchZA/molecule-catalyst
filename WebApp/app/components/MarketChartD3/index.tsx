@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
@@ -14,16 +14,6 @@ import { bigNumberify } from '@panterazar/ethers/utils';
 
 const styles = (theme: Theme) =>
   createStyles({
-    layout: {
-      width: 'auto',
-      display: 'block', // Fix IE 11 issue.
-      marginLeft: theme.spacing(3),
-      marginRight: theme.spacing(3),
-      [theme.breakpoints.up(400 + theme.spacing(3 * 2))]: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-      },
-    },
     container: {
       boxShadow: 'none',
     },
@@ -499,15 +489,11 @@ class MarketChartD3 extends React.Component<OwnProps> {
     const { classes } = this.props;
 
     return (
-      <Fragment>
-        <section className={classes.layout}>
-          <Paper className={classes.container} square>
-            <div className={classes.chartDiv}>
-              <div ref={this._setRef.bind(this)} />
-            </div>
-          </Paper>
-        </section>
-      </Fragment> 
+      <Paper className={classes.container} square>
+        <div className={classes.chartDiv}>
+          <div ref={this._setRef.bind(this)} />
+        </div>
+      </Paper>
     );
   }
 };
