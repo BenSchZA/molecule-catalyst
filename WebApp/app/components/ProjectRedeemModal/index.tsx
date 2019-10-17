@@ -11,7 +11,7 @@ import MoleculeSpinner from 'components/MoleculeSpinner';
 import DaiIcon from 'components/DaiIcon/Loadable';
 import useDebounce from 'utils/useDebounce';
 import { getBlockchainObjects } from 'blockchainResources';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,

@@ -9,8 +9,8 @@ import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui
 import * as d3 from "d3";
 import './d3Style.css';
 import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
-import { ethers } from "@panterazar/ethers";
-import { bigNumberify } from '@panterazar/ethers/utils';
+import { ethers } from "ethers";
+import { bigNumberify } from 'ethers/utils';
 
 const styles = (theme: Theme) =>
   createStyles({

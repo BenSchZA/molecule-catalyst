@@ -9,7 +9,7 @@ import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHea
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 
 const styles = (theme: Theme) =>
   createStyles({

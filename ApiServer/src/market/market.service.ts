@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
-import { ethers, Wallet, Contract } from '@panterazar/ethers';
+import { ethers, Wallet, Contract } from 'ethers';
 import { Modules, Schemas } from 'src/app.constants';
 import { IMarketRegistry } from '@molecule-protocol/catalyst-contracts';
 import { ConfigService } from '../config/config.service';

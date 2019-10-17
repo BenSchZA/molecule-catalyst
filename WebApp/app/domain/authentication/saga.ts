@@ -9,7 +9,7 @@ import ActionTypes from './constants';
 import { getBlockchainObjects, signMessage, BlockchainResources } from 'blockchainResources';
 import { getType } from 'typesafe-actions';
 import { getDaiBalance } from './chain';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import { ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 
 export function* getPermit() {

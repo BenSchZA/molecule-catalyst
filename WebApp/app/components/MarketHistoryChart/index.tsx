@@ -8,7 +8,7 @@ import React, { Fragment } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper, } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import dayjs from 'dayjs';
 import { MintTX, BurnTX, TransferTX, TransactionType } from 'domain/projects/types';
 

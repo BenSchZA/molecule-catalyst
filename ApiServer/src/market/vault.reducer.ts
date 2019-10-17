@@ -1,6 +1,6 @@
 import { getType } from "typesafe-actions";
 import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase, setOutstandingWithdraw } from "./vault.actions";
-import { BigNumber, bigNumberify } from "@panterazar/ethers/utils";
+import { BigNumber, bigNumberify } from "ethers/utils";
 
 export enum PhaseState {
   NOT_STARTED,

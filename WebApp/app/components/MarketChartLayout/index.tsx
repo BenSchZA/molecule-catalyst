@@ -11,7 +11,7 @@ import { Link, Tabs, Tab, Paper, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import { Project } from 'domain/projects/types';
 import MarketHistoryChart from 'components/MarketHistoryChart';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
