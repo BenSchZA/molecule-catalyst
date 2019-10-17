@@ -66,6 +66,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setModalState(false);
   };
 
+  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(10)) > 0;
+
   const getEndDateOffset = (phases, phaseIndex) => {
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
 
@@ -147,7 +150,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && userHasBalance)}
             >
               Redeem Holdings
             </Button>
