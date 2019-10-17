@@ -37,6 +37,7 @@ interface StateProps {
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn, getProjects }: Props) => {
+  
   return (
     <ProjectDetails
       project={project}
