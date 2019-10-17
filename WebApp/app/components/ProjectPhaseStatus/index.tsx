@@ -8,7 +8,6 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Grid, Typography, Chip, LinearProgress, Divider } from '@material-ui/core';
 import { colors } from 'theme';
 import { lighten } from '@material-ui/core/styles';
-import dayjs from 'dayjs';
 
 const styles = ({ spacing, palette}: Theme) =>
   createStyles({
@@ -81,17 +80,18 @@ interface OwnProps extends WithStyles<typeof styles> {
     duration: number,
     state: number,
     activePhase: number
-  }
+  },
+  daysLeft: number,
 }
 
-const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase}: OwnProps) => 
+const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase, daysLeft}: OwnProps) => 
 <Grid item xs={12}>
   <Typography className={classes.label}>PHASE 0{phase.index}</Typography>
   <Typography className={classes.largeText}>{phase.title}</Typography>
   <Typography className={classes.label}>FUNDING GOAL</Typography>
   <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} DAI</Typography>
   <Typography className={classes.progress}>
-    {phase.fundedAmount >= phase.fundingGoal ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${dayjs(phase.startDate).add(phase.duration, 'month').diff(dayjs(), 'day')} DAYS LEFT`)}
+    {phase.fundedAmount >= phase.fundingGoal ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${daysLeft} DAYS LEFT`)}
   </Typography>
   <BorderLinearProgress
     variant="determinate"
