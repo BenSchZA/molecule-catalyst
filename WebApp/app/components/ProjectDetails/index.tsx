@@ -66,21 +66,21 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setModalState(false);
   };
 
+  const getEndDateOffset = (phases, phaseIndex) => {
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+
+    if(phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
+      const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
+      return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day'); 
+    }
+    const months = phases.map((phase, index, array) => phase.phaseDuration)
+      .reduce((accumulator, currentValue, index, array) => index <= phaseIndex ? accumulator += currentValue : accumulator, 0);
+    return dayjs(firstPhaseDate.add(months, 'month').format('YYYY-MM-DD')).diff(firstPhaseDate.format('YYYY-MM-DD'), 'day');
+  };
   
   const getDateRange = (phaseIndex) => {
     let startDate: Dayjs = dayjs();
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
-
-    const getEndDateOffset = (phases, phaseIndex) => {
-      if(phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
-        const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
-        return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day'); 
-      }
-      const months = phases.map((phase, index, array) => phase.phaseDuration)
-        .reduce((accumulator, currentValue, index, array) => index <= phaseIndex ? accumulator += currentValue : accumulator, 0);
-      return dayjs(firstPhaseDate.add(months, 'month').format('YYYY-MM-DD')).diff(firstPhaseDate.format('YYYY-MM-DD'), 'day');
-    };
-
     const endDateOffset = getEndDateOffset(project.vaultData.phases, phaseIndex);
 
     project.vaultData.phases
@@ -104,6 +104,17 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               .add(endDateOffset, 'day')
               .format('DD MMMM YYYY')
               .toUpperCase();
+  };
+
+  const getRemainingDuration = (index) => {
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+    const endDateOffset = getEndDateOffset(project.vaultData.phases, index);
+
+    const currentDate = dayjs();
+    const endDate = firstPhaseDate
+      .add(endDateOffset, 'day');
+
+    return endDate.diff(currentDate, 'day');
   };
 
   return project ? (
@@ -262,7 +273,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')
+                getRemainingDuration(project.vaultData.phases.length - 1)
               } days
               </Typography>
           </div>
@@ -270,7 +281,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <div className={classes.contentWrapper}>
           <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
             {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-              <ProjectPhaseStatus key={i + 1} phase={{
+              <ProjectPhaseStatus key={i + 1} daysLeft={getRemainingDuration(i)} phase={{
                 index: i + 1,
                 fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
                 fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
