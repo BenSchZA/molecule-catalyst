@@ -95,14 +95,12 @@ async function approve(address, value: BigNumber) {
 
   if(allowanceValue.lt(value)) {
     const {signer, daiAddress} = await getBlockchainObjects();
-    console.log("Increasing allowance");
     // Get contract instances
     const daiContract = new ethers.Contract(daiAddress, ERC20Detailed, signer);
     const txReceipt = await daiContract.approve(address, value);
     await (txReceipt).wait();
     return true;
   } else {
-    console.log("Allowance already set");
     return false;
   }
 }
