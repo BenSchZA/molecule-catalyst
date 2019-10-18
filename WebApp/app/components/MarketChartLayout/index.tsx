@@ -165,10 +165,10 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
           for additional contributions or when contributors decide to sell the ones they own.
         </Typography>
         <Typography className={classes.explainerText}>
-          An <b>increasing</b> project token price shows that <b>contributors are confident</b>
-          about the Research Project and the fundraising campaign success. A 
-          <b>declining</b> price might indicate that the <b>contributors are starting 
-          to doubt</b> the research projectand are selling their project tokens.
+          An <b>increasing</b> project token price shows that <b>contributors are confident</b> about 
+          the Research Project and the fundraising campaign success. A <b>declining</b> price 
+          might indicate that the <b>contributors are starting to doubt</b> the research 
+          project and are selling their project tokens.
         </Typography>
         <MarketHistoryChart
           spotPrice={Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice))}
