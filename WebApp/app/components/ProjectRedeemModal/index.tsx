@@ -63,10 +63,13 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     !isNaN(newValue) && setTokenAmount(newValue);
   }
   const displayPrecision = 2;
-  const valueChange = contributionValue > 0 ?
-    Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+  // const valueChange = contributionValue > 0 ?
+  //   Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
 
-  const resetModalState = () => {
+  const selectionValueChange = daiAmount > 0 ? 
+    Number((daiAmount - (contributionValue * tokenAmount / tokenBalance)) / (contributionValue * tokenAmount / tokenBalance) * 100).toFixed(displayPrecision) : 0;
+
+    const resetModalState = () => {
     setTokenAmount(0);
     setDaiAmount(0);
     closeModal();
@@ -138,7 +141,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </div>
         </section>
         <Typography className={classes.assetPerformance}>
-          {valueChange} %
+          {selectionValueChange} %
         </Typography>
         <Typography className={classes.modalText}>
           Change % since initial contribution
