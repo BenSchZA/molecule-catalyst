@@ -145,11 +145,9 @@ export function* daiBalanceListener() {
       try {
         // Listen for filtered results
         daiContract.on(filterTo, (from, to, value) => {
-          console.log('Received ' + value.toString() + ' Dai from ' + from);
           emit(value);
         });
         daiContract.on(filterFrom, (from, to, value) => {
-          console.log('Sent ' + value.toString() + ' Dai to ' + to);
           emit(value);
         });
       }
