@@ -1,4 +1,4 @@
-import { transferAction, mintAction, burnAction } from "./market.actions";
+import { transferAction, mintAction, burnAction, marketTerminatedAction } from "./market.actions";
 import { getType } from "typesafe-actions";
 import { BigNumber, bigNumberify } from "@panterazar/ethers/utils";
 import { ethers } from "@panterazar/ethers";
@@ -17,6 +17,7 @@ const calculateNetCost = (transactionsState, action): BigNumber => {
 }
 
 export interface MarketState {
+  active: boolean,
   lastBlockUpdated: number,
   totalMinted: BigNumber,
   netCost: {
@@ -36,6 +37,7 @@ export interface MarketState {
 }
 
 export const initialState: MarketState = {
+  active: true,
   lastBlockUpdated: 0,
   totalMinted: bigNumberify(0),
   netCost: {},
@@ -95,6 +97,11 @@ export function MarketReducer(state: MarketState = initialState, action) {
           ...state.transactions,
           {txType: action.type, ...action.payload}
         ]
+      }
+    case getType(marketTerminatedAction):
+      return {
+        ...state,
+        active: false,
       }
     default:
       return state;

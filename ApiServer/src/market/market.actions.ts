@@ -1,6 +1,5 @@
-import { createStandardAction, PayloadAC } from 'typesafe-actions';
+import { createStandardAction } from 'typesafe-actions';
 import { BigNumber } from "@panterazar/ethers/utils";
-import { ethers } from '@panterazar/ethers';
 
 export const mintAction = createStandardAction('MINT')<{
   userAddress: string,
@@ -29,3 +28,5 @@ export const transferAction = createStandardAction('TRANSFER')<{
   txHash: string,
   timestamp: Date
 }>();
+
+export const marketTerminatedAction = createStandardAction('TERMINATED')();

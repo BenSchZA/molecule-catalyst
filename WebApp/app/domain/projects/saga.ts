@@ -10,7 +10,7 @@ import * as NotificationActions from '../notification/actions';
 import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { getProjectTokenDetails, mint, burn, withdrawAvailable } from './chain';
+import { getProjectTokenDetails, mint, burn, withdrawAvailable, withdraw } from './chain';
 import { Project, MarketDataLegacy } from './types';
 import { 
   launchProject as launchProjectAPI,
@@ -84,6 +84,36 @@ export function* supportProject(action) {
   }
 }
 
+export function* withdrawRedistribution(action) {
+  const {projectId, tokenAmount} = action.payload;
+  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
+
+  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+    console.log("Invalid project blockchain data");
+    return;
+  }
+
+  try {
+    yield call(withdraw, project.chainData.marketAddress, tokenAmount);
+    yield put(ProjectActions.withdrawRedistribution.success(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Successfully withdrew redistribution', 
+      options: { 
+        variant: 'success',
+      }}
+    ));
+  } catch (error) {
+    yield put(ProjectActions.withdrawRedistribution.failure(projectId));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Error withdrawing redistribution', 
+      options: { 
+        variant: 'error'
+      }}
+    ));
+    console.log(error);
+  }
+}
+
 export function* withdrawHoldings(action) {
   const {projectId, tokenAmount} = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
@@ -148,7 +178,7 @@ export function* getMarketData(projectId) {
   }
 
   try {
-    const marketData: MarketDataLegacy = yield call(getProjectTokenDetails, project.chainData.marketAddress);
+    const marketData: MarketDataLegacy = yield call(getProjectTokenDetails, project.marketData.active, project.chainData.marketAddress);
     yield put(ProjectActions.setMarketData({ projectId: projectId, marketData: marketData }));
   } catch (error) {
     console.log(error);
@@ -187,6 +217,7 @@ export default function* root() {
   yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
   yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
+  yield takeLatest(getType(ProjectActions.withdrawRedistribution.request), withdrawRedistribution);
   yield takeLatest(getType(ProjectActions.withdrawFunding.request), withdrawFunding);
   yield takeLatest(getType(ProjectActions.addResearchUpdate.request), addResearchUpdate);
 }
