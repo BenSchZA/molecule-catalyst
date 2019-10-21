@@ -5,7 +5,7 @@ export const authenticate = createAsyncAction(
   ActionTypes.AUTH_REQUEST,
   ActionTypes.AUTH_SUCCESS,
   ActionTypes.AUTH_FAILURE)
-  <void, void, string>();
+  <string, void, string>();
 
 export const saveAccessPermit = createStandardAction(ActionTypes.SAVE_ACCESS_PERMIT)<string>();
 export const saveAccessToken = createStandardAction(ActionTypes.SAVE_ACCESS_TOKEN)<string>();
