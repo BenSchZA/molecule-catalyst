@@ -9,7 +9,6 @@ import { PositiveButton, NegativeButton } from '../custom';
 import styles from './styles';
 import MoleculeSpinner from 'components/MoleculeSpinner';
 import DaiIcon from 'components/DaiIcon/Loadable';
-import useDebounce from 'utils/useDebounce';
 import { getBlockchainObjects } from 'blockchainResources';
 import { ethers } from 'ethers';
 
@@ -28,7 +27,6 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   classes,
   modalState,
   closeModal,
-  holdingsValue,
   contributionValue,
   txInProgress,
   redeemHoldings,
@@ -38,20 +36,23 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const [tokenAmount, setTokenAmount] = useState(0);
   const [daiAmount, setDaiAmount] = useState(0);
 
-  const debouncedTokenAmount = useDebounce(tokenAmount, 100);
-
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
       const tokenValue = await market.rewardForBurn(
-        ethers.utils.parseUnits(`${debouncedTokenAmount}`, 18)
+        ethers.utils.parseUnits(`${tokenAmount}`, 18)
       );
       setDaiAmount(Number(ethers.utils.formatEther(tokenValue)))
     };
-    debouncedTokenAmount && fetchData();
-  }, [debouncedTokenAmount]);
+    fetchData();
+
+    return () => {
+      controller.abort();
+    }
+  }, [tokenAmount]);
 
   const validateTokenAmount = (value: string) => {
     if (value === '') {
@@ -69,7 +70,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const selectionValueChange = daiAmount > 0 ? 
     Number((daiAmount - (contributionValue * tokenAmount / tokenBalance)) / (contributionValue * tokenAmount / tokenBalance) * 100).toFixed(displayPrecision) : 0;
 
-    const resetModalState = () => {
+  const resetModalState = () => {
     setTokenAmount(0);
     setDaiAmount(0);
     closeModal();
