@@ -68,7 +68,8 @@ export function* refreshTokenPoller() {
 }
 
 export function* loginFlow() {
-  while (yield take(getType(authenticationActions.authenticate.request))) {
+  while (true) {
+    const action = yield take(getType(authenticationActions.authenticate.request));
 
     try {
       const response = yield call(getPermit);
@@ -77,7 +78,11 @@ export function* loginFlow() {
       yield call(getAccessToken, response, signerAddress);
       // yield put(userProfileActions.getUserProfile.request());
       yield fork(refreshTokenPoller);
-      yield call(forwardTo, '/discover'); // TODO: have this only redirect when on log in
+      if(action.payload === '/') {
+        yield call(forwardTo, '/discover');
+      } else {
+        yield call(forwardTo, action.payload);
+      }
     } catch (error) {
       yield put(authenticationActions.authenticate.failure(error.message));
       console.error(error);

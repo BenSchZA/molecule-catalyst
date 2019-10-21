@@ -43,7 +43,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-  onConnect(): void;
+  onConnect(path): void;
   logOut(): void;
 }
 
@@ -104,7 +104,7 @@ function getNavRoutesForCurrentUser(routes: AppRoute[], userRole: number, isLogg
 const mapStateToProps = state => selectApp(state);
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  onConnect: () => dispatch(authActions.authenticate.request()),
+  onConnect: (path) => dispatch(authActions.authenticate.request(path)),
   logOut: () => {
     forwardTo('/discover');
     dispatch(authActions.logOut());

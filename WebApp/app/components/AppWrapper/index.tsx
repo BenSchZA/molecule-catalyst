@@ -89,7 +89,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
 
 interface OwnProps extends WithStyles<typeof styles> {
   children: React.ReactNode;
-  onConnect(): void;
+  onConnect(path): void;
   logOut(): void;
   isLoggedIn: boolean;
   userRole: number;
@@ -158,7 +158,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
               {!isLoggedIn ? (
                 (walletUnlocked && approvedNetwork) ?
                   <div className={classes.connectButton}>
-                    <Button onClick={() => onConnect()}>CONNECT</Button>
+                    <Button onClick={() => onConnect(location.pathname)}>CONNECT</Button>
                   </div> :
                   <Tooltip 
                     title={`Please ensure you have Metamask installed, 
