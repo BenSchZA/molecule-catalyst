@@ -43,9 +43,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = await market.collateralToTokenBuying(
-        ethers.utils.parseUnits(`${contribution}`, 18)
-      );
+      const tokenValue = (contribution > 0) ? 
+        await market.collateralToTokenBuying(ethers.utils.parseEther(`${contribution}`)) 
+        : 0;
       setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
     };
     fetchData();

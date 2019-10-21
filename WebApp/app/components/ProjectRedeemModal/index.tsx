@@ -45,8 +45,8 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
       const tokenValue = marketActive ? await market.rewardForBurn(
-        ethers.utils.parseUnits(`${tokenAmount}`, 18)
-      ) : (await market.poolBalance()).mul(ethers.utils.parseEther('1')).mul(tokenAmount).div(await market.totalSupply());
+        ethers.utils.parseEther(tokenAmount.toString())
+      ) : (await market.poolBalance()).mul(ethers.utils.parseEther(tokenAmount.toString())).div(await market.totalSupply());
       setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
     };
     fetchData();
