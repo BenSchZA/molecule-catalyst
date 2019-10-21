@@ -1,4 +1,4 @@
-import { createStandardAction, PayloadAC } from 'typesafe-actions';
+import { createStandardAction } from 'typesafe-actions';
 import { BigNumber } from "ethers/utils";
 import { ethers } from 'ethers';
 
@@ -29,3 +29,5 @@ export const transferAction = createStandardAction('TRANSFER')<{
   txHash: string,
   timestamp: Date
 }>();
+
+export const marketTerminatedAction = createStandardAction('TERMINATED')();

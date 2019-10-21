@@ -11,7 +11,6 @@ import { Link, Tabs, Tab, Paper, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import { Project } from 'domain/projects/types';
 import MarketHistoryChart from 'components/MarketHistoryChart';
-import { ethers } from 'ethers';
 import { colors } from 'theme';
 
 const styles = (theme: Theme) =>
@@ -161,27 +160,26 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
       </Paper>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.HISTORY}>
         <Typography className={classes.explainerText}>
-          <b>The price for project tokens changes</b> when tokens are distributed 
+          <b>The price for project tokens changes</b> when tokens are distributed&nbsp;
           for additional contributions or when contributors decide to sell the ones they own.
         </Typography>
         <Typography className={classes.explainerText}>
-          An <b>increasing</b> project token price shows that <b>contributors are confident</b>
-          about the Research Project and the fundraising campaign success. A 
-          <b>declining</b> price might indicate that the <b>contributors are starting 
+          An <b>increasing</b> project token price shows that <b>contributors are confident</b>&nbsp;
+          about the Research Project and the fundraising campaign success. A&nbsp;
+          <b>declining</b> price might indicate that the <b>contributors are starting&nbsp;
           to doubt</b> the research projectand are selling their project tokens.
         </Typography>
         <MarketHistoryChart
-          spotPrice={Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice))}
-          transactions={project.marketData.transactions} />
+          project={project} />
       </TabPanel>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.BONDING}>
           <Typography className={classes.explainerText}>
-            <b>The price of project tokens is determined</b> by the number of tokens that
+            <b>The price of project tokens is determined</b> by the number of tokens that&nbsp;
             are in circulation and and the accumulated amount of Dai in the project stake reserve.
           </Typography>
           <Typography className={classes.explainerText}>
-            Depending on this snapshot of the market below
-            <b>you can decide whether you want to buy or sell your tokens</b> and see what
+            Depending on this snapshot of the market below&nbsp;
+            <b>you can decide whether you want to buy or sell your tokens</b> and see what&nbsp;
             indications they have depending on the overall performance of the project market.
           </Typography>
         <MarketChartD3

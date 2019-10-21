@@ -37,6 +37,12 @@ const selectMarketAddress = (projectId: string) =>
     (project: Project) => project.chainData.marketAddress
   )
 
+const selectMarketActive = (projectId: string) =>
+  createSelector(
+    selectProject(projectId),
+    (project: Project) => project.marketData.active
+  )
+
 const selectDaiBalance = () =>
   createSelector(
     (state: ApplicationRootState) => state.authentication,
@@ -71,6 +77,7 @@ const selectTransactionModalContainer = (
     holdingsValue: selectHoldingsValue(projectId),
     contributionValue: selectContributionValue(projectId, userAddress),
     marketAddress: selectMarketAddress(projectId),
+    marketActive: selectMarketActive(projectId),
     txInProgress: selectTxInProgress(),
     daiBalance: selectDaiBalance(),
     taxationRate: selectTaxationRate(projectId),

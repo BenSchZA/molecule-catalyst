@@ -24,6 +24,11 @@ export const supportProject = createAsyncAction(
   ActionTypes.SUPPORT_PROJECT_SUCCESS,
   ActionTypes.SUPPORT_PROJECT_FAILURE)
   <{ projectId: string, contribution: number }, string, Error>();
+export const withdrawRedistribution = createAsyncAction(
+  ActionTypes.WITHDRAW_REDISTRIBUTION_REQUEST,
+  ActionTypes.WITHDRAW_REDISTRIBUTION_SUCCESS,
+  ActionTypes.WITHDRAW_REDISTRIBUTION_FAILURE)
+  <{ projectId: string, tokenAmount: number }, string, Error>();
 export const withdrawHoldings = createAsyncAction(
   ActionTypes.WITHDRAW_HOLDINGS_REQUEST,
   ActionTypes.WITHDRAW_HOLDINGS_SUCCESS,

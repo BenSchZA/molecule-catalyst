@@ -6,7 +6,7 @@ import { ConfigService } from 'src/config/config.service';
 import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction } from './market.actions';
+import { mintAction, burnAction, transferAction, marketTerminatedAction } from './market.actions';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
@@ -42,6 +42,7 @@ export class MarketState extends ServiceBase {
     // get all logs from latest block in DB up until the current block, and update fixture state
     if (this.stateDocument.isNew) {
       this.stateDocument.marketData = this.marketState.getState();
+      this.stateDocument.marketData.active = await this.marketContract.active();
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
     }
@@ -163,6 +164,14 @@ export class MarketState extends ServiceBase {
             timestamp: new Date((await this.ethersProvider.getBlock(event.blockNumber)).timestamp * 1000)
           })
           this.marketState.dispatch(action);
+        }
+      })
+
+    this.marketContract.on(this.marketContract.filters.MarketTerminated(),
+      async (event) => {
+        if ((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) {
+          this.logger.info(`Market terminated: ${this.marketAddress}`);
+          this.marketState.dispatch(marketTerminatedAction());
         }
       })
   }

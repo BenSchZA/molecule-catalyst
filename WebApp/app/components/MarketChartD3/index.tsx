@@ -8,7 +8,7 @@ import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
-import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import { Project } from 'domain/projects/types';
 import { ethers } from "ethers";
 import { bigNumberify } from 'ethers/utils';
 
@@ -57,7 +57,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
       // using this._rootNode as container
       // line & graph parameters
       const project = this.props.project;
-      const ended = project.status == ProjectSubmissionStatus.ended;
+      const ended = !project.marketData.active;
 
       // Flat 100% collateralized token distribution
       const scaledPrice = bigNumberify(project.chainData.marketData.poolValue).mul(1e8).div(bigNumberify(project.chainData.marketData.totalSupply).add(1)).toNumber();
@@ -73,7 +73,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
 
       // set the dimensions and margins of the graph
       let margin = {
-          top: 20,
+          top: 40,
           right: 70,
           bottom: 70,
           left: 100

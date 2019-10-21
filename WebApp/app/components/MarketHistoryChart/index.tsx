@@ -10,7 +10,7 @@ import * as d3 from "d3";
 import './d3Style.css';
 import { ethers } from 'ethers';
 import dayjs from 'dayjs';
-import { MintTX, BurnTX, TransferTX, TransactionType } from 'domain/projects/types';
+import { MintTX, BurnTX, TransactionType, Project } from 'domain/projects/types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -35,8 +35,7 @@ const styles = (theme: Theme) =>
   });
 
 interface OwnProps extends WithStyles < typeof styles > {
-  spotPrice: number;
-  transactions: Array<MintTX | BurnTX | TransferTX>;
+  project: Project;
 };
 
 class MarketHistoryChart extends React.Component<OwnProps> {
@@ -48,9 +47,12 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     if (!this._rootNode) return;
 
     const {
-      spotPrice,
-      transactions,
+      project,
     } = this.props;
+
+    const spotPrice = Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice));
+    const transactions = project.marketData.transactions;
+    const ended = !project.marketData.active;
 
     if (transactions.length === 0) return;
 
@@ -135,14 +137,16 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     }));
 
     // add data point for current price
-    data.push({
-      date: current_date,
-      first_token_price: current_price,
-      token_amount: 0,
-      dai_amount: 0,
-      type: TransactionType.TRANSFER,
-    });
-
+    if(!ended) {
+      data.push({
+        date: current_date,
+        first_token_price: current_price,
+        token_amount: 0,
+        dai_amount: 0,
+        type: TransactionType.TRANSFER,
+      });
+    }
+    
     // label boxes for data points
     let tooltipLabel = d3.select(this._rootNode)
       .append("div")

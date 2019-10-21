@@ -13,7 +13,6 @@ export function* submitCreatorApplication(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     const response = yield call(submitCreatorApplicationApi, action.payload, apiKey);
-    console.log(response.data);
     yield put(CreatorApplicationActions.submitCreatorApplication.success(response.data))
   } catch (error) {
     yield put(CreatorApplicationActions.submitCreatorApplication.failure(error));
