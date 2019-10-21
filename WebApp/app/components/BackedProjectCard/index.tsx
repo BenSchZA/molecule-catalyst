@@ -27,7 +27,6 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(1),
     },
     card: {
-      cursor: 'pointer',
       width: '1020px',
       height: '268px'
     },
@@ -157,6 +156,9 @@ interface OwnProps extends WithStyles<typeof styles> {
 const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes, openModal }: OwnProps) => {
   const [raised, setRaised] = useState(true);
 
+  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(10)) > 0;
+
   return (
     <Fragment>
       <Card
@@ -176,7 +178,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!(project.chainData && project.chainData.marketData)}>Withdraw Stake</Button>
+                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!(userHasBalance && project.chainData && project.chainData.marketData)}>Withdraw Stake</Button>
               </Grid>
             </Grid>
           }
