@@ -15,7 +15,7 @@ import saga from './saga';
 import ProjectRedeemModal from 'components/ProjectRedeemModal';
 import ProjectSupportModal from 'components/ProjectSupportModal';
 import selectTransactionModalContainer from './selectors';
-import { supportProject, withdrawHoldings } from 'domain/projects/actions';
+import { supportProject, withdrawHoldings, withdrawRedistribution } from 'domain/projects/actions';
 
 interface OwnProps {
   projectId: string,
@@ -28,6 +28,7 @@ interface OwnProps {
 interface DispatchProps {
   supportProject(projectId: string, contribution: number): void,
   withdrawHoldings(projectId: string, tokenAmount: number): void,
+  withdrawRedistribution(projectId: string, tokenAmount: number): void,
 }
 
 export interface StateProps {
@@ -35,6 +36,7 @@ export interface StateProps {
   holdingsValue: number,
   contributionValue: number,
   marketAddress: string,
+  marketActive: boolean,
   txInProgress: boolean,
   daiBalance: number,
   taxationRate: number,
@@ -50,8 +52,10 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
   holdingsValue,
   contributionValue,
   marketAddress,
+  marketActive,
   txInProgress,
   withdrawHoldings,
+  withdrawRedistribution,
   daiBalance,
   supportProject,
   projectId,
@@ -60,7 +64,7 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
   maxResearchContribution
 }) => {
   const handleSupportProject = (contributionAmount: number) => supportProject(projectId, contributionAmount);
-  const handleRedeemContribution = (tokenAmount: number) => withdrawHoldings(projectId, tokenAmount);
+  const handleRedeemContribution = (tokenAmount: number) => marketActive ? withdrawHoldings(projectId, tokenAmount) : withdrawRedistribution(projectId, tokenAmount);
 
   return (mode === 'redeem') ?
       <ProjectRedeemModal
@@ -71,7 +75,8 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
         contributionValue={contributionValue}
         txInProgress={txInProgress}
         redeemHoldings={handleRedeemContribution}
-        marketAddress={marketAddress} /> :
+        marketAddress={marketAddress}
+        marketActive={marketActive} /> :
       <ProjectSupportModal
         closeModal={handleClose}
         modalState={modalState}
@@ -91,7 +96,8 @@ const mapDispatchToProps = (
 ): DispatchProps => {
   return {
     supportProject: (projectId: string, contribution: number) => dispatch(supportProject.request({ projectId: projectId, contribution: contribution })),
-    withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount }))
+    withdrawHoldings: (projectId: string, tokenAmount: number) => dispatch(withdrawHoldings.request({ projectId: projectId, tokenAmount: tokenAmount })),
+    withdrawRedistribution: (projectId: string, tokenAmount: number) => dispatch(withdrawRedistribution.request({ projectId: projectId, tokenAmount: tokenAmount })),
   };
 };
 

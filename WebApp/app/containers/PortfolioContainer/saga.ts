@@ -6,12 +6,17 @@ import { getType } from "typesafe-actions";
 
 function* withdrawTxWatcher() {
   while (true) {
-    yield take(getType(ProjectActions.withdrawHoldings.request));
+    yield take([
+      getType(ProjectActions.withdrawHoldings.request),
+      getType(ProjectActions.withdrawRedistribution.request),
+    ]);
 
     yield put(PortfolioActions.setTxInProgress(true));
     yield take([
       getType(ProjectActions.withdrawHoldings.success),
       getType(ProjectActions.withdrawHoldings.failure),
+      getType(ProjectActions.withdrawRedistribution.success),
+      getType(ProjectActions.withdrawRedistribution.failure),
     ])
     yield put(PortfolioActions.setTxInProgress(false));
   }

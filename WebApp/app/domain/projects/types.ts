@@ -72,6 +72,7 @@ interface ChainData {
 }
 
 interface MarketData {
+  active: boolean,
   lastBlockUpdated: number,
   totalMinted: BigNumber,
   netCost: Map<string, BigNumber>,

@@ -22,6 +22,7 @@ interface Props extends WithStyles<typeof styles> {
   tokenBalance: number,
   redeemHoldings(tokenAmount: number): void;
   marketAddress: string;
+  marketActive: boolean;
 }
 
 const ProjectRedeemModal: React.FunctionComponent<Props> = ({
@@ -33,6 +34,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   txInProgress,
   redeemHoldings,
   marketAddress,
+  marketActive,
   tokenBalance,
 }: Props) => {
   const [tokenAmount, setTokenAmount] = useState(0);
@@ -45,10 +47,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = await market.rewardForBurn(
+      const tokenValue = marketActive ? await market.rewardForBurn(
         ethers.utils.parseUnits(`${debouncedTokenAmount}`, 18)
-      );
-      setDaiAmount(Number(ethers.utils.formatEther(tokenValue)))
+      ) : (await market.poolBalance()).mul(ethers.utils.parseEther('1')).mul(debouncedTokenAmount).div(await market.totalSupply());
+      setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
     };
     debouncedTokenAmount && fetchData();
   }, [debouncedTokenAmount]);

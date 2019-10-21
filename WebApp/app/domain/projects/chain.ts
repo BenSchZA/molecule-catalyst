@@ -5,7 +5,7 @@ import { MarketDataLegacy, PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "@panterazar/ethers/utils";
 
-export async function getProjectTokenDetails(marketAddress: string) {
+export async function getProjectTokenDetails(marketActive: boolean, marketAddress: string) {
   try {
     // Get blockchain objects
     const { provider, signerAddress } = await getBlockchainObjects();
@@ -18,8 +18,8 @@ export async function getProjectTokenDetails(marketAddress: string) {
     const totalSupply: BigNumber = await market.totalSupply();
     const decimals: BigNumber = await market.decimals();
     const taxationRate: BigNumber = await market.taxationRate();
-    const tokenPrice: BigNumber = await market.priceToMint(ethers.utils.parseEther('1'));
-    const poolValue: BigNumber = await market.rewardForBurn(totalSupply);
+    const tokenPrice: BigNumber = marketActive ? await market.priceToMint(ethers.utils.parseEther('1')) : 0;
+    const poolValue: BigNumber = await market.poolBalance();
     const holdingsValue: BigNumber = await market.rewardForBurn(balance);
     
     const result: MarketDataLegacy = {
@@ -115,6 +115,37 @@ export async function burn(marketAddress: string, tokenAmount: number) {
 
   // Burn all tokens
   const txReceipt = await market.burn(
+    ethers.utils.parseUnits(tokenAmount.toString(), 18),
+    { gasPrice: await getGasPrice() }
+  );
+  const txResult = await (txReceipt).wait();
+
+  // Parse event logs
+  // event Transfer(address indexed from, address indexed to, uint value);
+  let parsedLogs = txResult.logs
+    .map(log => market.interface.parseLog(log))
+    .filter(parsedLog => parsedLog != null);
+  let targetLog = parsedLogs
+    .filter(log => log.signature == market.interface.events.Transfer.signature)
+    .filter(parsedEvent => parsedEvent.values.to == signerAddress)[0];
+
+  return {
+    from: targetLog.values.from,
+    to: targetLog.values.to,
+    value: targetLog.values.value._hex,
+  }
+}
+
+export async function withdraw(marketAddress: string, tokenAmount: number) {
+  // Get blockchain objects
+  const { signer } = await getBlockchainObjects();
+  const signerAddress = await signer.getAddress();
+
+  // Get contract instances
+  const market = await new ethers.Contract(marketAddress, IMarket, signer);
+
+  // Burn all tokens
+  const txReceipt = await market.withdraw(
     ethers.utils.parseUnits(tokenAmount.toString(), 18),
     { gasPrice: await getGasPrice() }
   );
