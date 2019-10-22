@@ -10,6 +10,8 @@ import { mintAction, burnAction, transferAction, marketTerminatedAction } from '
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
+import { ProjectGateway } from 'src/projectSocket/project.gateway';
+import { Inject } from '@nestjs/common';
 
 
 export class MarketState extends ServiceBase {
@@ -21,7 +23,8 @@ export class MarketState extends ServiceBase {
     private readonly marketAddress: string,
     private readonly stateDocument: MarketDocument,
     private readonly ethersProvider: Provider,
-    private readonly config: ConfigService) {
+    private readonly config: ConfigService,
+    private readonly marketEmitter) {
     super(`${MarketState.name}-${marketAddress}`);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     this.marketContract = new Contract(this.marketAddress, IMarket, this.ethersProvider).connect(serverAccountWallet);
@@ -33,6 +36,7 @@ export class MarketState extends ServiceBase {
       this.stateDocument.marketData = this.marketState.getState();
       this.stateDocument.markModified('marketData');
       this.stateDocument.save();
+      this.marketEmitter.emit('marketUpdated', marketAddress)
     }, 1000));
 
     this.startListening()
