@@ -3,13 +3,11 @@ import { WithStyles, Typography, Paper, TextField, InputAdornment, Avatar, Dialo
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import { withStyles } from '@material-ui/styles';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import Blockies from 'react-blockies';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 import { getBlockchainObjects } from 'blockchainResources';
-import useDebounce from 'utils/useDebounce';
-
 import { NegativeButton, PositiveButton } from 'components/custom';
 import DaiIcon from 'components/DaiIcon/Loadable';
 import styles from './styles';
@@ -39,20 +37,22 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const [contribution, setContribution] = useState(0);
   const [projectTokenAmount, setProjectTokenAmount] = useState(0);
 
-  const debouncedContribution = useDebounce(contribution, 100);
-
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = await market.collateralToTokenBuying(
-        ethers.utils.parseUnits(`${debouncedContribution}`, 18)
-      );
+      const tokenValue = (contribution > 0) ? 
+        await market.collateralToTokenBuying(ethers.utils.parseEther(`${contribution}`)) 
+        : 0;
       setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
     };
-    debouncedContribution && fetchData();
-  }, [debouncedContribution]);
+    fetchData();
+    return () => {
+      controller.abort();
+    }
+  }, [contribution]);
 
   const displayPrecision = 2;
   const toResearcher = Number((contribution * contributionRate / 100).toFixed(displayPrecision));

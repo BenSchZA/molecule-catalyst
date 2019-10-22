@@ -1,5 +1,6 @@
 import { createStandardAction } from 'typesafe-actions';
-import { BigNumber } from "@panterazar/ethers/utils";
+import { BigNumber } from "ethers/utils";
+import { ethers } from 'ethers';
 
 export const mintAction = createStandardAction('MINT')<{
   userAddress: string,

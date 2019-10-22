@@ -9,9 +9,8 @@ import { PositiveButton, NegativeButton } from '../custom';
 import styles from './styles';
 import MoleculeSpinner from 'components/MoleculeSpinner';
 import DaiIcon from 'components/DaiIcon/Loadable';
-import useDebounce from 'utils/useDebounce';
 import { getBlockchainObjects } from 'blockchainResources';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -29,7 +28,6 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   classes,
   modalState,
   closeModal,
-  holdingsValue,
   contributionValue,
   txInProgress,
   redeemHoldings,
@@ -40,20 +38,23 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const [tokenAmount, setTokenAmount] = useState(0);
   const [daiAmount, setDaiAmount] = useState(0);
 
-  const debouncedTokenAmount = useDebounce(tokenAmount, 100);
-
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
       const tokenValue = marketActive ? await market.rewardForBurn(
-        ethers.utils.parseUnits(`${debouncedTokenAmount}`, 18)
-      ) : (await market.poolBalance()).mul(ethers.utils.parseEther('1')).mul(debouncedTokenAmount).div(await market.totalSupply());
+        ethers.utils.parseEther(tokenAmount.toString())
+      ) : (await market.poolBalance()).mul(ethers.utils.parseEther(tokenAmount.toString())).div(await market.totalSupply());
       setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
     };
-    debouncedTokenAmount && fetchData();
-  }, [debouncedTokenAmount]);
+    fetchData();
+
+    return () => {
+      controller.abort();
+    }
+  }, [tokenAmount]);
 
   const validateTokenAmount = (value: string) => {
     if (value === '') {
@@ -65,8 +66,11 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     !isNaN(newValue) && setTokenAmount(newValue);
   }
   const displayPrecision = 2;
-  const valueChange = contributionValue > 0 ?
-    Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+  // const valueChange = contributionValue > 0 ?
+  //   Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+
+  const selectionValueChange = daiAmount > 0 ? 
+    Number((daiAmount - (contributionValue * tokenAmount / tokenBalance)) / (contributionValue * tokenAmount / tokenBalance) * 100).toFixed(displayPrecision) : 0;
 
   const resetModalState = () => {
     setTokenAmount(0);
@@ -140,7 +144,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </div>
         </section>
         <Typography className={classes.assetPerformance}>
-          {valueChange} %
+          {selectionValueChange} %
         </Typography>
         <Typography className={classes.modalText}>
           Change % since initial contribution

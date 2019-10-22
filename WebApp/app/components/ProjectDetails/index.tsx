@@ -27,14 +27,14 @@ import {
   FundingState,
 } from 'domain/projects/types';
 import { Face } from '@material-ui/icons';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import dayjs, { Dayjs } from 'dayjs';
 import ReactMarkdown from "react-markdown";
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
 import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
-import { bigNumberify } from '@panterazar/ethers/utils';
+import { bigNumberify } from 'ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
 
 interface OwnProps extends WithStyles<typeof styles> {

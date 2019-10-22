@@ -1,4 +1,4 @@
-import { ethers } from "@panterazar/ethers";
+import { ethers } from "ethers";
 import { ERC20Detailed } from "@molecule-protocol/catalyst-contracts";
 import { getBlockchainObjects } from "blockchainResources";
 

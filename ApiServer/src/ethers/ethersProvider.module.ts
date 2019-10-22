@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { Modules } from '../app.constants';
-import { ethers } from '@panterazar/ethers';
+import { ethers } from 'ethers';
 import { env } from '../config/env';
 
 const ethersProviderService = {

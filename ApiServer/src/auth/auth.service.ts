@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { ethers, Wallet } from '@panterazar/ethers';
+import { ethers, Wallet } from 'ethers';
 import { ConfigService } from 'src/config/config.service';
 import { UserType, User } from 'src/user/user.schema';
 import { ServiceBase } from 'src/common/serviceBase';

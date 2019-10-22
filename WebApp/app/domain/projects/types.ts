@@ -1,7 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
-import { BigNumber } from '@panterazar/ethers/utils';
+import { BigNumber } from 'ethers/utils';
 
 enum ProjectSubmissionStatus {
   created,
