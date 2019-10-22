@@ -54,7 +54,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     const transactions = project.marketData.transactions;
     const ended = !project.marketData.active;
 
-    if (transactions.length === 0) return;
+    // if (transactions.length === 0) return;
 
     const cleanTransactions = transactions.map(value => {
       switch (value.txType) {
@@ -109,6 +109,18 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     let formatNumber = d3.format(",.5f");
     let formatTokens = d3.format(",.2f");
 
+    if(!marketHistory.length) {
+      marketHistory.push({
+        timestamp: dayjs(project.vaultData.phases[0].startDate).unix(),
+        firstTokenPrice: Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice)),
+        tokenAmount: 0,
+        daiAmount: 0,
+        type: TransactionType.TRANSFER,
+        transactionHash: '',
+        blockNumber:  0,
+      })
+    }
+
     // market variables
     let market_creation_date = parseEpoch(marketHistory[0].timestamp),
       initial_price = marketHistory[0].firstTokenPrice,
@@ -159,7 +171,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       .range([0, width]);
 
     let yscale = d3.scaleLinear()
-      .domain([0, d3.max(data, function(d) { return d.first_token_price; })])
+      .domain([0, d3.max(data, function(d) { return d.first_token_price*1.5; })])
       .range([height, 0]);
 
     // line generator
