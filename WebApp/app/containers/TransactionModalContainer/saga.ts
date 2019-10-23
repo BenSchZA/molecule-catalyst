@@ -22,7 +22,7 @@ function* txWatcher() {
     ]);
 
     yield put(setTxInProgress(false));
-    yield put(getProjects());
+    // yield put(getProjects());
   }
 }
 

@@ -13,10 +13,9 @@ import ProjectDetails from 'components/ProjectDetails';
 import { Project } from 'domain/projects/types';
 import { ApplicationRootState } from 'types';
 import { makeSelectIsLoggedIn } from 'domain/authentication/selectors';
-import { getProjects } from 'domain/projects/actions';
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
-import { RESTART_ON_REMOUNT } from 'utils/constants';
+import { RESTART_ON_REMOUNT, DAEMON } from 'utils/constants';
 interface RouteParams {
   projectId: string;
 }
@@ -25,7 +24,6 @@ interface OwnProps extends RouteComponentProps<RouteParams>,
   React.Props<RouteParams> { }
 
 interface DispatchProps {
-  getProjects(): void;
 }
 
 interface StateProps {
@@ -36,7 +34,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn, getProjects }: Props) => {
+const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn }: Props) => {
   
   return (
     <ProjectDetails
@@ -58,14 +56,13 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  getProjects: () => dispatch(getProjects()),
 });
 
 
 const withSaga = injectSaga<OwnProps>({
   key: 'projectDetailsContainer',
   saga: saga,
-  mode: RESTART_ON_REMOUNT
+  mode: DAEMON
 });
 
 const withConnect = connect(

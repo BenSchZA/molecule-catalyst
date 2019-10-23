@@ -7,17 +7,21 @@ import { normalize } from "normalizr";
 import projects from './schema';
 import * as ProjectActions from './actions';
 import * as NotificationActions from '../notification/actions';
-import { select, call, all, put, takeLatest, fork } from 'redux-saga/effects';
+import { select, call, all, put, takeLatest, fork, take } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
 import { getProjectTokenDetails, mint, burn, withdrawAvailable, withdraw } from './chain';
 import { Project, MarketDataLegacy } from './types';
-import { 
+import {
   launchProject as launchProjectAPI,
   addResearchUpdate as addResearchUpdateAPI,
 } from '../../api';
 import { forwardTo } from 'utils/history';
+import { eventChannel } from 'redux-saga';
+import io from 'socket.io-client';
+import apiUrlBuilder from 'api/apiUrlBuilder';
 
+let socket;
 
 export function* getAllProjects() {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
@@ -54,11 +58,11 @@ export function* launchProject(action) {
 }
 
 export function* supportProject(action) {
-  const {projectId, contribution} = action.payload;
+  const { projectId, contribution } = action.payload;
 
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+  if (project.chainData.index < 0 || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }
@@ -67,28 +71,30 @@ export function* supportProject(action) {
     yield call(mint, project.chainData.marketAddress, contribution);
     yield put(ProjectActions.supportProject.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Successfully funded project', 
-      options: { 
+      message: 'Successfully funded project',
+      options: {
         variant: 'success'
-      }}
+      }
+    }
     ));
   } catch (error) {
     yield put(ProjectActions.supportProject.failure(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'The transaction was not successful', 
-      options: { 
+      message: 'The transaction was not successful',
+      options: {
         variant: 'error'
-      }}
+      }
+    }
     ));
     console.log(error);
   }
 }
 
 export function* withdrawRedistribution(action) {
-  const {projectId, tokenAmount} = action.payload;
+  const { projectId, tokenAmount } = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+  if (project.chainData.index < 0 || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }
@@ -97,28 +103,30 @@ export function* withdrawRedistribution(action) {
     yield call(withdraw, project.chainData.marketAddress, tokenAmount);
     yield put(ProjectActions.withdrawRedistribution.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Successfully withdrew redistribution', 
-      options: { 
+      message: 'Successfully withdrew redistribution',
+      options: {
         variant: 'success',
-      }}
+      }
+    }
     ));
   } catch (error) {
     yield put(ProjectActions.withdrawRedistribution.failure(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Error withdrawing redistribution', 
-      options: { 
+      message: 'Error withdrawing redistribution',
+      options: {
         variant: 'error'
-      }}
+      }
+    }
     ));
     console.log(error);
   }
 }
 
 export function* withdrawHoldings(action) {
-  const {projectId, tokenAmount} = action.payload;
+  const { projectId, tokenAmount } = action.payload;
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
-  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+  if (project.chainData.index < 0 || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }
@@ -127,18 +135,20 @@ export function* withdrawHoldings(action) {
     yield call(burn, project.chainData.marketAddress, tokenAmount);
     yield put(ProjectActions.withdrawHoldings.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Successfully withdrew holdings', 
-      options: { 
+      message: 'Successfully withdrew holdings',
+      options: {
         variant: 'success',
-      }}
+      }
+    }
     ));
   } catch (error) {
     yield put(ProjectActions.withdrawHoldings.failure(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Error withdrawing holdings', 
-      options: { 
+      message: 'Error withdrawing holdings',
+      options: {
         variant: 'error'
-      }}
+      }
+    }
     ));
     console.log(error);
   }
@@ -152,18 +162,20 @@ export function* withdrawFunding(action) {
     yield call(withdrawAvailable, project.chainData.vaultAddress, project.vaultData.phases);
     yield put(ProjectActions.withdrawFunding.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Successfully withdrew funding', 
-      options: { 
+      message: 'Successfully withdrew funding',
+      options: {
         variant: 'success',
-      }}
+      }
+    }
     ));
   } catch (error) {
     yield put(ProjectActions.withdrawFunding.failure(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Error withdrawing holdings', 
-      options: { 
+      message: 'Error withdrawing holdings',
+      options: {
         variant: 'error'
-      }}
+      }
+    }
     ));
     console.log(error);
   }
@@ -171,8 +183,8 @@ export function* withdrawFunding(action) {
 
 export function* getMarketData(projectId) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
-  
-  if(project.chainData.index < 0 || project.chainData.marketAddress == "0x") { 
+
+  if (project.chainData.index < 0 || project.chainData.marketAddress == "0x") {
     console.log("Invalid project blockchain data");
     return;
   }
@@ -202,15 +214,41 @@ export function* addResearchUpdate(action) {
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
     yield call(addResearchUpdateAPI, projectId, update, apiKey);
     yield put(ProjectActions.addResearchUpdate.success());
-    yield put(NotificationActions.enqueueSnackbar({message: 'Update successfully added', options: { variant: 'success' }}))
+    yield put(NotificationActions.enqueueSnackbar({ message: 'Update successfully added', options: { variant: 'success' } }))
     // yield call(forwardTo, '/admin/projects');
   } catch (error) {
     put(ProjectActions.addResearchUpdate.failure(error));
-    put(NotificationActions.enqueueSnackbar({message: 'Something went wrong. Please contact the admin', options: { variant: 'error' }}))
+    put(NotificationActions.enqueueSnackbar({ message: 'Something went wrong. Please contact the admin', options: { variant: 'error' } }))
+  }
+}
+
+const connect = async () => {
+  socket = io(apiUrlBuilder.websocket);
+  return new Promise((resolve) => {
+    socket.on('connect', () => {
+      resolve(socket);
+    });
+  });
+};
+
+const createSocketEventChannel = socket => eventChannel((emit) => {
+  socket.on('project', (data) => {
+    emit({ type: 'projectUpdated', value: data })
+  })
+  return () => { };
+});
+
+export function* websocket() {
+  const socket = yield call(connect);
+  const socketChannel = yield call(createSocketEventChannel, socket);
+  while (true) {
+    const payload = yield take(socketChannel);
+    yield put(ProjectActions.addProject(payload.value));
   }
 }
 
 export default function* root() {
+  yield fork(websocket);
   yield takeLatest(getType(ProjectActions.getAllProjects), getAllProjects);
   yield takeLatest(getType(ProjectActions.getMyProjects), getMyProjects);
   yield takeLatest(getType(ProjectActions.getProjects), getProjects);

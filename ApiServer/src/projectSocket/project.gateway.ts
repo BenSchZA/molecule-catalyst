@@ -1,4 +1,4 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, OnGatewayConnection } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ServiceBase } from 'src/common/serviceBase';
 import { ProjectService } from 'src/project/project.service';
@@ -16,7 +16,7 @@ export class ProjectGateway extends ServiceBase implements OnGatewayConnection {
   async handleConnection(client: Socket, ...args: any[]) {
     this.logger.info(`Client connected`);
     const projects = await this.projectService.getProjects();
-    client.emit('message', projects)
+    client.emit('projects', projects)
   }
 
   public async broadcastUpdatedProject(marketAddress: string) {
@@ -25,6 +25,6 @@ export class ProjectGateway extends ServiceBase implements OnGatewayConnection {
       this.logger.warn(`Project with market address ${marketAddress} does not exist.`);
       return;
     }
-    this.server.emit('message', project);
+    this.server.emit('project', project);
   }
 }
