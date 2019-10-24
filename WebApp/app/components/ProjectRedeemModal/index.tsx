@@ -38,21 +38,21 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const [daiAmount, setDaiAmount] = useState(0);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
     const fetchData = async () => {
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = marketActive ? 
-        await market.rewardForBurn(ethers.utils.parseEther(tokenAmount.toString())) : 
+      const tokenValue = marketActive ?
+        await market.rewardForBurn(ethers.utils.parseEther(tokenAmount.toString())) :
         (await market.poolBalance()).mul(ethers.utils.parseEther(tokenAmount.toString())).div(await market.totalSupply());
-      setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
+      if (!cancelled) {
+        setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
+      }
     };
     fetchData();
 
-    return () => {
-      controller.abort();
-    }
+    return () => {cancelled = true}
   }, [tokenAmount]);
 
   const validateTokenAmount = (value: string) => {
@@ -67,7 +67,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const displayPrecision = 2;
 
 
-  const selectionValueChange = daiAmount > 0 ? 
+  const selectionValueChange = daiAmount > 0 ?
     Number((daiAmount - (contributionValue * tokenAmount / tokenBalance)) / (contributionValue * tokenAmount / tokenBalance) * 100).toFixed(displayPrecision) : 0;
 
   const resetModalState = () => {
@@ -158,13 +158,13 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
         <div className={classes.buttons}>
-          <NegativeButton 
-            disabled={txInProgress} 
+          <NegativeButton
+            disabled={txInProgress}
             onClick={resetModalState}>
             Cancel
           </NegativeButton>
-          <PositiveButton 
-            disabled={txInProgress} 
+          <PositiveButton
+            disabled={txInProgress}
             onClick={() => redeemHoldings(tokenAmount)}>
             Withdraw
           </PositiveButton>

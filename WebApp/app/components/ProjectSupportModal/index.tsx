@@ -38,20 +38,20 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const [projectTokenAmount, setProjectTokenAmount] = useState(0);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
     const fetchData = async () => {
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = (contribution > 0) ? 
-        await market.collateralToTokenBuying(ethers.utils.parseEther(`${contribution}`)) 
+      const tokenValue = (contribution > 0) ?
+        await market.collateralToTokenBuying(ethers.utils.parseEther(`${contribution}`))
         : 0;
-      setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
+      if (!cancelled) {
+        setProjectTokenAmount(Number(ethers.utils.formatUnits(tokenValue, 18)))
+      }
     };
     fetchData();
-    return () => {
-      controller.abort();
-    }
+    return () => {cancelled = true}
   }, [contribution]);
 
   const displayPrecision = 2;
@@ -164,8 +164,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
         </Typography>
         <div className={classes.buttons}>
-          <NegativeButton 
-            disabled={txInProgress} 
+          <NegativeButton
+            disabled={txInProgress}
             onClick={resetModalState}>
             Cancel
           </NegativeButton>

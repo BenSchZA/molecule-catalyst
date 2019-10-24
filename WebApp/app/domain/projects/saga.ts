@@ -4,7 +4,7 @@ import {
   getMyProjects as getMyProjectsApi,
 } from 'api';
 import { normalize } from "normalizr";
-import projects from './schema';
+import projects, { project } from './schema';
 import * as ProjectActions from './actions';
 import * as NotificationActions from '../notification/actions';
 import { select, call, all, put, takeLatest, fork, take } from 'redux-saga/effects';
@@ -218,6 +218,9 @@ const createSocketEventChannel = socket => eventChannel((emit) => {
   socket.on('project', (data) => {
     emit({ type: 'projectUpdated', value: data })
   })
+  socket.on('projects', (data) => {
+    emit({ type: 'projects', value: data })
+  })
   return () => { };
 });
 
@@ -226,7 +229,13 @@ export function* websocket() {
   const socketChannel = yield call(createSocketEventChannel, socket);
   while (true) {
     const payload = yield take(socketChannel);
-    yield put(ProjectActions.addProject(payload.value));
+    if (payload.type === 'projectUpdated') {
+      const normalised = normalize(payload.value, project);
+      yield put(ProjectActions.addProject(normalised.entities.projects[normalised.result]));
+    } else {
+      const normalised = normalize(payload.value, projects);
+      yield all(normalised.result.map(projectId => put(ProjectActions.addProject(normalised.entities.projects[projectId]))));
+    }
   }
 }
 
@@ -234,7 +243,6 @@ export default function* root() {
   yield fork(websocket);
   yield takeLatest(getType(ProjectActions.getAllProjects), getAllProjects);
   yield takeLatest(getType(ProjectActions.getMyProjects), getMyProjects);
-  yield takeLatest(getType(ProjectActions.getProjects), getProjects);
   yield takeLatest(getType(ProjectActions.launchProject.request), launchProject);
   yield takeLatest(getType(ProjectActions.supportProject.request), supportProject);
   yield takeLatest(getType(ProjectActions.withdrawHoldings.request), withdrawHoldings);
