@@ -6,12 +6,14 @@ import { selectProject } from 'domain/projects/selectors';
 import { Project } from 'domain/projects/types';
 import { ethers } from 'ethers';
 
+const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals)*value)/Math.pow(10, decimals);
+
 const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
       return (project?.marketData?.balances?.[userAddress]) ?
-        Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress]))
+        truncate(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])), 15)
         : 0
     })
 
