@@ -65,7 +65,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       setProjectTokenAmount(0);
       return;
     }
-    const newValue = parseFloat(value);
+    const newValue = Math.min(maxProjectContribution, parseFloat(value));
     !isNaN(newValue) && setContribution(newValue);
   }
 
@@ -98,8 +98,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <TextField
           autoFocus
           type='number'
-          error={(maxProjectContribution < contribution) ? true : false}
-          helperText={(maxProjectContribution < contribution) && `Contribution should not be greater than ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
+          error={maxProjectContribution <= contribution}
+          helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution.toString(10)}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}

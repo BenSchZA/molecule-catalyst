@@ -37,6 +37,8 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const [tokenAmount, setTokenAmount] = useState(0);
   const [daiAmount, setDaiAmount] = useState(0);
 
+  const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals)*value)/Math.pow(10, decimals);
+
   useEffect(() => {
     let cancelled = false;
     const fetchData = async () => {
@@ -55,6 +57,11 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     return () => {cancelled = true}
   }, [tokenAmount]);
 
+  const handleSetTokenAmount = (value: number) => { 
+    setTokenAmount(truncate(value, 9))
+    console.log(tokenAmount);
+  };
+
   const validateTokenAmount = (value: string) => {
     if (value === '') {
       setTokenAmount(0);
@@ -62,7 +69,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
       return;
     }
     const newValue = parseFloat(value);
-    !isNaN(newValue) && setTokenAmount(newValue);
+    !isNaN(newValue) && handleSetTokenAmount(newValue);
   }
   const displayPrecision = 2;
 
@@ -93,7 +100,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Avatar className={classes.blockie}>
           <Blockies seed={marketAddress || '0x'} size={15} />
         </Avatar>
-        <Typography className={classes.tokenBalance} onClick={() => setTokenAmount(tokenBalance)}>
+        <Typography className={classes.tokenBalance} onClick={() => handleSetTokenAmount(tokenBalance)}>
           {tokenBalance ? tokenBalance.toFixed(displayPrecision) : 0}
         </Typography>
         <Typography className={classes.modalText}>
