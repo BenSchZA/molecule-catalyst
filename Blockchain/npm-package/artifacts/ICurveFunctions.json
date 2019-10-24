@@ -3,7 +3,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "x_t",
+        "name": "_x",
         "type": "uint256"
       }
     ],
@@ -22,7 +22,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "x_d",
+        "name": "_x",
         "type": "uint256"
       }
     ],
