@@ -15,7 +15,7 @@ import { ApplicationRootState } from 'types';
 import { makeSelectIsLoggedIn } from 'domain/authentication/selectors';
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
-import { RESTART_ON_REMOUNT, DAEMON } from 'utils/constants';
+import { RESTART_ON_REMOUNT } from 'utils/constants';
 interface RouteParams {
   projectId: string;
 }
@@ -62,7 +62,7 @@ const mapDispatchToProps = (
 const withSaga = injectSaga<OwnProps>({
   key: 'projectDetailsContainer',
   saga: saga,
-  mode: DAEMON
+  mode: RESTART_ON_REMOUNT
 });
 
 const withConnect = connect(

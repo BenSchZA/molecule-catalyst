@@ -10,8 +10,8 @@ import * as NotificationActions from '../notification/actions';
 import { select, call, all, put, takeLatest, fork, take } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { getType } from 'typesafe-actions';
-import { getProjectTokenDetails, mint, burn, withdrawAvailable, withdraw } from './chain';
-import { Project, MarketDataLegacy } from './types';
+import { mint, burn, withdrawAvailable, withdraw } from './chain';
+import { Project } from './types';
 import {
   launchProject as launchProjectAPI,
   addResearchUpdate as addResearchUpdateAPI,
@@ -181,28 +181,11 @@ export function* withdrawFunding(action) {
   }
 }
 
-export function* getMarketData(projectId) {
-  const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
-
-  if (project.chainData.index < 0 || project.chainData.marketAddress == "0x") {
-    console.log("Invalid project blockchain data");
-    return;
-  }
-
-  try {
-    const marketData: MarketDataLegacy = yield call(getProjectTokenDetails, project.marketData.active, project.chainData.marketAddress);
-    yield put(ProjectActions.setMarketData({ projectId: projectId, marketData: marketData }));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export function* getProjects() {
   try {
     const result = yield call(getProjectsApi);
     const normalised = normalize(result.data, projects);
     yield all(normalised.result.map(projectId => put(ProjectActions.addProject(normalised.entities.projects[projectId]))));
-    yield all(normalised.result.map(projectId => fork(getMarketData, projectId)));
   } catch (error) {
     console.log(error);
   }

@@ -50,7 +50,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       project,
     } = this.props;
 
-    const spotPrice = Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice));
+    const spotPrice = Number(ethers.utils.formatEther(project.marketData.tokenPrice));
     const transactions = project.marketData.transactions;
     const ended = !project.marketData.active;
 

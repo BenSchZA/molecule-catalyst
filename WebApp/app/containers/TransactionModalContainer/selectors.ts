@@ -10,16 +10,8 @@ const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      return (project?.marketData?.balances?.[userAddress]) ?
-        Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress]))
-        : 0
+      return Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress] || 0))
     })
-
-const selectHoldingsValue = (projectId: string) =>
-  createSelector(
-    selectProject(projectId),
-    (project: Project) => Number(ethers.utils.formatEther(project?.chainData?.marketData?.holdingsValue)) || 0
-  )
 
 const selectContributionValue = (projectId: string, userAddress: string) =>
   createSelector(
@@ -52,7 +44,7 @@ const selectDaiBalance = () =>
 const selectTaxationRate = (projectId: string) =>
   createSelector(
     selectProject(projectId),
-    (project: Project) => project.chainData.marketData.taxationRate,
+    (project: Project) => project.marketData.taxationRate,
   )
 
 const selectMaxResearchContribution = (projectId: string) =>
@@ -74,7 +66,6 @@ const selectTransactionModalContainer = (
   userAddress: string) => {
   return createStructuredSelector<RootState, StateProps>({
     tokenBalance: selectTokenBalance(projectId, userAddress),
-    holdingsValue: selectHoldingsValue(projectId),
     contributionValue: selectContributionValue(projectId, userAddress),
     marketAddress: selectMarketAddress(projectId),
     marketActive: selectMarketActive(projectId),

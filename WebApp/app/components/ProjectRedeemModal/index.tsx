@@ -15,7 +15,6 @@ import { ethers } from 'ethers';
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
   closeModal(): void,
-  holdingsValue: number,
   contributionValue: number,
   txInProgress: boolean,
   tokenBalance: number,
@@ -44,9 +43,9 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = marketActive ? await market.rewardForBurn(
-        ethers.utils.parseEther(tokenAmount.toString())
-      ) : (await market.poolBalance()).mul(ethers.utils.parseEther(tokenAmount.toString())).div(await market.totalSupply());
+      const tokenValue = marketActive ? 
+        await market.rewardForBurn(ethers.utils.parseEther(tokenAmount.toString())) : 
+        (await market.poolBalance()).mul(ethers.utils.parseEther(tokenAmount.toString())).div(await market.totalSupply());
       setDaiAmount(Number(ethers.utils.formatEther(tokenValue)));
     };
     fetchData();
@@ -66,8 +65,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     !isNaN(newValue) && setTokenAmount(newValue);
   }
   const displayPrecision = 2;
-  // const valueChange = contributionValue > 0 ?
-  //   Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
+
 
   const selectionValueChange = daiAmount > 0 ? 
     Number((daiAmount - (contributionValue * tokenAmount / tokenBalance)) / (contributionValue * tokenAmount / tokenBalance) * 100).toFixed(displayPrecision) : 0;
