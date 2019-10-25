@@ -1373,10 +1373,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@molecule-protocol/catalyst-contracts@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.12.tgz#aef972ad52651f29603ba4105b0d312e29ae74f0"
-  integrity sha512-ZzYcAzGCkQ0BxsUw9W0T4ECCLKkPkgzQ8/Lxrft0+KRL3euK6PJkmjqkI8i1NqVGcKS/Pp9HFueI4GxUEfAKTw==
+"@molecule-protocol/catalyst-contracts@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.13.tgz#92ea6fc4c7b1f6b8d2d26b5dce844484e25a03bf"
+  integrity sha512-HRM30RIXMTYh+2OMvlGgx4xfl6ZL40NwSCnH/p3+IcasOSI1LHMfr7U07mLAJon1MGrvx0JIQKXvy0LFUIbe+A==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -20433,7 +20433,6 @@ websocket@1.0.29:
   dependencies:
     debug "^2.2.0"
     es5-ext "^0.10.50"
-    gulp "^4.0.2"
     nan "^2.14.0"
     typedarray-to-buffer "^3.1.5"
     yaeti "^0.0.6"
