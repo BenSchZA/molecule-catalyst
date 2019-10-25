@@ -59,7 +59,6 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
 
   const handleSetTokenAmount = (value: number) => { 
     setTokenAmount(truncate(value, 9))
-    console.log(tokenAmount);
   };
 
   const validateTokenAmount = (value: string) => {

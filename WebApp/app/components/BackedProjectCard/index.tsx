@@ -12,6 +12,7 @@ import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
 import { getBlockchainObjects } from 'blockchainResources';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
+import { bigNumberify } from 'ethers/utils';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -166,7 +167,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
 
       const tokenValue = project.marketData.active ? 
         await market.rewardForBurn(project.marketData.balances?.[userAddress] || 0) : 
-        project.marketData.poolValue.mul(project.marketData.balances?.[userAddress] || 0).div(project.marketData.totalSupply);
+        bigNumberify(project.marketData.poolValue).mul(project.marketData.balances?.[userAddress] || 0).div(project.marketData.totalSupply);
       setHoldingsValue(Number(ethers.utils.formatEther(tokenValue)));
     };
     fetchData();
