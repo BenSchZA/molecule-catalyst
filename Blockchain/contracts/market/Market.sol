@@ -282,8 +282,8 @@ contract Market is IMarket, IERC20 {
             "Dai transfer failed"
         );
 
-        emit Transfer(msg.sender, address(0), _numTokens);
-        emit Burn(msg.sender, _numTokens, reward);
+        emit Transfer(msg.sender, address(0), _amount);
+        emit Burn(msg.sender, _amount, daiToTransfer);
     }
 
     /**
