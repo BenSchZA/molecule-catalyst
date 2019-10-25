@@ -158,7 +158,7 @@
         "type": "uint256"
       }
     ],
-    "name": "reactivateCurve",
+    "name": "deactivateCurve",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -172,7 +172,7 @@
         "type": "uint256"
       }
     ],
-    "name": "deactivateCurve",
+    "name": "reactivateCurve",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
