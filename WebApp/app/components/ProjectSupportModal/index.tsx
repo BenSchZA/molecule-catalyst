@@ -98,7 +98,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <TextField
           autoFocus
           type='number'
-          error={maxProjectContribution <= contribution}
+          error={maxProjectContribution < contribution}
           helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution.toString(10)}
           onChange={(e) => validateContribution(e.target.value)}
