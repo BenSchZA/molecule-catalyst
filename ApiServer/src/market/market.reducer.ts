@@ -1,4 +1,4 @@
-import { transferAction, mintAction, burnAction, marketTerminatedAction } from "./market.actions";
+import { transferAction, mintAction, burnAction, marketTerminatedAction, setTaxRateAction, setMarketData } from "./market.actions";
 import { getType } from "typesafe-actions";
 import { BigNumber, bigNumberify } from "ethers/utils";
 import { ethers } from "ethers";
@@ -18,8 +18,11 @@ const calculateNetCost = (transactionsState, action): BigNumber => {
 
 export interface MarketState {
   active: boolean,
+  taxationRate: number,
+  tokenPrice: number,
+  totalSupply: BigNumber,
+  poolValue: BigNumber,
   lastBlockUpdated: number,
-  totalMinted: BigNumber,
   netCost: {
     [s: string]: BigNumber
   },
@@ -38,8 +41,11 @@ export interface MarketState {
 
 export const initialState: MarketState = {
   active: true,
+  taxationRate: 0,
+  tokenPrice: 0,
+  totalSupply: bigNumberify(0),
+  poolValue: bigNumberify(0),
   lastBlockUpdated: 0,
-  totalMinted: bigNumberify(0),
   netCost: {},
   balances: {},
   transactions: [],
@@ -66,7 +72,6 @@ export function MarketReducer(state: MarketState = initialState, action) {
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
-        totalMinted: state.totalMinted.add(action.payload.amountMinted),
         netCost: {
           ...state.netCost,
           [action.payload.userAddress]: calculateNetCost(state.transactions, action)
@@ -86,7 +91,6 @@ export function MarketReducer(state: MarketState = initialState, action) {
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
-        totalMinted: state.totalMinted.sub(action.payload.amountBurnt),
         balances: {
           ...state.balances,
           [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ?
@@ -102,6 +106,16 @@ export function MarketReducer(state: MarketState = initialState, action) {
       return {
         ...state,
         active: false,
+      }
+    case getType(setTaxRateAction):
+      return {
+        ...state,
+        taxationRate: action.payload,
+      }
+    case getType(setMarketData):
+      return {
+        ...state,
+        ...action.payload,
       }
     default:
       return state;

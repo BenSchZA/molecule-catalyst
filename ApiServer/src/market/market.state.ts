@@ -6,7 +6,7 @@ import { ConfigService } from 'src/config/config.service';
 import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction, marketTerminatedAction } from './market.actions';
+import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData } from './market.actions';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
@@ -15,17 +15,16 @@ import {rehydrateMarketData} from './mongoRehydrationHelpers';
 export class MarketState extends ServiceBase {
   private readonly marketContract: Contract;
   private readonly marketState: Store<any>;
-  private readonly daiContract: Contract;
 
   constructor(
     private readonly marketAddress: string,
     private readonly stateDocument: MarketDocument,
     private readonly ethersProvider: Provider,
-    private readonly config: ConfigService) {
+    private readonly config: ConfigService,
+    private readonly marketEmitter) {
     super(`${MarketState.name}-${marketAddress}`);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     this.marketContract = new Contract(this.marketAddress, IMarket, this.ethersProvider).connect(serverAccountWallet);
-    this.daiContract = new Contract(this.config.get('contracts').dai, ERC20Detailed, this.ethersProvider).connect(serverAccountWallet);
 
     this.marketState = this.stateDocument.isNew ? createStore(MarketReducer) : createStore(MarketReducer, rehydrateMarketData(this.stateDocument.marketData));
 
@@ -33,6 +32,7 @@ export class MarketState extends ServiceBase {
       this.stateDocument.marketData = this.marketState.getState();
       this.stateDocument.markModified('marketData');
       this.stateDocument.save();
+      this.marketEmitter.emit('marketUpdated', marketAddress)
     }, 1000));
 
     this.startListening()
@@ -42,10 +42,13 @@ export class MarketState extends ServiceBase {
     // get all logs from latest block in DB up until the current block, and update fixture state
     if (this.stateDocument.isNew) {
       this.stateDocument.marketData = this.marketState.getState();
-      this.stateDocument.marketData.active = await this.marketContract.active();
+      
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
+      this.marketState.dispatch(setTaxRateAction((await this.marketContract.taxationRate()).toNumber()));
+      await this.updateContractData();
     }
+
     const fromBlock = (this.stateDocument.marketData && this.stateDocument.marketData.lastBlockUpdated) ?
       this.stateDocument.marketData.lastBlockUpdated + 1 : 0;
 
@@ -148,6 +151,7 @@ export class MarketState extends ServiceBase {
             timestamp: new Date((await this.ethersProvider.getBlock(event.blockNumber)).timestamp * 1000)
           })
           this.marketState.dispatch(action);
+          await this.updateContractData();
         }
       })
 
@@ -164,6 +168,7 @@ export class MarketState extends ServiceBase {
             timestamp: new Date((await this.ethersProvider.getBlock(event.blockNumber)).timestamp * 1000)
           })
           this.marketState.dispatch(action);
+          await this.updateContractData();
         }
       })
 
@@ -172,7 +177,17 @@ export class MarketState extends ServiceBase {
         if ((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) {
           this.logger.info(`Market terminated: ${this.marketAddress}`);
           this.marketState.dispatch(marketTerminatedAction());
+          await this.updateContractData();
         }
       })
+  }
+
+  async updateContractData() {
+    const marketActive = await this.marketContract.active();
+    this.marketState.dispatch(setMarketData({
+      poolValue: await this.marketContract.poolBalance(),
+      tokenPrice: marketActive ? await this.marketContract.priceToMint(ethers.utils.parseEther('1')) : 0,
+      totalSupply: await this.marketContract.totalSupply(),
+    }))
   }
 }

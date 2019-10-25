@@ -6,22 +6,14 @@ import { selectProject } from 'domain/projects/selectors';
 import { Project } from 'domain/projects/types';
 import { ethers } from 'ethers';
 
-const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals)*value)/Math.pow(10, decimals);
+const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals) * value) / Math.pow(10, decimals);
 
 const selectTokenBalance = (projectId: string, userAddress: string) =>
   createSelector(
     selectProject(projectId),
     (project: Project) => {
-      return (project?.marketData?.balances?.[userAddress]) ?
-        truncate(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])), 15)
-        : 0
+      return truncate(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress] || 0)), 15)
     })
-
-const selectHoldingsValue = (projectId: string) =>
-  createSelector(
-    selectProject(projectId),
-    (project: Project) => Number(ethers.utils.formatEther(project?.chainData?.marketData?.holdingsValue)) || 0
-  )
 
 const selectContributionValue = (projectId: string, userAddress: string) =>
   createSelector(
@@ -54,7 +46,7 @@ const selectDaiBalance = () =>
 const selectTaxationRate = (projectId: string) =>
   createSelector(
     selectProject(projectId),
-    (project: Project) => project.chainData.marketData.taxationRate,
+    (project: Project) => project.marketData.taxationRate,
   )
 
 const selectMaxResearchContribution = (projectId: string) =>
@@ -76,7 +68,6 @@ const selectTransactionModalContainer = (
   userAddress: string) => {
   return createStructuredSelector<RootState, StateProps>({
     tokenBalance: selectTokenBalance(projectId, userAddress),
-    holdingsValue: selectHoldingsValue(projectId),
     contributionValue: selectContributionValue(projectId, userAddress),
     marketAddress: selectMarketAddress(projectId),
     marketActive: selectMarketActive(projectId),

@@ -33,7 +33,6 @@ interface DispatchProps {
 
 export interface StateProps {
   tokenBalance: number,
-  holdingsValue: number,
   contributionValue: number,
   marketAddress: string,
   marketActive: boolean,
@@ -49,7 +48,6 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
   modalState,
   handleClose,
   tokenBalance,
-  holdingsValue,
   contributionValue,
   marketAddress,
   marketActive,
@@ -71,7 +69,6 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
         closeModal={handleClose}
         modalState={modalState}
         tokenBalance={tokenBalance}
-        holdingsValue={holdingsValue}
         contributionValue={contributionValue}
         txInProgress={txInProgress}
         redeemHoldings={handleRedeemContribution}

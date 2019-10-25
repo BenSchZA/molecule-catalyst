@@ -50,7 +50,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       project,
     } = this.props;
 
-    const spotPrice = Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice));
+    const spotPrice = Number(ethers.utils.formatEther(project.marketData.tokenPrice));
     const transactions = project.marketData.transactions;
     const ended = !project.marketData.active;
 
@@ -112,7 +112,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     if(!marketHistory.length) {
       marketHistory.push({
         timestamp: dayjs(project.vaultData.phases[0].startDate).unix(),
-        firstTokenPrice: Number(ethers.utils.formatEther(project.chainData.marketData.tokenPrice)),
+        firstTokenPrice: Number(ethers.utils.formatEther(project?.marketData?.tokenPrice || 0)),
         tokenAmount: 0,
         daiAmount: 0,
         type: TransactionType.TRANSFER,

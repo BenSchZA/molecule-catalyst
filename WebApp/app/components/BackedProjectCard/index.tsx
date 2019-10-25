@@ -4,12 +4,15 @@
  *
  */
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Theme, createStyles, withStyles, WithStyles, CardContent, Card, CardHeader, Grid, Button, Typography, Divider } from '@material-ui/core';
 import { colors } from 'theme';
 import { Project } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
+import { getBlockchainObjects } from 'blockchainResources';
+import { IMarket } from "@molecule-protocol/catalyst-contracts";
+import { bigNumberify } from 'ethers/utils';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -155,9 +158,25 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAddress, classes, openModal }: OwnProps) => {
   const [raised, setRaised] = useState(true);
+  const [holdingsValue, setHoldingsValue] = useState(0);
 
-  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
-    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(10)) > 0;
+  useEffect(() => {
+    const fetchData = async () => {
+      const { signer } = await getBlockchainObjects();
+      const market = new ethers.Contract(project.chainData.marketAddress, IMarket, signer);
+
+      const tokenValue = project.marketData.active ? 
+        await market.rewardForBurn(project.marketData.balances?.[userAddress] || 0) : 
+        bigNumberify(project.marketData.poolValue).mul(project.marketData.balances?.[userAddress] || 0).div(project.marketData.totalSupply);
+      setHoldingsValue(Number(ethers.utils.formatEther(tokenValue)));
+    };
+    fetchData();
+
+    return () => { }
+  }, [project.marketData.tokenPrice]);
+
+  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] &&
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
 
   return (
     <Fragment>
@@ -178,7 +197,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Button className={classes.supportProject} onClick={() => forwardTo(`project/${project.id}`)}>View Project</Button>
               </Grid>
               <Grid item xs={6}>
-                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!(userHasBalance && project.chainData && project.chainData.marketData)}>Withdraw Stake</Button>
+                <Button className={classes.redeemHoldings} onClick={openModal} disabled={!userHasBalance}>Withdraw Stake</Button>
               </Grid>
             </Grid>
           }
@@ -191,22 +210,22 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                 <Typography className={classes.label}>Funding Progress</Typography>
                 <Typography className={classes.labelSmall}>Progress of entire project including all phases</Typography>
               </Grid>
-              <Divider className={classes.dividerVertical}/>
+              <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Price</Typography>
                 <Typography className={classes.labelSmall}>Current price of project token</Typography>
               </Grid>
-              <Divider className={classes.dividerVertical}/>
+              <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Tokens</Typography>
                 <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
               </Grid>
-              <Divider className={classes.dividerVertical}/>
+              <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Value</Typography>
                 <Typography className={classes.labelSmall}>Value of project tokens</Typography>
               </Grid>
-              <Divider className={classes.dividerVertical}/>
+              <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Change %</Typography>
                 <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
@@ -224,56 +243,35 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
                   })()
                 } %</Typography>
               </Grid>
-              <Divider className={classes.dividerVertical2}/>
+              <Divider className={classes.dividerVertical2} />
               <Grid item xs>
                 <Typography className={classes.largeText}>
-                  {(project.chainData && project.chainData.marketData) ? 
-                    Number(ethers.utils.formatUnits(project.chainData.marketData.tokenPrice, 18)).toFixed(2) 
-                    : ''
-                  } DAI
+                  {Number(ethers.utils.formatEther(project?.marketData?.tokenPrice || 0)).toFixed(2)} DAI
                 </Typography>
               </Grid>
-              <Divider className={classes.dividerVertical2}/>
+              <Divider className={classes.dividerVertical2} />
               <Grid item xs>
                 <Typography className={classes.largeText}>
-                  {Number(ethers.utils.formatEther(project.marketData.balances[userAddress])).toFixed(2)}
+                  {Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress] || 0)).toFixed(2)}
                 </Typography>
               </Grid>
-              <Divider className={classes.dividerVertical2}/>
+              <Divider className={classes.dividerVertical2} />
               <Grid item xs>
                 <Typography className={classes.largeText}>
-                  {(project.chainData && project.chainData.marketData) ? 
-                    Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)).toFixed(2) 
-                    : ''} DAI
+                  {holdingsValue.toFixed(2)} DAI
                 </Typography>
               </Grid>
-              <Divider className={classes.dividerVertical2}/>
+              <Divider className={classes.dividerVertical2} />
               <Grid item xs>
                 <Typography className={classes.largeText}>{
                   (() => {
                     const displayPrecision = 2;
-                    const contributionValue =
-                      userAddress &&
-                        project &&
-                        project.marketData &&
-                        project.marketData.netCost &&
-                        project.marketData.netCost[userAddress]
-                        ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-                        * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
-                    project &&
-                      project.marketData &&
-                      project.marketData.netCost &&
-                      project.marketData.netCost[userAddress]
-                      ? Number(ethers.utils.formatEther(project.marketData.netCost[userAddress]))
-                      * Number(ethers.utils.formatEther(project.marketData.balances[userAddress])) : 0;
-
-                    const holdingsValue = project && project.chainData && project.chainData.marketData
-                      ? Number(ethers.utils.formatEther(project.chainData.marketData.holdingsValue)) : 0;
-
-
+                    
+                    const contributionValue = Number(ethers.utils.formatEther(project?.marketData?.netCost?.[userAddress] || 0))
+                        * Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress] || 0));
+                    
                     return contributionValue > 0 ?
                       Number(((holdingsValue - contributionValue) * 100 / contributionValue)).toFixed(displayPrecision) : 0;
-
                   })()
                 } %</Typography>
               </Grid>

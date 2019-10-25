@@ -30,4 +30,12 @@ export const transferAction = createStandardAction('TRANSFER')<{
   timestamp: Date
 }>();
 
+export const setTaxRateAction = createStandardAction('SETTAXRATE')<number>();
+
+export const setMarketData = createStandardAction('SETMARKETDATA')<{
+  tokenPrice: number,
+  poolValue: BigNumber,
+  totalSupply: BigNumber
+}>();
+
 export const marketTerminatedAction = createStandardAction('TERMINATED')();

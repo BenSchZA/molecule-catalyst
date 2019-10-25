@@ -1,7 +1,7 @@
 import { setTxInProgress } from "containers/TransactionModalContainer/actions";
 import { take, put, fork } from 'redux-saga/effects';
 import { getType } from "typesafe-actions";
-import { supportProject, withdrawHoldings, withdrawRedistribution, getProjects } from "domain/projects/actions";
+import { supportProject, withdrawHoldings, withdrawRedistribution } from "domain/projects/actions";
 
 function* txWatcher() {
   while (true) {
@@ -22,7 +22,6 @@ function* txWatcher() {
     ]);
 
     yield put(setTxInProgress(false));
-    yield put(getProjects());
   }
 }
 

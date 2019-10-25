@@ -47,7 +47,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
     renderChart() {
       if (!this._rootNode) return;
 
-      const marketData = this.props.project.chainData.marketData;
+      const marketData = this.props.project.marketData;
       const contributionRate = marketData.taxationRate;
       const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
       const currentTokenSupply = Number(ethers.utils.formatEther(marketData.totalSupply));
@@ -60,7 +60,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
       const ended = !project.marketData.active;
 
       // Flat 100% collateralized token distribution
-      const scaledPrice = bigNumberify(project.chainData.marketData.poolValue).mul(1e8).div(bigNumberify(project.chainData.marketData.totalSupply).add(1)).toNumber();
+      const scaledPrice = bigNumberify(project.marketData.poolValue).mul(1e8).div(bigNumberify(project.marketData.totalSupply).add(1)).toNumber();
       const redistributePrice = scaledPrice/1e8;
 
       const current_supply = currentTokenSupply + 1,

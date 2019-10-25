@@ -99,6 +99,14 @@ export class ProjectService extends ServiceBase {
     }
   }
 
+  async getProjectByMarketAddress(marketAddress: string) {
+    const project = await this.projectRepository
+      .findOne({'chainData.marketAddress': marketAddress})
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+
+    return this.getMarketVaultData(project);
+  }
+
   async getProjects() {
     const projects = await this.projectRepository
       .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])

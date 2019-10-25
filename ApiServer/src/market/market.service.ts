@@ -10,11 +10,11 @@ import { Model } from 'mongoose';
 import { MarketState } from './market.state';
 import { VaultDocument, Vault } from './vault.schema';
 import { VaultState } from './vault.state';
-
+import {EventEmitter} from 'events';
 @Injectable()
 export class MarketService extends ServiceBase {
   private readonly marketRegistryContract: Contract;
-
+  public marketEmitter = new EventEmitter();
   constructor(
       @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
       private readonly config: ConfigService,
@@ -30,6 +30,8 @@ export class MarketService extends ServiceBase {
       this.createVaultListener(vault);
     })
   }
+
+
 
   private async getAllDeployedMarkets() {
     const marketCreatedFilter = {
@@ -50,7 +52,7 @@ export class MarketService extends ServiceBase {
       await this.marketRepository.findOne({marketAddress: marketAddress}) : 
       await new this.marketRepository({marketAddress: marketAddress})
     
-    return new MarketState(marketAddress, marketDocument, this.ethersProvider, this.config);
+    return new MarketState(marketAddress, marketDocument, this.ethersProvider, this.config, this.marketEmitter);
   }
 
   private async createVaultListener(vaultAddress: string): Promise<VaultState> {

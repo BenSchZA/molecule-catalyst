@@ -1,44 +1,9 @@
-import { ethers, constants } from "ethers";
+import { ethers } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
 import { IMarket, IVault, ERC20Detailed } from "@molecule-protocol/catalyst-contracts";
-import { MarketDataLegacy, PhaseData, FundingState } from './types';
+import { PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
-
-export async function getProjectTokenDetails(marketActive: boolean, marketAddress: string) {
-  try {
-    // Get blockchain objects
-    const { provider, signerAddress } = await getBlockchainObjects();
-    // Get contract instances
-    const market = new ethers.Contract(marketAddress, IMarket, provider);
-
-    // Get data
-    const active = await market.active();
-    const balance: BigNumber = (signerAddress) ? await market.balanceOf(signerAddress) : constants.Zero;
-    const totalSupply: BigNumber = await market.totalSupply();
-    const decimals: BigNumber = await market.decimals();
-    const taxationRate: BigNumber = await market.taxationRate();
-    const tokenPrice: BigNumber = marketActive ? await market.priceToMint(ethers.utils.parseEther('1')) : 0;
-    const poolValue: BigNumber = await market.poolBalance();
-    const holdingsValue: BigNumber = await market.rewardForBurn(balance);
-    
-    const result: MarketDataLegacy = {
-      active: active,
-      balance: balance.toString(),
-      totalSupply: totalSupply.toString(),
-      decimals: decimals.toNumber(),
-      taxationRate: taxationRate.toNumber(),
-      tokenPrice: tokenPrice.toString(),
-      poolValue: poolValue.toString(),
-      holdingsValue: holdingsValue.toString(),
-    };
-
-    return result;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
 
 export async function mint(marketAddress, contribution) {
   // Get blockchain objects

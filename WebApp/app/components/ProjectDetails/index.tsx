@@ -67,7 +67,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   };
 
   const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
-    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(10)) > 0;
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
 
   const getEndDateOffset = (phases, phaseIndex) => {
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
@@ -122,7 +122,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   return project ? (
     <Container maxWidth="lg">
-      {project.chainData && project.chainData.marketData && userAddress &&
+      {userAddress &&
         <TransactionModalContainer
           projectId={project.id}
           userAddress={userAddress}
@@ -143,14 +143,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Button
               className={classes.supportProject}
               onClick={handleOpenSupportModal}
-              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && project.status !== ProjectSubmissionStatus.ended)}
+              disabled={!(isLoggedIn && project && project.marketData && project.status !== ProjectSubmissionStatus.ended)}
             >
               Support Project
             </Button>
             <Button
               className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
-              disabled={!(isLoggedIn && project && project.chainData && project.chainData.marketData && userHasBalance)}
+              disabled={!(isLoggedIn && project && project.marketData && userHasBalance)}
             >
               Redeem Holdings
             </Button>
@@ -181,7 +181,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>
             {
-            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
+              project.organisationImage && 
+              <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage} />
             }
           </div>
         </div>
@@ -302,7 +303,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Typography className={classes.sectionTitleText} align="center">
           Market
         </Typography>
-        {project && project.chainData && project.chainData.marketData ?
+        {project && project.marketData ?
           <MarketChartLayout display={true} project={project} /> : <div className={classes.marketSpinner}><CircularProgress /></div>
         }
       </Paper>
