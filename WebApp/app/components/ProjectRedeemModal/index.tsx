@@ -37,7 +37,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
   const [tokenAmount, setTokenAmount] = useState(0);
   const [daiAmount, setDaiAmount] = useState(0);
 
-  const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals)*value)/Math.pow(10, decimals);
+  const truncate = (value, decimals) => Math.trunc(Math.pow(10, decimals) * value) / Math.pow(10, decimals);
 
   useEffect(() => {
     let cancelled = false;
@@ -54,10 +54,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
     };
     fetchData();
 
-    return () => {cancelled = true}
+    return () => { cancelled = true }
   }, [tokenAmount]);
 
-  const handleSetTokenAmount = (value: number) => { 
+  const handleSetTokenAmount = (value: number) => {
     setTokenAmount(truncate(value, 9))
   };
 
@@ -100,7 +100,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           <Blockies seed={marketAddress || '0x'} size={15} />
         </Avatar>
         <Typography className={classes.tokenBalance} onClick={() => handleSetTokenAmount(tokenBalance)}>
-          {tokenBalance ? tokenBalance.toFixed(displayPrecision) : 0}
+          {tokenBalance ? tokenBalance.toLocaleString(undefined, {
+            maximumFractionDigits: displayPrecision,
+            minimumFractionDigits: displayPrecision
+          }) : 0}
         </Typography>
         <Typography className={classes.modalText}>
           Your current project token balance
@@ -127,7 +130,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {(contributionValue * tokenAmount / tokenBalance).toFixed(displayPrecision)}
+                {(contributionValue * tokenAmount / tokenBalance).toLocaleString(undefined, {
+                  maximumFractionDigits: displayPrecision,
+                  minimumFractionDigits: displayPrecision
+                })}
               </Typography>
             </div>
             <Typography>
@@ -139,7 +145,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency} >
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {daiAmount.toFixed(displayPrecision)}
+                {daiAmount.toLocaleString(undefined, {
+                  maximumFractionDigits: displayPrecision,
+                  minimumFractionDigits: displayPrecision
+                })}
               </Typography>
             </div>
             <Typography>
@@ -148,7 +157,10 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </div>
         </section>
         <Typography className={classes.assetPerformance}>
-          {selectionValueChange} %
+          {selectionValueChange.toLocaleString(undefined, {
+            maximumFractionDigits: displayPrecision,
+            minimumFractionDigits: displayPrecision
+          })} %
         </Typography>
         <Typography className={classes.modalText}>
           Change % since initial contribution

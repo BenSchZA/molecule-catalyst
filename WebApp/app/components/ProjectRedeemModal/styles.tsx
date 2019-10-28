@@ -103,6 +103,9 @@ const styles = (theme: Theme) => createStyles({
   },
   daiValues: {
     fontSize: '30px',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden'
   },
   divider: {
     width: '259px',
