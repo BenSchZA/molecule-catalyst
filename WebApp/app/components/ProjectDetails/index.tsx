@@ -152,7 +152,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               onClick={handleOpenRedeemModal}
               disabled={!(isLoggedIn && project && project.marketData && userHasBalance)}
             >
-              Redeem Holdings
+              Withdraw Stake
             </Button>
           </div>
         </div>

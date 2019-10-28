@@ -90,7 +90,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <hr className={classes.divider} />
         <DaiIcon />
         <Typography className={classes.daiBalance} onClick={() => setContribution(maxProjectContribution)}>
-          {daiBalance ? daiBalance.toFixed(displayPrecision) : 0}
+          {daiBalance ? daiBalance.toLocaleString(undefined, {maximumFractionDigits: 2}) : 0}
         </Typography>
         <Typography className={classes.modalText}>
           Your Account Balance
@@ -99,7 +99,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           autoFocus
           type='number'
           error={maxProjectContribution < contribution}
-          helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
+          helperText={maxProjectContribution < contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution.toString(10)}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
@@ -126,7 +126,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           <div>
             <div className={classes.currency}>
               <DaiIcon height={30} />
-              <Typography className={classes.daiValues}>{toResearcher.toFixed(displayPrecision)}</Typography>
+              <Typography className={classes.daiValues}>
+                {toResearcher.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}
+              </Typography>
             </div>
             <Typography className={classes.modalText}>
               Research Funding
@@ -137,7 +139,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {toIncentivePool.toFixed(displayPrecision)}
+                {toIncentivePool.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}
               </Typography>
             </div>
             <Typography className={classes.modalText}>
@@ -154,7 +156,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <Avatar className={classes.blockie}>
               <Blockies seed={marketAddress || '0x'} size={10} />
             </Avatar>
-            <Typography className={classes.daiValues}>{projectTokenAmount.toFixed(displayPrecision)}</Typography>
+            <Typography className={classes.daiValues}>{projectTokenAmount.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}</Typography>
           </div>
           <Typography className={classes.modalText}>
             Project Tokens

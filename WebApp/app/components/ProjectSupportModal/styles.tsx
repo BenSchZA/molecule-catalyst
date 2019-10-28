@@ -138,6 +138,9 @@ const styles = (theme: Theme) => createStyles({
   },
   daiValues: {
     fontSize: '30px',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden'
   },
   fundingSplit:{
     display:"flex",
