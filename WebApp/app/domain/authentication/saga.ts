@@ -92,14 +92,14 @@ export function* loginFlow() {
 
 export function* connectWallet() {
   try {
-    const { signerAddress, provider, networkId, approvedNetwork, approvedNetworkName, }: BlockchainResources = yield call(getBlockchainObjects);
+    const { signerAddress, provider, networkId, approvedNetwork, approvedNetworkName }: BlockchainResources = yield call(getBlockchainObjects);
+    yield put(authenticationActions.setApprovedNetworkName(approvedNetworkName));
     if (provider) {
       if (approvedNetwork) {
         yield put(authenticationActions.connectWallet.success({
           approvedNetwork: approvedNetwork,
           ethAddress: signerAddress,
           networkId: networkId,
-          approvedNetworkName: approvedNetworkName,
         }));
       } else {
         yield put(authenticationActions.logOut());

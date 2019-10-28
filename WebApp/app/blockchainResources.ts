@@ -25,7 +25,7 @@ export interface BlockchainResources {
 export let blockchainResources: BlockchainResources = {
   initialized: false,
   approvedNetwork: false,
-  approvedNetworkName: utils.getNetwork(parseInt(process.env.CHAIN_ID || '1')).name,
+  approvedNetworkName: utils.getNetwork(parseInt(process.env.CHAIN_ID || '1')).name.replace(/^\w/, c => c.toUpperCase()),
   approvedNetworkId: parseInt(process.env.CHAIN_ID || '1'),
   networkId: 0,
   networkName: '',

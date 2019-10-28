@@ -161,9 +161,9 @@ const AppWrapper: React.FunctionComponent<Props> = ({
                     <Button onClick={() => onConnect(location.pathname)}>CONNECT</Button>
                   </div> :
                   <Tooltip 
-                    title={`Please ensure you have Metamask installed, 
-                    you have allowed this site to connect to Metamask 
-                    and the ${approvedNetworkName} network is selected in Metamask`}>
+                    open
+                    title={`Please ensure that you have MetaMask installed, allowed this 
+                            site to connect to MetaMask and are using the ${approvedNetworkName} network`}>
                     <div className={classes.connectButton}>
                       <Button onClick={() => { }} disabled>CONNECT</Button>
                     </div>
