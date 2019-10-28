@@ -15,7 +15,7 @@ export const setDaiBalance = createStandardAction(ActionTypes.SET_DAI_BALANCE)<n
 export const setUserId = createStandardAction(ActionTypes.SET_USER_ID)<string>();
 export const setUserRole = createStandardAction(ActionTypes.SET_USER_TYPE)<number>();
 export const logOut = createStandardAction(ActionTypes.LOG_OUT)();
-
+export const setApprovedNetworkName = createStandardAction(ActionTypes.SET_APPROVED_NETWORK_NAME)<string>();
 export const connectWallet = createAsyncAction(
   ActionTypes.CONNECT_WALLET_REQUEST,
   ActionTypes.CONNECT_WALLET_SUCCESS,
@@ -25,6 +25,5 @@ export const connectWallet = createAsyncAction(
     ethAddress: string, 
     networkId: number, 
     approvedNetwork: boolean, 
-    approvedNetworkName: string 
   }, 
   string>();

@@ -42,7 +42,8 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.logOut):
       return {
         ...initialState,
-        ...{ walletUnlocked: state.walletUnlocked },
+        walletUnlocked: state.walletUnlocked,
+        approvedNetworkName: state.approvedNetworkName,
       };
     case getType(authenticationActions.authenticate.failure):
       return {
@@ -68,6 +69,11 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
       return {
         ...state,
         ...{ userId: action.payload }
+      }
+    case getType(authenticationActions.setApprovedNetworkName):
+      return {
+        ...state,
+        approvedNetworkName: action.payload,
       }
     default:
       return state;
