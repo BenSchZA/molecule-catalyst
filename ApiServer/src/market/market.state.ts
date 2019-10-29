@@ -6,7 +6,7 @@ import { ConfigService } from 'src/config/config.service';
 import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData } from './market.actions';
+import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from './market.actions';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import {rehydrateMarketData} from './mongoRehydrationHelpers';
@@ -47,6 +47,7 @@ export class MarketState extends ServiceBase {
       await this.stateDocument.save();
       this.marketState.dispatch(setTaxRateAction((await this.marketContract.taxationRate()).toNumber()));
       await this.updateContractData();
+      await this.updateMarketActive();
     }
 
     const fromBlock = (this.stateDocument.marketData && this.stateDocument.marketData.lastBlockUpdated) ?
@@ -180,6 +181,23 @@ export class MarketState extends ServiceBase {
           await this.updateContractData();
         }
       })
+  }
+
+  async updateMarketActive() {
+    const marketActive = await this.marketContract.active();
+
+    const marketTerminatedFilter = {
+      ...this.marketContract.filters.MarketTerminated(),
+      fromBlock: 0,
+    };
+
+    const terminated = await this.ethersProvider.getLogs(marketTerminatedFilter);
+    const dateDeactivated = terminated.length > 0 ? new Date((await this.ethersProvider.getBlock(terminated[0].blockNumber)).timestamp * 1000) : null;
+    
+    this.marketState.dispatch(setMarketActive({
+      active: marketActive,
+      dateDeactivated: dateDeactivated,
+    }))
   }
 
   async updateContractData() {

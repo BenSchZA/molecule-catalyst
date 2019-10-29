@@ -72,6 +72,7 @@ interface ChainData {
 
 interface MarketData {
   active: boolean,
+  dateDeactivated: Date,
   lastBlockUpdated: number,
   taxationRate: number,
   tokenPrice: BigNumber,
