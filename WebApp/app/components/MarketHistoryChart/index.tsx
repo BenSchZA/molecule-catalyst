@@ -53,6 +53,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     const spotPrice = Number(ethers.utils.formatEther(project.marketData.tokenPrice));
     const transactions = project.marketData.transactions;
     const ended = !project.marketData.active;
+    const dateDeactivated = project.marketData.dateDeactivated ? new Date(project.marketData.dateDeactivated) : null;
 
     // if (transactions.length === 0) return;
 
@@ -146,7 +147,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       token_amount: value.tokenAmount,
       dai_amount: value.daiAmount,
       type: value.type,
-    }));
+    })).filter(value => !dateDeactivated || value.date.valueOf() < dateDeactivated.valueOf());
 
     // add data point for current price
     if(!ended) {
