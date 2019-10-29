@@ -91,7 +91,7 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase, 
   <Typography className={classes.label}>FUNDING GOAL</Typography>
   <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} DAI</Typography>
   <Typography className={classes.progress}>
-    {phase.fundedAmount >= phase.fundingGoal ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${daysLeft} DAYS LEFT`)}
+    {phase.state >= 2 ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${daysLeft} DAYS LEFT`)}
   </Typography>
   <BorderLinearProgress
     variant="determinate"

@@ -93,7 +93,11 @@ const styles = (theme: Theme) =>
       color: '#FFFFFF',
       width: '170px',
       height: '39px',
-      margin: '6px 0 0 0!important'
+      margin: '6px 0 0 0!important',
+      '&:hover': {
+        background: '#003E52 0% 0% no-repeat padding-box',
+        boxShadow: '2px 5px 2px #0003',
+      }
     },
     redeemHoldings: {
       borderRadius: '4px',
@@ -106,7 +110,11 @@ const styles = (theme: Theme) =>
       float: 'right',
       width: '170px',
       height: '39px',
-      margin: '6px 0 0 0!important'
+      margin: '6px 0 0 0!important',
+      '&:hover': {
+        background: '#0EBCAC 0% 0% no-repeat padding-box',
+        boxShadow: '2px 5px 2px #0003',
+      }
     },
     buttonContainer: {
       paddingRight: '16px',
