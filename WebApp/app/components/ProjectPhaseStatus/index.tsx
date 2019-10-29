@@ -48,7 +48,7 @@ const styles = ({ spacing, palette}: Theme) =>
     projectProgress: {
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
-      color: palette.secondary.main,
+      color: '#37B4A4',
       font: '44px/54px Montserrat',
       letterSpacing: '-0.39px',
       opacity: 1
