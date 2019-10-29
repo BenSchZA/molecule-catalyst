@@ -16,7 +16,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 export const colors = {
   moleculeBranding: {
     primary: '#003E52',
-    secondary: '#37B4A4',
+    secondary: '#50FFE6',
     primaryLight: '#37B4A4',
     third: '#03DAC6'
   },

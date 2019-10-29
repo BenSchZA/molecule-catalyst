@@ -10,7 +10,6 @@ import {
   WithStyles,
   Container,
   Typography,
-  Button,
   Paper,
   Divider,
   Grid,
@@ -36,6 +35,7 @@ import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
+import { NegativeButton, PositiveButton } from 'components/custom';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
@@ -140,20 +140,16 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             {project.title}
           </Typography>
           <div>
-            <Button
-              className={classes.supportProject}
+            <NegativeButton
               onClick={handleOpenSupportModal}
-              disabled={!(isLoggedIn && project && project.marketData && project.status !== ProjectSubmissionStatus.ended)}
-            >
+              disabled={!(isLoggedIn && project && project.marketData && project.status !== ProjectSubmissionStatus.ended)} >
               Support Project
-            </Button>
-            <Button
-              className={classes.redeemHoldings}
+            </NegativeButton>
+            <PositiveButton
               onClick={handleOpenRedeemModal}
-              disabled={!(isLoggedIn && project && project.marketData && userHasBalance)}
-            >
-              Redeem Holdings
-            </Button>
+              disabled={!(isLoggedIn && project && project.marketData && userHasBalance)} >
+              Withdraw Stake
+            </PositiveButton>
           </div>
         </div>
         <div className={classes.bannerFooter}>

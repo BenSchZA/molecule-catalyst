@@ -101,9 +101,23 @@ export class ProjectService extends ServiceBase {
 
   async getProjectByMarketAddress(marketAddress: string) {
     const project = await this.projectRepository
-      .findOne({'chainData.marketAddress': marketAddress})
+      .findOne({ 'chainData.marketAddress': marketAddress })
       .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+    if (!project) {
+      this.logger.log(`Project with vault address ${marketAddress} not found`)
+      return;
+    }
+    return this.getMarketVaultData(project);
+  }
 
+  async getProjectByVaultAddress(vaultAddress: string) {
+    const project = await this.projectRepository
+      .findOne({ 'chainData.vaultAddress': vaultAddress })
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+    if (!project) {
+      this.logger.log(`Project with vault address ${vaultAddress} not found`)
+      return;
+    }
     return this.getMarketVaultData(project);
   }
 

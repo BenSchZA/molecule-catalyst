@@ -10,7 +10,8 @@ export class ProjectGateway extends ServiceBase implements OnGatewayConnection {
   constructor(private readonly projectService: ProjectService,
     private readonly marketService: MarketService) {
     super(ProjectGateway.name);
-    this.marketService.marketEmitter.on('marketUpdated', (marketAddress) => this.broadcastUpdatedProject(marketAddress))
+    this.marketService.marketEmitter.on('marketUpdated', (marketAddress) => this.broadcastUpdatedMarket(marketAddress))
+    this.marketService.vaultEmitter.on('vaultUpdated', (vaultAddress) => this.broadcastUpdatedVault(vaultAddress))
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
@@ -19,12 +20,17 @@ export class ProjectGateway extends ServiceBase implements OnGatewayConnection {
     client.emit('projects', projects)
   }
 
-  public async broadcastUpdatedProject(marketAddress: string) {
+  public async broadcastUpdatedMarket(marketAddress: string) {
     const project = await this.projectService.getProjectByMarketAddress(marketAddress);
-    if (!project) {
-      this.logger.warn(`Project with market address ${marketAddress} does not exist.`);
-      return;
+    if (project) {
+      this.server.emit('project', project);
     }
-    this.server.emit('project', project);
+  }
+
+  public async broadcastUpdatedVault(vaultAddress: string) {
+    const project = await this.projectService.getProjectByVaultAddress(vaultAddress);
+    if (project) {
+      this.server.emit('project', project);
+    }
   }
 }

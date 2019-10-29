@@ -15,6 +15,7 @@ import {EventEmitter} from 'events';
 export class MarketService extends ServiceBase {
   private readonly marketRegistryContract: Contract;
   public marketEmitter = new EventEmitter();
+  public vaultEmitter = new EventEmitter();
   constructor(
       @Inject(Modules.EthersProvider) private readonly ethersProvider: ethers.providers.Provider,
       private readonly config: ConfigService,
@@ -60,7 +61,7 @@ export class MarketService extends ServiceBase {
       await this.vaultRepository.findOne({vaultAddress: vaultAddress}) : 
       await new this.vaultRepository({vaultAddress: vaultAddress})
     
-    return new VaultState(vaultAddress, vaultDocument, this.ethersProvider, this.config);
+    return new VaultState(vaultAddress, vaultDocument, this.ethersProvider, this.config, this.vaultEmitter);
   }
 
   public async getMarketData(marketAddress: string): Promise<Market> {

@@ -48,7 +48,7 @@ const styles = ({ spacing, palette}: Theme) =>
     projectProgress: {
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
-      color: palette.secondary.main,
+      color: '#37B4A4',
       font: '44px/54px Montserrat',
       letterSpacing: '-0.39px',
       opacity: 1
@@ -91,7 +91,7 @@ const ProjectPhaseStatus: React.FunctionComponent<OwnProps> = ({classes, phase, 
   <Typography className={classes.label}>FUNDING GOAL</Typography>
   <Typography className={classes.largeText}>{phase.fundingGoal.toLocaleString()} DAI</Typography>
   <Typography className={classes.progress}>
-    {phase.fundedAmount >= phase.fundingGoal ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${daysLeft} DAYS LEFT`)}
+    {phase.state >= 2 ? 'COMPLETED': (phase.state === 0 ? `NOT STARTED` : `${daysLeft} DAYS LEFT`)}
   </Typography>
   <BorderLinearProgress
     variant="determinate"
