@@ -120,6 +120,9 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
             min: 0,
             max: tokenBalance,
             step: 0.01,
+          }}           
+          FormHelperTextProps={{
+            className: classes.formHelperText
           }} />
         <Typography className={classes.modalText}>
           Enter the Number of tokens you want to return

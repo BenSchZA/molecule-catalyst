@@ -63,7 +63,7 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   input: {
-    width: 170,
+    width: 200,
     marginTop: theme.spacing(2),
     padding: 0,
     background: '#00212CBC 0% 0% no-repeat padding-box',
@@ -95,6 +95,12 @@ const styles = (theme: Theme) => createStyles({
     '& > *': {
       color: theme.palette.common.white,
     }
+  },
+  formHelperText: {
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    fontFamily: 'Roboto',
+    lineHeight: 1.3,
+    textAlign: 'center',
   },
   link: {
     textDecoration: 'none',

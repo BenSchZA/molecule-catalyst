@@ -98,8 +98,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <TextField
           autoFocus
           type='number'
-          error={maxProjectContribution < contribution}
-          helperText={maxProjectContribution < contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
+          helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
           value={contribution.toString(10)}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
@@ -110,6 +109,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           }}
           InputProps={{
             endAdornment: <InputAdornment position='end' className={classes.inputAdornment}>DAI</InputAdornment>,
+          }}
+          FormHelperTextProps={{
+            className: classes.formHelperText
           }} />
         <Typography className={classes.modalText}>
           Enter Contribution Amount
