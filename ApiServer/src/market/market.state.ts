@@ -3,13 +3,14 @@ import { ServiceBase } from 'src/common/serviceBase';
 import { Contract, Wallet, ethers, Event } from 'ethers';
 import { Provider } from 'ethers/providers';
 import { ConfigService } from 'src/config/config.service';
-import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
+import { IMarket } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
 import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData } from './market.actions';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { BigNumber } from 'ethers/utils';
 import throttle = require('lodash/throttle');
-import {rehydrateMarketData} from './mongoRehydrationHelpers';
+import { rehydrateMarketData } from './mongoRehydrationHelpers';
+import { EventEmitter } from 'events';
 
 
 export class MarketState extends ServiceBase {
@@ -21,7 +22,7 @@ export class MarketState extends ServiceBase {
     private readonly stateDocument: MarketDocument,
     private readonly ethersProvider: Provider,
     private readonly config: ConfigService,
-    private readonly marketEmitter) {
+    private readonly marketEmitter: EventEmitter) {
     super(`${MarketState.name}-${marketAddress}`);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     this.marketContract = new Contract(this.marketAddress, IMarket, this.ethersProvider).connect(serverAccountWallet);
@@ -31,8 +32,12 @@ export class MarketState extends ServiceBase {
     this.marketState.subscribe(throttle(() => {
       this.stateDocument.marketData = this.marketState.getState();
       this.stateDocument.markModified('marketData');
-      this.stateDocument.save();
-      this.marketEmitter.emit('marketUpdated', marketAddress)
+      try {
+        this.stateDocument.save();
+        this.marketEmitter.emit('marketUpdated', marketAddress)
+      } catch (error) {
+        this.logger.warn('There was an error updating the market document');
+      }
     }, 1000));
 
     this.startListening()
@@ -42,7 +47,7 @@ export class MarketState extends ServiceBase {
     // get all logs from latest block in DB up until the current block, and update fixture state
     if (this.stateDocument.isNew) {
       this.stateDocument.marketData = this.marketState.getState();
-      
+
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
       this.marketState.dispatch(setTaxRateAction((await this.marketContract.taxationRate()).toNumber()));
@@ -120,7 +125,7 @@ export class MarketState extends ServiceBase {
     // Set up listener for transfer event, create appropriate action, dispatch against store
     this.marketContract.on(this.marketContract.filters.Transfer(),
       async (from: string, to: string, value: BigNumber, event: Event) => {
-        if (((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) && 
+        if (((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) &&
           from !== ethers.constants.AddressZero && to !== ethers.constants.AddressZero) {
           this.logger.info(`New Transfer received.`);
           const action = transferAction({
