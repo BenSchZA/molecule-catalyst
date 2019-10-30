@@ -18,6 +18,7 @@ interface IProject {
   createdAt: string,
   abstract: string,
   featuredImage: string,
+  organisationImage: string,
   context: string,
   approach: string,
   collaborators: Collaborator[],
@@ -67,12 +68,16 @@ interface ChainData {
   marketAddress: string,
   vaultAddress: string,
   creatorAddress: string,
-  marketData: MarketDataLegacy,
 }
 
 interface MarketData {
+  active: boolean,
+  dateDeactivated: Date,
   lastBlockUpdated: number,
-  totalMinted: BigNumber,
+  taxationRate: number,
+  tokenPrice: BigNumber,
+  totalSupply: BigNumber,
+  poolValue: BigNumber,
   netCost: Map<string, BigNumber>,
   balances: Map<string, BigNumber>,
   transactions: Array<MintTX | BurnTX | TransferTX>,
@@ -90,6 +95,7 @@ interface MintTX {
 }
 
 interface BurnTX {
+  txType: TransactionType,
   userAddress: string,
   amountBurnt: BigNumber,
   collateralReturned: BigNumber,
@@ -99,6 +105,7 @@ interface BurnTX {
 }
 
 interface TransferTX {
+  txType: TransactionType,
   fromAddress: string,
   toAddress: string,
   amount: BigNumber,
@@ -137,17 +144,6 @@ enum FundingState {
   PAID 
 }
 
-interface MarketDataLegacy {
-  active: boolean,
-  balance: string,
-  totalSupply: string,
-  decimals: number,
-  taxationRate: number,
-  tokenPrice: string,
-  poolValue: string,
-  holdingsValue: string,
-}
-
 /* --- STATE --- */
 interface ProjectsState {
 
@@ -169,7 +165,7 @@ export {
   ProjectSubmissionStatus, 
   ChainData as LaunchProjectData, 
   MarketData, 
-  MarketDataLegacy, 
   PhaseData, 
-  FundingState 
+  FundingState,
+  TransactionType, MintTX, BurnTX, TransferTX,
 };

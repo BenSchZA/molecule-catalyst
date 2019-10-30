@@ -4,7 +4,6 @@ import { Theme, WithStyles, Container, Divider } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Project } from 'domain/projects/types';
 import ProjectCard from 'components/ProjectCard';
-//import { forwardTo } from 'utils/history';
 
 const marginForGrid = 20;
 
@@ -37,7 +36,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const ProjectGrid: React.FunctionComponent<OwnProps> = ({projects, classes}: OwnProps) => (
   <Container className={classes.maxWidthLg}>
-     <Divider className={classes.divider} variant='middle' />
+    <Divider className={classes.divider} variant='middle' />
     <div className={classes.grid}>
       {projects && projects.length > 0 && projects.map((p, index) =>
         <ProjectCard key={index} project={p}/>

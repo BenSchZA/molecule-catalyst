@@ -6,7 +6,6 @@ import { SendGridModule } from '@anchan828/nest-sendgrid';
 import { TerminusOptionsService } from './healthCheck.service';
 import { PromModule, InboundMiddleware } from '@panterazar/nestjs-prom';
 import { CreatorModule } from './creator/creator.module';
-import * as mongodbUri from 'mongodb-uri';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
@@ -18,6 +17,8 @@ import { SendGridHealthModule } from '@anchan828/nest-sendgrid-terminus';
 import { AttachmentModule } from './attachment/attachment.module';
 import { ProjectModule } from './project/project.module';
 import { MarketModule }  from './market/market.module';
+import { ProjectSocketModule } from './projectSocket/projectSocket.module';
+import * as mongodbUri from 'mongodb-uri';
 
 @Module({
   imports: [ConfigModule,
@@ -99,6 +100,7 @@ import { MarketModule }  from './market/market.module';
     CreatorModule,
     ProjectModule,
     MarketModule,
+    ProjectSocketModule,
   ],
   controllers: [AppController],
   providers: [ConfigService, AppService],

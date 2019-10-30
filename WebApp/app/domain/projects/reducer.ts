@@ -20,19 +20,6 @@ function projectReducer(state: DomainState = initialState, action: DomainActions
           ...action.payload,
         }
       };
-    case getType(ProjectActions.setMarketData):
-      return{
-        ...state,
-        [action.payload.projectId]: {
-          ...state[action.payload.projectId],
-          chainData: {
-            ...state[action.payload.projectId].chainData,
-            marketData: {
-              ...action.payload.marketData,
-            },
-          },
-        }
-      };
     default:
       return state;
   }

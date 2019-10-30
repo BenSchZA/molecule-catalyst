@@ -155,7 +155,34 @@ After configuring the `ApiServer`, `WebApp`, and `Blockchain` following the step
 
 ### Deployment
 
-The latest Rinkeby test net deployment as of 11-09-2019:
+A unique database is created for each deployment. For example `MONGO_DATABASE: "molecule-catalyst-$NAMESPACE-$NPM_CONTRACTS_VERSION"`.
+
+The latest Rinkeby test net deployment as of 24-10-2019:
+
+NPM package: `"@molecule-protocol/catalyst-contracts": "^0.0.13"`
+```
+# Nightly
+DAI_CONTRACT_ADDRESS=0xDC3c52266AA4102De49B14c6bD25B495Acb88619                 
+MARKET_REGISTRY_ADDRESS=0xD4D33CE814041F2b777C2726529cdf3F14846B06              
+MARKET_FACTORY_ADDRESS=0x3D5fbfd16104502104581a44DEe4faE2caDc6595  
+
+# Don't include the following, for reference only:
+MOLECULE_VAULT_ADDRESS=0x1f1806d9fD7831B57AdB27c6B60d8FF56aBBA6ab
+CURVE_REGISTRY_ADDRESS=0x332ac6077da538667547bb2F8eB80E34A2C71575
+```
+
+```
+# Development
+DAI_CONTRACT_ADDRESS=0x5c916a958B996E3122165F523d1d1D860418E5c5
+MARKET_REGISTRY_ADDRESS=0x6Ae77351872Ff30b449c9E758d39F01d9fddc563
+MARKET_FACTORY_ADDRESS=0xd548246BF35803f731a736b433B353BbA36CbeFD
+
+# Don't include the following, for reference only:
+MOLECULE_VAULT_ADDRESS=0xD09Ac8b8995e58d5A4396Bcca33ef322d1814B2C
+CURVE_REGISTRY_ADDRESS=0x6712dD38B1f502300bE2E1c6ed64E17c7A9005f5
+```
+
+Deployment 11-09-2019:
 ```
 DAI_CONTRACT_ADDRESS=0x28668232805cC5faBbf42D59E973b5A8b4c81a67
 MARKET_REGISTRY_ADDRESS=0xe9c2Ab8EA767dd6d51cB1Ab2aDCA9b387d7F9D76

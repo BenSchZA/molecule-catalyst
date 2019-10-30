@@ -1,4 +1,4 @@
-import { transferAction, mintAction, burnAction } from "./market.actions";
+import { transferAction, mintAction, burnAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from "./market.actions";
 import { getType } from "typesafe-actions";
 import { BigNumber, bigNumberify } from "ethers/utils";
 import { ethers } from "ethers";
@@ -6,24 +6,29 @@ import { ethers } from "ethers";
 const calculateNetCost = (transactionsState, action): BigNumber => {
   const transactions = [
     ...transactionsState,
-    {txType: action.type, ...action.payload}
+    { txType: action.type, ...action.payload }
   ];
   const mints = transactions.filter(tx => tx.txType === 'MINT'
     && tx.userAddress === action.payload.userAddress);
-
-  return mints.length > 0 ? mints.reduce((prev, current) => {
-    return prev.add((current.collateralAmount.mul(ethers.utils.parseEther('1'))).div(current.amountMinted))
-  }, bigNumberify(0)).div(bigNumberify(mints.length)) : bigNumberify(0);
+  
+  const totalCollateral = mints.length > 0 ? mints.reduce((prev, current) => prev.add(current.collateralAmount), bigNumberify(0)) : bigNumberify(0);
+  const tokensBought = mints.length > 0 ? mints.reduce((prev, current) => prev.add(current.amountMinted), bigNumberify(0)) : bigNumberify(0);
+  return mints.length > 0 ? totalCollateral.mul(ethers.utils.parseEther('1')).div(tokensBought) : bigNumberify(0);
 }
 
 export interface MarketState {
+  active: boolean,
+  dateDeactivated: Date,
+  taxationRate: number,
+  tokenPrice: number,
+  totalSupply: BigNumber,
+  poolValue: BigNumber,
   lastBlockUpdated: number,
-  totalMinted: BigNumber,
   netCost: {
-    [s: string]: BigNumber 
+    [s: string]: BigNumber
   },
   balances: {
-    [s: string]: BigNumber 
+    [s: string]: BigNumber
   },
   transactions: Array<{
     txType: string,
@@ -36,8 +41,13 @@ export interface MarketState {
 }
 
 export const initialState: MarketState = {
+  active: true,
+  dateDeactivated: null,
+  taxationRate: 0,
+  tokenPrice: 0,
+  totalSupply: bigNumberify(0),
+  poolValue: bigNumberify(0),
   lastBlockUpdated: 0,
-  totalMinted: bigNumberify(0),
   netCost: {},
   balances: {},
   transactions: [],
@@ -57,44 +67,63 @@ export function MarketReducer(state: MarketState = initialState, action) {
         },
         transactions: [
           ...state.transactions,
-          {txType: action.type, ...action.payload}
+          { txType: action.type, ...action.payload }
         ]
       }
     case getType(mintAction):
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
-        totalMinted: state.totalMinted.add(action.payload.amountMinted),
         netCost: {
           ...state.netCost,
           [action.payload.userAddress]: calculateNetCost(state.transactions, action)
         },
         balances: {
           ...state.balances,
-          [action.payload.userAddress]: state.balances && (state.balances[action.payload.userAddress]) ? 
-            state.balances[action.payload.userAddress].add(action.payload.amountMinted) : 
+          [action.payload.userAddress]: state.balances && (state.balances[action.payload.userAddress]) ?
+            state.balances[action.payload.userAddress].add(action.payload.amountMinted) :
             action.payload.amountMinted
         },
         transactions: [
           ...state.transactions,
-          {txType: action.type, ...action.payload}
+          { txType: action.type, ...action.payload }
         ]
       }
     case getType(burnAction):
       return {
         ...state,
         lastBlockUpdated: action.payload.blockNumber,
-        totalMinted: state.totalMinted.sub(action.payload.amountBurnt),
         balances: {
           ...state.balances,
-          [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ? 
+          [action.payload.userAddress]: (state.balances[action.payload.userAddress]) ?
             state.balances[action.payload.userAddress].sub(action.payload.amountBurnt) :
             action.payload.amountBurnt
         },
         transactions: [
           ...state.transactions,
-          {txType: action.type, ...action.payload}
+          { txType: action.type, ...action.payload }
         ]
+      }
+    case getType(marketTerminatedAction):
+      return {
+        ...state,
+        active: false,
+        dateDeactivated: new Date(),
+      }
+    case getType(setTaxRateAction):
+      return {
+        ...state,
+        taxationRate: action.payload,
+      }
+    case getType(setMarketData):
+      return {
+        ...state,
+        ...action.payload,
+      }
+    case getType(setMarketActive):
+      return {
+        ...state,
+        ...action.payload,
       }
     default:
       return state;

@@ -2,15 +2,15 @@ import { createSelector } from "reselect";
 import { ApplicationRootState } from "types";
 import jwtDecode from 'jwt-decode';
 
-const networkNames = {
-  1: 'Homestead',
-  3: 'Ropsten',
-  4: 'Rinkeby',
-  42: 'Kovan',
-  77: 'Sokol',
-  99: 'POA',
-  100: 'XDai'
-};
+// const networkNames = {
+//   1: 'Homestead',
+//   3: 'Ropsten',
+//   4: 'Rinkeby',
+//   42: 'Kovan',
+//   77: 'Sokol',
+//   99: 'POA',
+//   100: 'XDai'
+// };
 
 const selectIsLoggedIn = (state: ApplicationRootState) => {
   const accessToken = state.authentication.accessToken;
@@ -49,10 +49,6 @@ const selectDaiBalance = (state: ApplicationRootState) => {
   return state.authentication.daiBalance;
 };
 
-const selectNetworkId = (state: ApplicationRootState) => {
-  return state.authentication.selectedNetworkId;
-};
-
 export const makeSelectIsLoggedIn = createSelector(selectIsLoggedIn, substate => {
   return substate;
 });
@@ -73,14 +69,16 @@ export const makeSelectDaiBalance = createSelector(selectDaiBalance, substate =>
   return substate;
 });
 
-export const makeSelectNetworkId = createSelector(selectNetworkId, substate => {
-  return substate;
-});
-
-export const makeSelectNetworkName = createSelector(selectNetworkId, substate => {
-  return substate && networkNames[substate];
-});
-
 export const makeSelectUserRole = createSelector(selectUserRole, substate => {
   return substate;
 });
+
+export const makeSelectApprovedNetwork = createSelector(
+  (state: ApplicationRootState) => state.authentication.approvedNetwork,
+  approvedNetwork => { return approvedNetwork }
+)
+
+export const makeSelectApprovedNetworkName = createSelector(
+  (state: ApplicationRootState) => state.authentication.approvedNetworkName,
+  approvedNetworkName => { return approvedNetworkName }
+)

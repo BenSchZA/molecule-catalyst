@@ -6,10 +6,11 @@ import { forwardTo } from 'utils/history';
 import { getPermit as getPermitApi, login } from '../../api';
 import * as authenticationActions from './actions';
 import ActionTypes from './constants';
-import { getBlockchainObjects, signMessage } from 'blockchainResources';
+import { getBlockchainObjects, signMessage, BlockchainResources } from 'blockchainResources';
 import { getType } from 'typesafe-actions';
-import { getDaiBalance, getDaiContract } from './chain';
-
+import { getDaiBalance } from './chain';
+import { ethers } from 'ethers';
+import { ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
 
 export function* getPermit() {
   const { signerAddress } = yield call(getBlockchainObjects)
@@ -67,7 +68,8 @@ export function* refreshTokenPoller() {
 }
 
 export function* loginFlow() {
-  while (yield take(getType(authenticationActions.authenticate.request))) {
+  while (true) {
+    const action = yield take(getType(authenticationActions.authenticate.request));
 
     try {
       const response = yield call(getPermit);
@@ -76,7 +78,11 @@ export function* loginFlow() {
       yield call(getAccessToken, response, signerAddress);
       // yield put(userProfileActions.getUserProfile.request());
       yield fork(refreshTokenPoller);
-      yield call(forwardTo, '/discover'); // TODO: have this only redirect when on log in
+      if(action.payload === '/') {
+        yield call(forwardTo, '/discover');
+      } else {
+        yield call(forwardTo, action.payload);
+      }
     } catch (error) {
       yield put(authenticationActions.authenticate.failure(error.message));
       console.error(error);
@@ -86,12 +92,18 @@ export function* loginFlow() {
 
 export function* connectWallet() {
   try {
-    const { signerAddress, provider } = yield call(getBlockchainObjects);
+    const { signerAddress, provider, networkId, approvedNetwork, approvedNetworkName }: BlockchainResources = yield call(getBlockchainObjects);
+    yield put(authenticationActions.setApprovedNetworkName(approvedNetworkName));
     if (provider) {
-      yield put(authenticationActions.setEthAddress(signerAddress));
-      const network = yield call([provider, provider.getNetwork]);
-      yield put(authenticationActions.setNetworkId(network.chainId));
-      yield put(authenticationActions.connectWallet.success());
+      if (approvedNetwork) {
+        yield put(authenticationActions.connectWallet.success({
+          approvedNetwork: approvedNetwork,
+          ethAddress: signerAddress,
+          networkId: networkId,
+        }));
+      } else {
+        yield put(authenticationActions.logOut());
+      }
     } else {
       yield put(authenticationActions.connectWallet.failure('Non-Ethereum browser detected. You should consider trying MetaMask!'));
     }
@@ -124,44 +136,37 @@ export function* addressChangeListener() {
 }
 
 export function* daiBalanceListener() {
-  const { signerAddress } = yield call(getBlockchainObjects);
-  const daiContract = yield call(getDaiContract);
-  
-  // event Transfer(
-  //     address indexed from,
-  //     address indexed to,
-  //     uint256 value
-  // );
-  // The null field indicates any value matches, this specifies
-  // "any Transfer from any to signerAddress"
-  const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
-  const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
+  const { signerAddress, provider, daiAddress } = yield call(getBlockchainObjects);
+  if (signerAddress) {
+    const daiContract = new ethers.Contract(daiAddress, ERC20Detailed, provider);
 
-  daiContract.removeAllListeners(filterTo);
-  daiContract.removeAllListeners(filterFrom);
+    const filterTo = daiContract.filters.Transfer(null, signerAddress, null);
+    const filterFrom = daiContract.filters.Transfer(signerAddress, null, null);
 
-  const transferEventChannel = eventChannel(emit => {
-    try {
-      // Listen for filtered results
-      daiContract.on(filterTo, (from, to, value) => {
-        console.log('Received ' + value.toString() + ' Dai from ' + from);
-        emit(value);
-      });
-      daiContract.on(filterFrom, (from, to, value) => {
-        console.log('Sent ' + value.toString() + ' Dai to ' + to);
-        emit(value);
-      });
+    daiContract.removeAllListeners(filterTo);
+    daiContract.removeAllListeners(filterFrom);
+
+    const transferEventChannel = eventChannel(emit => {
+      try {
+        // Listen for filtered results
+        daiContract.on(filterTo, (from, to, value) => {
+          emit(value);
+        });
+        daiContract.on(filterFrom, (from, to, value) => {
+          emit(value);
+        });
+      }
+      catch (e) {
+        console.log(e);
+      }
+      return () => { };
+    });
+
+    while (true) {
+      const daiBalance = yield call(getDaiBalance);
+      yield put(authenticationActions.setDaiBalance(daiBalance));
+      yield take(transferEventChannel);
     }
-    catch (e) {
-      console.log(e);
-    }
-    return () => { };
-  });
-
-  while (true) {
-    const daiBalance = yield call(getDaiBalance);
-    yield put(authenticationActions.setDaiBalance(daiBalance));
-    yield take(transferEventChannel);
   }
 }
 

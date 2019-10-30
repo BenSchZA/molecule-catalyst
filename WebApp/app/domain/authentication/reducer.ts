@@ -4,11 +4,13 @@ import * as authenticationActions from './actions';
 import { DomainActions, DomainState } from './types';
 
 export const initialState: DomainState = {
+  approvedNetwork: false,
+  approvedNetworkName: '',
   walletUnlocked: false,
   userId: '',
   ethAddress: '',
   daiBalance: 0,
-  selectedNetworkId: undefined,
+  networkId: 0,
   signedPermit: '',
   accessToken: '',
   errorMessage: '',
@@ -27,8 +29,9 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.connectWallet.success):
       return {
         ...state,
-        ...{ errorMessage: '' },
-        ...{ walletUnlocked: true },
+        errorMessage: '',
+        walletUnlocked: true,
+        ...action.payload
       };
     case getType(authenticationActions.connectWallet.failure):
       return {
@@ -39,7 +42,8 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.logOut):
       return {
         ...initialState,
-        ...{ walletUnlocked: state.walletUnlocked },
+        walletUnlocked: state.walletUnlocked,
+        approvedNetworkName: state.approvedNetworkName,
       };
     case getType(authenticationActions.authenticate.failure):
       return {
@@ -65,6 +69,11 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
       return {
         ...state,
         ...{ userId: action.payload }
+      }
+    case getType(authenticationActions.setApprovedNetworkName):
+      return {
+        ...state,
+        approvedNetworkName: action.payload,
       }
     default:
       return state;

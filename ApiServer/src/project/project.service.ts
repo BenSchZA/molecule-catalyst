@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Project } from './project.schema';
 import { Model } from 'mongoose';
@@ -12,6 +12,8 @@ import { ServiceBase } from 'src/common/serviceBase';
 import * as sharp from 'sharp';
 import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
 import { MarketService } from 'src/market/market.service';
+import { Vault } from 'src/market/vault.schema';
+import { PhaseState } from 'src/market/vault.reducer';
 
 @Injectable()
 export class ProjectService extends ServiceBase {
@@ -22,20 +24,32 @@ export class ProjectService extends ServiceBase {
     super(ProjectService.name);
   }
 
-  async submit(projectData: SubmitProjectDTO, file: any, user: User): Promise<Project> {
+  async submit(projectData: SubmitProjectDTO, file1: any, file2: any, user: User): Promise<Project> {
     this.logger.debug('saving new project data');
     const profiler = this.logger.startTimer();
     const project = await new this.projectRepository({ ...projectData, user: user.id });
-    if (file) {
-      const croppedFile = await sharp(file.buffer)
+    if (file1) {
+      const croppedFile = await sharp(file1.buffer)
         .resize(1366, 440, {
           position: sharp.strategy.attention,
         }).toBuffer();
       const attachment = await this.attachmentService.create({
-        filename: `${project.id}-${file.originalname}`,
-        contentType: file.mimetype
+        filename: `${project.id}-${file1.originalname}`,
+        contentType: file1.mimetype,
       }, { buffer: croppedFile });
       project.featuredImage = attachment;
+    }
+
+    if (file2) {
+      const croppedFile = await sharp(file2.buffer)
+        .resize(300, 300, {
+          position: sharp.strategy.attention,
+        }).toBuffer();
+      const attachment = await this.attachmentService.create({
+        filename: `${project.id}-${file2.originalname}`,
+        contentType: file2.mimetype,
+      }, { buffer: croppedFile });
+      project.organisationImage = attachment;
     }
 
     await project.save();
@@ -43,95 +57,87 @@ export class ProjectService extends ServiceBase {
     return project.toObject();
   }
 
+  async updateProject(projectId: any, body, files: any) {
+    this.logger.debug(`Attempting to update Project ${projectId}`);
+    const profiler = this.logger.startTimer();
+    const projectToUpdate = await this.projectRepository.findById(projectId).populate('user');
+    if (!projectToUpdate) {
+      throw new NotFoundException('The project was not found');
+    }
+
+    Object.keys(body).forEach(key => projectToUpdate[key] = body[key])
+    await projectToUpdate.save();
+
+    if (files) {
+      if (files.featuredImage?.[0]) {
+        const croppedFile = await sharp(files.featuredImage[0].buffer)
+          .resize(1366, 440, {
+            position: sharp.strategy.attention,
+          }).toBuffer();
+        const attachment = await this.attachmentService.create({
+          filename: `${projectToUpdate.id}-${files.featuredImage[0].originalname}`,
+          contentType: files.featuredImage[0].mimetype,
+        }, { buffer: croppedFile });
+        projectToUpdate.featuredImage = attachment;
+      }
+
+      if (files.organisationImage?.[0]) {
+        const croppedFile = await sharp(files.organisationImage[0].buffer)
+          .resize(300, 300, {
+            position: sharp.strategy.attention,
+          }).toBuffer();
+        const attachment = await this.attachmentService.create({
+          filename: `${projectToUpdate.id}-${files.organisationImage[0].originalname}`,
+          contentType: files.organisationImage[0].mimetype,
+        }, { buffer: croppedFile });
+        projectToUpdate.organisationImage = attachment;
+      }
+
+      await projectToUpdate.save();
+      profiler.done('project saved');
+      return projectToUpdate.toObject();
+    }
+  }
+
+  async getProjectByMarketAddress(marketAddress: string) {
+    const project = await this.projectRepository
+      .findOne({ 'chainData.marketAddress': marketAddress })
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+    if (!project) {
+      this.logger.log(`Project with vault address ${marketAddress} not found`)
+      return;
+    }
+    return this.getMarketVaultData(project);
+  }
+
+  async getProjectByVaultAddress(vaultAddress: string) {
+    const project = await this.projectRepository
+      .findOne({ 'chainData.vaultAddress': vaultAddress })
+      .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
+    if (!project) {
+      this.logger.log(`Project with vault address ${vaultAddress} not found`)
+      return;
+    }
+    return this.getMarketVaultData(project);
+  }
+
   async getProjects() {
     const projects = await this.projectRepository
       .find().or([{ status: ProjectSubmissionStatus.started }, { status: ProjectSubmissionStatus.ended }])
       .populate(Schemas.User, '-email -type -valid -blacklisted -createdAt -updatedAt');
 
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async getAllProjects() {
     this.logger.info('Getting all projects');
     const projects = await this.projectRepository.find().populate(Schemas.User);
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async getUserProjects(userId: string) {
     const projects = await this.projectRepository.find({ user: userId }).populate(Schemas.User);
-    const enhancedProjects = await Promise.all(projects.map(p => p.toObject())
-      .map(async p => {
-        if (p.chainData.marketAddress !== '0x' && p.chainData.vaultAddress !== '0x') {
-          const marketData = await this.marketService.getMarketData(p.chainData.marketAddress);
-          const vaultData = await this.marketService.getVaultData(p.chainData.vaultAddress)
-          return {
-            ...p,
-            marketData: marketData.marketData,
-            vaultData: vaultData.vaultData,
-          }
-        } else {
-          return p;
-        }
-      }))
-
-    return enhancedProjects;
-  }
-
-  async findById(projectId: string) {
-    const projectDoc = await this.projectRepository.findById(projectId);
-    if (!projectDoc) {
-      return false;
-    } else {
-      const project = projectDoc.toObject();
-      if (project.chainData.marketAddress !== '0x' && project.chainData.vaultAddress !== '0x') {
-        const marketData = await this.marketService.getMarketData(project.chainData.marketAddress);
-        const vaultData = await this.marketService.getVaultData(project.chainData.vaultAddress)
-        return {
-          ...project,
-          marketData: marketData.marketData,
-          vaultData: vaultData.vaultData,
-        }
-      } else {
-        return project;
-      }
-    }
-  }
-
-  async approveProject(projectId: any, user: User) {
-    const project = await this.projectRepository.findById(projectId);
-    project.status = ProjectSubmissionStatus.accepted;
-    await project.save();
-    return project.toObject();
+    return Promise.all(projects.map(p => this.getMarketVaultData(p)));
   }
 
   async rejectProject(projectId: any, user: User) {
@@ -182,6 +188,44 @@ export class ProjectService extends ServiceBase {
       this.logger.error(`Something went wrong adding updates to project ${project.id}`);
       this.logger.error(error);
       throw new InternalServerErrorException(`Something went wrong adding updates to project ${project.id}`, error);
+    }
+  }
+
+  private async getMarketVaultData(projectDoc: ProjectDocument): Promise<Project> {
+    if (projectDoc.chainData.marketAddress !== '0x' && projectDoc.chainData.vaultAddress !== '0x') {
+      const marketData = await this.marketService.getMarketData(projectDoc.chainData.marketAddress);
+      const vaultData = await this.marketService.getVaultData(projectDoc.chainData.vaultAddress)
+      if (projectDoc.status === ProjectSubmissionStatus.started) {
+        await this.validateProjectStatus(projectDoc, vaultData);
+      }
+      return {
+        ...projectDoc.toObject(),
+        marketData: marketData.marketData,
+        vaultData: vaultData.vaultData,
+      }
+    } else {
+      return projectDoc.toObject();
+    }
+  }
+
+  private async validateProjectStatus(project: ProjectDocument, vault: Vault): Promise<ProjectDocument> {
+    try {
+      // Check if there are any ongoing phases
+      if (vault && vault.vaultData && vault.vaultData.phases && vault.vaultData.phases.length > 0) {
+        const ongoingPhases = vault.vaultData.phases.filter(value => value.state <= PhaseState.STARTED);
+        if (!ongoingPhases.length) {
+          this.logger.info(`Status for project ${project.id} updated to 'ended'`);
+          project.status = ProjectSubmissionStatus.ended;
+          await project.save();
+        }
+      } else {
+        this.logger.warn(`Vault for project ${project.id} is not yet initialised, skipping the check`);
+      }
+      return project;
+    } catch (error) {
+      this.logger.error(`Something went wrong validating status for project ${project.id}`);
+      this.logger.error(error);
+      return project;
     }
   }
 }

@@ -1,6 +1,5 @@
-import { createStandardAction, PayloadAC } from 'typesafe-actions';
+import { createStandardAction } from 'typesafe-actions';
 import { BigNumber } from "ethers/utils";
-import { ethers } from 'ethers';
 
 export const mintAction = createStandardAction('MINT')<{
   userAddress: string,
@@ -29,3 +28,18 @@ export const transferAction = createStandardAction('TRANSFER')<{
   txHash: string,
   timestamp: Date
 }>();
+
+export const setTaxRateAction = createStandardAction('SETTAXRATE')<number>();
+
+export const setMarketActive = createStandardAction('SETMARKETACTIVE')<{
+  active: boolean,
+  dateDeactivated: Date,
+}>();
+
+export const setMarketData = createStandardAction('SETMARKETDATA')<{
+  tokenPrice: number,
+  poolValue: BigNumber,
+  totalSupply: BigNumber
+}>();
+
+export const marketTerminatedAction = createStandardAction('TERMINATED')();

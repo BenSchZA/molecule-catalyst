@@ -20,6 +20,7 @@ enum ActionTypes {
   SET_USER_TYPE = 'molecule/authentication/SET_USER_TYPE',
   SET_USER_ID = 'molecule/authentication/SET_USER_ID',
   SET_DAI_BALANCE = 'molecule/authentication/SET_DAI_BALANCE',
+  SET_APPROVED_NETWORK_NAME = 'molecule/authentication/SET_APPROVED_NETWORK_NAME'
 }
 
 export default ActionTypes;

@@ -17,15 +17,14 @@
     "types": ["jest","node"],
     "typeRoots": [
       "/node_modules/@types"
-    ],
+    ]
   },
   "include": [
     "src/**/*",
-    "node_modules/@types",
+    "node_modules/@types"
   ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
-  ],
-
+  ]
 }

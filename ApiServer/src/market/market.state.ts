@@ -3,36 +3,41 @@ import { ServiceBase } from 'src/common/serviceBase';
 import { Contract, Wallet, ethers, Event } from 'ethers';
 import { Provider } from 'ethers/providers';
 import { ConfigService } from 'src/config/config.service';
-import { IMarket, ERC20Detailed } from '@molecule-protocol/catalyst-contracts';
+import { IMarket } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction } from './market.actions';
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from './market.actions';
+import { BigNumber } from 'ethers/utils';
 import throttle = require('lodash/throttle');
-import {rehydrateMarketData} from './mongoRehydrationHelpers';
+import { rehydrateMarketData } from './mongoRehydrationHelpers';
+import { EventEmitter } from 'events';
 
 
 export class MarketState extends ServiceBase {
   private readonly marketContract: Contract;
   private readonly marketState: Store<any>;
-  private readonly daiContract: Contract;
 
   constructor(
     private readonly marketAddress: string,
     private readonly stateDocument: MarketDocument,
     private readonly ethersProvider: Provider,
-    private readonly config: ConfigService) {
+    private readonly config: ConfigService,
+    private readonly marketEmitter: EventEmitter) {
     super(`${MarketState.name}-${marketAddress}`);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
     this.marketContract = new Contract(this.marketAddress, IMarket, this.ethersProvider).connect(serverAccountWallet);
-    this.daiContract = new Contract(this.config.get('contracts').dai, ERC20Detailed, this.ethersProvider).connect(serverAccountWallet);
 
     this.marketState = this.stateDocument.isNew ? createStore(MarketReducer) : createStore(MarketReducer, rehydrateMarketData(this.stateDocument.marketData));
 
     this.marketState.subscribe(throttle(() => {
       this.stateDocument.marketData = this.marketState.getState();
       this.stateDocument.markModified('marketData');
-      this.stateDocument.save();
+      try {
+        this.stateDocument.save();
+        this.marketEmitter.emit('marketUpdated', marketAddress)
+      } catch (error) {
+        this.logger.warn('There was an error updating the market document');
+      }
     }, 1000));
 
     this.startListening()
@@ -42,9 +47,14 @@ export class MarketState extends ServiceBase {
     // get all logs from latest block in DB up until the current block, and update fixture state
     if (this.stateDocument.isNew) {
       this.stateDocument.marketData = this.marketState.getState();
+
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
+      this.marketState.dispatch(setTaxRateAction((await this.marketContract.taxationRate()).toNumber()));
+      await this.updateContractData();
+      await this.updateMarketActive();
     }
+
     const fromBlock = (this.stateDocument.marketData && this.stateDocument.marketData.lastBlockUpdated) ?
       this.stateDocument.marketData.lastBlockUpdated + 1 : 0;
 
@@ -116,7 +126,7 @@ export class MarketState extends ServiceBase {
     // Set up listener for transfer event, create appropriate action, dispatch against store
     this.marketContract.on(this.marketContract.filters.Transfer(),
       async (from: string, to: string, value: BigNumber, event: Event) => {
-        if (((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) && 
+        if (((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) &&
           from !== ethers.constants.AddressZero && to !== ethers.constants.AddressZero) {
           this.logger.info(`New Transfer received.`);
           const action = transferAction({
@@ -147,6 +157,7 @@ export class MarketState extends ServiceBase {
             timestamp: new Date((await this.ethersProvider.getBlock(event.blockNumber)).timestamp * 1000)
           })
           this.marketState.dispatch(action);
+          await this.updateContractData();
         }
       })
 
@@ -163,7 +174,43 @@ export class MarketState extends ServiceBase {
             timestamp: new Date((await this.ethersProvider.getBlock(event.blockNumber)).timestamp * 1000)
           })
           this.marketState.dispatch(action);
+          await this.updateContractData();
         }
       })
+
+    this.marketContract.on(this.marketContract.filters.MarketTerminated(),
+      async (event) => {
+        if ((!this.stateDocument.marketData.lastBlockUpdated) || event.blockNumber > this.stateDocument.marketData.lastBlockUpdated) {
+          this.logger.info(`Market terminated: ${this.marketAddress}`);
+          this.marketState.dispatch(marketTerminatedAction());
+          await this.updateContractData();
+        }
+      })
+  }
+
+  async updateMarketActive() {
+    const marketActive = await this.marketContract.active();
+
+    const marketTerminatedFilter = {
+      ...this.marketContract.filters.MarketTerminated(),
+      fromBlock: 0,
+    };
+
+    const terminated = await this.ethersProvider.getLogs(marketTerminatedFilter);
+    const dateDeactivated = terminated.length > 0 ? new Date((await this.ethersProvider.getBlock(terminated[0].blockNumber)).timestamp * 1000) : null;
+    
+    this.marketState.dispatch(setMarketActive({
+      active: marketActive,
+      dateDeactivated: dateDeactivated,
+    }))
+  }
+
+  async updateContractData() {
+    const marketActive = await this.marketContract.active();
+    this.marketState.dispatch(setMarketData({
+      poolValue: await this.marketContract.poolBalance(),
+      tokenPrice: marketActive ? await this.marketContract.priceToMint(ethers.utils.parseEther('1')) : 0,
+      totalSupply: await this.marketContract.totalSupply(),
+    }))
   }
 }
