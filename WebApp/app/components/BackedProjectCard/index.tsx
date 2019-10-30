@@ -184,7 +184,7 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
   }, [project.marketData.tokenPrice]);
 
   const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] &&
-    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(8)) > 0;
 
   return (
     <Fragment>
