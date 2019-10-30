@@ -37,6 +37,7 @@ const theme = (createMuiTheme as any)({
     },
     secondary: {
       main: colors.moleculeBranding.secondary,
+      dark: colors.moleculeBranding.primaryLight
     },
   },
   breakpoints: {
@@ -57,7 +58,7 @@ const theme = (createMuiTheme as any)({
   overrides: {
     MuiButton: {
       root: {
-        background: colors.moleculeBranding.secondary,
+        background: colors.moleculeBranding.primaryLight,
         color: colors.white,
         marginTop: '24px',
         marginLeft: '8px',

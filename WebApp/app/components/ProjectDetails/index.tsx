@@ -19,6 +19,7 @@ import {
   TableRow,
   TableCell,
   CircularProgress,
+  Button,
 } from '@material-ui/core';
 import {
   Project,
@@ -35,7 +36,6 @@ import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
-import { NegativeButton, PositiveButton } from 'components/custom';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
@@ -66,21 +66,21 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     setModalState(false);
   };
 
-  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
-    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
+  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] &&
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(8)) > 0;
 
   const getEndDateOffset = (phases, phaseIndex) => {
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
 
-    if(phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
+    if (phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
       const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
-      return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day'); 
+      return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day');
     }
     const months = phases.map((phase, index, array) => phase.phaseDuration)
       .reduce((accumulator, currentValue, index, array) => index <= phaseIndex ? accumulator += currentValue : accumulator, 0);
     return dayjs(firstPhaseDate.add(months, 'month').format('YYYY-MM-DD')).diff(firstPhaseDate.format('YYYY-MM-DD'), 'day');
   };
-  
+
   const getDateRange = (phaseIndex) => {
     let startDate: Dayjs = dayjs();
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
@@ -88,25 +88,25 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
     project.vaultData.phases
       .some((phase, index, array) => {
-        if(index <= phaseIndex) {
-          if(phase.state >= FundingState.STARTED) {
+        if (index <= phaseIndex) {
+          if (phase.state >= FundingState.STARTED) {
             startDate = dayjs(phase.startDate);
           } else {
-            startDate = firstPhaseDate.add(endDateOffset, 'day').subtract(array[index].phaseDuration, 'month'); 
+            startDate = firstPhaseDate.add(endDateOffset, 'day').subtract(array[index].phaseDuration, 'month');
           }
           return false;
         } else {
           return true;
         }
-    });
+      });
 
-    return  startDate
-              .format('DD MMMM YYYY')
-              .toUpperCase() + ' - ' + 
-            firstPhaseDate
-              .add(endDateOffset, 'day')
-              .format('DD MMMM YYYY')
-              .toUpperCase();
+    return startDate
+      .format('DD MMMM YYYY')
+      .toUpperCase() + ' - ' +
+      firstPhaseDate
+        .add(endDateOffset, 'day')
+        .format('DD MMMM YYYY')
+        .toUpperCase();
   };
 
   const getRemainingDuration = (index) => {
@@ -140,16 +140,18 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             {project.title}
           </Typography>
           <div>
-            <NegativeButton
+            <Button
+              className={classes.supportProject}
               onClick={handleOpenSupportModal}
               disabled={!(isLoggedIn && project && project.marketData && project.status !== ProjectSubmissionStatus.ended)} >
               Support Project
-            </NegativeButton>
-            <PositiveButton
+            </Button>
+            <Button
+              className={classes.redeemHoldings}
               onClick={handleOpenRedeemModal}
               disabled={!(isLoggedIn && project && project.marketData && userHasBalance)} >
               Withdraw Stake
-            </PositiveButton>
+            </Button>
           </div>
         </div>
         <div className={classes.bannerFooter}>
@@ -177,8 +179,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>
             {
-              project.organisationImage && 
-              <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage} />
+              project.organisationImage &&
+              <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage)} className={classes.avatarImage} />
             }
           </div>
         </div>

@@ -336,6 +336,32 @@ const styles = ({ spacing, palette }: Theme) =>
       width: '1100px',
       paddingTop: avatarSize*1
     },
+    supportProject: {
+      background: '#FFFFFF 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#003E52',
+      '&:hover': {
+        background: '#FFFFFF 0% 0% no-repeat padding-box',
+        boxShadow: '2px 5px 2px #0003',
+      }
+    },
+    redeemHoldings: {
+      background: '#03DAC6 0% 0% no-repeat padding-box',
+      boxShadow: '0px 1px 3px #00000033',
+      borderRadius: '4px',
+      textAlign: 'center',
+      font: 'Bold 14px/24px Montserrat',
+      letterSpacing: '0.18px',
+      color: '#FFFFFF',
+      '&:hover': {
+        background: '#03DAC6 0% 0% no-repeat padding-box',
+        boxShadow: '2px 5px 2px #0003',
+      }
+    },
     loadingSpinner: {
       position: 'fixed',
       top: '50%',

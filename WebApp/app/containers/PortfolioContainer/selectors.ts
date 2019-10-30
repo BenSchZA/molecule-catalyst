@@ -3,6 +3,7 @@ import { RootState } from 'containers/App/types';
 import { StateProps } from '.';
 import { selectAllProjects } from 'domain/projects/selectors';
 import { ApplicationRootState } from 'types';
+import { bigNumberify, parseEther } from 'ethers/utils';
 /**
  * Direct selector to the PortfolioContainer state domain
  */
@@ -24,7 +25,8 @@ const makeSelectBackedProjects = createSelector(
   (allProjects, address) => {
     const allBackedProjects = allProjects.filter(p => {
       return p.marketData && p.marketData.balances && 
-      p.marketData.balances[address]
+      p.marketData.balances[address] &&
+      bigNumberify(p.marketData.balances[address]).gt(parseEther('0.000000001')) //Only show projects with positive balances at 9 digits
     });
     return allBackedProjects;
   },
