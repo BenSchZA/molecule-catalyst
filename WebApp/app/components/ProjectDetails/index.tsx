@@ -67,7 +67,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   };
 
   const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] &&
-    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(8)) > 0;
 
   const getEndDateOffset = (phases, phaseIndex) => {
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
