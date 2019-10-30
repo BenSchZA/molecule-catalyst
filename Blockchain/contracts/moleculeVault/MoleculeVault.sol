@@ -6,20 +6,20 @@ import { IMoleculeVault } from "./IMoleculeVault.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
-  * @title  Storage and acess to the molecule tax.
-  * @notice The vault will send the molecule vault its tax rate when a round of
+  * @title  Storage and acess to the molecule fee.
+  * @notice The vault will send the molecule vault its fee rate when a round of
   *         funding has been successfully filled.
   */
 contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     // The collateral token being used by the vaults and markets
     IERC20 internal collateralToken_;
-    // The tax rate of the molecule vault
+    // The fee rate of the molecule vault
     uint256 internal feeRate_ = 0;
 
     /**
       * @notice Setts the state variables for the contract.
       * @param  _collateralToken : The address of the collateral token (ERC20).
-      * @param  _feeRate : The taxation rate to be used by the vaults.
+      * @param  _feeRate : The fee rate to be used by the vaults.
       */
     constructor(
         address _collateralToken,
@@ -28,9 +28,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         public
         WhitelistAdminRole()
     {
-        // Ensures that the tax rate is correct
-        require(_feeRate > 0, "Taxation rate too low");
-        require(_feeRate < 100, "Taxation rate too high");
+        // Ensures that the fee rate is correct
+        require(_feeRate > 0, "Fee rate too low");
+        require(_feeRate < 100, "Fee rate too high");
 
         collateralToken_ = IERC20(_collateralToken);
         feeRate_ = _feeRate;
@@ -84,9 +84,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @notice Allows the admin to update the taxation rate charged by the
+      * @notice Allows the admin to update the fee rate charged by the
       *         molecule vault.
-      * @param  _newFeeRate : The new taxation rate.
+      * @param  _newFeeRate : The new fee rate.
       */
     function updateFeeRate(
         uint256 _newFeeRate
@@ -97,7 +97,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     {
         require(
             feeRate_ != _newFeeRate,
-            "New taxation rate cannot be the same as old taxation rate"
+            "New fee rate cannot be the same as old fee rate"
         );
 
         feeRate_ = _newFeeRate;
@@ -112,7 +112,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @return uint256 : The rate of taxation
+      * @return uint256 : The rate of fee
       */
     function feeRate() public view returns(uint256) {
         return feeRate_;

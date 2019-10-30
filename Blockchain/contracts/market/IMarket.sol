@@ -163,10 +163,10 @@ interface IMarket {
     function poolBalance() external view returns (uint256);
 
     /**
-      * @dev 	The rate of taxation the market pays towards the vault on token
+      * @dev 	The rate of fee (%) the market pays towards the vault on token
 	    *			  purchases.
       */
-    function taxationRate() external view returns(uint256);
+    function feeRate() external view returns(uint256);
 
     /**
       * @return	uint256 : The decimals set for the market

@@ -400,7 +400,7 @@ describe('Market test', async () => {
 
     describe("Meta data", async () => {
         it('Get taxationRate', async () =>{
-            const taxationRate = await marketInstance.taxationRate();
+            const taxationRate = await marketInstance.feeRate();
             assert.ok(taxationRate.eq(marketSettings.taxationRate), "Taxation rate not set");
         });
 

@@ -16,19 +16,19 @@ import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
   * @notice The market factory stores the addresses in the relavant registry.
   */
 contract MarketFactory is IMarketFactory, WhitelistAdminRole {
-    //The molecule vault for molecule tax
-    IMoleculeVault internal moleculeVault_; // todo make storage as ImolVault
+    //The molecule vault for molecule fee
+    IMoleculeVault internal moleculeVault_;
     //The registry of all created markets
     IMarketRegistry internal marketRegistry_;
     //The registry of all curve types
     ICurveRegistry internal curveRegistry_;
     //The ERC20 collateral token contract address
-    IERC20 internal collateralToken_; // todo change to the IERC20
+    IERC20 internal collateralToken_;
 
     /**
       * @dev    Sets variables for market deployments.
       * @param  _collateralToken Address of the ERC20 collateral token
-      * @param  _moleculeVault   The address of the molecule tax vault
+      * @param  _moleculeVault   The address of the molecule fee vault
       * @param  _marketRegistry  Address of the registry of all markets
       * @param  _curveRegistry   Address of the registry of all curve types
       *         funding rounds.
@@ -59,14 +59,14 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
       * @param  _phaseDurations The time for each round in number of blocks.
       * @param  _creator Address of the researcher.
       * @param  _curveType Curve selected.
-      * @param  _taxationRate The pecentage of taxation. e.g: 60
+      * @param  _feeRate The pecentage of fee. e.g: 60
       */
     function deployMarket(
         uint256[] calldata _fundingGoals,
         uint256[] calldata _phaseDurations,
         address _creator,
         uint256 _curveType,
-        uint256 _taxationRate
+        uint256 _feeRate
     )
         external
         onlyWhitelistAdmin()
@@ -76,8 +76,8 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
             _curveType
         );
 
-        require(_taxationRate > 0, "Taxation rate too low");
-        require(_taxationRate < 100, "Taxation rate too high");
+        require(_feeRate > 0, "Fee rate too low");
+        require(_feeRate < 100, "Fee rate too high");
 
         require(curveState == true, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
@@ -91,7 +91,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         ));
 
         address newMarket = address(new Market(
-            _taxationRate,
+            _feeRate,
             newVault,
             curveLibrary,
             address(collateralToken_)

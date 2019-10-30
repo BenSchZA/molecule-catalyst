@@ -29,9 +29,9 @@ interface IMoleculeVault {
     function approve(address _spender, uint256 _amount) external;
 
     /**
-      * @notice Allows the admin to update the taxation rate charged by the
+      * @notice Allows the admin to update the fee rate charged by the
       *         molecule vault.
-      * @param  _newFeeRate : The new taxation rate.
+      * @param  _newFeeRate : The new fee rate.
       */
     function updateFeeRate(uint256 _newFeeRate) external returns(bool);
 
@@ -41,7 +41,7 @@ interface IMoleculeVault {
     function collateralToken() external view returns(address);
 
     /**
-      * @return uint256 : The tax rate the molecule vault has.
+      * @return uint256 : The fee rate the molecule vault has.
       */
     function feeRate() external view returns(uint256);
 }

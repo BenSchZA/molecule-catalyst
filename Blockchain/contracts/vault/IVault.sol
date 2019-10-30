@@ -23,7 +23,7 @@ interface IVault {
     /**
       * @notice	Verifies that the phase passed in: has not been withdrawn,
 	  *			funding goal has been reached, and that the phase has not
-	  *			expired. Adds tax amount to the vault pool.
+	  *			expired. Adds fee amount to the vault pool.
       */
     function validateFunding(uint256 _receivedFunding) external returns(bool);
 
