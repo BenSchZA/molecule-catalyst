@@ -93,7 +93,7 @@ const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, cl
     <Typography variant='h2' className={classes.header}>Discover</Typography>
     <div>
       <Typography className={classes.explainerText}>
-        Explore researchers and organisations who are using Molecule Catalyst to realiSe their goals for new and innovative research initiatives and experimental studies.
+        Explore researchers and organisations who are using Molecule Catalyst to realise their goals for new and innovative research initiatives and experimental studies.
       </Typography>
     </div>
     <div>
