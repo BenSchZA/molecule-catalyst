@@ -1,7 +1,4 @@
 import { Theme, createStyles } from '@material-ui/core';
-import { colors } from 'theme';
-
-const titleHeight = 40;
 
 const styles = (theme: Theme) => createStyles({
   layout: {
@@ -16,64 +13,71 @@ const styles = (theme: Theme) => createStyles({
     flexDirection: 'row',
     justifyContent: "center",
     alignItems: 'center',
-    "& > *":{
+    "& > *": {
       width: 200,
       margin: "0 20px"
     }
   },
+  modalSurface: {
+    width: '534px',
+    overflow: 'visible',
+    boxShadow: '20px 20px 60px #00000071',
+    border: '2px solid #FFFFFF',
+    borderRadius: '10px',
+  },
   modal: {
-    position: 'absolute',
-    // width: "",
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
     padding: theme.spacing(2, 4, 3),
-    overflow:"hidden",
-    top: '50%',
-    left: '50%',
+    opacity: 1,
+    textAlign: 'center',
+    borderRadius: '10px',
+  },
+  closeModal: {
+    position: 'absolute',
+    top: 0,
+    left: '100%',
     transform: 'translate(-50%, -50%)',
-    "&:before":{
-      content: "''",
-      display: "block",
-      width: "100%",
-      height: titleHeight,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: -1,
-      backgroundColor: colors.grey,
-    }
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
+    borderRadius: '50%',
+    padding: '3px',
+    cursor: 'pointer',
   },
   modalTitle: {
-    "& h2": {
-      fontSize: "16px",
-      textTransform: "uppercase",
-      textAlign: "left",
-      margin: 0,
-      padding: 0
-    }
+    fontSize: "30px",
+    textAlign: "center",
+    margin: 0,
+    padding: 0
   },
-  table:{
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: "20px 0",
-    "& > *":{
-      margin: "10px 0",
-      padding: 0,
-      width: "50%",
-      "&:nth-child(even)":{
-        textAlign: "right"
+  input: {
+    width: 200,
+    marginTop: theme.spacing(2),
+    padding: 0,
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    border: '1px solid #FFFFFF',
+    borderRadius: '2px',
+    '& > *': {
+      color: theme.palette.common.white,
+      padding: theme.spacing(1, 1),
+      '& > *': {
+        padding: theme.spacing(0)
       }
+    },
+    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0
     }
   },
-  input:{
-    justifyContent: "flex-end",
-    width: 150,
+  formHelperText: {
+    background: '#00212CBC 0% 0% no-repeat padding-box',
+    fontFamily: 'Roboto',
+    lineHeight: 1.3,
+    textAlign: 'center',
   },
   link: {
     textDecoration: 'none',
+    color: theme.palette.secondary.main,
   },
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -89,7 +93,66 @@ const styles = (theme: Theme) => createStyles({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-  }
+  },
+  blockie: {
+    margin: 'auto',
+    width: '57px',
+    height: '57px',
+  },
+  assetPerformance: {
+    fontSize: '40px',
+    color: theme.palette.secondary.main
+  },
+  tokenBalance: {
+    fontSize: '40px',
+    cursor: 'pointer',
+  },
+  daiValues: {
+    fontSize: '30px',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden'
+  },
+  divider: {
+    width: '259px',
+    color: theme.palette.common.white,
+    marginTop: '12px',
+    marginBottom: '42px',
+  },
+  verticalDivider: {
+    width: '1px',
+    color: theme.palette.common.white,
+    height: '59px',
+    margin: 0,
+  },
+  daiValuesContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    margin: "15px auto"
+  },
+  currency: {
+    display: "inline-flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: '14px',
+    fontFamily: 'Roboto',
+    letterSpacing: '0.46px',
+  },
+  moreInfo: {
+    marginTop: '15px',
+  },
+  inputAdornment: {
+    color: theme.palette.common.white,
+    minWidth: 'max-content',
+    '& > *': {
+      color: theme.palette.common.white,
+    }
+  },
 });
 
-export default(styles);
+export default (styles);

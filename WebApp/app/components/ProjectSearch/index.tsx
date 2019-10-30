@@ -41,6 +41,26 @@ const styles = (theme: Theme) =>
     },
     menuItem: {
       color: colors.darkGrey,
+    },
+    explainerText: {
+      textAlign: 'center',
+      fontSize: '20px',
+      fontFamily: 'Roboto',
+      fontWeight: 'normal',
+      letterSpacing: '0.09px',
+      color: '#00000099',
+      opacity: 1.0,
+      paddingBottom: '20px'
+    },
+    explainerSubText: {
+      textAlign: 'center',
+      fontSize: '14px',
+      fontFamily: 'Roboto',
+      fontWeight: 'normal',
+      letterSpacing: '0.09px',
+      color: '#00000099',
+      opacity: 1.0,
+      paddingBottom: '45px'
     }
   });
 
@@ -71,6 +91,16 @@ const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, cl
   return (
   <Container maxWidth='md' className={classes.searchBarContainer}>
     <Typography variant='h2' className={classes.header}>Discover</Typography>
+    <div>
+      <Typography className={classes.explainerText}>
+        Explore researchers and organisations who are using Molecule Catalyst to realise their goals for new and innovative research initiatives and experimental studies.
+      </Typography>
+    </div>
+    <div>
+      <Typography className={classes.explainerSubText}>
+        All featured projects undergo a scientific peer-review process before being listed on our platform.
+      </Typography>
+    </div>
     <TextField 
       name='text'
       value={filter.text}

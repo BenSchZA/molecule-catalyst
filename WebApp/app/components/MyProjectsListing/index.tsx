@@ -5,7 +5,7 @@
  */
 
 import React, { Fragment } from 'react';
-import { withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, Modal, Divider, TextField } from '@material-ui/core';
+import { withStyles, WithStyles, Typography, TableHead, Table, TableCell, TableBody, TableRow, Button, Paper, Modal, Divider } from '@material-ui/core';
 import { ProjectSubmissionStatus, Project, FundingState } from '../../domain/projects/types';
 import dayjs from 'dayjs'
 import { PositiveButton, NegativeButton } from 'components/custom';
@@ -13,7 +13,8 @@ import styles from './styles';
 import { ethers } from 'ethers';
 import { bigNumberify } from 'ethers/utils';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
-
+import "easymde/dist/easymde.min.css";
+import MDEditor from 'components/MDEditor';
 
 interface OwnProps extends WithStyles<typeof styles> {
   myProjects: Array<Project>,
@@ -113,7 +114,7 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
                   <TableCell className={props.classes.rowText}>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                   <TableCell className={props.classes.rowText}>{ProjectSubmissionStatus[project.status].toUpperCase()}</TableCell>
                   <TableCell>
-                    {project.status === ProjectSubmissionStatus.started &&
+                    {project.status >= ProjectSubmissionStatus.started &&
                       project.vaultData && project.vaultData.outstandingWithdraw &&
                       bigNumberify(project.vaultData.outstandingWithdraw).gt(0) &&
                       <Button className={props.classes.actionButton} onClick={() => handleOpenWithdraw(project.id)}>Withdraw</Button>
@@ -171,15 +172,12 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
             <Typography variant="h2">Add Research Update</Typography>
           </div>
           <div className={props.classes.modalContent}>
-            <TextField
-              onChange={(e) => setResearchUpdate(e.target.value)}
-              type='text'
+            <MDEditor
+              value={researchUpdate}
               placeholder="Please provide a reseach update"
-              variant='filled'
-              multiline
-              rows='10'
-              fullWidth
-              value={researchUpdate} />
+              onChange={(value) => {
+                setResearchUpdate(value);
+              }} />
           </div>
           <div className={props.classes.buttons}>
             <NegativeButton onClick={handleCloseResearchUpdateModal}>Cancel</NegativeButton>

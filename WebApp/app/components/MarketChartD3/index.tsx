@@ -4,25 +4,16 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Theme, createStyles, withStyles, WithStyles, Paper } from '@material-ui/core';
 import * as d3 from "d3";
 import './d3Style.css';
 import { Project } from 'domain/projects/types';
 import { ethers } from "ethers";
+import { bigNumberify } from 'ethers/utils';
 
 const styles = (theme: Theme) =>
   createStyles({
-    layout: {
-      width: 'auto',
-      display: 'block', // Fix IE 11 issue.
-      marginLeft: theme.spacing(3),
-      marginRight: theme.spacing(3),
-      [theme.breakpoints.up(400 + theme.spacing(3 * 2))]: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-      },
-    },
     container: {
       boxShadow: 'none',
     },
@@ -41,7 +32,7 @@ const styles = (theme: Theme) =>
     currentTooltipCircle: {
       stroke: '#3fb6e0',
       fill: '#3fb6e0',
-    }
+    },
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -56,7 +47,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
     renderChart() {
       if (!this._rootNode) return;
 
-      const marketData = this.props.project.chainData.marketData;
+      const marketData = this.props.project.marketData;
       const contributionRate = marketData.taxationRate;
       const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
       const currentTokenSupply = Number(ethers.utils.formatEther(marketData.totalSupply));
@@ -65,17 +56,24 @@ class MarketChartD3 extends React.Component<OwnProps> {
       // D3 Code to create the chart
       // using this._rootNode as container
       // line & graph parameters
+      const project = this.props.project;
+      const ended = !project.marketData.active;
+
+      // Flat 100% collateralized token distribution
+      const scaledPrice = bigNumberify(project.marketData.poolValue).mul(1e8).div(bigNumberify(project.marketData.totalSupply).add(1)).toNumber();
+      const redistributePrice = scaledPrice/1e8;
+
       const current_supply = currentTokenSupply + 1,
-        current_price = currentTokenValue,
-        y_intercept = 0.5,
-        slope = (current_price - y_intercept) / current_supply;
+        current_price = ended ? redistributePrice : currentTokenValue,
+        y_intercept = ended ? redistributePrice : 0.5,
+        slope = ended ? 0 : (current_price - y_intercept) / current_supply;
 
       let max_supply = current_supply > 0 ? current_supply*2 : 2;
       let min_mint = max_supply/1000;
 
       // set the dimensions and margins of the graph
       let margin = {
-          top: 20,
+          top: 40,
           right: 70,
           bottom: 70,
           left: 100
@@ -100,12 +98,15 @@ class MarketChartD3 extends React.Component<OwnProps> {
           }
         });
 
+      let area_function = !ended ? (d) => d * slope + y_intercept - (contributionRate/100)*(d * slope + y_intercept) : 
+        (d) => d * slope + y_intercept;
+
       // data array to draw area below curve
       let area_data = d3.range(0, current_supply - 1, min_mint).map(
         function (d) {
           return {
             "x": d,
-            "y": d * slope + y_intercept - (contributionRate/100)*(d * slope + y_intercept)
+            "y": area_function(d), 
           }
         });
 
@@ -191,10 +192,10 @@ class MarketChartD3 extends React.Component<OwnProps> {
         .attr("class", `line ${this.props.classes.buyLine}`)
         .attr("d", line);
 
-      this._svgNode.append("path")
+      !ended ? this._svgNode.append("path")
         .datum(data_sell)
         .attr("class", `line ${this.props.classes.sellLine}`)
-        .attr("d", line_sell);
+        .attr("d", line_sell) : null;
 
       // grid line functions
       function makexGridlines() {
@@ -356,10 +357,10 @@ class MarketChartD3 extends React.Component<OwnProps> {
           mouseMove(this)
         });
 
-    this.appendCurrentData({x: current_supply, y: current_price}, data, data_sell, poolValue, width, height, xscale, yscale, formatNumber)
+    this.appendCurrentData({x: current_supply, y: current_price}, data, data_sell, poolValue, width, height, xscale, yscale, formatNumber, ended)
   }
 
-  appendCurrentData(d, buy_data, sell_data, collateralPool, width, height, xscale, yscale, formatNumber) {
+  appendCurrentData(d, buy_data, sell_data, collateralPool, width, height, xscale, yscale, formatNumber, ended) {
     const tag = "current";
 
     // append group holding tooltip elements
@@ -422,19 +423,19 @@ class MarketChartD3 extends React.Component<OwnProps> {
     // pool label text
     tooltipGroup.select(`text.pool-label-text-${tag}`)
       .attr("transform",
-        "translate(" + (xscale(d.x)) + "," + (yscale(d.y)+180) + ")")
-      .text(`Incentive Pool:\t\t\t ${formatNumber(collateralPool)} Dai`);
+        "translate(" + (xscale(d.x)) + "," + (yscale(d.y/2)) + ")")
+      .text(`Incentive Pool:\t\t\t ${formatNumber(collateralPool)} DAI`);
 
     // token price text
     tooltipGroup.select(`text.y-label-text-${tag}`)
       .attr("transform",
-        "translate(" + (xscale(d.x)-100) + "," + (yscale(d.y)-25) + ")")
-      .text(`Current Price:\t\t\t ${formatNumber(d.y)} Dai`);
+        "translate(" + (xscale(d.x)-100) + "," + (yscale(d.y)-30) + ")")
+      .text(`Current Price:\t\t\t ${formatNumber(d.y)} DAI`);
 
     // token supply text
     tooltipGroup.select(`text.x-label-text-${tag}`)
       .attr("transform",
-        "translate(" + (xscale(d.x)-100) + "," + (yscale(d.y)-25) + ")")
+        "translate(" + (xscale(d.x)-100) + "," + (yscale(d.y)-30) + ")")
       .text(`Current Supply:\t\t\t ${formatNumber(d.x - 1)}`);
 
     // Line labels: buy/sell
@@ -449,14 +450,14 @@ class MarketChartD3 extends React.Component<OwnProps> {
       .attr("dy", "-.3em");
 
     tooltipGroup.select(`text.line-label-buy-${tag}`)
-      .attr("x", function(_) { return xscale(buy_data[`${buy_data.length - 100}`].x)})
+      .attr("x", function(_) { return xscale(buy_data[`${buy_data.length - 100}`].x) - 50 })
       .attr("y", function(_) { return yscale(buy_data[`${buy_data.length - 100}`].y) - 10 })
-      .text("Buy");
+      .text(!ended ? "Buy" : "Redistribute");
 
-    tooltipGroup.select(`text.line-label-sell-${tag}`)
-      .attr("x", function(_) { return xscale(sell_data[`${sell_data.length - 100}`].x)})
+    !ended ? tooltipGroup.select(`text.line-label-sell-${tag}`)
+      .attr("x", function(_) { return xscale(sell_data[`${sell_data.length - 100}`].x) - 50 })
       .attr("y", function(_) { return yscale(sell_data[`${sell_data.length - 100}`].y) - 10 })
-      .text("Sell");
+      .text("Sell") : null;
   }
 
   constructor(props) {
@@ -484,20 +485,15 @@ class MarketChartD3 extends React.Component<OwnProps> {
     window.addEventListener('resize', this.renderChart);
   }
 
-
   render() {
     const { classes } = this.props;
 
     return (
-      <Fragment>
-        <section className={classes.layout}>
-          <Paper className={classes.container} square>
-            <div className={classes.chartDiv}>
-              <div ref={this._setRef.bind(this)} />
-            </div>
-          </Paper>
-        </section>
-      </Fragment>
+      <Paper className={classes.container} square>
+        <div className={classes.chartDiv}>
+          <div ref={this._setRef.bind(this)} />
+        </div>
+      </Paper>
     );
   }
 };

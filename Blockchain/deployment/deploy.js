@@ -2,21 +2,15 @@ require('dotenv').config();
 DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
 
 const etherlime = require('etherlime-lib');
-//const LimeFactory = require('../build/LimeFactory.json');
-
 
 const PseudoDaiABI = require('../build/PseudoDaiToken.json');
-
 const MoleculeVaultABI = require('../build/MoleculeVault.json');
-
 const CurveFunctionsABI = require('../build/CurveFunctions.json');
 const CurveRegistryABI = require('../build/CurveRegistry.json');
 const MarketRegistryABI = require('../build/MarketRegistry.json');
 const MarketFactoryABI = require('../build/MarketFactory.json');
 
 const defaultConfigs = {
-  //gasPrice: 1000000000,
-  //gasLimit: 5000000,
   chainId: 4,
   etherscanApiKey: process.env.ETHERSCAN_API_KEY,
 };
@@ -25,9 +19,12 @@ const deploy = async (network, secret) => {
   if(!secret) {
     secret = DEPLOYER_PRIVATE_KEY;
   }
+  if(!network) {
+    network = 'rinkeby';
+  }
 
-  const deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, 'http://localhost:8545/', defaultConfigs);
-  //const deployer = new etherlime.EtherlimeGanacheDeployer();
+  const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, process.env.INFURA_API_KEY, defaultConfigs);
+  // const deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, 'http://localhost:8545/', defaultConfigs);
 
   const deploy = (...args) => deployer.deployAndVerify(...args);
 
@@ -43,7 +40,7 @@ const deploy = async (network, secret) => {
     MoleculeVaultABI,
     false,
     pseudoDaiInstance.contract.address,
-    15
+    1
   );
 
   const curveFunctionsInstance = await deploy(CurveFunctionsABI);

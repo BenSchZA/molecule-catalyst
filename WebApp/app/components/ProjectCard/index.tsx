@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
-import { Project } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
 
@@ -84,6 +84,7 @@ const styles = (theme: Theme) =>
     },
     card: {
       cursor: 'pointer',
+      maxWidth: 647
     },
     cardImage: {
       paddingTop: 36,
@@ -94,6 +95,19 @@ const styles = (theme: Theme) =>
       paddingTop: '8px',
       paddingBottom: '8px',
       paddingLeft: '30%'
+    },
+    cardContent: {
+      fontSize: '0.9rem',
+      fontWeight: 'normal',
+      color: colors.darkGrey,
+      paddingTop: '12px',
+      height: '184px',
+      paddingLeft: '0px',
+      fontFamily: 'Roboto'
+    },
+    avatarImage: {
+      width: 50,
+      height: 50,
     }
 
   });
@@ -128,8 +142,10 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 const switchStatus = (status) => {
   switch(status){
-      default :
-        return 'ONGOING';
+    case ProjectSubmissionStatus.ended:
+      return 'ENDED';
+    default :
+      return 'ONGOING';
   }
 };
 
@@ -148,7 +164,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         title={project.title}
         subheader={switchStatus(project.status)}
       />
-       <CardContent>
+       <CardContent className={classes.cardContent}>
         <div className={classes.abstract}>{truncateText(project.abstract)}</div>
         <Typography className={classes.percentage}>
           {
@@ -160,20 +176,23 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
             })()
           } %
         </Typography>
-        <Chip color="primary" label={'Funded of ' + project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0).toLocaleString()} />
-      <BorderLinearProgress
-        className={classes.margin}
-        variant="determinate"
-        color="secondary"
-        value={
-          (()=> {
-            const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-            const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
-              total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-            return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-          })()
-        }  
-      />
+        <Chip color="primary" label={
+          'Funded of ' + Math.ceil(project.vaultData.phases.reduce((total, phase) => 
+            total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() + ' DAI'
+        } />
+        <BorderLinearProgress
+          className={classes.margin}
+          variant="determinate"
+          color="secondary"
+          value={
+            (()=> {
+              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
+                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+            })()
+          }  
+        />
       </CardContent>
       <CardMedia
         className={classes.cardImage}
@@ -188,7 +207,9 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
         </div>
         <div className={classes.avatar}>
-          <Avatar src='https://www.staff.uct.ac.za/sites/default/files/image_tool/images/431/services/comms_marketing/branding/logo_downloads/transparent_round_logo.gif'></Avatar>
+          {
+            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
+          }
         </div>
       </CardActions>
     </Card>

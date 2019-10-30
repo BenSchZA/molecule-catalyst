@@ -1,14 +1,13 @@
-import { Controller, UseGuards, Get, Post, UseInterceptors, Req, Body, UploadedFile, Param } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, UseInterceptors, Req, Body, Param, UploadedFiles, Patch } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { UserType, User } from '../user/user.schema';
 import { Project } from './project.schema';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptorHelper, FileOptions } from 'src/helpers/fileInterceptorHelper';
-import { SubmitProjectDTO } from './dto/submitProject.dto'
+import { FileOptions, FileFieldsInterceptorHelper } from 'src/helpers/fileInterceptorHelper';
+import { SubmitProjectDTO } from './dto/submitProject.dto';
 import { Request } from 'express';
-import { LaunchProjectDTO } from './dto/launchProject.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -40,15 +39,20 @@ export class ProjectController {
   @Post('submit')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserType.ProjectCreator)
-  @UseInterceptors(FileInterceptorHelper({
+  @UseInterceptors(FileFieldsInterceptorHelper([{
     name: 'featuredImage',
     maxCount: 1,
     type: FileOptions.PICTURE,
-  }))
+  },
+  {
+    name: 'organisationImage',
+    maxCount: 1,
+    type: FileOptions.PICTURE,
+  }]))
   async submitProject(@Req() req: Request & { user: User },
     @Body() reqBody: SubmitProjectDTO,
-    @UploadedFile() file) {
-    const result = await this.projectService.submit(reqBody, file, req.user);
+    @UploadedFiles() files) {
+    const result = await this.projectService.submit(reqBody, files.featuredImage[0], files.organisationImage[0], req.user);
     return result;
   }
 
@@ -78,6 +82,27 @@ export class ProjectController {
     @Body() body,
     @Req() req: Request & { user: User }) {
     const result = await this.projectService.addResearchUpdate(projectId, body.researchUpdate, req.user);
+    return result;
+  }
+
+  @Patch(':projectId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserType.Admin)
+  @UseInterceptors(FileFieldsInterceptorHelper([{
+    name: 'featuredImage',
+    maxCount: 1,
+    type: FileOptions.PICTURE,
+  },
+  {
+    name: 'organisationImage',
+    maxCount: 1,
+    type: FileOptions.PICTURE,
+  }]))
+  async updateProject(
+    @Param('projectId') projectId,
+    @Body() body,
+    @UploadedFiles() files) {
+    const result = await this.projectService.updateProject(projectId, body, files);
     return result;
   }
 }

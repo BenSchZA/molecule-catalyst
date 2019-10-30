@@ -5,10 +5,11 @@ import { StateProps } from 'containers/App';
 import { 
   makeSelectIsLoggedIn, 
   makeSelectWalletUnlocked, 
-  makeSelectNetworkName, 
   makeSelectEthAddress, 
   makeSelectDaiBalance,
   makeSelectUserRole,
+  makeSelectApprovedNetwork,
+  makeSelectApprovedNetworkName,
 } from 'domain/authentication/selectors';
 
 /**
@@ -29,10 +30,11 @@ import {
 const selectApp = createStructuredSelector<RootState, StateProps>({
   isLoggedIn: makeSelectIsLoggedIn,
   walletUnlocked: makeSelectWalletUnlocked,
-  selectedNetworkName: makeSelectNetworkName,
   ethAddress: makeSelectEthAddress,
   daiBalance: makeSelectDaiBalance,
   userRole: makeSelectUserRole, 
+  approvedNetwork: makeSelectApprovedNetwork,
+  approvedNetworkName: makeSelectApprovedNetworkName,
 });
 
 export default selectApp;

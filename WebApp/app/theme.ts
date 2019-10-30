@@ -16,7 +16,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 export const colors = {
   moleculeBranding: {
     primary: '#003E52',
-    secondary: '#37B4A4',
+    secondary: '#50FFE6',
     primaryLight: '#37B4A4',
     third: '#03DAC6'
   },
@@ -227,19 +227,7 @@ const theme = (createMuiTheme as any)({
     },
     MuiCard: {
       root: {
-        maxWidth: 647,
         maxHeight: 712.02
-      },
-    },
-    MuiCardContent: {
-      root: {
-        fontSize: '0.9rem',
-        fontWeight: 'normal',
-        color: colors.darkGrey,
-        paddingTop: '12px',
-        height: '184px',
-        paddingLeft: '0px',
-        fontFamily: 'Roboto'
       },
     },
     MuiCardMedia: {
@@ -290,6 +278,11 @@ const theme = (createMuiTheme as any)({
       label: {
         fontSize: '14px',
         fontWeight: '600',
+      }
+    },
+    MuiTooltip: {
+      tooltip: {
+        fontSize: "1em",
       }
     }
   }

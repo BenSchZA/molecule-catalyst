@@ -139,7 +139,7 @@ const styles = ({ spacing, palette }: Theme) =>
           width: 1,
           position: "absolute",
           right: 0,
-          backgroundColor: palette.secondary.main
+          backgroundColor: '#37B4A4'
         },
         "&:last-child:after":{
           display: "none"
@@ -148,7 +148,7 @@ const styles = ({ spacing, palette }: Theme) =>
     },
     fundingStatusItem: {
       borderRight: '1px',
-      borderRightColor: palette.secondary.main,
+      borderRightColor: '#37B4A4',
     },
     fundingPhaseSection:{
       padding: 0
@@ -156,7 +156,7 @@ const styles = ({ spacing, palette }: Theme) =>
     projectProgress: {
       paddingTop: spacing(1),
       paddingBottom: spacing(1),
-      color: palette.secondary.main,
+      color: '#37B4A4',
       font: '44px/54px Montserrat',
       letterSpacing: '-0.39px',
       opacity: 1
@@ -215,6 +215,14 @@ const styles = ({ spacing, palette }: Theme) =>
       paddingLeft: spacing(2),
       paddingRight: spacing(2),
       marginTop: spacing(2)
+    },
+    researchUpdatesSubHeading: {
+      textAlign: 'center',
+      maxWidth: '40vw',
+      minWidth: '300px',
+      paddingBottom: spacing(4),
+      margin: 'auto',
+      color: '#00000099'
     },
     avatar: {
       paddingTop: spacing(2),
@@ -317,7 +325,6 @@ const styles = ({ spacing, palette }: Theme) =>
       alignSelf: 'center',
       verticalAlign: 'middle',
       height: 2,
-      width: 1150
     },
     projectTitle:{
       textAlign: "center",
@@ -329,28 +336,18 @@ const styles = ({ spacing, palette }: Theme) =>
       width: '1100px',
       paddingTop: avatarSize*1
     },
-    supportProject: {
-      background: '#FFFFFF 0% 0% no-repeat padding-box',
-      boxShadow: '0px 1px 3px #00000033',
-      borderRadius: '4px',
-      textAlign: 'center',
-      font: 'Bold 14px/24px Montserrat',
-      letterSpacing: '0.18px',
-      color: '#003E52',
-    },
-    redeemHoldings: {
-      background: '#03DAC6 0% 0% no-repeat padding-box',
-      boxShadow: '0px 1px 3px #00000033',
-      borderRadius: '4px',
-      textAlign: 'center',
-      font: 'Bold 14px/24px Montserrat',
-      letterSpacing: '0.18px',
-      color: '#FFFFFF'
-    },
     loadingSpinner: {
       position: 'fixed',
       top: '50%',
       left: '50%',
+    },
+    marketSpinner: {
+      display: 'flex',
+      justifyContent: 'center'
+    },
+    avatarImage: {
+      width: 50,
+      height: 50,
     }
   });
 

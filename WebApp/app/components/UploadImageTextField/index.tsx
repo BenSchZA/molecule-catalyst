@@ -60,7 +60,7 @@ class Thumb extends React.Component<ThumbProps, ThumbState> {
             </label>
           </Grid>
           <Grid item>
-            <Typography>{file.name}</Typography>
+            <Typography>{file?.name || file}</Typography>
           </Grid>
         </Grid>
       </Fragment>

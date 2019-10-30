@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MarketService } from './market.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Schemas } from 'src/app.constants';
 import { MarketSchema } from './market.schema';
 import { VaultSchema } from './vault.schema';
+import { ProjectSocketModule } from 'src/projectSocket/projectSocket.module';
 
 @Module({
   imports: [

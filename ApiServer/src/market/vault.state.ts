@@ -9,6 +9,7 @@ import { VaultReducer } from './vault.reducer';
 import { VaultDocument } from './vault.schema';
 import { contributeAction, setCurrentPhaseAction, addPhase, updatePhase, setOutstandingWithdraw } from './vault.actions';
 import { rehydrateVaultData } from './mongoRehydrationHelpers';
+import { EventEmitter } from 'events';
 
 
 export class VaultState extends ServiceBase {
@@ -20,7 +21,8 @@ export class VaultState extends ServiceBase {
     private readonly vaultAddress: string,
     private readonly stateDocument: VaultDocument,
     private readonly ethersProvider: Provider,
-    private readonly config: ConfigService) {
+    private readonly config: ConfigService,
+    private readonly vaultEmitter: EventEmitter) {
     super(`${VaultState.name}-${vaultAddress}`);
     const daiAddress = this.config.get('contracts').dai;
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
@@ -30,7 +32,12 @@ export class VaultState extends ServiceBase {
     this.vaultState.subscribe(throttle(() => {
       this.stateDocument.vaultData = this.vaultState.getState();
       this.stateDocument.markModified('vaultData');
-      this.stateDocument.save();
+      try {
+        this.stateDocument.save();
+        this.vaultEmitter.emit('vaultUpdated', vaultAddress)
+      } catch (error) {
+        this.logger.warn('There was an error updating the vault document');
+      }
     }, 1000));
 
     this.startListening()
@@ -71,7 +78,7 @@ export class VaultState extends ServiceBase {
 
     const currentPhase = await this.vaultContract.currentPhase();
     this.vaultState.dispatch(setCurrentPhaseAction(parseInt(currentPhase)));
-
+    
     this.daiContract.on(this.daiContract.filters.Transfer(marketAddress, this.vaultAddress),
       async (from, to, value, event) => {
         if (event.blockNumber > this.stateDocument.vaultData.lastBlockUpdated) {
@@ -81,29 +88,30 @@ export class VaultState extends ServiceBase {
             value: value,
           }));
 
-          const phase = await this.getPhaseData(this.stateDocument.vaultData.activePhase);
-          this.logger.info(`Updating phase ${phase.index + 1} data`);
-          this.vaultState.dispatch(updatePhase({
-            ...phase,
-            index: parseInt(phase.index),
-          }));
+          const totalPhases = await this.vaultContract.getTotalRounds();
+          this.logger.info(`Updating phase data`);
+          for (let i = 0; i < totalPhases; i++) {
+            const phase = await this.getPhaseData(i);
+            this.vaultState.dispatch(updatePhase({ ...phase, index: i }));
+          }
         }
       });
     
     this.vaultContract.on(this.vaultContract.filters.PhaseFinalised(),
       async (index, amount, event) => {
-        this.logger.info(`Phase ${parseInt(index)} finalised`);
+        this.logger.info(`Phase ${parseInt(index) + 1} finalised`);
         const updatedPhase = parseInt(await this.vaultContract.currentPhase());
         this.vaultState.dispatch(setCurrentPhaseAction(updatedPhase));
 
         const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
         this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
 
-        const phase = await this.getPhaseData(updatedPhase);
-        this.vaultState.dispatch(updatePhase({
-          ...phase,
-          index: parseInt(phase.index) 
-        }));
+        const totalPhases = await this.vaultContract.getTotalRounds();
+        this.logger.info(`Updating phase data`);
+        for (let i = 0; i < totalPhases; i++) {
+          const phase = await this.getPhaseData(i);
+          this.vaultState.dispatch(updatePhase({ ...phase, index: i }));
+        }
       });
 
     this.vaultContract.on(this.vaultContract.filters.FundingWithdrawn(), async (index, amount, _) => {
@@ -114,11 +122,12 @@ export class VaultState extends ServiceBase {
       const outstandingWithdraw = await this.vaultContract.outstandingWithdraw();
       this.vaultState.dispatch(setOutstandingWithdraw(outstandingWithdraw));
 
-      const phase = await this.getPhaseData(updatedPhase);
-      this.vaultState.dispatch(updatePhase({
-        ...phase,
-        index: parseInt(phase.index) 
-      }));
+      const totalPhases = await this.vaultContract.getTotalRounds();
+      this.logger.info(`Updating phase data`);
+      for (let i = 0; i < totalPhases; i++) {
+        const phase = await this.getPhaseData(i);
+        this.vaultState.dispatch(updatePhase({ ...phase, index: i }));
+      }
     });
   }
 

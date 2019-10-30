@@ -1,4 +1,5 @@
 import DiscoverContainer from 'containers/DiscoverContainer';
+import PortfolioContainer from 'containers/PortfolioContainer';
 import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminUserListingContainer from 'containers/AdminUserListingContainer';
@@ -10,6 +11,7 @@ import ProjectCreationConfirmation from 'components/ProjectCreationConfirmation'
 import { UserType } from './types';
 import MyProjectsContainer from 'containers/MyProjectsContainer';
 import ProjectDetailsContainer from 'containers/ProjectDetailsContainer';
+import AdminProjectEditContainer from 'containers/AdminProjectEditContainer';
 
 
 
@@ -39,6 +41,14 @@ const routes: AppRoute[] = [{
   isNavRequired: true,
   showNavForRoles:[UserType.Standard, UserType.ProjectCreator, UserType.Admin],
   requireAuth: false
+}, {
+  name: 'My Projects',
+  path: '/myprojects',
+  component: PortfolioContainer,
+  roleRequirement: UserType.Standard,
+  isNavRequired: true,
+  showNavForRoles:[UserType.Standard, UserType.Admin],
+  requireAuth: true
 }, {
   name: 'Create Project',
   path: '/projects/create',
@@ -75,6 +85,14 @@ const routes: AppRoute[] = [{
   name: 'Admin Project View',
   path: '/admin/project/:projectId',
   component: AdminProjectReviewContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: false,
+  showNavForRoles:[UserType.Admin],
+  requireAuth: true,
+},{
+  name: 'Admin Project Edit',
+  path: '/admin/project/:projectId/edit',
+  component: AdminProjectEditContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: false,
   showNavForRoles:[UserType.Admin],

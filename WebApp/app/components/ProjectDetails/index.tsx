@@ -4,13 +4,12 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   withStyles,
   WithStyles,
   Container,
   Typography,
-  Button,
   Paper,
   Divider,
   Grid,
@@ -26,77 +25,110 @@ import {
   ProjectSubmissionStatus,
   FundingState,
 } from 'domain/projects/types';
-import apiUrlBuilder from 'api/apiUrlBuilder';
 import { Face } from '@material-ui/icons';
-import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
-import ProjectSupportModal from 'components/ProjectSupportModal';
-import { FormikProps, FormikValues } from 'formik';
-import ProjectRedeemModal from 'components/ProjectRedeemModal';
-import MarketChartLayout from 'components/MarketChartLayout';
-import dayjs from 'dayjs';
 import { ethers } from 'ethers';
+import dayjs, { Dayjs } from 'dayjs';
+import ReactMarkdown from "react-markdown";
+import apiUrlBuilder from 'api/apiUrlBuilder';
+import ProjectPhaseStatus from 'components/ProjectPhaseStatus';
+import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
+import TransactionModalContainer from 'containers/TransactionModalContainer';
+import { NegativeButton, PositiveButton } from 'components/custom';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
-  daiBalance: number;
-  holdingsValue: number;
-  contributionValue: number;
-  formikProps: FormikProps<FormikValues>;
-  txInProgress: boolean;
-  selectModal(modal: number): void;
+  userAddress?: string;
+  isLoggedIn: boolean;
 }
 
 const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   project,
-  daiBalance,
   classes,
-  formikProps,
-  selectModal,
-  txInProgress,
-  holdingsValue,
-  contributionValue
+  userAddress,
+  isLoggedIn,
 }: OwnProps) => {
-  const [open, setOpenModal] = React.useState(false);
-  const [openRedeem, setOpenRedeemModal] = React.useState(false);
+  const [modalState, setModalState] = useState(false);
+  const [modalMode, setModalMode] = useState<'support' | 'redeem'>('support');
 
-  const handleOpen = () => {
-    selectModal(0);
-    setOpenModal(true);
+  const handleOpenSupportModal = () => {
+    setModalMode('support')
+    setModalState(true);
   };
 
   const handleOpenRedeemModal = () => {
-    selectModal(1);
-    setOpenRedeemModal(true);
+    setModalMode('redeem')
+    setModalState(true);
   };
 
   const handleClose = () => {
-    setOpenModal(false);
-    setOpenRedeemModal(false);
+    setModalState(false);
+  };
+
+  const userHasBalance = userAddress && project?.marketData?.balances?.[userAddress] && 
+    Number(Number(ethers.utils.formatEther(project?.marketData?.balances?.[userAddress])).toFixed(9)) > 0;
+
+  const getEndDateOffset = (phases, phaseIndex) => {
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+
+    if(phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
+      const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
+      return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day'); 
+    }
+    const months = phases.map((phase, index, array) => phase.phaseDuration)
+      .reduce((accumulator, currentValue, index, array) => index <= phaseIndex ? accumulator += currentValue : accumulator, 0);
+    return dayjs(firstPhaseDate.add(months, 'month').format('YYYY-MM-DD')).diff(firstPhaseDate.format('YYYY-MM-DD'), 'day');
+  };
+  
+  const getDateRange = (phaseIndex) => {
+    let startDate: Dayjs = dayjs();
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+    const endDateOffset = getEndDateOffset(project.vaultData.phases, phaseIndex);
+
+    project.vaultData.phases
+      .some((phase, index, array) => {
+        if(index <= phaseIndex) {
+          if(phase.state >= FundingState.STARTED) {
+            startDate = dayjs(phase.startDate);
+          } else {
+            startDate = firstPhaseDate.add(endDateOffset, 'day').subtract(array[index].phaseDuration, 'month'); 
+          }
+          return false;
+        } else {
+          return true;
+        }
+    });
+
+    return  startDate
+              .format('DD MMMM YYYY')
+              .toUpperCase() + ' - ' + 
+            firstPhaseDate
+              .add(endDateOffset, 'day')
+              .format('DD MMMM YYYY')
+              .toUpperCase();
+  };
+
+  const getRemainingDuration = (index) => {
+    const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
+    const endDateOffset = getEndDateOffset(project.vaultData.phases, index);
+
+    const currentDate = dayjs();
+    const endDate = firstPhaseDate
+      .add(endDateOffset, 'day');
+
+    return endDate.diff(currentDate, 'day');
   };
 
   return project ? (
     <Container maxWidth="lg">
-      {project && project.chainData && project.chainData.marketData &&
-        <div>
-          <ProjectSupportModal
-            closeModal={handleClose}
-            modalState={open}
-            formikProps={formikProps}
-            daiBalance={daiBalance}
-            contributionRate={project.chainData.marketData.taxationRate}
-            txInProgress={txInProgress}
-          />
-          <ProjectRedeemModal
-            closeModal={handleClose}
-            modalState={openRedeem}
-            formikProps={formikProps}
-            holdingsValue={holdingsValue}
-            contributionValue={contributionValue}
-            txInProgress={txInProgress}
-          />
-        </div>
+      {userAddress &&
+        <TransactionModalContainer
+          projectId={project.id}
+          userAddress={userAddress}
+          modalState={modalState}
+          mode={modalMode}
+          handleClose={handleClose} />
       }
       <div className={classes.bannerWrapper}>
         <img
@@ -108,20 +140,16 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             {project.title}
           </Typography>
           <div>
-            <Button
-              className={classes.supportProject}
-              onClick={handleOpen}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
-            >
+            <NegativeButton
+              onClick={handleOpenSupportModal}
+              disabled={!(isLoggedIn && project && project.marketData && project.status !== ProjectSubmissionStatus.ended)} >
               Support Project
-            </Button>
-            <Button
-              className={classes.redeemHoldings}
+            </NegativeButton>
+            <PositiveButton
               onClick={handleOpenRedeemModal}
-              disabled={!(project && project.chainData && project.chainData.marketData)}
-            >
-              Redeem Holdings
-            </Button>
+              disabled={!(isLoggedIn && project && project.marketData && userHasBalance)} >
+              Withdraw Stake
+            </PositiveButton>
           </div>
         </div>
         <div className={classes.bannerFooter}>
@@ -148,6 +176,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               {project.user.affiliatedOrganisation &&
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>
+            {
+              project.organisationImage && 
+              <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage} />
+            }
           </div>
         </div>
       </div>
@@ -206,10 +238,11 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <div>
             <Typography className={classes.fundingLabels}>
               Total Funding Goal
-              </Typography>
+            </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(project.researchPhases.reduce((projectTotal, phase) => projectTotal += phase.fundingGoal, 0)).toLocaleString()
+                Math.ceil(project.vaultData.phases.reduce((total, phase) =>
+                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString()
               } DAI
               </Typography>
           </div>
@@ -219,7 +252,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
+                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
               } DAI
               </Typography>
           </div>
@@ -229,7 +262,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number.parseInt(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
                   (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
               } DAI
               </Typography>
@@ -240,7 +273,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                dayjs(dayjs(project.createdAt).add(project.researchPhases.reduce((totalMonths, phase) => totalMonths += phase.duration, 0), 'month')).diff(project.createdAt, 'day')
+                getRemainingDuration(project.vaultData.phases.length - 1)
               } days
               </Typography>
           </div>
@@ -248,7 +281,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <div className={classes.contentWrapper}>
           <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
             {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-              <ProjectPhaseStatus key={i + 1} phase={{
+              <ProjectPhaseStatus key={i + 1} daysLeft={getRemainingDuration(i)} phase={{
                 index: i + 1,
                 fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
                 fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
@@ -261,15 +294,14 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             )}
           </Grid>
         </div>
-
-        <div className={classes.contentWrapper}>
-          <Typography className={classes.sectionTitleText} align="center">
-            Market
-          </Typography>
-          {project && project.chainData && project.chainData.marketData &&
-            <MarketChartLayout display={true} project={project} />
-          }
-        </div>
+      </Paper>
+      <Paper className={classes.projectSection} square>
+        <Typography className={classes.sectionTitleText} align="center">
+          Market
+        </Typography>
+        {project && project.marketData ?
+          <MarketChartLayout display={true} project={project} /> : <div className={classes.marketSpinner}><CircularProgress /></div>
+        }
       </Paper>
       <Paper className={classes.projectSection} square>
         <Typography className={classes.sectionTitleText} align="center">
@@ -331,14 +363,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 </Typography>
                 <div className={classes.phaseDateChip}>
                   <Typography className={classes.phaseDates} align="center">
-                    {dayjs(project.vaultData.phases[i].startDate)
-                      .format('DD MMMM YYYY')
-                      .toUpperCase() +
-                      ' - ' +
-                      dayjs(project.vaultData.phases[i].startDate)
-                        .add(p.duration, 'month')
-                        .format('DD MMMM YYYY')
-                        .toUpperCase()}
+                    {getDateRange(i)}
                   </Typography>
                 </div>
               </Paper>
@@ -346,15 +371,11 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 <Typography className={classes.contentTitleText}>
                   Description
                 </Typography>
-                <Typography className={classes.contentText}>
-                  {p.description}
-                </Typography>
+                <ReactMarkdown source={p.description} className={classes.contentText} />
                 <Typography className={classes.contentTitleText}>
                   Goals
                 </Typography>
-                <Typography className={classes.contentText}>
-                  {p.result}
-                </Typography>
+                <ReactMarkdown source={p.result} className={classes.contentText} />
               </div>
             </div>
           ))}
@@ -373,9 +394,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               .format('DD MMM YYYY h:mm ')
               .toUpperCase()}
           </Typography>
-          <Typography className={classes.contentText}>
-            {project.context}
-          </Typography>
+          <ReactMarkdown source={project.context} className={classes.contentText} />
           <Typography className={classes.lastUpdated} align="right">
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
@@ -389,9 +408,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               .format('DD MMM YYYY h:mm ')
               .toUpperCase()}
           </Typography>
-          <Typography className={classes.contentText}>
-            {project.approach}
-          </Typography>
+          <ReactMarkdown source={project.approach} className={classes.contentText} />
           <Typography className={classes.lastUpdated} align="right">
             LAST UPDATED BY:{' '}
             {project.user.fullName &&
@@ -406,7 +423,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           <Typography className={classes.sectionTitleText} align="center">
             Research Updates
           </Typography>
-          {project.researchUpdates &&
+          {project.researchUpdates && project.researchUpdates.length > 0 ?
             project.researchUpdates.sort((a, b) => a.date < b.date ? 1 :
               a.date === b.date ? 0 : -1).map((update, index) =>
                 <div key={index}>
@@ -415,11 +432,13 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                       .format('DD MMM YYYY h:mm ')
                       .toUpperCase()}
                   </Typography>
-                  <Typography  className={classes.contentText}>
-                    {update.update}
-                  </Typography>
+                  <ReactMarkdown source={update.update} className={classes.contentText} />
                 </div>
               )
+            :
+            <Typography variant='body1' className={classes.researchUpdatesSubHeading}>
+              There are currently no research updates.
+            </Typography>
           }
         </div>
       </Paper>
