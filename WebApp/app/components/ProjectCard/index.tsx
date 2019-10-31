@@ -17,7 +17,7 @@ import { ethers } from 'ethers';
 const styles = (theme: Theme) =>
   createStyles({
     percentage: {
-      color: '#37B4A4',
+      color: '#03DAC6',
       fontWeight: 'lighter',
       fontSize: '60px',
       float: 'left',
@@ -41,7 +41,8 @@ const styles = (theme: Theme) =>
       whiteSpace: 'inherit',
       overflow: 'hidden',
       color: colors.darkGrey,
-      font: '20px/27px Roboto, san-serif'
+      fontFamily: 'Roboto',
+      fontSize: '18px'
     },
     projectLeadLabel: {
       font: '10px Montserrat',
@@ -108,30 +109,29 @@ const styles = (theme: Theme) =>
     avatarImage: {
       width: 50,
       height: 50,
-    }
-
+    },
   });
 
 const BorderLinearProgress = withStyles({
-    root: {
-      height: 5,
-      width: '647px',
-      backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
-      paddingleft: '0px',
-      marginTop: '84px!important',
-      marginBottom: '0px!important',
-      marginLeft: '0px!important',
-      marginRight: '0px!important'
-    },
-    bar: {
-      borderRadius: 20,
-      backgroundColor: colors.moleculeBranding.third,
-    },
-  })(LinearProgress);
+  root: {
+    height: 3,
+    width: '647px',
+    backgroundColor: lighten(colors.moleculeBranding.third, 0.5),
+    paddingleft: '0px',
+    marginTop: '84px!important',
+    marginBottom: '0px!important',
+    marginLeft: '0px!important',
+    marginRight: '0px!important'
+  },
+  bar: {
+    borderRadius: 20,
+    backgroundColor: colors.moleculeBranding.third,
+  },
+})(LinearProgress);
 
 
-const truncateText = (text : string) => {
-  if(text.length < 175)
+const truncateText = (text: string) => {
+  if (text.length < 175)
     return text;
   return text.substr(0, 175) + '...';
 }
@@ -141,10 +141,10 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const switchStatus = (status) => {
-  switch(status){
+  switch (status) {
     case ProjectSubmissionStatus.ended:
       return 'ENDED';
-    default :
+    default:
       return 'ONGOING';
   }
 };
@@ -154,66 +154,65 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
 
   return (
     <Fragment>
-     <Card
-      className={classes.card}
-      onClick={() => forwardTo(`project/${project.id}`)}
-      onMouseOver={() => setRaised(true)}
-      onMouseOut={() => setRaised(false)}
-      raised={raised}>
-      <CardHeader
-        title={project.title}
-        subheader={switchStatus(project.status)}
-      />
-       <CardContent className={classes.cardContent}>
-        <div className={classes.abstract}>{truncateText(project.abstract)}</div>
-        <Typography className={classes.percentage}>
-          {
-            (() => {
-              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
-                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-            })()
-          } %
+      <Card
+        className={classes.card}
+        onClick={() => forwardTo(`project/${project.id}`)}
+        onMouseOver={() => setRaised(true)}
+        onMouseOut={() => setRaised(false)}
+        raised={raised}>
+        <CardHeader
+          title={project.title}
+          subheader={switchStatus(project.status)} />
+        <CardContent className={classes.cardContent}>
+          <div className={classes.abstract}>{truncateText(project.abstract)}</div>
+          <Typography className={classes.percentage}>
+            {
+              (() => {
+                const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+                const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
+                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+              })()
+            } %
         </Typography>
-        <Chip color="primary" label={
-          'Funded of ' + Math.ceil(project.vaultData.phases.reduce((total, phase) => 
-            total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() + ' DAI'
-        } />
-        <BorderLinearProgress
-          className={classes.margin}
-          variant="determinate"
-          color="secondary"
-          value={
-            (()=> {
-              const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-              const totalFundingGoal = project.vaultData.phases.reduce((total, phase) => 
-                total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-              return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-            })()
-          }  
+          <Chip color="primary" label={
+            'Funded of ' + Math.ceil(project.vaultData.phases.reduce((total, phase) =>
+              total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() + ' DAI'
+          } />
+          <BorderLinearProgress
+            className={classes.margin}
+            variant="determinate"
+            color="secondary"
+            value={
+              (() => {
+                const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
+                const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
+                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+              })()
+            }
+          />
+        </CardContent>
+        <CardMedia
+          className={classes.cardImage}
+          component='img'
+          src={apiUrlBuilder.attachmentStream(project.featuredImage)}
         />
-      </CardContent>
-      <CardMedia
-        className={classes.cardImage}
-        component='img'
-        src={apiUrlBuilder.attachmentStream(project.featuredImage)}
-      />
-      <CardActions disableSpacing>
-        <div className={classes.footer}>
-        <div>
-        <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>{project.user.fullName}</div>
-        </div>
-        <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
-        </div>
-        <div className={classes.avatar}>
-          {
-            project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage) } className={classes.avatarImage}></Avatar> : null
-          }
-        </div>
-      </CardActions>
-    </Card>
-  </Fragment>);
+        <CardActions disableSpacing>
+          <div className={classes.footer}>
+            <div>
+              <div className={classes.projectLead}><div className={classes.projectLeadLabel}>PROJECT LEAD BY</div>{project.user.fullName}</div>
+            </div>
+            <div className={classes.association}>{project.user.affiliatedOrganisation}</div>
+          </div>
+          <div className={classes.avatar}>
+            {
+              project.organisationImage && project.organisationImage ? <Avatar src={apiUrlBuilder.attachmentStream(project.organisationImage)} className={classes.avatarImage}></Avatar> : null
+            }
+          </div>
+        </CardActions>
+      </Card>
+    </Fragment>);
 };
 
 export default withStyles(styles, { withTheme: true })(ProjectCard);
