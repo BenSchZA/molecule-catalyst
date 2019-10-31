@@ -213,7 +213,6 @@ const theme = (createMuiTheme as any)({
     },
     MuiDivider: {
       middle: {
-        margin: "32px auto 10px !important",
         backgroundColor: colors.moleculeBranding.third,
         alignSelf: 'center',
         verticalAlign: 'middle',
@@ -248,9 +247,8 @@ const theme = (createMuiTheme as any)({
         paddingTop: '0px',
         paddingLeft: '0px',
         paddingBottom: '0px',
-        fontSize: '24px',
+        fontSize: '20px',
         fontWeight: 'bold',
-        
       },
       subheader: {
         paddingTop: '0px',
