@@ -18,7 +18,7 @@ interface IVault {
 	  * @notice	ALlows the creator to withdraw the various phases as they are
 	  *			compleated.
 	  */
-    function withdraw(uint256 _phase) external returns(bool);
+    function withdraw() external returns(bool);
 
     /**
       * @notice	Verifies that the phase passed in: has not been withdrawn,

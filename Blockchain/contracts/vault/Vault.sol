@@ -186,50 +186,56 @@ contract Vault is IVault, WhitelistAdminRole {
       *         has been sucessfully filled. If the withdraw is called after the
       *         last round has ended, the market will terminate and any
       *         remaining funds will be sent to the market.
-      * @param  _phase : The phase the creator wants to withdraw.
       * @return bool : The funding has sucessfully been transfered.
       */
-    function withdraw(
-        uint256 _phase
-    )
+    function withdraw()
         external
         isActive()
         onlyWhitelistAdmin()
         returns(bool)
     {
-        require(
-            fundingPhases_[_phase].state == FundingState.ENDED,
-            "Fund phase incomplete"
-        );
         require(outstandingWithdraw_ > 0, "No funds to withdraw");
 
-        // Removes this rounds funding from the outstanding withdraw
-        outstandingWithdraw_ = outstandingWithdraw_.sub(
-            fundingPhases_[_phase].fundingThreshold
-        );
-        // Sets the rounds funding to be paid
-        fundingPhases_[_phase].state = FundingState.PAID;
-        // Works out the mol fee (included in the funding threashold) and sends
-        // the funding to the molecule vault
-        uint256 molFee = fundingPhases_[_phase].fundingThreshold
-            .mul(moleculeFeeRate_)
-            .div(moleculeFeeRate_.add(100));
-        // Transfers the mol fee to the molecle vault
-        require(
-            collateralToken_.transfer(address(moleculeVault_), molFee),
-            "Tokens not transfer"
-        );
-        // Working out the origional funding goal without the mol fee
-        uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold
-            .sub(molFee);
-        // Sending the creator their collateral amoutn
-        require(
-            collateralToken_.transfer(msg.sender, creatorAmount),
-            "Tokens not transfer"
-        );
+        // require(
+        //     fundingPhases_[_phase].state == FundingState.ENDED,
+        //     "Fund phase incomplete"
+        // );
         
-        emit FundingWithdrawn(_phase, creatorAmount);
-        
+        for(uint8 i; i <= totalRounds_; i++) {
+            if(fundingPhases_[i].state == FundingState.PAID) {
+                continue;
+            } else if(fundingPhases_[i].state == FundingState.ENDED) {
+                // Removes this rounds funding from the outstanding withdraw
+                outstandingWithdraw_ = outstandingWithdraw_.sub(
+                    fundingPhases_[i].fundingThreshold
+                );
+                // Sets the rounds funding to be paid
+                fundingPhases_[i].state = FundingState.PAID;
+                // Works out the mol fee (included in the funding threashold) and sends
+                // the funding to the molecule vault
+                uint256 molFee = fundingPhases_[i].fundingThreshold
+                    .mul(moleculeFeeRate_)
+                    .div(moleculeFeeRate_.add(100));
+                // Transfers the mol fee to the molecle vault
+                require(
+                    collateralToken_.transfer(address(moleculeVault_), molFee),
+                    "Tokens not transfer"
+                );
+                // Working out the origional funding goal without the mol fee
+                uint256 creatorAmount = fundingPhases_[i].fundingThreshold
+                    .sub(molFee);
+                // Sending the creator their collateral amoutn
+                require(
+                    collateralToken_.transfer(msg.sender, creatorAmount),
+                    "Tokens not transfer"
+                );
+                
+                emit FundingWithdrawn(i, creatorAmount);
+            } else {
+                break;
+            }
+        }
+
         // This checks if the current round is the last round, if it is, it
         // terminates the market and sends all remaing funds to the market.
         if(
