@@ -10,13 +10,13 @@ import { IMarket } from "../market/IMarket.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
-  * @title  Storage and collection of market tax.
-  * @notice The vault stores the tax from the market until the funding goal is
+  * @title  Storage and collection of market fee.
+  * @notice The vault stores the fee from the market until the funding goal is
   *         reached, thereafter the creator may withdraw the funds. If the
   *         funding is not reached within the stipulated time-frame, or the
   *         creator terminates the market, the funding is sent back to the
   *         market to be re-distributed.
-  * @dev    The vault pulls the mol tax directly from the molecule vault.
+  * @dev    The vault pulls the mol fee directly from the molecule vault.
   */
 contract Vault is IVault, WhitelistAdminRole {
     // For math functions with overflow & underflow checks
@@ -30,18 +30,18 @@ contract Vault is IVault, WhitelistAdminRole {
     IMarket internal market_;
     // Underlying collateral token
     IERC20 internal collateralToken_;
-    // Vault for molecule tax
+    // Vault for molecule fee
     IMoleculeVault internal moleculeVault_;
-    // Tax percentage for molecule tax, i.e 50
-    uint256 internal moleculeTaxRate_;
+    // Fee percentage for molecule fee, i.e 50
+    uint256 internal moleculeFeeRate_;
     // The funding round that is active
     uint256 internal currentPhase_;
     // Offset for checking funding threashold
     uint256 internal outstandingWithdraw_;
     // The total number of funding rounds
     uint256 internal totalRounds_;
-    // The total cumulative tax received from market
-    uint256 internal cumulativeReceivedTax_;
+    // The total cumulative fee received from market
+    uint256 internal cumulativeReceivedFee_;
     // If the vault has been initialized
     bool internal _active;
     
@@ -62,7 +62,7 @@ contract Vault is IVault, WhitelistAdminRole {
     event PhaseFinalised(uint256 phase, uint256 amount);
 
     /**
-      * @dev    Checks the range of funding rounds (1-9). Gets the Molecule tax
+      * @dev    Checks the range of funding rounds (1-9). Gets the Molecule fee
       *         from the molecule vault directly.
       * @param  _fundingGoals : uint256[] - The collateral goal for each funding
       *         round.
@@ -95,20 +95,20 @@ contract Vault is IVault, WhitelistAdminRole {
         creator_ = _creator;
         collateralToken_ = IERC20(_collateralToken);
         moleculeVault_ = IMoleculeVault(_moleculeVault);
-        moleculeTaxRate_ = moleculeVault_.taxRate();
+        moleculeFeeRate_ = moleculeVault_.feeRate();
 
         // Saving the funding rounds into storage
         uint256 loopLength = _fundingGoals.length;
         for(uint8 i = 0; i < loopLength; i++) {
-            if(moleculeTaxRate_ == 0) {
+            if(moleculeFeeRate_ == 0) {
                 fundingPhases_[i].fundingThreshold = _fundingGoals[i];
             } else {
-                // Works out the rounds tax
-                uint256 withTax = _fundingGoals[i].add(
-                    _fundingGoals[i].mul(moleculeTaxRate_).div(100)
+                // Works out the rounds fee
+                uint256 withFee = _fundingGoals[i].add(
+                    _fundingGoals[i].mul(moleculeFeeRate_).div(100)
                 );
-                // Saving the funding threashold with tax
-                fundingPhases_[i].fundingThreshold = withTax;
+                // Saving the funding threashold with fee
+                fundingPhases_[i].fundingThreshold = withFee;
             }
             // Setting the amount of funding raised so far
             fundingPhases_[i].fundingRaised = 0;
@@ -209,19 +209,19 @@ contract Vault is IVault, WhitelistAdminRole {
         );
         // Sets the rounds funding to be paid
         fundingPhases_[_phase].state = FundingState.PAID;
-        // Works out the mol tax (included in the funding threashold) and sends
+        // Works out the mol fee (included in the funding threashold) and sends
         // the funding to the molecule vault
-        uint256 molTax = fundingPhases_[_phase].fundingThreshold
-            .mul(moleculeTaxRate_)
-            .div(moleculeTaxRate_.add(100));
-        // Transfers the mol tax to the molecle vault
+        uint256 molFee = fundingPhases_[_phase].fundingThreshold
+            .mul(moleculeFeeRate_)
+            .div(moleculeFeeRate_.add(100));
+        // Transfers the mol fee to the molecle vault
         require(
-            collateralToken_.transfer(address(moleculeVault_), molTax),
+            collateralToken_.transfer(address(moleculeVault_), molFee),
             "Tokens not transfer"
         );
-        // Working out the origional funding goal without the mol tax
+        // Working out the origional funding goal without the mol fee
         uint256 creatorAmount = fundingPhases_[_phase].fundingThreshold
-            .sub(molTax);
+            .sub(molFee);
         // Sending the creator their collateral amoutn
         require(
             collateralToken_.transfer(msg.sender, creatorAmount),
@@ -270,20 +270,20 @@ contract Vault is IVault, WhitelistAdminRole {
             terminateMarket();
             return false;
         }
-        
+
         // Gets the balance of the vault against the collateral token
         uint256 balance = collateralToken_.balanceOf(address(this));
-        // Adds the tax to the funding raised for this round
+        // Adds the fee to the funding raised for this round
         fundingPhases_[currentPhase_]
             .fundingRaised = fundingPhases_[currentPhase_]
             .fundingRaised.add(_receivedFunding);
-        // Adds received funding to the cumulative record of tax received
-        cumulativeReceivedTax_.add(_receivedFunding);
+        // Adds received funding to the cumulative record of fee received
+        cumulativeReceivedFee_.add(_receivedFunding);
 
-        // Ensures the total tax recived finishes the current round
+        // Ensures the total fee recived finishes the current round
         if(
             fundingPhases_[currentPhase_].cumulativeFundingThreshold <=
-                cumulativeReceivedTax_ &&
+                cumulativeReceivedFee_ &&
             balance.sub(outstandingWithdraw_) >=
                 fundingPhases_[currentPhase_].fundingThreshold
         ) {
@@ -309,7 +309,7 @@ contract Vault is IVault, WhitelistAdminRole {
                     if(
                         fundingPhases_[currentPhase_]
                             .cumulativeFundingThreshold <=
-                            cumulativeReceivedTax_ &&
+                            cumulativeReceivedFee_ &&
                         balance.sub(outstandingWithdraw_) >=
                         fundingPhases_[currentPhase_].fundingThreshold
                     ) {
@@ -400,7 +400,7 @@ contract Vault is IVault, WhitelistAdminRole {
       * @notice Returns all the details (relavant to external code) for a
       *         specific phase.
       * @param  _phase : The phase that you want the information of
-      * @return uint256 : The funding goal (including mol tax) of the round
+      * @return uint256 : The funding goal (including mol fee) of the round
       * @return uint256 : The amount of funding currently raised for the round
       * @return uint256 : The duration of the phase
       * @return uint256 : The timestamp of the start date of the round
@@ -431,12 +431,12 @@ contract Vault is IVault, WhitelistAdminRole {
       * @dev The offset for checking the funding threshold
       */
     function outstandingWithdraw() public view returns(uint256) {
-        uint256 minusMolTax = outstandingWithdraw_
+        uint256 minusMolFee = outstandingWithdraw_
             .sub(outstandingWithdraw_
-                .mul(moleculeTaxRate_)
-                .div(moleculeTaxRate_.add(100))
+                .mul(moleculeFeeRate_)
+                .div(moleculeFeeRate_.add(100))
             );
-        return minusMolTax;
+        return minusMolFee;
     }
 
     /**

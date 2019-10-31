@@ -187,10 +187,10 @@ describe("Molecule vault test", async () => {
 
     describe("Molecule tax update tests", async () => {
         it("Vault and market deploy correctly with a 0% molecule tax", async () => {
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
-            let taxRate = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(0);
+            let feeRate = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+            assert.equal(feeRate.toString(), 0, "Taxation rate not set to 0");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -245,10 +245,10 @@ describe("Molecule vault test", async () => {
 
         it('Changing tax rate will not affect existing markets', async () => {
             // Changing taxation rate for the first time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
-            let taxRate = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(0);
+            let feeRate = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+            assert.equal(feeRate.toString(), 0, "Taxation rate not set to 0");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -264,10 +264,10 @@ describe("Molecule vault test", async () => {
             let phaseOne = await vaultInstance.fundingPhase(0);
 
             // Changing taxation rate for the seccond time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(80);
-            let taxRateM2 = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(80);
+            let feeRateM2 = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRateM2.toString(), 80, "Taxation rate not set to 80");
+            assert.equal(feeRateM2.toString(), 80, "Taxation rate not set to 80");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -282,10 +282,10 @@ describe("Molecule vault test", async () => {
             let phaseOneM2 = await vaultInstanceM2.fundingPhase(0);
             
             // Changing taxation rate a third time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(20);
-            let taxRateM3 = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(20);
+            let feeRateM3 = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRateM3.toString(), 20, "Taxation rate not set to 80");
+            assert.equal(feeRateM3.toString(), 20, "Taxation rate not set to 80");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -311,9 +311,9 @@ describe("Molecule vault test", async () => {
             assert.equal(collateralToken, pseudoDaiInstance.contract.address, "Collateral token invalid")
         });
         
-        it('Get taxRate', async () => {
-            const taxRate = await moleculeVaultInstance.taxRate();
-            assert.ok(taxRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
+        it('Get feeRate', async () => {
+            const feeRate = await moleculeVaultInstance.feeRate();
+            assert.ok(feeRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
         });
     });
 
