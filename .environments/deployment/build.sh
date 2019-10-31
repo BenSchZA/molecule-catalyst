@@ -32,7 +32,8 @@ build() {
   export MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$FRONTEND_REPO_NAME:$TAG
   export MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$BACKEND_REPO_NAME:$TAG
 
-  export API_HOST=alpha-api-$TAG.mol.ai
+  export API_HOST=alpha-api-$TAG.bitsofether.com
+  #.mol.ai
   export APM_SERVICE_NAME=molecule-frontend-alpha-$TAG
   export APM_SERVER_ENDPOINT=https://apm.mol.ai
   
