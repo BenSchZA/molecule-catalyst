@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { List, ListItem, Button, Menu, MenuItem, Avatar, Container, Tooltip } from '@material-ui/core';
+import { List, ListItem, Button, Menu, MenuItem, Avatar, Container, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -71,6 +71,11 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
       margin: 0
     }
   },
+  navButton: {
+    fontFamily: "Montserrat",
+    fontWeight: "bold",
+    fontSize: "14px",
+  },
   background: {
     display: "block",
     position: "absolute",
@@ -127,12 +132,14 @@ const AppWrapper: React.FunctionComponent<Props> = ({
         <Container maxWidth='lg'>
           <Toolbar disableGutters={true} className={classes.toolbar}>
             <Link className={classes.appBarLogo} to="/discover">
-              <ReactSVG src="/molecule-catalyst-logo.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 45px')} />
+              <ReactSVG src="/molecule-catalyst-logo.svg" beforeInjection={(svg) => svg.setAttribute('style', 'width: 175px')} />
             </Link>
             <div className={classes.navAccount}>
               <List className={classes.navList}>
                 {navRoutes.map(r => (
-                  <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>{r.name}</ListItem>
+                  <ListItem button key={r.path} selected={r.path === location.pathname} onClick={() => forwardTo(r.path)}>
+                    <Typography className="navButton">{r.name}</Typography>
+                  </ListItem>
                 ))}
                 {(isLoggedIn && userRole === UserType.Admin) &&
                   <Fragment>
@@ -198,7 +205,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
       <ErrorBoundary>
         <main className={classes.content}>
           <div className={classes.background}>
-            <img src="Seperator-02.png" alt="" />
+            {location.pathname === "/discover" && <img src="Seperator-02.png" alt="" />}
           </div>
           {children}
         </main>
