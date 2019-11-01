@@ -11,6 +11,7 @@ import MoleculeSpinner from 'components/MoleculeSpinner';
 import DaiIcon from 'components/DaiIcon/Loadable';
 import { getBlockchainObjects } from 'blockchainResources';
 import { ethers } from 'ethers';
+import ProjectDisclaimer from 'components/ProjectDisclaimer';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -108,6 +109,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.modalText}>
           Your current project token balance
         </Typography>
+        <ProjectDisclaimer />
         <TextField
           type='number'
           autoFocus
