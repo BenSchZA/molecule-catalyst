@@ -122,7 +122,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
 
   return project ? (
     <Container maxWidth="lg">
-      {userAddress &&
+      {userAddress && project.marketData && project.vaultData &&
         <TransactionModalContainer
           projectId={project.id}
           userAddress={userAddress}
@@ -229,9 +229,9 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             <Typography className={classes.projectProgress}>
               {
                 (() => {
-                  const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-                  const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
-                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
+                  const totalRaised = project.vaultData ? Number(ethers.utils.formatEther(project?.vaultData?.totalRaised)) : 0;
+                  const totalFundingGoal = project.vaultData ? project.vaultData.phases.reduce((total, phase) =>
+                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0) : 0;
                   return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
                 })()
               } %
@@ -243,8 +243,11 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(project.vaultData.phases.reduce((total, phase) =>
-                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString()
+                project.vaultData ?
+                  Math.ceil(project.vaultData.phases.reduce((total, phase) =>
+                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() :
+                  project.researchPhases.reduce((total, phase) =>
+                    total += phase.fundingGoal, 0)
               } DAI
               </Typography>
           </div>
@@ -254,7 +257,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.totalRaised))).toLocaleString()
+                Math.ceil(Number(ethers.utils.formatEther(project?.vaultData?.totalRaised || 0))).toLocaleString()
               } DAI
               </Typography>
           </div>
@@ -264,8 +267,10 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                Math.ceil(Number(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
-                  (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString()
+                project.vaultData ?
+                  Math.ceil(Number(ethers.utils.formatEther(project.vaultData.phases.filter(value => value.state >= FundingState.ENDED).reduce(
+                    (previousValue, currentValue) => previousValue.add(currentValue.fundingThreshold), bigNumberify(0))))).toLocaleString() :
+                  0
               } DAI
               </Typography>
           </div>
@@ -275,25 +280,43 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
               </Typography>
             <Typography className={classes.fundingAmount}>
               {
-                getRemainingDuration(project.vaultData.phases.length - 1)
+                project.vaultData ? getRemainingDuration(project.vaultData.phases.length - 1) : 0
               } days
               </Typography>
           </div>
         </article>
         <div className={classes.contentWrapper}>
           <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
-            {project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-              <ProjectPhaseStatus key={i + 1} daysLeft={getRemainingDuration(i)} phase={{
-                index: i + 1,
-                fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
-                fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
-                title: project.researchPhases[i].title,
-                startDate: p.startDate,
-                state: p.state,
-                duration: p.phaseDuration,
-                activePhase: project.vaultData.activePhase
-              }} />
-            )}
+            {project.vaultData ?
+              project.vaultData.phases.map((p, i) =>
+                <ProjectPhaseStatus
+                  key={i + 1}
+                  daysLeft={getRemainingDuration(i)}
+                  phase={{
+                    index: i + 1,
+                    fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
+                    fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
+                    title: project.researchPhases[i].title,
+                    startDate: p.startDate,
+                    state: p.state,
+                    duration: p.phaseDuration,
+                    activePhase: project.vaultData.activePhase
+                  }} />
+              ): project.researchPhases.map((p, i) => 
+                <ProjectPhaseStatus 
+                  key={i + 1}
+                  daysLeft={p.duration}
+                  phase={{
+                    index: i + 1,
+                    fundedAmount: 0,
+                    fundingGoal: p.fundingGoal,
+                    title: p.title,
+                    startDate: '2019-01-01',
+                    state: 0,
+                    duration: p.duration,
+                    activePhase: 0
+                  }}/>
+              )}
           </Grid>
         </div>
       </Paper>
@@ -302,7 +325,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           Market
         </Typography>
         {project && project.marketData ?
-          <MarketChartLayout display={true} project={project} /> : <div className={classes.marketSpinner}><CircularProgress /></div>
+          <MarketChartLayout display={true} project={project} /> :
+          <div className={classes.marketSpinner}><CircularProgress /></div>
         }
       </Paper>
       <Paper className={classes.projectSection} square>
@@ -365,7 +389,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
                 </Typography>
                 <div className={classes.phaseDateChip}>
                   <Typography className={classes.phaseDates} align="center">
-                    {getDateRange(i)}
+                    {project.vaultData && getDateRange(i)}
                   </Typography>
                 </div>
               </Paper>

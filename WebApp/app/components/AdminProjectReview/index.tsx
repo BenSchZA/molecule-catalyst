@@ -196,6 +196,7 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
     <Grid className={classes.buttonBar}>
       {(project.status === ProjectSubmissionStatus.created) &&
         <Fragment>
+          <Button onClick={() => forwardTo(`/admin/project/${project.id}/preview`)}>Preview</Button>
           <Button onClick={() => approveProject()}>Approve</Button>
           <Button onClick={() => forwardTo(`/admin/project/${project.id}/edit`)}>Edit</Button>
           <Button onClick={() => rejectProject()}>Decline</Button>
