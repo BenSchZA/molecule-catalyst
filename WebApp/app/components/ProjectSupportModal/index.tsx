@@ -11,6 +11,7 @@ import { getBlockchainObjects } from 'blockchainResources';
 import { NegativeButton, PositiveButton } from 'components/custom';
 import DaiIcon from 'components/DaiIcon/Loadable';
 import styles from './styles';
+import ProjectDisclaimer from 'components/ProjectDisclaimer';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -95,6 +96,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <Typography className={classes.modalText}>
           Your Account Balance
         </Typography>
+        <ProjectDisclaimer />
         <TextField
           autoFocus
           type='number'
