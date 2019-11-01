@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "etherlime ganache --networkId=1337",
+    "start": "etherlime ganache -q --networkId=1337",
     "build": "etherlime compile --runs=999 --exportAbi",
     "deploy:local": "etherlime deploy --runs=500",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",

@@ -121,7 +121,7 @@ describe("Molecule vault test", async () => {
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
 
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw worked without the round being finished")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw worked without the round being finished")
 
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
@@ -176,7 +176,7 @@ describe("Molecule vault test", async () => {
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
             
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw failed");
             
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
@@ -232,7 +232,7 @@ describe("Molecule vault test", async () => {
             assert.equal(balanceOfMarketInstanceM1.toString(), molVaultSettings.marketBalances[0], "Market balance incorrect");
             assert.equal(balanceOfVaultInstanceM1.toString(), molVaultSettings.vaultBalances[0], "Market balance incorrect");
             
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw failed");
 
             let balanceOfMoleculeVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfMarketInstanceW1 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);

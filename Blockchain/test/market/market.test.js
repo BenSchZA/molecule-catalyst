@@ -261,7 +261,6 @@ describe('Market test', async () => {
             assert.ok(tokenBalanceAfter.eq(0), "Token balance not decreased")
         });
 
-
         it("Sets the new end date of the second phase correctly", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -305,21 +304,17 @@ describe('Market test', async () => {
 
             currentPhase = await vaultInstance.currentPhase();
             phaseData = await vaultInstance.fundingPhase(1);
+            const outstanding = await vaultInstance.outstandingWithdraw();
+
             assert.ok(currentPhase.eq(2), "Phase not incremented to 2");
             assert.equal(phaseData[4], 2, "2nd phase state not set to ended");
 
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw 0 failed")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw 0 failed")
             const outstandingAfter = await vaultInstance.outstandingWithdraw();
 
             phaseData = await vaultInstance.fundingPhase(1);
-            assert.ok(outstandingAfter.gt(0), "Outstanding is 0")
-            assert.ok(phaseData[0].eq(outstandingAfter.div(100).mul(moleculeVaultSettings.taxationRate.add(100))), "Outstanding withdraw incorrect")
-
-            await assert.notRevert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 failed")
-            const outstandingEnd = await vaultInstance.outstandingWithdraw();
-            assert.ok(outstandingEnd.eq(0), "All funds not sent");
-
-            await assert.revert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 replayed incorrectly")
+            assert.equal(outstandingAfter.toString(), 0, "Outstanding is 0");
+            assert.equal(phaseData[1].toString(), phaseData[0].toString(), "Outstanding withdraw incorrect");
         });
     });
 

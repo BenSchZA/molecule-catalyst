@@ -205,7 +205,7 @@ describe("Vault test", async () => {
             assert.ok(currentPhase.eq(1), "Phase not incremented");
             assert.equal(phaseData[4], 2, "Phase state not set to ended");
 
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             phaseData = await vaultInstance.fundingPhase(0);
 
             let vaultBalance = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
@@ -242,7 +242,7 @@ describe("Vault test", async () => {
 
             let balanceOfVaultBefore = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address)
             let balanceOfMolVaultBefore = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address)
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             let balanceOfVaultAfter = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address)
             let balanceOfMolVaultAfter = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address)
 
@@ -261,13 +261,13 @@ describe("Vault test", async () => {
         });
 
         it("Withdraws after a fund is raised successfully", async () => {
-            await assert.revert(vaultInstance.from(creator).withdraw(0), "Withdraw succeeded incorrectly")
+            await assert.revert(vaultInstance.from(creator).withdraw(), "Withdraw succeeded incorrectly")
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase.div(2))
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
             
-            await assert.revert(vaultInstance.from(creator).withdraw(0), "Withdraw succeeded despite phase not completed incorrectly")
+            await assert.revert(vaultInstance.from(creator).withdraw(), "Withdraw succeeded despite phase not completed incorrectly")
             
             estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase.div(2))
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
@@ -275,7 +275,7 @@ describe("Vault test", async () => {
             const balanceOfMoleVaultBefore = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address)
             const outstandingBefore = await vaultInstance.outstandingWithdraw();
 
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw failed")
             
             const outstandingAfter = await vaultInstance.outstandingWithdraw();
             const balanceOfCreatorAfter = await pseudoDaiInstance.balanceOf(creator.signer.address)
@@ -290,13 +290,13 @@ describe("Vault test", async () => {
 
     describe("Events", async () => {
         it("Emits FundingWithdrawn", async () => {
-            await assert.revert(vaultInstance.from(creator).withdraw(0), "Withdraw succeeded incorrectly")
+            await assert.revert(vaultInstance.from(creator).withdraw(), "Withdraw succeeded incorrectly")
             let phaseData = await vaultInstance.fundingPhase(0);
             let daiToSpendForPhase = (phaseData[0].div(marketSettings.taxationRate)).mul(101);
 
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase);
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
-            const txReceipt = await (await vaultInstance.from(creator).withdraw(0)).wait();
+            const txReceipt = await (await vaultInstance.from(creator).withdraw()).wait();
 
             const FundsWithdrawn = (await(txReceipt.events.filter(
                 event => event.topics[0] == vaultInstance.interface.events.FundingWithdrawn.topic

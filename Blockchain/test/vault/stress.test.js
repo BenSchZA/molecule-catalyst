@@ -260,7 +260,7 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM1[4].toString(), 0, "Round state is incorrect");
 
             // Withdrawing the funding from round 1
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             let balanceVaultW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceMolVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfCreatorW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
@@ -293,7 +293,7 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM2[1].toString(), marketSettingsStress.rollOverAmounts[1], "Round funding raised incorrect");
             assert.equal(phaseThreeM2[4].toString(), 1, "Round state is incorrect");
 
-            await vaultInstance.from(creator).withdraw(1);
+            await vaultInstance.from(creator).withdraw();
 
             let balanceVaultW2 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceMolVaultW2 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
@@ -309,16 +309,16 @@ describe('Vault stress test', async () => {
 
             assert.equal(balanceVaultM3.toString(), marketSettingsStress.vaultBalanceWithdraws[3], "Vault balance incorrect");
 
-            await vaultInstance.from(creator).withdraw(2);
+            await vaultInstance.from(creator).withdraw();
 
             try {
-                await vaultInstance.from(creator).withdraw(2);
+                await vaultInstance.from(creator).withdraw();
                 assert.equal(true, false, "Creator could withdraw round twice")
             } catch (error) {
                 assert.equal(true, true, "Creator could not withdraw funds twice")
             }
             try {
-                await vaultInstance.from(creator).withdraw(3);
+                await vaultInstance.from(creator).withdraw();
                 assert.equal(true, false, "Creator could withdraw round that does not exist")
             } catch (error) {
                 assert.equal(true, true, "Creator could withdraw round that does not exist")
@@ -414,20 +414,21 @@ describe('Vault stress test', async () => {
             assert.equal(balanceOfCreatorM2.toString(), 0, "Creator balance is incorrect");
             assert(balanceVaultT.toString() >= marketSettingsStress.vaultBalanceWithdraws[4].toString(), "Vault has incorrect balance");
 
+            let balanceVaultBW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceOfCreatorBW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+            let balanceOfMolVaultBW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             // Making sure the creator can still claim their funding
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             let balanceVaultW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceOfCreatorW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+            let balanceOfMolVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
 
-            assert.equal(balanceVaultW1.toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Vault balance incorrect");
-            assert.equal(balanceOfCreatorW1.toString(), marketSettingsStress.creatorBalances[0].toString(), "Creator balance incorrect");
-             
-            await vaultInstance.from(creator).withdraw(1);
-            let balanceVaultW2 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
-            let balanceOfCreatorW2 = await pseudoDaiInstance.balanceOf(creator.signer.address);
-
-            assert.equal(balanceVaultW2.toString(), 0, "Vault balance incorrect");
-            assert.equal(balanceOfCreatorW2.toString(), marketSettingsStress.creatorBalances[1].toString(), "Creator balance incorrect")
+            assert.equal(balanceVaultBW1.toString(), marketSettingsStress.vaultBalanceWithdraws[4].toString(), "Vault balance incorrect");
+            assert.equal(balanceOfCreatorBW1.toString(), 0, "Creator balance incorrect");
+            assert.equal(balanceOfMolVaultBW1.toString(), 0, "Creator balance incorrect");
+            assert.equal(balanceVaultW1.toString(), 0, "Vault balance incorrect");
+            assert.equal(balanceOfCreatorW1.toString(), marketSettingsStress.creatorBalances[1].toString(), "Creator balance incorrect");
+            assert.equal(balanceOfMolVaultW1.toString(), marketSettingsStress.molVaultBalances[1].toString(), "Mol vault balance incorrect");
         });
 
         it("Multiple rounds being bought at once", async () => {
