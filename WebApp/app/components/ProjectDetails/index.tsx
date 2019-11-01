@@ -287,21 +287,36 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         </article>
         <div className={classes.contentWrapper}>
           <Grid className={classes.fundingPhaseSection} container direction='row' alignItems='center' justify='center' spacing={4}>
-            {project.vaultData && project.vaultData.phases && project.vaultData.phases.map((p, i) =>
-              <ProjectPhaseStatus
-                key={i + 1}
-                daysLeft={getRemainingDuration(i)}
-                phase={{
-                  index: i + 1,
-                  fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
-                  fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
-                  title: project.researchPhases[i].title,
-                  startDate: p.startDate,
-                  state: p.state,
-                  duration: p.phaseDuration,
-                  activePhase: project.vaultData.activePhase
-                }} />
-            )}
+            {project.vaultData ?
+              project.vaultData.phases.map((p, i) =>
+                <ProjectPhaseStatus
+                  key={i + 1}
+                  daysLeft={getRemainingDuration(i)}
+                  phase={{
+                    index: i + 1,
+                    fundedAmount: Number(ethers.utils.formatEther(p.fundingRaised)),
+                    fundingGoal: Number(ethers.utils.formatEther(p.fundingThreshold)),
+                    title: project.researchPhases[i].title,
+                    startDate: p.startDate,
+                    state: p.state,
+                    duration: p.phaseDuration,
+                    activePhase: project.vaultData.activePhase
+                  }} />
+              ): project.researchPhases.map((p, i) => 
+                <ProjectPhaseStatus 
+                  key={i + 1}
+                  daysLeft={p.duration}
+                  phase={{
+                    index: i + 1,
+                    fundedAmount: 0,
+                    fundingGoal: p.fundingGoal,
+                    title: p.title,
+                    startDate: '2019-01-01',
+                    state: 0,
+                    duration: p.duration,
+                    activePhase: 0
+                  }}/>
+              )}
           </Grid>
         </div>
       </Paper>
@@ -310,7 +325,8 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
           Market
         </Typography>
         {project && project.marketData ?
-          <MarketChartLayout display={true} project={project} /> : <div className={classes.marketSpinner}><CircularProgress /></div>
+          <MarketChartLayout display={true} project={project} /> :
+          <div className={classes.marketSpinner}><CircularProgress /></div>
         }
       </Paper>
       <Paper className={classes.projectSection} square>
