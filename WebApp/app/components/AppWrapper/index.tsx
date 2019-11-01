@@ -11,10 +11,10 @@ import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
 import { UserType } from 'containers/App/types';
 import ErrorBoundary from 'containers/ErrorBoundary';
+import AppFooter from 'components/AppFooter';
 
-
-// import { appRoute } from 'containers/App/routes';
 const spacingFromProfile = 20;
+const footerHeight = 300;
 
 const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   appBar: {
@@ -29,13 +29,16 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     alignContent: 'center',
     ...mixins.toolbar,
   },
+  body: {
+    height: "100%",
+    margin: "0",
+  },
   content: {
     paddingTop: spacing(8),
     paddingLeft: spacing(2),
     paddingRight: spacing(2),
     position: "relative",
-    minHeight: '100vh',
-
+    minHeight: `calc(100vh - ${footerHeight}px)`,
   },
   navAccount: {
     display: 'flex',
@@ -82,9 +85,11 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     top: 0,
     left: 0,
     width: "100%",
+    maxHeight: `calc(100vh - ${footerHeight}px)`,
     zIndex: -1,
     "& img": {
-      width: "100%"
+      width: "100%",
+      maxHeight: `calc(100vh - ${footerHeight}px)`,
     },
     "& ~ *": {
       zIndex: 0
@@ -127,7 +132,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
 
 
   return (
-    <Fragment>
+    <div className={classes.body}>
       <AppBar position="fixed" className={classes.appBar} >
         <Container maxWidth='lg'>
           <Toolbar disableGutters={true} className={classes.toolbar}>
@@ -205,12 +210,13 @@ const AppWrapper: React.FunctionComponent<Props> = ({
       <ErrorBoundary>
         <main className={classes.content}>
           <div className={classes.background}>
-            {location.pathname === "/discover" && <img src="Seperator-02.png" alt="" />}
+            {location.pathname === "/discover" && <img src="Seperator.png" alt="" />}
           </div>
           {children}
         </main>
+        <AppFooter />
       </ErrorBoundary>
-    </Fragment>
+    </div>
   );
 }
 
