@@ -10,7 +10,6 @@ import { launchProject } from 'domain/projects/actions';
 
 export function* approveProject(action) {
   try {
-    // A project is either approved -> started and launched, or rejected
     yield put(launchProject.request(action.payload));
   } catch (error) {
     console.log(error);

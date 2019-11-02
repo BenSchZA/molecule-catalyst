@@ -17,7 +17,7 @@ export const launchProject = createAsyncAction(
   ActionTypes.LAUNCH_PROJECT_REQUEST,
   ActionTypes.LAUNCH_PROJECT_SUCCESS,
   ActionTypes.LAUNCH_PROJECT_FAILURE)
-  <string, undefined, Error>();
+  <{ projectId: string, researchContributionRate: number }, undefined, Error>();
 export const supportProject = createAsyncAction(
   ActionTypes.SUPPORT_PROJECT_REQUEST,
   ActionTypes.SUPPORT_PROJECT_SUCCESS,

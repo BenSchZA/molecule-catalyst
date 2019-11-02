@@ -48,7 +48,7 @@ export function* getMyProjects() {
 export function* launchProject(action) {
   try {
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-    const launchResponse = yield call(launchProjectAPI, action.payload, apiKey);
+    const launchResponse = yield call(launchProjectAPI, action.payload.projectId, action.payload.researchContributionRate, apiKey);
     yield put(ProjectActions.addProject(launchResponse.data));
     yield put(ProjectActions.launchProject.success());
     yield call(forwardTo, '/admin/projects');

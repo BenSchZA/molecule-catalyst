@@ -20,10 +20,10 @@ interface RouteParams {
 }
 
 interface OwnProps extends RouteComponentProps<RouteParams>,
-React.Props<RouteParams> { }
+  React.Props<RouteParams> { }
 
 interface DispatchProps {
-  approveProject(): void
+  approveProject(researchContributionRate: number): void
   rejectProject(): void
 }
 
@@ -35,7 +35,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 
 const AdminProjectReviewContainer: React.FunctionComponent<Props> = (props: Props) => (
   <Container maxWidth='xl'>
-    <AdminProjectReview {...props}/>
+    <AdminProjectReview {...props} />
   </Container>
 );
 
@@ -47,7 +47,11 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: OwnProps,
 ): DispatchProps => ({
-  approveProject: () => dispatch(actions.approveProject(ownProps.match.params.projectId)),
+  approveProject: (researchContributionRate) => dispatch(
+    actions.approveProject({
+      projectId: ownProps.match.params.projectId,
+      researchContributionRate: researchContributionRate
+    })),
   rejectProject: () => dispatch(actions.rejectProject(ownProps.match.params.projectId)),
 })
 
