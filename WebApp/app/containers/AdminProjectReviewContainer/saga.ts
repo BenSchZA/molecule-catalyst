@@ -1,5 +1,4 @@
-import * as adminUserActions from './actions'
-import { takeEvery, select, call, put } from 'redux-saga/effects';
+import { takeEvery, select, call, put, fork, take } from 'redux-saga/effects';
 import { getType } from 'typesafe-actions';
 import { ApplicationRootState } from 'types';
 import { 
@@ -7,16 +6,9 @@ import {
 } from '../../api';
 import { forwardTo } from 'utils/history';
 import { launchProject } from 'domain/projects/actions';
+import { setTxInProgress, rejectProject as rejectProjectAction } from './actions';
 
-export function* approveProject(action) {
-  try {
-    yield put(launchProject.request(action.payload));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export function* rejectProject(action) {
+function* rejectProject(action) {
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     yield call(rejectProjectAPI, action.payload, apiKey);
@@ -26,7 +18,22 @@ export function* rejectProject(action) {
   }
 }
 
-export default function* createProjectContainerWatcherSaga() {
-  yield takeEvery(getType(adminUserActions.approveProject), approveProject)
-  yield takeEvery(getType(adminUserActions.rejectProject), rejectProject)
+function* launchProjectTxWatcher() {
+  while (true) {
+    yield take(getType(launchProject.request));
+    yield put(setTxInProgress(true));
+    yield take([
+      getType(launchProject.success),
+      getType(launchProject.failure),
+    ])
+    yield put(setTxInProgress(false));
+    yield call(forwardTo, '/admin/projects');
+  }
 }
+
+export default function* createProjectContainerWatcherSaga() {
+  yield put(setTxInProgress(false));
+  yield fork(launchProjectTxWatcher);
+  yield takeEvery(getType(rejectProjectAction), rejectProject)
+}
+

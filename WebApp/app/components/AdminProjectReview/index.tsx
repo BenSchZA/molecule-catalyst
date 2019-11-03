@@ -9,6 +9,7 @@ import { Theme, createStyles, withStyles, WithStyles, Container, Table, TableBod
 import { colors } from 'theme';
 import { forwardTo } from 'utils/history';
 import { ProjectSubmissionStatus } from '../../domain/projects/types';
+import MoleculeSpinner from 'components/MoleculeSpinner';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -37,16 +38,32 @@ const styles = (theme: Theme) =>
     },
     titles: {
       whiteSpace: 'nowrap',
+    },
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.75)",
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      top: 0,
+      left: 0,
+      zIndex: 3,
+    },
+    spinner: {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
     }
   });
 
 interface OwnProps extends WithStyles<typeof styles> {
-  project: any,
-  approveProject(researchContributionRate: number): void;
+  project: any;
+  txInProgress: boolean;
+  launchProject(researchContributionRate: number): void;
   rejectProject(): void;
 }
 
-const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classes, approveProject, rejectProject }: OwnProps) => {
+const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classes, launchProject, rejectProject, txInProgress }: OwnProps) => {
   const [launchModalOpen, setLaunchModalOpen] = useState(false);
   const [reasearchContributionRate, setResearchContributionRate] = useState(15);
 
@@ -215,6 +232,11 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
       <Dialog
         onClose={handleCloseLaunchModal}
         open={launchModalOpen} >
+        <div className={classes.overlay} style={{ display: (txInProgress) ? "block" : "none" }}>
+          <div className={classes.spinner}>
+            <MoleculeSpinner />
+          </div>
+        </div>
         <DialogTitle id="customized-dialog-title">
           Approve Project
         </DialogTitle>
@@ -223,21 +245,21 @@ const AdminProjectReview: React.FunctionComponent<OwnProps> = ({ project, classe
             Specify the research contribution rate
           </Typography>
           <TextField
-          type='number'
-          autoFocus
-          value={reasearchContributionRate}
-          onChange={(e) => setResearchContributionRate(Number(e.target.value))}
-          inputProps={{
-            min: 1,
-            max: 99,
-            step: 1,
-          }} />
+            type='number'
+            autoFocus
+            value={reasearchContributionRate}
+            onChange={(e) => setResearchContributionRate(Number(e.target.value))}
+            inputProps={{
+              min: 1,
+              max: 99,
+              step: 1,
+            }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseLaunchModal} color="secondary">
             Cancel
           </Button>
-          <Button onClick={() => approveProject(reasearchContributionRate)} color="primary">
+          <Button onClick={() => launchProject(reasearchContributionRate)} color="primary">
             Approve project
           </Button>
         </DialogActions>

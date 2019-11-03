@@ -51,9 +51,8 @@ export function* launchProject(action) {
     const launchResponse = yield call(launchProjectAPI, action.payload.projectId, action.payload.researchContributionRate, apiKey);
     yield put(ProjectActions.addProject(launchResponse.data));
     yield put(ProjectActions.launchProject.success());
-    yield call(forwardTo, '/admin/projects');
   } catch (error) {
-    put(ProjectActions.launchProject.failure(error));
+    yield put(ProjectActions.launchProject.failure(error));
   }
 }
 

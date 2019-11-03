@@ -5,7 +5,7 @@
  */
 
 enum ActionTypes {
-    APPROVE_PROJECT = "app/AdminProjectReviewContainer/APPROVE_PROJECT",
+    SET_TX_IN_PROGRESS = "app/AdminProjectReviewContainer/SET_TX_IN_PROGRESS",
     REJECT_PROJECT = "app/AdminProjectReviewContainer/REJECT_PROJECT"
 }
 
