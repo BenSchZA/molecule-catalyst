@@ -51,8 +51,20 @@ export function* launchProject(action) {
     const launchResponse = yield call(launchProjectAPI, action.payload.projectId, action.payload.researchContributionRate, apiKey);
     yield put(ProjectActions.addProject(launchResponse.data));
     yield put(ProjectActions.launchProject.success());
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Project has been successfully launched',
+      options: {
+        variant: 'success',
+      }
+    }))
   } catch (error) {
     yield put(ProjectActions.launchProject.failure(error));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'There was an error launching the project',
+      options: {
+        variant: 'error',
+      }
+    }))
   }
 }
 
