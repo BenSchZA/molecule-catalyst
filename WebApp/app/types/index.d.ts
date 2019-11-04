@@ -10,6 +10,7 @@ import { ContainerState as AdminProjectListingState } from '../containers/AdminP
 import { ContainerState as ProjectDetailsState } from '../containers/ProjectDetailsContainer/types';
 import { ContainerState as MyProjectsState } from '../containers/myProjectsContainer/types';
 import { ContainerState as TransactionModalState } from '../containers/TransactionModalContainer/types';
+import { ContainerState as AdminProjectReviewState } from '../containers/AdminProjectReviewContainer/types';
 
 export interface LifeStore extends Store<ApplicationRootState> {
   injectedReducers: any;
@@ -41,7 +42,7 @@ export interface ApplicationRootState {
   readonly portfolioContainer: BackedProjects;
   readonly createProjectContainer: never;
   readonly adminUserViewContainer: never;
-  readonly adminProjectReviewContainer: never;
+  readonly adminProjectReviewContainer: AdminProjectReviewState;
   readonly myProjectsContainer: MyProjectsState;
   readonly projectDetailsContainer: ProjectDetailsState;
   readonly transactionModalContainer: TransactionModalState;

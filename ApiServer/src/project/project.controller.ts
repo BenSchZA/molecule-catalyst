@@ -69,8 +69,9 @@ export class ProjectController {
   @Roles(UserType.Admin)
   async launchProject(
     @Param('projectId') projectId,
+    @Body() body: {researchContributionRate: number},
     @Req() req: Request & { user: User }) {
-    const result = await this.projectService.launchProject(projectId, req.user);
+    const result = await this.projectService.launchProject(projectId, body.researchContributionRate, req.user);
     return result;
   }
 
