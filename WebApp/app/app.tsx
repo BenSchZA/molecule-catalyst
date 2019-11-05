@@ -13,7 +13,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'sanitize.css/sanitize.css';
-import { init as initApm } from '@elastic/apm-rum';
 
 // Import root app
 import App from 'containers/App';
@@ -80,12 +79,3 @@ if (module.hot) {
 
 // We need the providers injected for the app to load
 window.addEventListener('load', () => render(), { once: true });
-
-initApm({
-  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-  serviceName: process.env.APM_SERVICE_NAME,
-  // Set custom APM Server URL (default: http://localhost:8200)
-  serverUrl: process.env.APM_SERVER_ENDPOINT,
-  // Set service version (required for sourcemap feature)
-  serviceVersion: ''
-})
