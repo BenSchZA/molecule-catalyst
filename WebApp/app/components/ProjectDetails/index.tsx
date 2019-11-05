@@ -174,7 +174,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
             </Typography>
           </div>
           <div>
-            <Typography variant="h6" align="right">
+            <Typography variant="h6" align="right" className={classes.organisationName}>
               {project.user.affiliatedOrganisation &&
                 project.user.affiliatedOrganisation.toUpperCase()}
             </Typography>

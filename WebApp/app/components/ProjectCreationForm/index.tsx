@@ -62,7 +62,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
         <Typography variant='body1' className={classes.heading}>
           Here you can provide a basic overview about the scientific research you want to get funding for.
       </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>
@@ -110,7 +110,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           Try keep your explanations as simple as possible. <br />
           Include interesting pictures and links to relevant academic publications.
       </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>
@@ -214,7 +214,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           We can assist you when choosing these parameters.
         For more information about fundraising campaigns on Molecule, <a href="">click here.</a>
         </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>

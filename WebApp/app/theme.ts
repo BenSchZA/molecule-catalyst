@@ -72,7 +72,7 @@ const theme = (createMuiTheme as any)({
       contained: {
         backgroundColor: colors.moleculeBranding.secondary,
         color: colors.white,
-        marginLeft: '44%'
+        marginLeft: '37%'
       }
     },
     MuiTypography: {
@@ -212,12 +212,15 @@ const theme = (createMuiTheme as any)({
       }
     },
     MuiDivider: {
-      middle: {
+      root:{
         backgroundColor: colors.moleculeBranding.third,
         alignSelf: 'center',
         verticalAlign: 'middle',
         height: 2,
-        width: 1200
+        marginTop: 24
+      },
+      middle: {
+        width: 1200,
       }
     },
     MuiSelect: {
