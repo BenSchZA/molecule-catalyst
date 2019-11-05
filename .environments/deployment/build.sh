@@ -27,8 +27,8 @@ build() {
   export REGION=us-west-2
   echo "Building $TAG Docker image"
   source .environments/variables/env_$BRANCH_NAME.sh # Load env variables for frontend build
-  export FRONTEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-frontend
-  export BACKEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-backend
+  export FRONTEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-frontend:$TAG
+  export BACKEND_REPO_NAME=linumlabs/molecule-alpha/release/molecule-backend:$TAG
   export MOLECULE_FRONTEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$FRONTEND_REPO_NAME:$TAG
   export MOLECULE_BACKEND_CONTAINER_RELEASE_IMAGE=$REGISTRY/$BACKEND_REPO_NAME:$TAG
 
@@ -43,9 +43,9 @@ build() {
 if [ $BRANCH_NAME == "nightly" ]
 then
   build
-# elif [ $BRANCH_NAME == "staging" ]
-# then
-#   build
+elif [ $BRANCH_NAME == "staging" ]
+then
+  build
 else
   echo "Invalid deployment branch"
   exit 1

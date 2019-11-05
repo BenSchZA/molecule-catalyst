@@ -154,13 +154,18 @@ deploy() {
 
   if [ $TAG == "nightly" ]
   then
-    echo "Configuring env variables"
+    echo "Configuring env variables for $TAG"
     NPM_CONTRACTS_VERSION=0_0_13 # Contract NPM package version
     DAI_CONTRACT_ADDRESS=0xDC3c52266AA4102De49B14c6bD25B495Acb88619
     MARKET_REGISTRY_ADDRESS=0xD4D33CE814041F2b777C2726529cdf3F14846B06
     MARKET_FACTORY_ADDRESS=0x3D5fbfd16104502104581a44DEe4faE2caDc6595
-  # elif [ $TAG == "staging" ]
-  # then
+  elif [ $TAG == "staging" ]
+  then
+    echo "Configuring env variables for $TAG"
+    NPM_CONTRACTS_VERSION=0_0_13 # Contract NPM package version
+    DAI_CONTRACT_ADDRESS=0x5D9e9456338EDaf49687771B2923A4caaa19d0b9
+    MARKET_REGISTRY_ADDRESS=0x653b05B98C48682b9E3f799e1A7eE0A99b781208
+    MARKET_FACTORY_ADDRESS=0x933B535Ab75657e2411b60CAcBCDf0A87f54011F
   else
     echo "Invalid tag for frontend host"
     exit 1
@@ -174,9 +179,9 @@ deploy() {
 if [ $BRANCH_NAME == "nightly" ]
 then
   deploy
-# elif [ $BRANCH_NAME == "staging" ]
-# then
-#   deploy
+elif [ $BRANCH_NAME == "staging" ]
+then
+  deploy
 else
   echo "Invalid deployment branch"
   exit 1
