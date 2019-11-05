@@ -23,8 +23,8 @@ const deploy = async (network, secret) => {
     network = 'rinkeby';
   }
 
-  const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, process.env.INFURA_API_KEY, defaultConfigs);
-  // const deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, 'http://localhost:8545/', defaultConfigs);
+  // const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, process.env.INFURA_API_KEY, defaultConfigs);
+  const deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, 'http://localhost:8545/', defaultConfigs);
 
   const deploy = (...args) => deployer.deployAndVerify(...args);
 
