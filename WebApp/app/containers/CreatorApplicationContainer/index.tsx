@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import * as Yup from 'yup';
-import { Typography, Button, Divider } from '@material-ui/core';
+import { Typography, Button, Divider, Container } from '@material-ui/core';
 import { Formik } from 'formik';
 import * as qs from 'query-string';
 import { RouteComponentProps } from 'react-router-dom';
@@ -62,40 +62,46 @@ const CreatorApplicationContainer: React.FunctionComponent<Props> = ({ onSubmitC
       if (location.search) {
         const parsed = qs.parse(location.search) as { token: string };
         return (
-          <Fragment>
+          <Container maxWidth="md">
             <Typography variant='h2'>
               Almost there...
             </Typography>
             <Button variant='contained' onClick={() => verifyEmail(parsed.token)} >Click here to verify email</Button>
-            <Divider variant='middle' />
-          </Fragment>
+            <Divider  />
+            </Container>
         )
       } else {
         return (
           <div>
+               <Container maxWidth="md">
             <Typography variant='h2'>
               Please check your email for a verification link
             </Typography>
-            <Divider variant='middle' />
+            <Divider />
+            </Container>
           </div>
         )
       }
     } else if (application.status === 2) {
       return (
         <div>
+             <Container maxWidth="md">
           <Typography variant='h2'>
             Your request is being reviewed.
           </Typography>
-          <Divider variant='middle' />
+          <Divider />
+          </Container>
         </div>
       )
     } else if (application.status === 4) {
       return (
         <div>
+           <Container maxWidth="md">
           <Typography variant='h2'>
             We have reviewed your request and unfortunately are unable to approve it.
           </Typography>
-          <Divider variant='middle' />
+          <Divider  />
+          </Container>
         </div>
       )
     } else {
