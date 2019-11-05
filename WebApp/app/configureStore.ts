@@ -59,6 +59,7 @@ const apmLogger = store => next => action => {
       transaction.end();
       return result;
     }
+    return next(action);
   } catch (err) {
     console.error('Caught an exception:', err);
     apm.captureError(err);
