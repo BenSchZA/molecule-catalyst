@@ -58,19 +58,14 @@ contract Vault is IVault, WhitelistAdminRole {
         FundingState state;         // State enum
     }
 
-    event FundingWithdrawn(uint256 phase, uint256 amount);
-    event PhaseFinalised(uint256 phase, uint256 amount);
-
     /**
       * @dev    Checks the range of funding rounds (1-9). Gets the Molecule tax
       *         from the molecule vault directly.
-      * @param  _fundingGoals : uint256[] - The collateral goal for each funding
-      *         round.
-      * @param  _phaseDurations : uint256[] - The time limit of each fundign
-      *         round.
-      * @param  _creator : address - The creator
-      * @param  _collateralToken : address - The ERC20 collateral token
-      * @param  _moleculeVault : address - The molecule vault
+      * @param  _fundingGoals: The collateral goal for each funding round.
+      * @param  _phaseDurations: The time limit of each fundign round.
+      * @param  _creator: The creator
+      * @param  _collateralToken: The ERC20 collateral token
+      * @param  _moleculeVault: The molecule vault
       */
     constructor(
         uint256[] memory _fundingGoals,
@@ -148,7 +143,7 @@ contract Vault is IVault, WhitelistAdminRole {
       *         an address untill the constructor has funished running. The
       *         cumulative funding threshold is set here becuse of gas issues
       *         within the constructor.
-      * @param _market : The market that will be sending this vault it's
+      * @param _market: The market that will be sending this vault it's
       *         collateral.
       */
     function initialize(
@@ -186,8 +181,8 @@ contract Vault is IVault, WhitelistAdminRole {
       *         has been sucessfully filled. If the withdraw is called after the
       *         last round has ended, the market will terminate and any
       *         remaining funds will be sent to the market.
-      * @param  _phase : The phase the creator wants to withdraw.
-      * @return bool : The funding has sucessfully been transfered.
+      * @param  _phase: The phase the creator wants to withdraw.
+      * @return bool: The funding has sucessfully been transfered.
       */
     function withdraw(
         uint256 _phase
@@ -248,6 +243,8 @@ contract Vault is IVault, WhitelistAdminRole {
       * @dev    This function will terminate the market if the time for the
       *         round is exceeded. This will loose any funding the creator has
       *         not withdrawn.
+      * @param  _receivedFunding: The amount of funding recived
+      * @return bool: Wheather or not the funding is valid
       */
     function validateFunding(
         uint256 _receivedFunding
@@ -351,6 +348,79 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
+      * @notice Returns all the details (relavant to external code) for a
+      *         specific phase.
+      * @param  _phase: The phase that you want the information of
+      * @return uint256: The funding goal (including mol tax) of the round
+      * @return uint256: The amount of funding currently raised for the round
+      * @return uint256: The duration of the phase
+      * @return uint256: The timestamp of the start date of the round
+      * @return FundingState: The enum state of the round (see IVault)
+      */
+    function fundingPhase(
+        uint256 _phase
+    )
+        public
+        view
+        returns(
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            FundingState
+        ) {
+        return (
+            fundingPhases_[_phase].fundingThreshold,
+            fundingPhases_[_phase].fundingRaised,
+            fundingPhases_[_phase].phaseDuration,
+            fundingPhases_[_phase].startDate,
+            fundingPhases_[_phase].state
+        );
+    }
+
+    /**
+	  * @return	uint256: The amount of funding that the creator has earned by
+	  *			not withdrawn.
+	  */
+    function outstandingWithdraw() public view returns(uint256) {
+        uint256 minusMolTax = outstandingWithdraw_
+            .sub(outstandingWithdraw_
+                .mul(moleculeTaxRate_)
+                .div(moleculeTaxRate_.add(100))
+            );
+        return minusMolTax;
+    }
+
+    /**
+      * @dev    The current active phase of funding
+      * @return uint256: The current phase the project is in.
+      */
+    function currentPhase() public view returns(uint256) {
+        return currentPhase_;
+    }
+
+    /**
+      * @return uint256: The total number of rounds for this project.
+      */
+    function getTotalRounds() public view returns(uint256) {
+        return totalRounds_;
+    }
+
+    /**
+	  * @return	address: The address of the market that is funding this vault.
+	  */
+    function market() public view returns(address) {
+        return address(market_);
+    }
+
+    /**
+	  * @return	address: The address of the creator of this project.
+	  */
+    function creator() external view returns(address) {
+        return creator_;
+    }
+
+    /**
       * @dev    Ends the round, increments to the next round, rollsover excess
       *         funding, sets the start date of the next round, if there is one.
       */
@@ -394,73 +464,5 @@ contract Vault is IVault, WhitelistAdminRole {
             currentPhase_.sub(1),
             fundingPhases_[currentPhase_.sub(1)].fundingThreshold
         );
-    }
-
-    /**
-      * @notice Returns all the details (relavant to external code) for a
-      *         specific phase.
-      * @param  _phase : The phase that you want the information of
-      * @return uint256 : The funding goal (including mol tax) of the round
-      * @return uint256 : The amount of funding currently raised for the round
-      * @return uint256 : The duration of the phase
-      * @return uint256 : The timestamp of the start date of the round
-      * @return FundingState : The enum state of the round (see IVault)
-      */
-    function fundingPhase(
-        uint256 _phase
-    )
-        public
-        view
-        returns(
-            uint256,
-            uint256,
-            uint256,
-            uint256,
-            FundingState
-        ) {
-        return (
-            fundingPhases_[_phase].fundingThreshold,
-            fundingPhases_[_phase].fundingRaised,
-            fundingPhases_[_phase].phaseDuration,
-            fundingPhases_[_phase].startDate,
-            fundingPhases_[_phase].state
-        );
-    }
-
-    /**
-      * @dev The offset for checking the funding threshold
-      */
-    function outstandingWithdraw() public view returns(uint256) {
-        uint256 minusMolTax = outstandingWithdraw_
-            .sub(outstandingWithdraw_
-                .mul(moleculeTaxRate_)
-                .div(moleculeTaxRate_.add(100))
-            );
-        return minusMolTax;
-    }
-
-    /**
-      * @dev The current active phase of funding
-      */
-    function currentPhase() public view returns(uint256) {
-        return currentPhase_;
-    }
-
-    /**
-      * @dev The total number of funding roudns created
-      */
-    function getTotalRounds() public view returns(uint256) {
-        return totalRounds_;
-    }
-
-    /**
-      * @dev The address of the current market
-      */
-    function market() public view returns(address) {
-        return address(market_);
-    }
-
-    function creator() external view returns(address) {
-        return creator_;
     }
 }
