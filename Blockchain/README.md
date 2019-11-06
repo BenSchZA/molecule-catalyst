@@ -7,7 +7,25 @@
 
 # Index
 
-#### [Project Set Up](#project-set-up)
+| Section | Topic | Sub-Topic |
+|:--------|:------|:----------|
+| 0. Project Details | [0.1 Dependencies](#dependencies) | |
+|  | [0.2 Project scripts](#project-scripts) |  |
+| 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline]() |
+|  |  | [1.1.2 Vault Contract](#vault-contract) |
+|  |  | [1.1.3 Market Contract](#market-contract) |
+|  |  | [1.1.4 Market Factory](#market-factory) |
+|  |  | [1.1.5 Market Registry](#market-registry) |
+|  |  | [1.1.6 Curve Integrals](#curve-integrals) |
+|  |  | [1.1.7 Curve Registry](#curve-registry) |
+|  |  | [1.1.8 Pseudo Dai <br>(The mocking of Dai for testing purposes)](#pseudo-dai) |
+|  |  | [1.1.9 Project Life Cycle](#project-life-cycle) |
+|  | 1.2 Detailed Breakdown of Smart Contracts | [1.2.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
+|  |  | [1.2.3 Constructors, Functions & Modifiers]() |
+|  |  | [1.2.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
+|  |  | [1.2.5 Security Considerations]() | 
+
+<!-- #### [Project Set Up](#project-set-up)
 * [Dependencies](#dependencies)
 * [Project scripts](#project-scripts)
 #### [Outline Of Architecture ](#outline-of-architecture)
@@ -18,12 +36,11 @@
     * [Market Registry](#market-registry)
     * [Curve Integrals](#curve-integrals)
     * [Curve Registry](#curve-registry)
-* [Project Life Cycle](#project-life-cycle)
-[]()
+* [Project Life Cycle](#project-life-cycle) -->
 
 ---
 
-# Project Set Up
+# Project Details
 
 ## Dependencies 
 This project uses the following tools & libraries. You do not need to manually install these tools as running the scripts in the below section will set them up with the correct versions. 
@@ -42,6 +59,10 @@ This project uses the following tools & libraries. You do not need to manually i
 2. Compile the contracts by running `yarn build`
 3. Then, in a separate terminal tab, start the Ganache local blockchain with `yarn start` 
 4. To run the tests, execute `yarn test`
+
+# Smart Contracts
+
+Below is the details of the Molecule smart contract ecosystem. 
 
 # Outline Of Architecture 
 
