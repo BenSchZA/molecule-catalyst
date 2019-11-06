@@ -17,13 +17,13 @@ import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
   */
 contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     //The molecule vault for molecule tax
-    IMoleculeVault internal moleculeVault_; // todo make storage as ImolVault
+    IMoleculeVault internal moleculeVault_;
     //The registry of all created markets
     IMarketRegistry internal marketRegistry_;
     //The registry of all curve types
     ICurveRegistry internal curveRegistry_;
     //The ERC20 collateral token contract address
-    IERC20 internal collateralToken_; // todo change to the IERC20
+    IERC20 internal collateralToken_;
 
     /**
       * @dev    Sets variables for market deployments.
@@ -103,7 +103,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
 
     /**
       * @notice This function will only affect new markets, and will not update
-      *         already created markets.
+      *         already created markets. This can only be called by an admin
       */
     function updateMoleculeVault(
         address _newMoleculeVault
@@ -115,28 +115,28 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     }
 
     /**
-      * @return address : The address of the molecule vault
+      * @return address: The address of the molecule vault
       */
     function moleculeVault() public view returns(address) {
         return address(moleculeVault_);
     }
 
     /**
-      * @return address : The contract address of the market registry.
+      * @return address: The contract address of the market registry.
       */
     function marketRegistry() public view returns(address) {
         return address(marketRegistry_);
     }
 
     /**
-      * @return address : The contract address of the curve registry
+      * @return address: The contract address of the curve registry
       */
     function curveRegistry() public view returns(address) {
         return address(curveRegistry_);
     }
 
     /**
-      * @return address : The contract address of the collateral token
+      * @return address: The contract address of the collateral token
       */
     function collateralToken() public view returns(address) {
         return address(collateralToken_);
