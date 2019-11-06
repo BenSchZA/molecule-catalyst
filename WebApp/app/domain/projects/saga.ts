@@ -159,7 +159,7 @@ export function* withdrawFunding(action) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
   try {
-    yield call(withdrawAvailable, project.chainData.vaultAddress, project.vaultData.phases);
+    yield call(withdrawAvailable, project.chainData.vaultAddress);
     yield put(ProjectActions.withdrawFunding.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
       message: 'Successfully withdrew funding',
