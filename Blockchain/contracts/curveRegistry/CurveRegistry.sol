@@ -1,12 +1,12 @@
 pragma solidity 0.5.10;
 
 import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
-
+import { ICurveRegistry } from "./ICurveRegistry.sol";
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  Storage of curves and active deployers.
   */
-contract CurveRegistry is WhitelistAdminRole {
+contract CurveRegistry is ICurveRegistry, WhitelistAdminRole {
     // The total number of curves
     uint256 internal numberOfCurves_ = 0;
     // The block number when this contract was published
@@ -22,26 +22,18 @@ contract CurveRegistry is WhitelistAdminRole {
         bool active;
     }
 
-    event CurveRegisterd(
-        uint256 index,
-        address indexed libraryAddress,
-        string curveFunction
-    );
-    event CurveActivated(uint256 index, address indexed libraryAddress);
-    event CurveDeactivated(uint256 index, address indexed libraryAddress);
-
     /**
       * @notice The deployer of this contract will be the admin.
       */
-    constructor() public {
+    constructor() public WhitelistAdminRole() {
         publishedBlocknumber_ = block.number;
     }
 
     /**
       * @dev    Logs the market into the registery.
-      * @param  _libraryAddress : Address of the library.
-      * @param  _curveFunction : Curve title/statement.
-      * @return uint256 : Returns the index of market for looking up
+      * @param  _libraryAddress: Address of the library.
+      * @param  _curveFunction: Curve title/statement.
+      * @return uint256: Returns the index of market for looking up
       */
     function registerCurve(
         address _libraryAddress,
@@ -68,9 +60,8 @@ contract CurveRegistry is WhitelistAdminRole {
 
     /**
       * @notice Allows an dmin to set a curves state to inactive. This function
-      *                 is for the case of an incorect curve module, or
-      *                 vunrability.
-      * @param  _index : The index of the curve to be set as inactive.
+      *         is for the case of an incorect curve module, or vunrability.
+      * @param  _index: The index of the curve to be set as inactive.
       */
     function deactivateCurve(uint256 _index) external onlyWhitelistAdmin() {
         require(
@@ -89,7 +80,7 @@ contract CurveRegistry is WhitelistAdminRole {
 
     /**
       * @notice Allows an admin to set a curves state to active.
-      * @param  _index : The index of the curve to be set as active.
+      * @param  _index: The index of the curve to be set as active.
       */
     function reactivateCurve(uint256 _index) external onlyWhitelistAdmin() {
         require(
@@ -109,7 +100,8 @@ contract CurveRegistry is WhitelistAdminRole {
     /**
       * @dev    Fetches all data and contract addresses of deployed curves by
       *         index, kept as interface for later intergration.
-      * @param  _index : Index of the curve library
+      * @param  _index: Index of the curve library
+      * @return address: The address of the curve
       */
     function getCurveAddress(uint256 _index)
         external
@@ -122,10 +114,10 @@ contract CurveRegistry is WhitelistAdminRole {
     /**
       * @dev    Fetches all data and contract addresses of deployed curves by
       *         index, kept as interface for later intergration.
-      * @param  _index : Index of the curve library.
-      * @return address : The address of the math library.
-      * @return string : The function of the curve.
-      * @return bool : The curves active state.
+      * @param  _index: Index of the curve library.
+      * @return address: The address of the math library.
+      * @return string: The function of the curve.
+      * @return bool: The curves active state.
       */
     function getCurveData(uint256 _index)
         external
@@ -146,7 +138,7 @@ contract CurveRegistry is WhitelistAdminRole {
     /**
       * @dev    Fetchs the current number of curves infering maximum callable
       *         index.
-      * @return uint256 : Returns the total number of curves registered.
+      * @return uint256: Returns the total number of curves registered.
       */
     function getIndex()
         external
@@ -159,7 +151,7 @@ contract CurveRegistry is WhitelistAdminRole {
     /**
       * @dev    In order to look up logs efficently, the published block is
       *         available.
-      * @return uint256 : The block when the contract was published
+      * @return uint256: The block when the contract was published
       */
     function publishedBlocknumber() external view returns(uint256) {
         return publishedBlocknumber_;
