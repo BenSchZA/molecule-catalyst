@@ -29,6 +29,7 @@ import UnauthorizedPage from 'components/UnauthorizedPage';
 import NotFoundPage from 'components/NotFoundPage';
 import Notifier from '../../domain/notification/notifier';
 import { forwardTo } from 'utils/history';
+import { isMobile } from 'react-device-detect';
 
 interface OwnProps { }
 
@@ -72,24 +73,28 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
     />
   );
 
-  return (
-    <>
-      <Notifier />
-      <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
-        <Switch>
-          {routes.map(r => (
-            <RoleRoute path={r.path} exact
-              component={r.component}
-              isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
-              key={r.path} />)
-          )}
-          <Route path='/unauthorized' exact component={UnauthorizedPage} />
-          <Route path='/404' exact component={NotFoundPage} />
-          <Route component={NotFoundRedirect} />
-        </Switch>
-      </AppWrapper>
-    </>
-  );
+  if (isMobile) {
+    return <div>This application is unavailable on mobile</div>
+  } else {
+    return (
+      <>
+        <Notifier />
+        <AppWrapper navRoutes={getNavRoutesForCurrentUser(routes, props.userRole, props.isLoggedIn)} {...props}>
+          <Switch>
+            {routes.map(r => (
+              <RoleRoute path={r.path} exact
+                component={r.component}
+                isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
+                key={r.path} />)
+            )}
+            <Route path='/unauthorized' exact component={UnauthorizedPage} />
+            <Route path='/404' exact component={NotFoundPage} />
+            <Route component={NotFoundRedirect} />
+          </Switch>
+        </AppWrapper>
+      </>
+    );
+  }
 };
 
 function getNavRoutesForCurrentUser(routes: AppRoute[], userRole: number, isLoggedIn: boolean) {
