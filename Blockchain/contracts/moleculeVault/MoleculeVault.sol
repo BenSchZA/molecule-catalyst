@@ -18,8 +18,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
 
     /**
       * @notice Setts the state variables for the contract.
-      * @param  _collateralToken : The address of the collateral token (ERC20).
-      * @param  _taxRate : The taxation rate to be used by the vaults.
+      * @param  _collateralToken: The address of the collateral token (ERC20).
+      * @param  _taxRate: The taxation rate to be used by the vaults.
       */
     constructor(
         address _collateralToken,
@@ -38,7 +38,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
 
     /**
       * @notice Allows an admin to add another admin.
-      * @param  _moleculeAdmin : The address of the new admin.
+      * @param  _moleculeAdmin: The address of the new admin.
       */
     function addAdmin(address _moleculeAdmin) external onlyWhitelistAdmin() {
         // Adding the Molecule admin address as an admin
@@ -48,8 +48,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows an admin to transfer colalteral out of the molecule
       *         vault and into another address.
-      * @param  _to : The address that the collateral will be transfered to.
-      * @param  _amount : The amount of collateral being transfered.
+      * @param  _to: The address that the collateral will be transfered to.
+      * @param  _amount: The amount of collateral being transfered.
       */
     function transfer(
         address _to,
@@ -67,8 +67,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows an admin to approve a spender of the molecule vault
       *         collateral.
-      * @param  _spender : The address that will be aproved as a spender.
-      * @param  _amount : The amount the spender will be approved to spend.
+      * @param  _spender: The address that will be aproved as a spender.
+      * @param  _amount: The amount the spender will be approved to spend.
       */
     function approve(
         address _spender,
@@ -86,7 +86,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows the admin to update the taxation rate charged by the
       *         molecule vault.
-      * @param  _newTaxRate : The new taxation rate.
+      * @param  _newTaxRate: The new taxation rate.
+      * @return bool: If the update was successful
       */
     function updateTaxRate(
         uint256 _newTaxRate
@@ -101,17 +102,18 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         );
 
         taxRate_ = _newTaxRate;
+        return true;
     }
 
     /**
-      * @return address : The address of the collateral token.
+      * @return address: The address of the collateral token.
       */
     function collateralToken() public view returns(address) {
         return address(collateralToken_);
     }
 
     /**
-      * @return uint256 : The rate of taxation
+      * @return uint256: The rate of taxation
       */
     function taxRate() public view returns(uint256) {
         return taxRate_;
