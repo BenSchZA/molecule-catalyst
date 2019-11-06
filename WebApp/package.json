@@ -99,6 +99,7 @@
     "query-string": "^6.8.2",
     "react": "16.8.6",
     "react-blockies": "^1.4.1",
+    "react-device-detect": "^1.9.10",
     "react-dom": "16.8.6",
     "react-helmet": "6.0.0-beta",
     "react-lottie": "^1.2.3",
