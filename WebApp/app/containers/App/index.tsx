@@ -30,6 +30,7 @@ import NotFoundPage from 'components/NotFoundPage';
 import Notifier from '../../domain/notification/notifier';
 import { forwardTo } from 'utils/history';
 import { isMobile } from 'react-device-detect';
+import MobileSplashscreen from 'components/MobileSplashscreen';
 
 interface OwnProps { }
 
@@ -74,7 +75,7 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
   );
 
   if (isMobile) {
-    return <div>This application is unavailable on mobile</div>
+    return <MobileSplashscreen />
   } else {
     return (
       <>
