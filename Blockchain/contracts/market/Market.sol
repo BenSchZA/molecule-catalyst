@@ -38,31 +38,8 @@ contract Market is IMarket, IERC20 {
     // Balances of token holders
     mapping(address => uint256) internal balances;
 
-    // Emitted when a spender is approved
-    event Approval(
-      address indexed owner,
-      address indexed spender,
-      uint256 value
-    );
-    event Transfer(address indexed from, address indexed to, uint value);
-    // the address reciving the tokens, the amount of tokens minted, the amount
-    // of DAI spent, the tax donatedd (in DAI)
-    event Mint(
-      address indexed to,
-      uint256 amountMinted,
-      uint256 collateralAmount,
-      uint256 researchContribution
-    );
-    // the address burning the tokens, the amount of tokens burnt, the amount of
-    // DAI being recived (in DAI)
-    event Burn(
-      address indexed from,
-      uint256 amountBurnt,
-      uint256 collateralReturned
-    );
-    event MarketTerminated();
-
     /**
+	  * @notice	Sets the needed variables for the market
       * @param  _taxationRate : The percentage for taxation i.e 20
       * @param  _creatorVault : The vault for taxation to go to
       * @param  _curveLibrary : Math module.
@@ -76,7 +53,6 @@ contract Market is IMarket, IERC20 {
     )
         public
     {
-        // Sets the storage variables
         taxationRate_ = _taxationRate;
         creatorVault_ = IVault(_creatorVault);
         curveLibrary_ = ICurveFunctions(_curveLibrary);
@@ -218,9 +194,9 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @notice Transfer tokens from one address to another.
-      * @param  _from : The address which you want to send tokens from.
-      * @param  _to : The address which you want to transfer to.
-      * @param  _value : The amount of tokens to be transferred.
+      * @param  _from: The address which you want to send tokens from.
+      * @param  _to: The address which you want to transfer to.
+      * @param  _value: The amount of tokens to be transferred.
       */
     function transferFrom(
         address _from,
@@ -244,8 +220,11 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
+	  * @notice	Can only be called by this markets vault
       * @dev    Allows the market to end once all funds have been raised.
-      *         Only the vault can end the market.
+      *         Ends the market so that no more tokens can be bought or sold.
+	  *			Tokens can still be transfered, or "withdrawn" for an enven
+	  *			distribution of remaining collateral.
       */
     function finaliseMarket() public onlyVault() returns(bool) {
         require(active_, "Market deactivated");
@@ -255,8 +234,9 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
-      * @dev    Allows for a token holder to get collateral in return for
-      *         their tokens after the market has ended.
+      * @dev    Allows token holders to withdraw collateral in return for tokens
+      * 		after the market has been finalised.
+      * @param 	_amount: The amount of tokens they want to withdraw
       */
     function withdraw(uint256 _amount) public returns(bool) {
         // Ensures withdraw can only be called in an inactive market
@@ -287,6 +267,9 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
+	  * @dev	Returns the required collateral amount for a volume of bonding
+	  *			curve tokens
+	  * @param	_numTokens: The number of tokens to calculate the price of
       * @return uint256 : The required collateral amount for a volume of bonding
       *         curve tokens.
       */
@@ -305,8 +288,12 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
-      * @return uint256 : The required collateral amount for a volume of bonding
-      *         curve tokens.
+	  * @dev	Returns the required collateral amount for a volume of bonding
+	  *			curve tokens
+	  * @param	_numTokens: The number of tokens to work out the collateral
+	  *			vaule of
+      * @return uint256: The required collateral amount for a volume of bonding
+      *         curve tokens
       */
     function rewardForBurn(uint256 _numTokens) public view returns(uint256) {
         // Gets the curent balance of the market
@@ -320,11 +307,12 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @notice This function returns the amount of tokens one can receive for a
-      *         specified amount of collateral token.
-      * @param  _collateralTokenOffered : Amount of reserve token offered for
-      *         purchase.
-      * @return uint256 : The amount of tokens once can purchase with the
-      *         specified collateral.
+      *         specified amount of collateral token. Including molecule &
+	  *			market contributions
+      * @param  _collateralTokenOffered: Amount of reserve token offered for
+      *         purchase
+      * @return uint256: The amount of tokens one can purchase with the
+      *         specified collateral
       */
     function collateralToTokenBuying(
         uint256 _collateralTokenOffered
@@ -346,7 +334,9 @@ contract Market is IMarket, IERC20 {
     /**
       * @notice This function returns the amount of tokens needed to be burnt to
       *         withdraw a specified amount of reserve token.
-      * @param  _collateralTokenNeeded : Amount of dai to be withdraw.
+      * @param  _collateralTokenNeeded: Amount of dai to be withdraw.
+	  * @return	uint256: The amount of tokens needed to burn to reach goal
+	  *			colalteral
       */
     function collateralToTokenSelling(
         uint256 _collateralTokenNeeded
@@ -367,8 +357,9 @@ contract Market is IMarket, IERC20 {
     /**
       * @notice Gets the value of the current allowance specifed for that
       *         account.
-      * @param  _owner : The account sending the funds.
-      * @param  _spender : The account that will receive the funds.
+      * @param  _owner: The account sending the funds.
+      * @param  _spender: The account that will receive the funds.
+	  * @return	uint256: representing the amount the spender can spend
       */
     function allowance(
         address _owner,
@@ -383,8 +374,8 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @notice Gets the balance of the specified address.
-      * @param  _owner : The address to query the the balance of.
-      * @return  uint256 : Represents the amount owned by the passed address.
+      * @param  _owner: The address to query the the balance of.
+      * @return  uint256: Represents the amount owned by the passed address.
       */
     function balanceOf(address _owner) external view returns (uint256) {
         return balances[_owner];
@@ -392,7 +383,7 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @notice Total collateral backing the curve.
-      * @return uint256 : Represents the total collateral backing the curve.
+      * @return uint256: Represents the total collateral backing the curve.
       */
     function poolBalance() external view returns (uint256){
         return collateralToken_.balanceOf(address(this));
@@ -400,7 +391,7 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @notice Total number of tokens in existence
-      * @return uint256 : Represents the total supply of tokens in this market.
+      * @return uint256: Represents the total supply of tokens in this market.
       */
     function totalSupply() external view returns (uint256) {
         return totalSupply_;
@@ -415,14 +406,14 @@ contract Market is IMarket, IERC20 {
     }
 
     /**
-      * @return	uint256 : The decimals set for the market
+      * @return	uint256: The decimals set for the market
       */
     function decimals() external view returns(uint256) {
         return decimals_;
     }
 
     /**
-      * @return	bool : The active stat of the market. Inactive markets have
+      * @return	bool: The active stat of the market. Inactive markets have
 	  *         ended.
       */
     function active() external view returns(bool){
