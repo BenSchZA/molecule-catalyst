@@ -38,7 +38,7 @@ export interface StateProps {
   marketActive: boolean,
   txInProgress: boolean,
   daiBalance: number,
-  taxationRate: number,
+  researchContributionRate: number,
   maxResearchContribution: number,
 }
 
@@ -58,7 +58,7 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
   supportProject,
   projectId,
   mode,
-  taxationRate,
+  researchContributionRate,
   maxResearchContribution
 }) => {
   const handleSupportProject = (contributionAmount: number) => supportProject(projectId, contributionAmount);
@@ -78,7 +78,7 @@ const TransactionModalContainer: React.FunctionComponent<Props> = ({
         closeModal={handleClose}
         modalState={modalState}
         daiBalance={daiBalance}
-        contributionRate={taxationRate}
+        contributionRate={researchContributionRate}
         txInProgress={txInProgress}
         supportProject={handleSupportProject}
         marketAddress={marketAddress}

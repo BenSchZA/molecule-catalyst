@@ -6,7 +6,7 @@ import { ConfigService } from 'src/config/config.service';
 import { Market } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from './market.actions';
+import { mintAction, burnAction, transferAction, marketTerminatedAction, setResearchContributionRateAction, setMarketData, setMarketActive } from './market.actions';
 import { BigNumber } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import { rehydrateMarketData } from './mongoRehydrationHelpers';
@@ -50,7 +50,7 @@ export class MarketState extends ServiceBase {
 
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
-      this.marketState.dispatch(setTaxRateAction((await this.marketContract.feeRate()).toNumber()));
+      this.marketState.dispatch(setResearchContributionRateAction((await this.marketContract.feeRate()).toNumber()));
       await this.updateContractData();
       await this.updateMarketActive();
     }

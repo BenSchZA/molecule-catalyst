@@ -1,4 +1,4 @@
-import { transferAction, mintAction, burnAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from "./market.actions";
+import { transferAction, mintAction, burnAction, marketTerminatedAction, setResearchContributionRateAction, setMarketData, setMarketActive } from "./market.actions";
 import { getType } from "typesafe-actions";
 import { BigNumber, bigNumberify } from "ethers/utils";
 import { ethers } from "ethers";
@@ -19,7 +19,7 @@ const calculateNetCost = (transactionsState, action): BigNumber => {
 export interface MarketState {
   active: boolean,
   dateDeactivated: Date,
-  taxationRate: number,
+  researchContributionRate: number,
   tokenPrice: number,
   totalSupply: BigNumber,
   poolValue: BigNumber,
@@ -43,7 +43,7 @@ export interface MarketState {
 export const initialState: MarketState = {
   active: true,
   dateDeactivated: null,
-  taxationRate: 0,
+  researchContributionRate: 0,
   tokenPrice: 0,
   totalSupply: bigNumberify(0),
   poolValue: bigNumberify(0),
@@ -110,10 +110,10 @@ export function MarketReducer(state: MarketState = initialState, action) {
         active: false,
         dateDeactivated: new Date(),
       }
-    case getType(setTaxRateAction):
+    case getType(setResearchContributionRateAction):
       return {
         ...state,
-        taxationRate: action.payload,
+        researchContributionRate: action.payload,
       }
     case getType(setMarketData):
       return {
