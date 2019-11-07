@@ -33,8 +33,13 @@ contract CurveRegistry is WhitelistAdminRole {
     /**
       * @notice The deployer of this contract will be the admin.
       */
-    constructor() public {
+    constructor() public WhitelistAdminRole() {
         publishedBlocknumber_ = block.number;
+    }
+
+    function init(address _admin) public onlyWhitelistAdmin() {
+        super.addWhitelistAdmin(_admin);
+        super.renounceWhitelistAdmin();
     }
 
     /**

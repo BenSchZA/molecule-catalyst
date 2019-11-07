@@ -20,17 +20,19 @@ const {
 const BigNumber = require('bignumber.js');
 
 describe('Market test', async () => {
+    let insecureDeployer = accounts[0];
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
     let admin2 = accounts[5];
+    let backendMarketDeployer = accounts[6];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
 
     beforeEach('', async () => {
-        deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
+        deployer = new etherlime.EtherlimeGanacheDeployer(insecureDeployer.secretKey);
 
         pseudoDaiInstance = await deployer.deploy(
             PseudoDaiTokenAbi, 
@@ -44,18 +46,21 @@ describe('Market test', async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
+            molAdmin.signer.address,
             moleculeVaultSettings.taxationRate
         );
 
         marketRegistryInstance = await deployer.deploy(
             MarketRegistryAbi,
-            false,
+            false
         );
+        await marketRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveRegistryInstance = await deployer.deploy(
             CurveRegistryAbi,
             false
         );
+        await curveRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveIntegralInstance = await deployer.deploy(
             CurveFunctionsAbi,
@@ -73,9 +78,14 @@ describe('Market test', async () => {
             pseudoDaiInstance.contract.address,
             moleculeVaultInstance.contract.address,
             marketRegistryInstance.contract.address,
-            curveRegistryInstance.contract.address
+            curveRegistryInstance.contract.address,
         );
-
+        // Adding the admins (in deployment this would be the multsig)
+        await marketFactoryInstance.from(insecureDeployer).init(
+            molAdmin.signer.address,
+            backendMarketDeployer.signer.address
+        );
+        // Adding the market deployer
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
 
         // Creating a market
@@ -261,7 +271,6 @@ describe('Market test', async () => {
             assert.ok(tokenBalanceAfter.eq(0), "Token balance not decreased")
         });
 
-
         it("Sets the new end date of the second phase correctly", async () =>{
             let currentPhase = await vaultInstance.currentPhase();
             assert.ok(currentPhase.eq(0), "Phase invalid");
@@ -305,21 +314,17 @@ describe('Market test', async () => {
 
             currentPhase = await vaultInstance.currentPhase();
             phaseData = await vaultInstance.fundingPhase(1);
+            const outstanding = await vaultInstance.outstandingWithdraw();
+
             assert.ok(currentPhase.eq(2), "Phase not incremented to 2");
             assert.equal(phaseData[4], 2, "2nd phase state not set to ended");
 
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw 0 failed")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw 0 failed")
             const outstandingAfter = await vaultInstance.outstandingWithdraw();
 
             phaseData = await vaultInstance.fundingPhase(1);
-            assert.ok(outstandingAfter.gt(0), "Outstanding is 0")
-            assert.ok(phaseData[0].eq(outstandingAfter.div(100).mul(moleculeVaultSettings.taxationRate.add(100))), "Outstanding withdraw incorrect")
-
-            await assert.notRevert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 failed")
-            const outstandingEnd = await vaultInstance.outstandingWithdraw();
-            assert.ok(outstandingEnd.eq(0), "All funds not sent");
-
-            await assert.revert(vaultInstance.from(creator).withdraw(1), "Withdraw 1 replayed incorrectly")
+            assert.equal(outstandingAfter.toString(), 0, "Outstanding is 0");
+            assert.equal(phaseData[1].toString(), phaseData[0].toString(), "Outstanding withdraw incorrect");
         });
     });
 
@@ -400,7 +405,7 @@ describe('Market test', async () => {
 
     describe("Meta data", async () => {
         it('Get taxationRate', async () =>{
-            const taxationRate = await marketInstance.taxationRate();
+            const taxationRate = await marketInstance.feeRate();
             assert.ok(taxationRate.eq(marketSettings.taxationRate), "Taxation rate not set");
         });
 
@@ -487,6 +492,39 @@ describe('Market test', async () => {
                 const decimals = await marketInstance.decimals();
                 assert.ok(decimals.eq(18), "Decimals not set")
             });
+        });
+    });
+
+    describe("Admin functions", async () => {
+        it('Deployer cannot access Market Factory admin functions', async () => {
+            await assert.revert(
+                marketFactoryInstance.from(insecureDeployer).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )
+            );
+        });
+
+        it('Deployer cannot access Market Registry admin functions', async () => {
+            await assert.revert(
+                marketRegistryInstance.from(insecureDeployer)
+                    .addMarketDeployer(
+                        marketFactoryInstance.contract.address,
+                        "Initial factory"
+                    )
+            );
+        });
+
+        it('Deployer cannot access Curve Registry admin functions', async () => {
+            await assert.revert(
+                curveRegistryInstance.from(insecureDeployer).registerCurve(
+                    curveIntegralInstance.contract.address,
+                    "y-axis shift"
+                )
+            );
         });
     });
 });

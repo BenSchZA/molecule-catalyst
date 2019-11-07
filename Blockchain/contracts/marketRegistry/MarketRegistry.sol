@@ -41,6 +41,11 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
         _;
     }
 
+    function init(address _admin) public onlyWhitelistAdmin() {
+        super.addWhitelistAdmin(_admin);
+        super.renounceWhitelistAdmin();
+    }
+
     /**
       * @dev    Adds a new market deployer to the registry.
       * @param  _newDeployer : Address of the new market deployer.

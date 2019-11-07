@@ -6,34 +6,37 @@ import { IMoleculeVault } from "./IMoleculeVault.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
-  * @title  Storage and acess to the molecule tax.
-  * @notice The vault will send the molecule vault its tax rate when a round of
+  * @title  Storage and acess to the molecule fee.
+  * @notice The vault will send the molecule vault its fee rate when a round of
   *         funding has been successfully filled.
   */
 contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     // The collateral token being used by the vaults and markets
     IERC20 internal collateralToken_;
-    // The tax rate of the molecule vault
-    uint256 internal taxRate_;
+    // The fee rate of the molecule vault
+    uint256 internal feeRate_ = 0;
 
     /**
       * @notice Setts the state variables for the contract.
       * @param  _collateralToken : The address of the collateral token (ERC20).
-      * @param  _taxRate : The taxation rate to be used by the vaults.
+      * @param  _feeRate : The fee rate to be used by the vaults.
       */
     constructor(
         address _collateralToken,
-        uint256 _taxRate
+        address _admin,
+        uint256 _feeRate
     )
         public
         WhitelistAdminRole()
     {
-        // Ensures that the tax rate is correct
-        require(_taxRate > 0, "Taxation rate too low");
-        require(_taxRate < 100, "Taxation rate too high");
+        // Ensures that the fee rate is correct
+        require(_feeRate > 0, "Fee rate too low");
+        require(_feeRate < 100, "Fee rate too high");
 
         collateralToken_ = IERC20(_collateralToken);
-        taxRate_ = _taxRate;
+        feeRate_ = _feeRate;
+        super.addWhitelistAdmin(_admin);
+        super.renounceWhitelistAdmin();
     }
 
     /**
@@ -84,23 +87,24 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @notice Allows the admin to update the taxation rate charged by the
+      * @notice Allows the admin to update the fee rate charged by the
       *         molecule vault.
-      * @param  _newTaxRate : The new taxation rate.
+      * @param  _newFeeRate : The new fee rate.
       */
-    function updateTaxRate(
-        uint256 _newTaxRate
+    function updateFeeRate(
+        uint256 _newFeeRate
     )
         external
         onlyWhitelistAdmin()
         returns(bool)
     {
         require(
-            taxRate_ != _newTaxRate,
-            "New taxation rate cannot be the same as old taxation rate"
+            feeRate_ != _newFeeRate,
+            "New fee rate cannot be the same as old fee rate"
         );
 
-        taxRate_ = _newTaxRate;
+        feeRate_ = _newFeeRate;
+        return true;
     }
 
     /**
@@ -111,9 +115,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @return uint256 : The rate of taxation
+      * @return uint256 : The rate of fee
       */
-    function taxRate() public view returns(uint256) {
-        return taxRate_;
+    function feeRate() public view returns(uint256) {
+        return feeRate_;
     }
 }

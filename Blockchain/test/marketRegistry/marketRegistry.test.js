@@ -18,15 +18,17 @@ const {
 } = require("../testing.settings.js");
  
 describe("Market Registry test", async () => {
+    let insecureDeployer = accounts[0];
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
     let admin2 = accounts[5];
+    let backendMarketDeployer = accounts[6];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
   
     beforeEach('', async () => {
-        deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
+        deployer = new etherlime.EtherlimeGanacheDeployer(insecureDeployer.secretKey);
 
         pseudoDaiInstance = await deployer.deploy(
             PseudoDaiTokenAbi, 
@@ -40,18 +42,21 @@ describe("Market Registry test", async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
+            molAdmin.signer.address,
             moleculeVaultSettings.taxationRate
         );
 
         marketRegistryInstance = await deployer.deploy(
             MarketRegistryAbi,
-            false,
+            false
         );
+        await marketRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveRegistryInstance = await deployer.deploy(
             CurveRegistryAbi,
             false
         );
+        await curveRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveIntegralInstance = await deployer.deploy(
             CurveFunctionsAbi,
@@ -62,7 +67,7 @@ describe("Market Registry test", async () => {
             curveIntegralInstance.contract.address,
             "y-axis shift"
         )).wait();
-
+        // Deploying the market
         marketFactoryInstance = await deployer.deploy(
             MarketFactoryAbi,
             false,
@@ -71,7 +76,12 @@ describe("Market Registry test", async () => {
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
-
+        // Adding the admins (in deployment this would be the multsig)
+        await marketFactoryInstance.from(insecureDeployer).init(
+            molAdmin.signer.address,
+            backendMarketDeployer.signer.address
+        );
+        // Adding the market deployer
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
     });
 
@@ -125,7 +135,12 @@ describe("Market Registry test", async () => {
                 marketRegistryInstance.contract.address,
                 curveRegistryInstance.contract.address
             );
-
+            // Adding the admins (in deployment this would be the multsig)
+            await secondMarketFactoryInstance.from(insecureDeployer).init(
+                molAdmin.signer.address,
+                backendMarketDeployer.signer.address
+            );
+            
             await assert.revert(secondMarketFactoryInstance.from(creator).deployMarket(
                 marketSettings.fundingGoals,
                 marketSettings.phaseDuration,
@@ -133,9 +148,9 @@ describe("Market Registry test", async () => {
                 marketSettings.curveType,
                 marketSettings.taxationRate
             ));
-
+            
             await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(secondMarketFactoryInstance.contract.address, "Initial factory")).wait()
-
+            
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
                 marketSettings.phaseDuration,
@@ -150,7 +165,7 @@ describe("Market Registry test", async () => {
             assert.equal(secondMarketDataObj[2], creator.signer.address, "Contract registry creator incorrect")
         });
 
-        it('Only admin deactivates a deactivates deployer', async () => {
+        it('Only admin deactivates a deployer', async () => {
             let firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(0);
             assert.equal(firstMarketDataObj[0], ethers.constants.AddressZero, "Contract registry address incorrect")
             assert.equal(firstMarketDataObj[1], ethers.constants.AddressZero, "Contract registry vault incorrect")
@@ -319,6 +334,39 @@ describe("Market Registry test", async () => {
                 adminStatus = await marketRegistryInstance.from(molAdmin).isWhitelistAdmin(user1.signer.address)
                 assert.ok(adminStatus, "Admin status not updated")
             });
+        });
+    });
+
+    describe("Admin functions", async () => {
+        it('Deployer cannot access Market Factory admin functions', async () => {
+            await assert.revert(
+                marketFactoryInstance.from(insecureDeployer).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )
+            );
+        });
+
+        it('Deployer cannot access Market Registry admin functions', async () => {
+            await assert.revert(
+                marketRegistryInstance.from(insecureDeployer)
+                    .addMarketDeployer(
+                        marketFactoryInstance.contract.address,
+                        "Initial factory"
+                    )
+            );
+        });
+
+        it('Deployer cannot access Curve Registry admin functions', async () => {
+            await assert.revert(
+                curveRegistryInstance.from(insecureDeployer).registerCurve(
+                    curveIntegralInstance.contract.address,
+                    "y-axis shift"
+                )
+            );
         });
     });
 });
