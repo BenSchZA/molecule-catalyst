@@ -90,7 +90,14 @@ function TabPanel(props) {
       {children}
       <div className={classes.info}>
         <Info fontSize="large" color="primary" />
-        <Link color="primary" variant="subtitle1">Read more about our trading technology</Link>
+        <Link
+          color="primary"
+          variant="subtitle1" 
+          href="https://catalyst.molecule.to/learn"
+          target="_blank"
+          rel="noreferrer">
+            Read more about our fundraising technology
+        </Link>
       </div>
     </section>
   );
@@ -173,14 +180,14 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
           project={project} />
       </TabPanel>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.BONDING}>
-          <Typography className={classes.explainerText}>
-            <b>The price of project tokens is determined</b> by the number of tokens that&nbsp;
-            are in circulation and and the accumulated amount of Dai in the project stake reserve.
+        <Typography className={classes.explainerText}>
+          <b>The price of project tokens is determined</b> by the number of tokens that&nbsp;
+          are in circulation and and the accumulated amount of Dai in the project stake reserve.
           </Typography>
-          <Typography className={classes.explainerText}>
-            Depending on this snapshot of the market below&nbsp;
+        <Typography className={classes.explainerText}>
+          Depending on this snapshot of the market below&nbsp;
             <b>you can decide whether you want to buy or sell your tokens</b> and see what&nbsp;
-            indications they have depending on the overall performance of the project market.
+    indications they have depending on the overall performance of the project market.
           </Typography>
         <MarketChartD3
           project={project} />
