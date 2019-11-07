@@ -11,8 +11,8 @@
 |:--------|:------|:----------|
 | 0. Project Details | [0.1 Dependencies](#dependencies) | |
 |  | [0.2 Project scripts](#project-scripts) |  |
-| 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline]() |
-|  |  | [1.1.2 Vault Contract](#vault-contract) |
+| 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline](#ecosystem-outline) |
+| | [1.2 Overview Of Individual Contracts](#overview-of-individual-contracts) | [1.1.2 Vault Contract](#vault-contract) | 
 |  |  | [1.1.3 Market Contract](#market-contract) |
 |  |  | [1.1.4 Market Factory](#market-factory) |
 |  |  | [1.1.5 Market Registry](#market-registry) |
@@ -20,23 +20,10 @@
 |  |  | [1.1.7 Curve Registry](#curve-registry) |
 |  |  | [1.1.8 Pseudo Dai <br>(The mocking of Dai for testing purposes)](#pseudo-dai) |
 |  |  | [1.1.9 Project Life Cycle](#project-life-cycle) |
-|  | 1.2 Detailed Breakdown of Smart Contracts | [1.2.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
-|  |  | [1.2.3 Constructors, Functions & Modifiers]() |
-|  |  | [1.2.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
-|  |  | [1.2.5 Security Considerations]() | 
-
-<!-- #### [Project Set Up](#project-set-up)
-* [Dependencies](#dependencies)
-* [Project scripts](#project-scripts)
-#### [Outline Of Architecture ](#outline-of-architecture)
-* [Overview Of Individual Contracts](#overview-of-individual-contracts)
-    * [Vault Contract](#vault-contract)
-    * [Market Contract](#market-contract)
-    * [Market Factory](#market-factory)
-    * [Market Registry](#market-registry)
-    * [Curve Integrals](#curve-integrals)
-    * [Curve Registry](#curve-registry)
-* [Project Life Cycle](#project-life-cycle) -->
+|  | 1.3 Detailed Breakdown of Smart Contracts | [1.3.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
+|  |  | [1.3.3 Constructors, Functions & Modifiers]() |
+|  |  | [1.3.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
+|  |  | [1.3.5 Security Considerations]() | 
 
 ---
 
@@ -54,18 +41,26 @@ This project uses the following tools & libraries. You do not need to manually i
 * `solc: 0.5.10`
 
 ## Project scripts
-
-1. First install the required packages `yarn`
+For the following example scripts to run, you will need to have `yarn` installed globally. You can use `npm` by replacing `yarn` with `npm run` 
+1. First install the required packages by running `yarn`
 2. Compile the contracts by running `yarn build`
 3. Then, in a separate terminal tab, start the Ganache local blockchain with `yarn start` 
 4. To run the tests, execute `yarn test`
+
+---
 
 # Smart Contracts
 
 Below is the details of the Molecule smart contract ecosystem. 
 
-# Outline Of Architecture 
+# Outline Of Architecture
 
+## Ecosystem Outline
+
+The Molecule contract ecosystem has multiple components. The major components are:
+* Factories: These create new markets
+* Registries: These store the addresses and information about markets 
+* Markets: A market consists of a market (ERC20 bonding curve) and a vault (storage of funding and )
 ## Overview Of Individual Contracts
 
 This section will expand on the meaning and use of each contract within the ecosystem, as well as going through the life cycle of a project within the ecosystem. 
@@ -111,3 +106,11 @@ Below is a simplified flow of the contract life cycle. In this section we will g
 Anytime throughout the projects life cycle the creator can call the `terminateMarket()` function, and end the fund rasing. This function will not result in them loosing any rounds of funding that where already filled, but it will prevent the market from minting new tokens, and wil cause the market to terminate. The `Market`s termination means that users can no longer buy or sell tokens. They can `withdraw()` funding from the market, exchanging tokens they have for collateral in the market. 
 
 ---
+
+# Detailed Breakdown of Smart Contracts
+
+## Contract Interfaces & Events
+
+The document that covers the Contract Interfaces & Events was omitted from this document to maintain a reasonable length. It can be found [here](./z-docs/ContractInterfaces&Events.md).
+
+## Constructors, Functions & Modifiers
