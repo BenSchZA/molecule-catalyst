@@ -23,6 +23,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
       */
     constructor(
         address _collateralToken,
+        address _admin,
         uint256 _feeRate
     )
         public
@@ -34,6 +35,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
 
         collateralToken_ = IERC20(_collateralToken);
         feeRate_ = _feeRate;
+        super.addWhitelistAdmin(_admin);
+        super.renounceWhitelistAdmin();
     }
 
     /**

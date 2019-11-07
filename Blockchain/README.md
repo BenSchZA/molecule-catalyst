@@ -10,6 +10,10 @@
 #### [Project Set Up](#project-set-up)
 * [Dependencies](#dependencies)
 * [Project scripts](#project-scripts)
+* [Deploying](#deploying)
+    * [Local](#local)
+    * [Rinkeby](#rinkeby)
+    * [Mainnet](#mainnet)
 #### [Outline Of Architecture ](#outline-of-architecture)
 * [Overview Of Individual Contracts](#overview-of-individual-contracts)
     * [Vault Contract](#vault-contract)
@@ -42,6 +46,70 @@ This project uses the following tools & libraries. You do not need to manually i
 2. Compile the contracts by running `yarn build`
 3. Then, in a separate terminal tab, start the Ganache local blockchain with `yarn start` 
 4. To run the tests, execute `yarn test`
+
+# Deploying
+
+For the deployment of the Molecule Catalyst contract eco-system, there are various scripts created depending on the network. 
+
+Before any deployment can take place, please make a file in the Blockchain directory called [`.env`](./.env). Then copy paste the fields in the [`.env.example`](./.env.example). Fill out the fields for the network you wish to deploy on. 
+
+Please note that the `DEPLOYER_PRIVATE_KEY`, `ADMIN_PUBLIC_KEY` and `ETHERSCAN_API_KEY` are used for all network deployments.
+
+> **NB! The deployer address (`DEPLOYER_PRIVATE_KEY`) and admin address (`ADMIN_PUBLIC_KEY`) cannot belong to the same wallet!** 
+
+The deployer address is considered insecure, and is therefore removed as an admin from all contracts. If the `ADMIN_PUBLIC_KEY` and `DEPLOYER_PRIVATE_KEY` are from the same wallet, you will essentially lock yourself out of the contracts, as there will be no admin on the contracts and you will have to re-deploy. 
+
+## Local
+
+Please ensure you have Ganache running. Ganache can be run through the project by running the script `yarn start` in a separate terminal tab. Ensure the following fields are filled in before running the script. 
+
+```
+# Deployer private key used for all networks
+DEPLOYER_PRIVATE_KEY=
+ADMIN_PUBLIC_KEY=
+ETHERSCAN_API_KEY=
+```
+
+The script for local deployment is:
+```
+yarn deploy:local
+```
+
+## Rinkeby
+
+Please ensure you have rinkeby test Ether before running this script. You will need at least 0.01 Ether, you can get from the faucet [here](https://faucet.rinkeby.io/).
+
+```
+# Deployer private key used for all networks
+DEPLOYER_PRIVATE_KEY=
+ADMIN_PUBLIC_KEY=
+
+# Rinkeby variables 
+INFURA_API_KEY_RINKEBY=
+```
+
+The script for Rinkeby deployment is:
+```
+yarn deploy:rinkeby
+```
+
+## Mainnet
+
+Please ensure you have at least 0.01 Mainnet Ether before running this script.
+
+```
+# Deployer private key used for all networks
+DEPLOYER_PRIVATE_KEY=
+ADMIN_PUBLIC_KEY=
+
+# Mainnet variables
+INFURA_API_KEY_MAINNET=
+```
+
+The script for Mainnet deployment is:
+```
+yarn deploy:mainnet
+```
 
 # Outline Of Architecture 
 

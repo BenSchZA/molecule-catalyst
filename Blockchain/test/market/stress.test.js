@@ -29,17 +29,19 @@ let marketSettingsStress = {
 }
 
 describe('Market stress test', async () => {
+    let insecureDeployer = accounts[0];
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
     let admin2 = accounts[5];
+    let backendMarketDeployer = accounts[6];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
 
     beforeEach('', async () => {
-        deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
+        deployer = new etherlime.EtherlimeGanacheDeployer(insecureDeployer.secretKey);
 
         pseudoDaiInstance = await deployer.deploy(
             PseudoDaiTokenAbi, 
@@ -53,18 +55,21 @@ describe('Market stress test', async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
+            molAdmin.signer.address,
             moleculeVaultSettings.taxationRate
         );
 
         marketRegistryInstance = await deployer.deploy(
             MarketRegistryAbi,
-            false,
+            false
         );
+        await marketRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveRegistryInstance = await deployer.deploy(
             CurveRegistryAbi,
             false
         );
+        await curveRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveIntegralInstance = await deployer.deploy(
             CurveFunctionsAbi,
@@ -84,7 +89,12 @@ describe('Market stress test', async () => {
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
-        
+        // Adding the admins (in deployment this would be the multsig)
+        await marketFactoryInstance.from(insecureDeployer).init(
+            molAdmin.signer.address,
+            backendMarketDeployer.signer.address
+        );
+        // Adding the market deployer
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
         
         // Creating a market
@@ -269,4 +279,36 @@ describe('Market stress test', async () => {
         })
     });
     
+    describe("Admin functions", async () => {
+        it('Deployer cannot access Market Factory admin functions', async () => {
+            await assert.revert(
+                marketFactoryInstance.from(insecureDeployer).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )
+            );
+        });
+
+        it('Deployer cannot access Market Registry admin functions', async () => {
+            await assert.revert(
+                marketRegistryInstance.from(insecureDeployer)
+                    .addMarketDeployer(
+                        marketFactoryInstance.contract.address,
+                        "Initial factory"
+                    )
+            );
+        });
+
+        it('Deployer cannot access Curve Registry admin functions', async () => {
+            await assert.revert(
+                curveRegistryInstance.from(insecureDeployer).registerCurve(
+                    curveIntegralInstance.contract.address,
+                    "y-axis shift"
+                )
+            );
+        });
+    });
 });

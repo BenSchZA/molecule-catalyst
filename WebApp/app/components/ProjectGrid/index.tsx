@@ -13,7 +13,7 @@ const styles = (theme: Theme) => createStyles({
     margin: "0 auto"
   },
   divider: {
-    margin: "40px auto 10px"
+    margin: "40px auto 75px"
   },
   grid: {
     display: "flex",

@@ -148,7 +148,7 @@ export class ProjectService extends ServiceBase {
     return project.toObject();
   }
 
-  async launchProject(projectId: any, user: User) {
+  async launchProject(projectId: string, researchContributionRate: number, user: User) {
     this.logger.info(`Deploying market for project ${projectId}`);
     const project = await this.projectRepository.findById(projectId).populate(Schemas.User);
     project.reviewedBy = user.id;
@@ -160,7 +160,7 @@ export class ProjectService extends ServiceBase {
         //@ts-ignore
         project.user.ethAddress,
         0,
-        15,
+        researchContributionRate,
       );
       project.chainData = deploymentResult;
       project.status = ProjectSubmissionStatus.started;

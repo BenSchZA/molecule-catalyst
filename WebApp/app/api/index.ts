@@ -114,8 +114,9 @@ export async function rejectProject(projectId: string, apiToken: string) {
   return apiRequest(RequestMethod.GET, apiUrlBuilder.rejectProject(projectId), undefined, 'application/json', true, apiToken);
 }
 
-export async function launchProject(projectId: string, apiToken: string) {
-  return apiRequest(RequestMethod.POST, apiUrlBuilder.launchProject(projectId), undefined, 'application/json', true, apiToken);
+export async function launchProject(projectId: string, researchContributionRate: number, apiToken: string) {
+  const body = JSON.stringify({researchContributionRate: researchContributionRate});
+  return apiRequest(RequestMethod.POST, apiUrlBuilder.launchProject(projectId), body, 'application/json', true, apiToken);
 }
 
 export async function addResearchUpdate(projectId: string, update: string, apiToken: string) {

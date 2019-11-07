@@ -374,6 +374,9 @@ const styles = ({ spacing, palette }: Theme) =>
     avatarImage: {
       width: 50,
       height: 50,
+    },
+    organisationName: {
+      paddingRight: spacing(2)
     }
   });
 

@@ -4,6 +4,7 @@ import { Market } from "./Market.sol";
 import { IMarketFactory } from "./IMarketFactory.sol";
 import { Vault } from "../vault/Vault.sol";
 import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+// import { WhitelistedRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistedRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
@@ -24,6 +25,11 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     ICurveRegistry internal curveRegistry_;
     //The ERC20 collateral token contract address
     IERC20 internal collateralToken_;
+    // Address of market deployer
+    address internal marketCreator_;
+    // Ensures no markets will be deployed untill market factory has been
+    // activated
+    bool internal isActive_;
 
     /**
       * @dev    Sets variables for market deployments.
@@ -42,10 +48,38 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         WhitelistAdminRole()
         public
     {
-        curveRegistry_ = ICurveRegistry(_curveRegistry);
         collateralToken_ = IERC20(_collateralToken);
-        marketRegistry_ = IMarketRegistry(_marketRegistry);
         moleculeVault_ = IMoleculeVault(_moleculeVault);
+        marketRegistry_ = IMarketRegistry(_marketRegistry);
+        curveRegistry_ = ICurveRegistry(_curveRegistry);
+        isActive_ = false;
+    }
+
+    /**
+      * @notice Inits the market factory
+      * @param  _admin The address of the admin contract manager
+      * @param  _api The address of the backend market deployer
+      */
+    function init(
+        address _admin,
+        address _api
+    )
+        onlyWhitelistAdmin()
+        public
+    {
+        super.addWhitelistAdmin(_admin);
+        marketCreator_ = _api;
+        super.renounceWhitelistAdmin();
+        isActive_ = true;
+    }
+
+    modifier onlyAnAdmin() {
+        require(isActive_, "Market factory has not been activated");
+        require(
+            isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
+            "Functionality restricted to whitelisted admin"
+        );
+        _;
     }
 
     /**
@@ -69,7 +103,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         uint256 _feeRate
     )
         external
-        onlyWhitelistAdmin()
+        onlyAnAdmin()
     {
         // Breaks down the return of the curve data
         (address curveLibrary,, bool curveState) = curveRegistry_.getCurveData(

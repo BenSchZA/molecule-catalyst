@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Container, Divider, Grid, Button, Link } from '@material-ui/core';
 import { Form, FieldArray, FastField } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { Remove, Add } from '@material-ui/icons';
@@ -62,7 +62,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
         <Typography variant='body1' className={classes.heading}>
           Here you can provide a basic overview about the scientific research you want to get funding for.
       </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>
@@ -110,7 +110,7 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
           Try keep your explanations as simple as possible. <br />
           Include interesting pictures and links to relevant academic publications.
       </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>
@@ -212,9 +212,15 @@ const ProjectCreationForm: React.FunctionComponent<OwnProps> = ({ classes, value
       </Typography>
         <Typography variant='body2' className={classes.heading}>
           We can assist you when choosing these parameters.
-        For more information about fundraising campaigns on Molecule, <a href="">click here.</a>
+          For more information about fundraising campaigns on Molecule,
+          <Link
+            color="primary"
+            href="https://catalyst.molecule.to/learn"
+            target="_blank"
+            rel="noreferrer"> click here.
+          </Link>
         </Typography>
-        <Divider variant='middle' />
+        <Divider />
       </Paper>
       <Container maxWidth='md'>
         <Paper className={classes.root} square={true}>

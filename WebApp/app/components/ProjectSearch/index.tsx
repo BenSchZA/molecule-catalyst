@@ -30,7 +30,7 @@ const styles = (theme: Theme) =>
       width: 210,
       height: 56,
       marginTop: 0,
-      
+      fontSize: '18px',
       verticalAlign: 'center',
       textAlign: 'center',
       paddingTop: 15
@@ -41,6 +41,8 @@ const styles = (theme: Theme) =>
     },
     menuItem: {
       color: colors.darkGrey,
+      fontSize: '18px',
+      fontFamily: 'Roboto'
     },
     explainerText: {
       textAlign: 'center',
@@ -61,6 +63,10 @@ const styles = (theme: Theme) =>
       color: '#00000099',
       opacity: 1.0,
       paddingBottom: '45px'
+    },
+    textBoxInput: {
+      fontSize: '18px',
+      fontFamily: 'Roboto',
     }
   });
 
@@ -108,7 +114,11 @@ const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, cl
       onChange={updateFilter}
       InputProps={{
         endAdornment: <Search />,
-        disableUnderline: true
+        disableUnderline: true,
+        className: classes.textBoxInput,
+      }}
+      inputProps={{
+        className: classes.textBoxInput,
       }}
       className={classes.textInput}/>
     <TextField 
@@ -118,7 +128,10 @@ const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, cl
       onChange={updateFilter} 
       className={classes.projectStatus}
       InputProps={{
-        disableUnderline: true
+        disableUnderline: true,
+      }} 
+      inputProps={{
+        className: classes.textBoxInput,
       }}>
       {filterStatuses.map(option => (
         <MenuItem className={classes.menuItem} key={option.value} value={option.value}>{option.label}</MenuItem>

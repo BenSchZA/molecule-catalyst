@@ -16,7 +16,6 @@ import {
   launchProject as launchProjectAPI,
   addResearchUpdate as addResearchUpdateAPI,
 } from '../../api';
-import { forwardTo } from 'utils/history';
 import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import apiUrlBuilder from 'api/apiUrlBuilder';
@@ -48,12 +47,23 @@ export function* getMyProjects() {
 export function* launchProject(action) {
   try {
     const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
-    const launchResponse = yield call(launchProjectAPI, action.payload, apiKey);
+    const launchResponse = yield call(launchProjectAPI, action.payload.projectId, action.payload.researchContributionRate, apiKey);
     yield put(ProjectActions.addProject(launchResponse.data));
     yield put(ProjectActions.launchProject.success());
-    yield call(forwardTo, '/admin/projects');
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'Project has been successfully launched',
+      options: {
+        variant: 'success',
+      }
+    }))
   } catch (error) {
-    put(ProjectActions.launchProject.failure(error));
+    yield put(ProjectActions.launchProject.failure(error));
+    yield put(NotificationActions.enqueueSnackbar({
+      message: 'There was an error launching the project',
+      options: {
+        variant: 'error',
+      }
+    }))
   }
 }
 
@@ -198,7 +208,6 @@ export function* addResearchUpdate(action) {
     yield call(addResearchUpdateAPI, projectId, update, apiKey);
     yield put(ProjectActions.addResearchUpdate.success());
     yield put(NotificationActions.enqueueSnackbar({ message: 'Update successfully added', options: { variant: 'success' } }))
-    // yield call(forwardTo, '/admin/projects');
   } catch (error) {
     put(ProjectActions.addResearchUpdate.failure(error));
     put(NotificationActions.enqueueSnackbar({ message: 'Something went wrong. Please contact the admin', options: { variant: 'error' } }))

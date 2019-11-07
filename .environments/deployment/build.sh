@@ -43,9 +43,9 @@ build() {
 if [ $BRANCH_NAME == "nightly" ]
 then
   build
-# elif [ $BRANCH_NAME == "staging" ]
-# then
-#   build
+elif [ $BRANCH_NAME == "staging" ]
+then
+  build
 else
   echo "Invalid deployment branch"
   exit 1
