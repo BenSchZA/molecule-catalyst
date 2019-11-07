@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { WithStyles, Typography, Paper, TextField, InputAdornment, Avatar, Dialog } from '@material-ui/core';
+import { WithStyles, Typography, Paper, TextField, InputAdornment, Avatar, Dialog, Link } from '@material-ui/core';
 import { Info, Close } from '@material-ui/icons';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import { withStyles } from '@material-ui/styles';
 import { ethers } from 'ethers';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Blockies from 'react-blockies';
 import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 import { getBlockchainObjects } from 'blockchainResources';
@@ -52,7 +52,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       }
     };
     fetchData();
-    return () => {cancelled = true}
+    return () => { cancelled = true }
   }, [contribution]);
 
   const displayPrecision = 2;
@@ -91,7 +91,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <hr className={classes.divider} />
         <DaiIcon />
         <Typography className={classes.daiBalance} onClick={() => setContribution(maxProjectContribution)}>
-          {daiBalance ? daiBalance.toLocaleString(undefined, {maximumFractionDigits: 2}) : 0}
+          {daiBalance ? daiBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Typography>
         <Typography className={classes.modalText}>
           Your Account Balance
@@ -131,7 +131,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {toResearcher.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}
+                {toResearcher.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
               </Typography>
             </div>
             <Typography className={classes.modalText}>
@@ -143,7 +143,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <div className={classes.currency}>
               <DaiIcon height={30} />
               <Typography className={classes.daiValues}>
-                {toIncentivePool.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}
+                {toIncentivePool.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
               </Typography>
             </div>
             <Typography className={classes.modalText}>
@@ -160,14 +160,14 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             <Avatar className={classes.blockie}>
               <Blockies seed={marketAddress || '0x'} size={10} />
             </Avatar>
-            <Typography className={classes.daiValues}>{projectTokenAmount.toLocaleString(undefined, {maximumFractionDigits: 2, minimumFractionDigits: 2})}</Typography>
+            <Typography className={classes.daiValues}>{projectTokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</Typography>
           </div>
           <Typography className={classes.modalText}>
             Project Tokens
           </Typography>
         </section>
         <Typography className={classes.modalText}>
-          You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
+          You can keep up to date with the value of your project tokens in the <RouterLink to='/myProjects' className={classes.link}>My Projects</RouterLink> tab
         </Typography>
         <div className={classes.buttons}>
           <PositiveButton
@@ -182,7 +182,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </NegativeButton>
         </div>
         <div className={classes.moreInfo}>
-          <Link className={classes.link} to="/">
+          <Link
+            className={classes.link}
+            href="https://catalyst.molecule.to/learn"
+            target="_blank"
+            rel="noreferrer">
             <Info />
             <span>
               Need more information?
