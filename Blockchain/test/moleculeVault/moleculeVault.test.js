@@ -21,17 +21,19 @@ const {
 const BigNumber = require('bignumber.js');
  
 describe("Molecule vault test", async () => {
+    let insecureDeployer = accounts[0];
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
     let admin2 = accounts[5];
+    let backendMarketDeployer = accounts[6];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
   
     beforeEach('', async () => {
-        deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
+        deployer = new etherlime.EtherlimeGanacheDeployer(insecureDeployer.secretKey);
         
         pseudoDaiInstance = await deployer.deploy(
             PseudoDaiTokenAbi, 
@@ -45,18 +47,21 @@ describe("Molecule vault test", async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
+            molAdmin.signer.address,
             moleculeVaultSettings.taxationRate
         );
         
         marketRegistryInstance = await deployer.deploy(
             MarketRegistryAbi,
-            false,
+            false
         );
+        await marketRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
         
         curveRegistryInstance = await deployer.deploy(
             CurveRegistryAbi,
             false
         );
+        await curveRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
         
         curveIntegralInstance = await deployer.deploy(
             CurveFunctionsAbi,
@@ -76,7 +81,12 @@ describe("Molecule vault test", async () => {
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
-        
+        // Adding the admins (in deployment this would be the multsig)
+        await marketFactoryInstance.from(insecureDeployer).init(
+            molAdmin.signer.address,
+            backendMarketDeployer.signer.address
+        );
+        // Adding the market deployer
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
         
         // Creating a market
@@ -121,7 +131,7 @@ describe("Molecule vault test", async () => {
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
 
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw worked without the round being finished")
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw worked without the round being finished")
 
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
@@ -176,7 +186,7 @@ describe("Molecule vault test", async () => {
             let estimateTokens = await marketInstance.collateralToTokenBuying(daiToSpendForPhase)
             await (await marketInstance.from(user1).mint(user1.signer.address, estimateTokens)).wait();
             
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw failed");
             
             balanceOfMoleculeVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             const targetBalance = phaseData[0].div(moleculeVaultSettings.taxationRate.add(100)).mul(moleculeVaultSettings.taxationRate);
@@ -187,10 +197,10 @@ describe("Molecule vault test", async () => {
 
     describe("Molecule tax update tests", async () => {
         it("Vault and market deploy correctly with a 0% molecule tax", async () => {
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
-            let taxRate = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(0);
+            let feeRate = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+            assert.equal(feeRate.toString(), 0, "Taxation rate not set to 0");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -232,7 +242,7 @@ describe("Molecule vault test", async () => {
             assert.equal(balanceOfMarketInstanceM1.toString(), molVaultSettings.marketBalances[0], "Market balance incorrect");
             assert.equal(balanceOfVaultInstanceM1.toString(), molVaultSettings.vaultBalances[0], "Market balance incorrect");
             
-            await assert.notRevert(vaultInstance.from(creator).withdraw(0), "Withdraw failed");
+            await assert.notRevert(vaultInstance.from(creator).withdraw(), "Withdraw failed");
 
             let balanceOfMoleculeVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfMarketInstanceW1 = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
@@ -245,10 +255,10 @@ describe("Molecule vault test", async () => {
 
         it('Changing tax rate will not affect existing markets', async () => {
             // Changing taxation rate for the first time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(0);
-            let taxRate = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(0);
+            let feeRate = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRate.toString(), 0, "Taxation rate not set to 0");
+            assert.equal(feeRate.toString(), 0, "Taxation rate not set to 0");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -264,10 +274,10 @@ describe("Molecule vault test", async () => {
             let phaseOne = await vaultInstance.fundingPhase(0);
 
             // Changing taxation rate for the seccond time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(80);
-            let taxRateM2 = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(80);
+            let feeRateM2 = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRateM2.toString(), 80, "Taxation rate not set to 80");
+            assert.equal(feeRateM2.toString(), 80, "Taxation rate not set to 80");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -282,10 +292,10 @@ describe("Molecule vault test", async () => {
             let phaseOneM2 = await vaultInstanceM2.fundingPhase(0);
             
             // Changing taxation rate a third time
-            await moleculeVaultInstance.from(molAdmin).updateTaxRate(20);
-            let taxRateM3 = await moleculeVaultInstance.taxRate();
+            await moleculeVaultInstance.from(molAdmin).updateFeeRate(20);
+            let feeRateM3 = await moleculeVaultInstance.feeRate();
 
-            assert.equal(taxRateM3.toString(), 20, "Taxation rate not set to 80");
+            assert.equal(feeRateM3.toString(), 20, "Taxation rate not set to 80");
 
             await (await marketFactoryInstance.from(molAdmin).deployMarket(
                 marketSettings.fundingGoals,
@@ -311,9 +321,9 @@ describe("Molecule vault test", async () => {
             assert.equal(collateralToken, pseudoDaiInstance.contract.address, "Collateral token invalid")
         });
         
-        it('Get taxRate', async () => {
-            const taxRate = await moleculeVaultInstance.taxRate();
-            assert.ok(taxRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
+        it('Get feeRate', async () => {
+            const feeRate = await moleculeVaultInstance.feeRate();
+            assert.ok(feeRate.eq(moleculeVaultSettings.taxationRate), "Tax rate not set")
         });
     });
 
@@ -349,5 +359,38 @@ describe("Molecule vault test", async () => {
                 assert.ok(adminStatus, "Admin status not updated")
             });
         });
-    })
-})
+    });
+
+    describe("Admin functions", async () => {
+        it('Deployer cannot access Market Factory admin functions', async () => {
+            await assert.revert(
+                marketFactoryInstance.from(insecureDeployer).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )
+            );
+        });
+
+        it('Deployer cannot access Market Registry admin functions', async () => {
+            await assert.revert(
+                marketRegistryInstance.from(insecureDeployer)
+                    .addMarketDeployer(
+                        marketFactoryInstance.contract.address,
+                        "Initial factory"
+                    )
+            );
+        });
+
+        it('Deployer cannot access Curve Registry admin functions', async () => {
+            await assert.revert(
+                curveRegistryInstance.from(insecureDeployer).registerCurve(
+                    curveIntegralInstance.contract.address,
+                    "y-axis shift"
+                )
+            );
+        });
+    });
+});
