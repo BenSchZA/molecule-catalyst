@@ -12,7 +12,7 @@
 | 0. Project Details | [0.1 Dependencies](#dependencies) | |
 |  | [0.2 Project scripts](#project-scripts) |  |
 | 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline](#ecosystem-outline) |
-| | [1.2 Overview Of Individual Contracts](#overview-of-individual-contracts) | [1.1.2 Vault Contract](#vault-contract) | 
+| | [1.2 Overview Of Individual Contracts](#overview-of-individual-contracts) | [1.1.2 Vault Contract](#vault-contract) |
 |  |  | [1.1.3 Market Contract](#market-contract) |
 |  |  | [1.1.4 Market Factory](#market-factory) |
 |  |  | [1.1.5 Market Registry](#market-registry) |
@@ -23,7 +23,7 @@
 |  | 1.3 Detailed Breakdown of Smart Contracts | [1.3.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
 |  |  | [1.3.3 Constructors, Functions & Modifiers]() |
 |  |  | [1.3.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
-|  |  | [1.3.5 Security Considerations]() | 
+|  |  | [1.3.5 Security Considerations]() |
 
 ---
 
@@ -108,6 +108,20 @@ Anytime throughout the projects life cycle the creator can call the `terminateMa
 ---
 
 # Detailed Breakdown of Smart Contracts
+
+Major functionality breakdown
+
+Deploying ecosystem 
+
+Creating a market (Done)
+
+Buying market tokens (Done)
+
+Creator withdrawing (Done)
+
+need a more detailed diagram about inner workings
+
+Market termination (Done)
 
 ## Contract Interfaces & Events
 
