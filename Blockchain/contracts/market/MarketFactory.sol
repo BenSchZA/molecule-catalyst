@@ -78,7 +78,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
 
         require(_taxationRate > 0, "Taxation rate too low");
         require(_taxationRate < 100, "Taxation rate too high");
-
+        require(_creator != address(0), "Creator address invalid");
         require(curveState == true, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
         

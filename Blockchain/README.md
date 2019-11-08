@@ -7,8 +7,8 @@
 
 # Index
 
-| Section | Topic | Sub-Topic |
-|:--------|:------|:----------|
+| Section | Topic | Sub-Topic | Sub-sub-Topic |
+|:--------|:------|:----------|:--------------|
 | 0. Project Details | [0.1 Dependencies](#dependencies) | |
 |  | [0.2 Project scripts](#project-scripts) |  |
 | 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline](#ecosystem-outline) |
@@ -20,7 +20,12 @@
 |  |  | [1.1.7 Curve Registry](#curve-registry) |
 |  |  | [1.1.8 Pseudo Dai <br>(The mocking of Dai for testing purposes)](#pseudo-dai) |
 |  |  | [1.1.9 Project Life Cycle](#project-life-cycle) |
-|  | 1.3 Detailed Breakdown of Smart Contracts | [1.3.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
+|  | 1.3 Detailed Breakdown of Smart Contracts | [1.3.1 Major functionality breakdown](#major-functionality-breakdown) | [Deploying ecosystem](#deploying-ecosystem) |
+| | | | [Creating a market](#creating-a-market)
+| | | | [Minting market tokens](#minting-market-tokens)
+| | | | [Creator withdrawing](#creator-withdrawing)
+| | | | [Market termination](#market-termination)
+| | |[1.3.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
 |  |  | [1.3.3 Constructors, Functions & Modifiers]() |
 |  |  | [1.3.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
 |  |  | [1.3.5 Security Considerations]() |
@@ -109,22 +114,89 @@ Anytime throughout the projects life cycle the creator can call the `terminateMa
 
 # Detailed Breakdown of Smart Contracts
 
-Major functionality breakdown
+## Major functionality breakdown
 
-Deploying ecosystem 
+### Deploying ecosystem
 
-Creating a market (Done)
+<div align="center">
+    <img src="x-imgs/deploying_mol_ecosystem.png">
+</div>
 
-Buying market tokens (Done)
+The ecosystem is deployed by a deployer. The deployer address is assumed to be insecure, and as such is removed/replaced as an admin on the major contracts.
 
-Creator withdrawing (Done)
+The pattern is such:
+The major contract is deployed, the deployer address is automatically added as an admin by the `WhitelistAdmin` contract. The deployer does any registering or secondary functionality that it needs to do, and then the `init()` function is called, adding the admin as an admin and removing the deployer as an admin.
 
-need a more detailed diagram about inner workings
+**Validation**
 
-Market termination (Done)
+
+### Creating a market 
+
+<div align="center">
+    <img src="x-imgs/deploying_market_ecosystem.png">
+</div>
+
+Only a user who is a `WhitelistAdmin` on the Market Factory can deploy a market system, with the exception of the API, which has been specially added to the Market Factory, and can not do any admin functionality on the Market Factory besides deploying a market. This was done for easy of use, and while it may open the system up to attack, the damage is limited by the scope of permissions given to the API. 
+
+**Validation**
+When creating a market, the following things are validated (within the `marketFactory`):
+* The `_fundingGoals` and `_phaseDurations` must have the same number of elements in the array. 
+* The `_creator` address cannot be a `0x` address.
+* The `_curveType` is used against the `curveRegistry` to get the address of the `curveLibrary`. The received `curveLibrary` address is checked for validity (not 0 address). It is also checked for its active state.
+* The `_taxationRate` is checked, ensuring that the rate is between (excluding) 0-100.
+
+The following things are validated within the `Vault`:
+* The `_fundingGoals` and `_phaseDurations` have matching lengths.
+* The `_fundingGoals` length is not smaller than 0 or larger than 10.
+
+The market does no validation.
+
+### Minting market tokens 
+
+<div align="center">
+    <img src="x-imgs/minting_market_tokens.png">
+</div>
+
+Any address can mint project tokens.
+
+**Validation**
+
+### Creator withdrawing 
+
+<div align="center">
+    <img src="x-imgs/creator_withdrawing_funding_round.png">
+</div>
+
+Only an admin of the project `Vault` can withdraw funding rounds. A round can only be withdrawn once it is completed.
+
+**Validation**
+
+### Market termination 
+
+<div align="center">
+    <img src="x-imgs/market_terminate_options.png">
+</div>
+
+The market can be terminated in 3 ways.
+
+**Validation**
 
 ## Contract Interfaces & Events
 
 The document that covers the Contract Interfaces & Events was omitted from this document to maintain a reasonable length. It can be found [here](./z-docs/ContractInterfaces&Events.md).
 
 ## Constructors, Functions & Modifiers
+
+
+
+### Vault Contract
+
+### Market Contract
+
+### Market Factory
+
+### Market Registry 
+
+### Curve Integrals
+
+### Curve Registry
