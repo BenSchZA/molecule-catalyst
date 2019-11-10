@@ -1352,12 +1352,12 @@
     react-transition-group "^4.0.0"
     warning "^4.0.1"
 
-"@material-ui/icons@4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.0.1.tgz#f63990f731c6206c82023c96d510bd7bdda44250"
-  integrity sha512-03zUfksGXXbaWX2piB1LCmC28eydlT8ah8MbYT4n4mgiX9BTL4HH50lkFn9JIJJSk2oO5kRy4FvpXRGRBI+oxw==
+"@material-ui/icons@4.5.1":
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.5.1.tgz#6963bad139e938702ece85ca43067688018f04f8"
+  integrity sha512-YZ/BgJbXX4a0gOuKWb30mBaHaoXRqPanlePam83JQPZ/y4kl+3aW0Wv9tlR70hB5EGAkEJGW5m4ktJwMgxQAeA==
   dependencies:
-    "@babel/runtime" "^7.2.0"
+    "@babel/runtime" "^7.4.4"
 
 "@material-ui/styles@^4.0.1":
   version "4.3.0"
@@ -13970,10 +13970,10 @@ normalizr@^3.3.0:
   resolved "https://registry.yarnpkg.com/normalizr/-/normalizr-3.4.0.tgz#fe79fd77768e0ae99944a8c35cbdb58521ab5d34"
   integrity sha512-0dQLKpvsSb2f+vZwj78L855OMn9aeMQ0dQhduRqX3GkJh+k6rN9kcftxBV/VkW1n4q9OuV6F43Angn+pNbjg9w==
 
-notistack@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.9.0.tgz#d195a186f5f25f7316b9e89a91ae3abe1072125e"
-  integrity sha512-3SrMUuJIAn4YtxvHlY6mjYDoQ+NQnozeQUOub5ywc+WEb8n85i/9PO/vqD9lGBXINEgN34B+YEA34oo7yeGYVQ==
+notistack@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.9.5.tgz#3294e8438055ea5a39a8a4428240b05c548bb5b2"
+  integrity sha512-nemhQYIofQXoRTZ58TMaTfvsKIJLZygP0CI4XXgwSDEgXfQ414H/oHj+PtEiJbQQxJiWEm8hPey1bmw7brxL2g==
   dependencies:
     classnames "^2.2.6"
     hoist-non-react-statics "^3.3.0"
@@ -20473,7 +20473,6 @@ websocket@1.0.29:
   dependencies:
     debug "^2.2.0"
     es5-ext "^0.10.50"
-    gulp "^4.0.2"
     nan "^2.14.0"
     typedarray-to-buffer "^3.1.5"
     yaeti "^0.0.6"

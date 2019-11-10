@@ -90,23 +90,24 @@ const styles = (theme: Theme) => createStyles({
   },
 });
 
-interface OwnProps extends WithStyles<typeof styles> {}
+interface OwnProps extends WithStyles<typeof styles> { }
 
 type Props = OwnProps;
 
 const AppFooter: React.FunctionComponent<Props> = ({
-    classes,
+  classes,
 }) => {
 
-    return (
-      <footer className={classes.footer}>
-        <Grid container spacing={0} className={classes.footerGridContainer}>
-          <Grid item xs={2}>
-            <Typography className={classes.footerColumnTitle}>
-              Company
+  return (
+    <footer className={classes.footer}>
+      <Grid container spacing={0} className={classes.footerGridContainer}>
+        <Grid item xs={2}>
+          <Typography className={classes.footerColumnTitle}>
+            Company
             </Typography>
-            <div className={classes.underline}/>
-            <table>
+          <div className={classes.underline} />
+          <table>
+            <tbody>
               <tr>
                 <td><a className={classes.footerLinkText} href="https://molecule.to/#whatisSection">About Molecule</a></td>
               </tr>
@@ -116,14 +117,16 @@ const AppFooter: React.FunctionComponent<Props> = ({
               <tr>
                 <td><a className={classes.footerLinkText} href="https://catalyst.molecule.to/privacy-policy">Privacy Policy</a></td>
               </tr>
-            </table>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography className={classes.footerColumnTitle}>
-              Contact
+            </tbody>
+          </table>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography className={classes.footerColumnTitle}>
+            Contact
             </Typography>
-            <div className={classes.underline}/>
-            <table>
+          <div className={classes.underline} />
+          <table>
+            <tbody>
               <tr>
                 <td><a className={classes.footerLinkText} href="https://linumlabs.us16.list-manage.com/subscribe?u=d57b55c1eebd6157cac3bc43e&id=9e8b521c19">Stay Updated</a></td>
               </tr>
@@ -133,14 +136,16 @@ const AppFooter: React.FunctionComponent<Props> = ({
               <tr>
                 <td><a className={classes.footerLinkText} href="mailto:info@molecule.to">Support</a></td>
               </tr>
-            </table>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography className={classes.footerColumnTitle}>
-              Site
+            </tbody>
+          </table>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography className={classes.footerColumnTitle}>
+            Site
             </Typography>
-            <div className={classes.underline}/>
-            <table>
+          <div className={classes.underline} />
+          <table>
+            <tbody>
               <tr>
                 <td><a className={classes.footerLinkText} href="https://catalyst.molecule.to/learn">Learn</a></td>
               </tr>
@@ -150,28 +155,30 @@ const AppFooter: React.FunctionComponent<Props> = ({
               <tr>
                 <td><a className={classes.footerLinkText} href="https://alpha-nightly.mol.ai/discover">Discover</a></td>
               </tr>
-            </table>
-          </Grid>
-          <Grid className={classes.footerGridRowOne} item xs={6}>
-            <ReactSVG className={classes.footerLogo} src="/footer-logo-long.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 28px')} />
-            <Typography className={classes.footerExplainerText}>
-              Molecule Catalyst is a software platform to accelerate innovation in the pharmaceutical industry. It connects scientists, patients and industry to advance scientific research and development in a collaborative ecosystem.
+            </tbody>
+          </table>
+        </Grid>
+        <Grid className={classes.footerGridRowOne} item xs={6}>
+          <ReactSVG className={classes.footerLogo} src="/footer-logo-long.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 28px')} />
+          <Typography className={classes.footerExplainerText}>
+            Molecule Catalyst is a software platform to accelerate innovation in the pharmaceutical industry. It connects scientists, patients and industry to advance scientific research and development in a collaborative ecosystem.
             </Typography>
-            <a href="https://t.me/MoleculeProtocol">
-              <FontAwesomeIcon className={classes.footerIcon} icon={faTelegramPlane} color="white" size="2x" />
-            </a>
-            <a href="https://twitter.com/Molecule_to">
-              <FontAwesomeIcon className={classes.footerIcon} icon={faTwitter} color="white" size="2x" />
-            </a>
-            <a href="https://gitlab.com/linumlabs/molecule-alpha/">
-              <FontAwesomeIcon className={classes.footerIcon} icon={faGitlab} color="white" size="2x" />
-            </a>
-            <a href="https://discord.gg/cf3WTJ">
-              <FontAwesomeIcon className={classes.footerIcon} icon={faDiscord} color="white" size="2x" />
-            </a>
-          </Grid>
-          <Grid item xs={12}>
-            <table>
+          <a href="https://t.me/MoleculeProtocol">
+            <FontAwesomeIcon className={classes.footerIcon} icon={faTelegramPlane} color="white" size="2x" />
+          </a>
+          <a href="https://twitter.com/Molecule_to">
+            <FontAwesomeIcon className={classes.footerIcon} icon={faTwitter} color="white" size="2x" />
+          </a>
+          <a href="https://gitlab.com/linumlabs/molecule-alpha/">
+            <FontAwesomeIcon className={classes.footerIcon} icon={faGitlab} color="white" size="2x" />
+          </a>
+          <a href="https://discord.gg/cf3WTJ">
+            <FontAwesomeIcon className={classes.footerIcon} icon={faDiscord} color="white" size="2x" />
+          </a>
+        </Grid>
+        <Grid item xs={12}>
+          <table>
+            <tbody>
               <tr>
                 <td>
                   <ReactSVG className={classes.footerCopyrightLogo} src="/footer-logo.svg" beforeInjection={(svg) => svg.setAttribute('style', 'height: 34px')} />
@@ -180,11 +187,12 @@ const AppFooter: React.FunctionComponent<Props> = ({
                   <Typography className={classes.footerCopyrightText}>©2019 Linum Labs AG</Typography>
                 </td>
               </tr>
-            </table>
-          </Grid>
+            </tbody>
+          </table>
         </Grid>
-      </footer>
-    );
+      </Grid>
+    </footer>
+  );
 }
 
 export default withStyles(styles, { withTheme: true })(AppFooter);

@@ -52,7 +52,7 @@ const render = (Component = App) => {
             vertical: 'bottom',
             horizontal: 'right'
           }}
-          autoHideDuration={10000}
+          autoHideDuration={100000}
           maxSnack={5} >
           <Router history={history}>
             <ScrollToTop>
@@ -60,7 +60,6 @@ const render = (Component = App) => {
             </ScrollToTop>
           </Router>
         </SnackbarProvider>
-
       </MuiThemeProvider>
     </Provider>,
     MOUNT_NODE,

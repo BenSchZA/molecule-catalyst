@@ -9,7 +9,24 @@ import { Notification } from './types';
 
 import ActionTypes from './constants';
 
+
 export const enqueueSnackbar = createStandardAction(ActionTypes.ENQUEUE_SNACKBAR).map(
+  (notification: Notification) => {
+    const key = notification.options && notification.options.key;
+
+    return {
+      payload: {
+        message: notification.message,
+        options: {
+          ...notification.options,
+          key: key || new Date().getTime() + Math.random(),
+        },
+      }
+    }
+  }
+)
+
+export const enqueueCustomSnackbar = createStandardAction(ActionTypes.ENQUEUE_CUSTOM_SNACKBAR).map(
   (notification: Notification) => {
     const key = notification.options && notification.options.key;
 
