@@ -9,17 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
-import {Twitter, Facebook} from '@material-ui/icons';
+import { Twitter, Facebook, CheckCircleOutline } from '@material-ui/icons';
 import { CardContent } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    maxWidth: 400,
-    minWidth: 344,
-  },
-  typography: {
-    fontWeight: 'bold',
-  },
   content: {
     padding: theme.spacing(2),
     backgroundColor: '#43a047',
@@ -45,30 +38,32 @@ interface OwnProps {
 }
 
 const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
-  React.forwardRef(({projectName}: OwnProps, ref) => {
+  React.forwardRef(({ projectName }: OwnProps, ref) => {
     const classes = useStyles();
 
     return (
-      <Card className={classes.card} ref={ref}>
+      <Card ref={ref}>
         <CardContent className={classes.content}>
-          <Typography variant="subtitle2" className={classes.typography}>Successfully funded project</Typography>
+          <Typography><CheckCircleOutline /> Successfully funded project</Typography>
         </CardContent>
         <CardActions className={classes.actions}>
           <IconButton className={classes.icon} onClick={() => {
-              var url = "https://catalyst.molecule.to";
-              var text = `I just contributed to ${projectName} #molecule #defi`;
-              window.open('https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), 
-              '', 
-              'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'); }} >
+            var url = "https://catalyst.molecule.to";
+            var text = `I just contributed to ${projectName} #molecule #defi`;
+            window.open('https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text),
+              '',
+              'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
+          }} >
             <Twitter />
           </IconButton>
           <IconButton className={classes.icon} onClick={() => {
-              var url = "https://catalyst.molecule.to";
-              var text = `I just contributed to ${projectName} #molecule #defi`;
-              window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(text), 
-              '', 
-              'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'); }}>
-            <Facebook  />
+            var url = "https://catalyst.molecule.to";
+            var text = `I just contributed to ${projectName} #molecule #defi`;
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(text),
+              '',
+              'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
+          }}>
+            <Facebook />
           </IconButton>
         </CardActions>
       </Card>
