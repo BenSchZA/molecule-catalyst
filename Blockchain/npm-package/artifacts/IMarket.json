@@ -395,7 +395,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "taxationRate",
+    "name": "feeRate",
     "outputs": [
       {
         "name": "",

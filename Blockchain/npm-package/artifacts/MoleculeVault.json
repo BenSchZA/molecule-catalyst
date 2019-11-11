@@ -48,7 +48,11 @@
         "type": "address"
       },
       {
-        "name": "_taxRate",
+        "name": "_admin",
+        "type": "address"
+      },
+      {
+        "name": "_feeRate",
         "type": "uint256"
       }
     ],
@@ -134,11 +138,11 @@
     "constant": false,
     "inputs": [
       {
-        "name": "_newTaxRate",
+        "name": "_newFeeRate",
         "type": "uint256"
       }
     ],
-    "name": "updateTaxRate",
+    "name": "updateFeeRate",
     "outputs": [
       {
         "name": "",
@@ -166,7 +170,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "taxRate",
+    "name": "feeRate",
     "outputs": [
       {
         "name": "",
