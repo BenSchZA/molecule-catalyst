@@ -147,12 +147,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "name": "_phase",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "name": "withdraw",
     "outputs": [
       {
