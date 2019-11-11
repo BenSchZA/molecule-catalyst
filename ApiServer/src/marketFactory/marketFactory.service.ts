@@ -49,7 +49,7 @@ export class MarketFactoryService extends ServiceBase {
     phaseDurations: Array<number>,
     creatorAddress: string,
     curveType: number,
-    taxationRate: number): Promise<{
+    researchContributionRate: number): Promise<{
       block: number,
       index: number,
       marketAddress: string,
@@ -61,7 +61,7 @@ export class MarketFactoryService extends ServiceBase {
       phaseDurations,
       creatorAddress,
       curveType,
-      taxationRate,
+      researchContributionRate,
     )).wait();
 
     let parsedLogs = txReceipt.logs

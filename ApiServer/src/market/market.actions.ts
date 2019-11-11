@@ -29,7 +29,7 @@ export const transferAction = createStandardAction('TRANSFER')<{
   timestamp: Date
 }>();
 
-export const setTaxRateAction = createStandardAction('SETTAXRATE')<number>();
+export const setResearchContributionRateAction = createStandardAction('SETRESEARCHCONTRIBUTIONRATE')<number>();
 
 export const setMarketActive = createStandardAction('SETMARKETACTIVE')<{
   active: boolean,

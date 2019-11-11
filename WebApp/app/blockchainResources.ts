@@ -52,7 +52,7 @@ export async function initBlockchainResources() {
   const { web3, ethereum } = window as any;
   try {
     const network = getNetwork(parseInt(`${process.env.CHAIN_ID}`));
-    blockchainResources.provider = getDefaultProvider(network);
+    blockchainResources.provider = network.name !== 'unknown' ? getDefaultProvider(network) : new ethers.providers.JsonRpcProvider('http://localhost:8545/');
     if (web3) {
       blockchainResources.isToshi = !!web3.currentProvider.isToshi;
       blockchainResources.isCipher = !!web3.currentProvider.isCipher;

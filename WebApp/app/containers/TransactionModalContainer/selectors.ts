@@ -43,10 +43,10 @@ const selectDaiBalance = () =>
     (authData) => authData.daiBalance,
   )
 
-const selectTaxationRate = (projectId: string) =>
+const selectResearchContributionRate = (projectId: string) =>
   createSelector(
     selectProject(projectId),
-    (project: Project) => project.marketData.taxationRate,
+    (project: Project) => project.marketData.researchContributionRate,
   )
 
 const selectMaxResearchContribution = (projectId: string) =>
@@ -73,7 +73,7 @@ const selectTransactionModalContainer = (
     marketActive: selectMarketActive(projectId),
     txInProgress: selectTxInProgress(),
     daiBalance: selectDaiBalance(),
-    taxationRate: selectTaxationRate(projectId),
+    researchContributionRate: selectResearchContributionRate(projectId),
     maxResearchContribution: selectMaxResearchContribution(projectId),
   })
 };
