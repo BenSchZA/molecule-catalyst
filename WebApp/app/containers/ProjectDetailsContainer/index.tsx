@@ -13,6 +13,7 @@ import ProjectDetails from 'components/ProjectDetails';
 import { Project } from 'domain/projects/types';
 import { ApplicationRootState } from 'types';
 import { makeSelectIsLoggedIn } from 'domain/authentication/selectors';
+
 interface RouteParams {
   projectId: string;
 }
@@ -32,7 +33,6 @@ interface StateProps {
 type Props = StateProps & DispatchProps & OwnProps;
 
 const ProjectDetailsContainer: React.FunctionComponent<Props> = ({ project, userAddress, isLoggedIn }: Props) => {
-
   return (
     <ProjectDetails
       project={project}

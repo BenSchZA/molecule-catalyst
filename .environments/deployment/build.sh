@@ -35,7 +35,6 @@ build() {
   export API_HOST=alpha-api-$TAG.bitsofether.com
   #.mol.ai
   export APM_SERVICE_NAME=molecule-frontend-alpha-$TAG
-  export APM_SERVER_ENDPOINT=https://apm.mol.ai
   
   build_image
 }
