@@ -13,16 +13,14 @@ import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
 export class UserService extends ServiceBase {
 
   constructor(@InjectModel(Schemas.User) private readonly userRepository: Model<UserDocument>,
-    private readonly marketFactoryService: MarketFactoryService,
-    ) {
+  ) {
     super(UserService.name);
   }
 
   async create(ethAddress: string): Promise<User> {
     this.logger.debug('Creating new user');
     const profiler = this.logger.startTimer();
-    const isAdmin = await this.marketFactoryService.isUserWhitelistAdmin(ethAddress)
-    const newUser = await new this.userRepository({ethAddress, type: !isAdmin ? UserType.Standard : UserType.Admin });
+    const newUser = await new this.userRepository({ ethAddress, type: UserType.Standard });
     await newUser.save();
     profiler.done('Created new user');
     return newUser.toObject();
@@ -34,7 +32,7 @@ export class UserService extends ServiceBase {
   }
 
   async getUserByEthAddress(ethAddress: string): Promise<User> {
-    const user = await this.userRepository.findOne({ethAddress: ethAddress.toLowerCase()});
+    const user = await this.userRepository.findOne({ ethAddress: ethAddress.toLowerCase() });
     return user ? user.toObject() : false;
   }
 
@@ -69,7 +67,6 @@ export class UserService extends ServiceBase {
     this.logger.info(`Promoting user to admin: ${userId}`);
     const user = await this.userRepository.findById(userId);
     try {
-      await this.marketFactoryService.addUserToAdminWhitelist(user.ethAddress);
       user.type = UserType.Admin;
       user.save();
       return user.toObject();
