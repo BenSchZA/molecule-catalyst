@@ -7,7 +7,6 @@ import { Schemas } from '../app.constants';
 import { ObjectId } from 'mongodb';
 import { Attachment } from 'src/attachment/attachment.schema';
 import { ServiceBase } from 'src/common/serviceBase';
-import { MarketFactoryService } from 'src/marketFactory/marketFactory.service';
 
 @Injectable()
 export class UserService extends ServiceBase {
