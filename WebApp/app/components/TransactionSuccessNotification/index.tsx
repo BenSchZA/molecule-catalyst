@@ -41,6 +41,11 @@ const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
   React.forwardRef(({ projectName }: OwnProps, ref) => {
     const classes = useStyles();
 
+    const url = window.location.href;
+    const text = 
+`Support the next therapeutic breakthrough.
+@Molecule_to #blockchain #crowdfunding #science #defi`;
+
     return (
       <Card ref={ref}>
         <CardContent className={classes.content}>
@@ -48,8 +53,6 @@ const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
         </CardContent>
         <CardActions className={classes.actions}>
           <IconButton className={classes.icon} onClick={() => {
-            var url = "https://catalyst.molecule.to";
-            var text = `I just contributed to ${projectName} #molecule #defi`;
             window.open('https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text),
               '',
               'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
@@ -57,8 +60,6 @@ const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
             <Twitter />
           </IconButton>
           <IconButton className={classes.icon} onClick={() => {
-            var url = "https://catalyst.molecule.to";
-            var text = `I just contributed to ${projectName} #molecule #defi`;
             window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(text),
               '',
               'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
