@@ -12,9 +12,20 @@ export const initialState: DomainState = {
   notifications: [],
 };
 
-function notificationReducer(state: DomainState = initialState, action: DomainActions ) {
+function notificationReducer(state: DomainState = initialState, action: DomainActions) {
   switch (action.type) {
     case getType(NotificationActions.enqueueSnackbar):
+      return {
+        ...state,
+        notifications: [
+          ...state.notifications,
+          {
+            key: action.payload.options.key,
+            ...action.payload,
+          }
+        ]
+      }
+    case getType(NotificationActions.enqueueCustomSnackbar):
       return {
         ...state,
         notifications: [

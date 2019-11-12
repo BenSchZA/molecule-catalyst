@@ -60,7 +60,6 @@ const render = (Component = App) => {
             </ScrollToTop>
           </Router>
         </SnackbarProvider>
-
       </MuiThemeProvider>
     </Provider>,
     MOUNT_NODE,
