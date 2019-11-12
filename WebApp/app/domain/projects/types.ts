@@ -74,7 +74,7 @@ interface MarketData {
   active: boolean,
   dateDeactivated: Date,
   lastBlockUpdated: number,
-  taxationRate: number,
+  researchContributionRate: number,
   tokenPrice: BigNumber,
   totalSupply: BigNumber,
   poolValue: BigNumber,

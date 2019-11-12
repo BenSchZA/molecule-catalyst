@@ -13,8 +13,6 @@ services:
       args:
         - API_HOST
         - API_SCHEMA
-        - APM_SERVICE_NAME
-        - APM_SERVER_ENDPOINT
         - APP_NAME
         - APP_SCHEMA
         - APP_HOST
@@ -23,6 +21,10 @@ services:
         - DAI_CONTRACT_ADDRESS
         - MARKET_REGISTRY_ADDRESS
         - MARKET_FACTORY_ADDRESS
+        - APM_SERVICE_NAME
+        - APM_SERVER_ENDPOINT
+        - APM_SECRET_TOKEN
+        - SENTRY_DSN
     depends_on:
       - core
   mongo:

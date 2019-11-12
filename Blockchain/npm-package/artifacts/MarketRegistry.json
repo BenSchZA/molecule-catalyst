@@ -136,6 +136,20 @@
     "constant": false,
     "inputs": [
       {
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "name": "init",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_newDeployer",
         "type": "address"
       },
