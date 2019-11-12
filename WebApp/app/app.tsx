@@ -52,7 +52,7 @@ const render = (Component = App) => {
             vertical: 'bottom',
             horizontal: 'right'
           }}
-          autoHideDuration={100000}
+          autoHideDuration={10000}
           maxSnack={5} >
           <Router history={history}>
             <ScrollToTop>
