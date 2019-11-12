@@ -34,11 +34,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface OwnProps {
-  projectName: string
 }
 
 const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
-  React.forwardRef(({ projectName }: OwnProps, ref) => {
+  React.forwardRef((props: OwnProps, ref) => {
     const classes = useStyles();
 
     const url = window.location.href;
