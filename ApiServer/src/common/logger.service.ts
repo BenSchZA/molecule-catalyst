@@ -1,5 +1,20 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { createLogger, transports, format } from 'winston';
+import * as Sentry from '@sentry/node';
+import { Client } from '@elastic/elasticsearch';
+
+const Elasticsearch = require('winston-elasticsearch');
+
+Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
+
+const esClient = new Client({
+  node: process.env.ELASTICSEARCH_HOST,
+  cloud: {
+    id: process.env.ELASTICSEARCH_CLOUD_ID,
+    username: 'elastic',
+    password: process.env.ELASTICSEARCH_PASSWORD
+  }
+});
 
 export enum LogLevel {
   info = 'info',
@@ -8,6 +23,11 @@ export enum LogLevel {
   debug = 'debug',
   verbose = 'verbose',
 }
+
+const esTransportOpts = {
+  level: LogLevel.info,
+  client: esClient,
+};
 
 @Injectable()
 export class LoggerService extends Logger {
@@ -23,6 +43,7 @@ export class LoggerService extends Logger {
           format.json(),
         ),
       }),
+      new Elasticsearch(esTransportOpts)
     ],
   })
 

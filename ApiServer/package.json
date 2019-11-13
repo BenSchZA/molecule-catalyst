@@ -33,6 +33,7 @@
   "dependencies": {
     "@anchan828/nest-sendgrid": "^0.1.9",
     "@anchan828/nest-sendgrid-terminus": "^0.1.9",
+    "@elastic/elasticsearch": "^7.4.0",
     "@godaddy/terminus": "4.1.2",
     "@hapi/joi": "15.1.0",
     "@molecule-protocol/catalyst-contracts": "0.0.14",
@@ -46,6 +47,7 @@
     "@nestjs/terminus": "6.3.3",
     "@nestjs/websockets": "^6.8.3",
     "@panterazar/nestjs-prom": "0.0.5",
+    "@sentry/node": "^5.8.0",
     "bcrypt": "^3.0.4",
     "class-transformer": "0.2.3",
     "class-validator": "^0.9.1",
@@ -76,7 +78,8 @@
     "ts-node": "^8.1.0",
     "typesafe-actions": "^4.4.2",
     "typescript": "^3.7.0-beta",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "winston-elasticsearch": "^0.8.2"
   },
   "devDependencies": {
     "@nestjs/testing": "6.3.2",
