@@ -39,14 +39,14 @@ contract PseudoDaiToken is ERC20 {
         return mintingRewards[_user];
     }
 
-    
+
     /// @notice Mints 100 000 000 free tokens to a user.
     function mint() public {
         require(
             !mintingRewards[msg.sender],
             "All free tokens have been used."
         );
-        
+
         mintingRewards[msg.sender] = true;
         totalSupply_.add(100000000000000000000000000);
         balances[msg.sender] = balances[msg.sender].add(100000000000000000000000000);
@@ -59,14 +59,14 @@ contract PseudoDaiToken is ERC20 {
       * @param _value : The amount to be transferred.
       */
     function transfer(
-        address _to, 
+        address _to,
         uint256 _value
-    ) 
-        public 
-        returns (bool) 
+    )
+        public
+        returns (bool)
     {
-        require(_value <= balances[msg.sender]);
-        require(_to != address(0));
+        require(_value <= balances[msg.sender], '');
+        require(_to != address(0), '');
 
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -88,9 +88,9 @@ contract PseudoDaiToken is ERC20 {
         public
         returns (bool)
     {
-        require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]);
-        require(_to != address(0));
+        require(_value <= balances[_from], '');
+        require(_value <= allowed[_from][msg.sender], '');
+        require(_to != address(0), '');
 
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -112,7 +112,7 @@ contract PseudoDaiToken is ERC20 {
         address _spender,
         uint256 _value
     )
-        public 
+        public
         returns (bool success)
     {
         allowed[msg.sender][_spender] = _value;
@@ -123,7 +123,7 @@ contract PseudoDaiToken is ERC20 {
     /**
     ----------------------------------------------------
     view functions
-    ----------------------------------------------------            
+    ----------------------------------------------------
     */
 
     /**
