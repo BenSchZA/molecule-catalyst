@@ -350,7 +350,7 @@ contract Market is IMarket, IERC20 {
 
 	/**
       * @notice Total number of tokens in existence
-      * @return uint256 : Represents the total supply of tokens in this market.
+      * @return uint256: Represents the total supply of tokens in this market.
       */
     function totalSupply() external view returns (uint256) {
         return totalSupply_;
@@ -419,26 +419,9 @@ contract Market is IMarket, IERC20 {
         require(_value <= allowed[_from][msg.sender], "Allowance exceeded");
         require(_to != address(0), "Target account invalid");
 
-<<<<<<<
-    /**
-      * @notice Total number of tokens in existence
-      * @return uint256: Represents the total supply of tokens in this market.
-      */
-    function totalSupply() external view returns (uint256) {
-        return totalSupply_;
-    }
-=======
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
->>>>>>>
-
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
-
-    /**
-      * @return	uint256: The decimals set for the market
-      */
-    function decimals() external view returns(uint256) {
-        return decimals_;
     }
 
 	/**
