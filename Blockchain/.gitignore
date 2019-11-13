@@ -2,6 +2,8 @@ node_modules
 build
 ./.etherlime-store
 /.etherlime-store
+/flat
 .etherlime-store
 coverage
 .env
+package-lock.json

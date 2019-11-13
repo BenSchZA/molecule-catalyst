@@ -141,7 +141,7 @@ const deploy = async (network, secret) => {
 			false,
 			pseudoDaiInstance.contract.address,
 			ADMIN_PUBLIC_KEY,
-			1
+			0
 		);
 
 		const curveFunctionsInstance = await deploy(CurveFunctionsABI);
