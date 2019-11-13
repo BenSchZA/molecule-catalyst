@@ -103,10 +103,10 @@ Below is a simplified flow of the contract life cycle. In this section we will g
 
 1. The project life cycle starts outside the contracts with the submission of a project to the Molecule Catalyst team. The team reviews applications to ensure only the higheset quality projects make it onto the system. 
 2. If the Molecule Catalyst team approves the project, it then gets entered into the contract architecture. The project and its details are formatted and a transaction (`deployMarket()`) is made with the `MarketFactory`. 
-3. The `MarketFactory` will then deploy a `Market` and a `Vault` and link them. The linking of the `Vault` and `Market` allows for communication between the two, and the transferring of funds from the `Market` to the `Vault`. 
+3. The `MarketFactory` will then deploy a `Market` and a `Vault` and link them. The linking of the `Vault` and `Market` allows for communication between the two, and the transferring of funds from the `Market` to the `Vault`, and checks enforced from the `Vault` to the `Market`. 
 4. The `MarketFactory` also sends the details of the `Vault` and `Market` to the `MarketRegistry`. This means that `MarketFactory`s can be updated and changed without loosing existing market systems. 
 5. Whenever a user buys tokens in the `Market`, a portion of the funding is sent to the `Vault`. The portion is determined by the `_taxationRate`. When the `mint()` function executes in the `Market`, the `validateFunding()` function is called on the `Vault`. This function ensures that the rounds is still valid (has not expired), that the round has not ended and that all the rounds have not been finished. 
-6. When a milestone (`_fundingGoal`/`_fundingThreshold`) has been reached, the project creator will then gain access to that funding. The creator can call the `withdraw()` function on the `Vault` and receive a successful rounds funding. The creator can only withdraw a rounds funding when that rounds funding threshold has been reached.
+6. When a milestone (`_fundingGoal`) has been reached, the project creator will then gain access to that funding. The creator can call the `withdraw()` function on the `Vault` and receive a successful rounds funding. The creator can only withdraw a rounds funding when that rounds funding threshold has been reached.
 
 Anytime throughout the projects life cycle the creator can call the `terminateMarket()` function, and end the fund rasing. This function will not result in them loosing any rounds of funding that where already filled, but it will prevent the market from minting new tokens, and wil cause the market to terminate. The `Market`s termination means that users can no longer buy or sell tokens. They can `withdraw()` funding from the market, exchanging tokens they have for collateral in the market. 
 
@@ -116,27 +116,33 @@ Anytime throughout the projects life cycle the creator can call the `terminateMa
 
 ## Major functionality breakdown
 
+Below is a breakdown of each of the major functions within the Molecule ecosystem.
+
 ### Deploying ecosystem
+
+Deploying an ecosystem refers specifically to the entire Molecule contract ecosystem rather than an individual project. The ecosystem consists of factories (deployer) and registries (persistent storage between possible upgrades). 
 
 <div align="center">
     <img src="x-imgs/deploying_mol_ecosystem.png">
 </div>
 
-The ecosystem is deployed by a deployer. The deployer address is assumed to be insecure, and as such is removed/replaced as an admin on the major contracts.
+The ecosystem is deployed by a deployer wallet. The deployer address is assumed to be insecure, and as such is removed/replaced as an admin on the major contracts.
 
 The pattern is such:
 The major contract is deployed, the deployer address is automatically added as an admin by the `WhitelistAdmin` contract. The deployer does any registering or secondary functionality that it needs to do, and then the `init()` function is called, adding the admin as an admin and removing the deployer as an admin.
 
 **Validation**
-
+There is no validation on the ecosystem deployment, as there is no pre-existing data to check against in a new instance of the system. 
 
 ### Creating a market 
+
+A market consists of a `Market` and a `Vault`. Each market has a set number of funding rounds as well as a set time limit for each round.
 
 <div align="center">
     <img src="x-imgs/deploying_market_ecosystem.png">
 </div>
 
-Only a user who is a `WhitelistAdmin` on the Market Factory can deploy a market system, with the exception of the API, which has been specially added to the Market Factory, and can not do any admin functionality on the Market Factory besides deploying a market. This was done for easy of use, and while it may open the system up to attack, the damage is limited by the scope of permissions given to the API. 
+Only a user who is a `WhitelistAdmin` on the Market Factory can deploy a market system, with the exception of the API, which has been specially added to the `MarketFactory`, and can not do any admin functionality on the `MarketFactory` besides deploying a market. This was done for easy of use, and while it may open the system up to attack, the damage is limited by the scope of permissions given to the API. 
 
 **Validation**
 When creating a market, the following things are validated (within the `marketFactory`):
@@ -151,7 +157,9 @@ The following things are validated within the `Vault`:
 
 The market does no validation.
 
-### Minting market tokens 
+### Minting market tokens
+
+The tokens conform to the standard ERC20 model, with the added functionality of a `withdraw()` for once the market has been terminated. For more information about the market termination process, please see [this](#market-contract-cfm).
 
 <div align="center">
     <img src="x-imgs/minting_market_tokens.png">
@@ -160,16 +168,29 @@ The market does no validation.
 Any address can mint project tokens.
 
 **Validation**
+The following is validated within the `Market`:
+* The price for the number of tokens is bigger than 0
+* Requires that all `.transfer()`s pass
+* Requires the `validateFunding()` call on the vault passes
+
+The `Vault` within the `validateFunding()` function, checks:
+* That the current phase has started (this checks it is not the phase after the last phase, as that phase is never set to started)
+* That the current phase has not expired (run over its pre-set end date)
+* If there is an funding that pushes the vault over the `_fundingThreshold` then it will roll that funding over into the next funding round 
+* If that funding roll over will next the next round (or any round after that) the rounds are looped through and ended. 
 
 ### Creator withdrawing 
+
+The `Vault` allows for the creator to withdraw any successfully completed funding rounds. If multiple rounds have been completed, calling the `withdraw()` function will withdraw all outstanding completed rounds funding.
 
 <div align="center">
     <img src="x-imgs/creator_withdrawing_funding_round.png">
 </div>
 
-Only an admin of the project `Vault` can withdraw funding rounds. A round can only be withdrawn once it is completed.
+The `withdraw()` function can only be called by a `WhitelistAdmin` of the `Vault`.
 
 **Validation**
+The `Vault` validates that 
 
 ### Market termination 
 
@@ -189,14 +210,14 @@ The document that covers the Contract Interfaces & Events was omitted from this 
 
 
 
-### Vault Contract
+### Vault Contract CFM
 
-### Market Contract
+### Market Contract CFM
 
-### Market Factory
+### Market Factory CFM
 
-### Market Registry 
+### Market Registry CFM
 
-### Curve Integrals
+### Curve Integrals CFM
 
-### Curve Registry
+### Curve Registry CFM
