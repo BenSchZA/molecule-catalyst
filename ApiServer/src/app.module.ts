@@ -19,6 +19,8 @@ import { ProjectModule } from './project/project.module';
 import { MarketModule }  from './market/market.module';
 import { ProjectSocketModule } from './projectSocket/projectSocket.module';
 import * as mongodbUri from 'mongodb-uri';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './catch-all';
 
 @Module({
   imports: [ConfigModule,
@@ -103,7 +105,14 @@ import * as mongodbUri from 'mongodb-uri';
     ProjectSocketModule,
   ],
   controllers: [AppController],
-  providers: [ConfigService, AppService],
+  providers: [
+    ConfigService,
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class ApplicationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
