@@ -48,7 +48,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
       if (!this._rootNode) return;
 
       const marketData = this.props.project.marketData;
-      const contributionRate = marketData.taxationRate;
+      const contributionRate = marketData.researchContributionRate;
       const currentTokenValue = Number(ethers.utils.formatEther(marketData.tokenPrice));
       const currentTokenSupply = Number(ethers.utils.formatEther(marketData.totalSupply));
       const poolValue = Number(ethers.utils.formatEther(marketData.poolValue));

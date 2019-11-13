@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { getGasPrice, getBlockchainObjects } from "blockchainResources";
 import { IMarket, IVault, ERC20Detailed } from "@molecule-protocol/catalyst-contracts";
-import { PhaseData, FundingState } from './types';
 import { getDaiContract } from 'domain/authentication/chain';
 import { BigNumber } from "ethers/utils";
 
@@ -132,7 +131,7 @@ export async function withdraw(marketAddress: string, tokenAmount: number) {
   }
 }
 
-export async function withdrawAvailable(vaultAddress, phases) {
+export async function withdrawAvailable(vaultAddress) {
   // Get blockchain objects
   const { signer } = await getBlockchainObjects();
 
@@ -140,8 +139,7 @@ export async function withdrawAvailable(vaultAddress, phases) {
   const vault = await new ethers.Contract(vaultAddress, IVault, signer);
 
   // Withdraw all available funds
-  await Promise.all(phases.filter(phase => phase.state === FundingState.ENDED)
-    .map(async (phase: PhaseData) => vault.withdraw(phase.index)));
+  await vault.withdraw();
 
   return true;
 }

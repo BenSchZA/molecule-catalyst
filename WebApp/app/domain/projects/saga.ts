@@ -19,6 +19,8 @@ import {
 import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import apiUrlBuilder from 'api/apiUrlBuilder';
+import TransactionSuccessNotification from 'components/TransactionSuccessNotification';
+import React from 'react';
 
 let socket;
 
@@ -81,18 +83,19 @@ export function* supportProject(action) {
     yield call(mint, project.chainData.marketAddress, contribution);
     yield put(ProjectActions.supportProject.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
-      message: 'Successfully funded project',
+      message: '',
       options: {
-        variant: 'success'
+        variant: 'success',
+        content: React.createElement(TransactionSuccessNotification),
       }
-    }
-    ));
+    }));
   } catch (error) {
     yield put(ProjectActions.supportProject.failure(projectId));
     yield put(NotificationActions.enqueueSnackbar({
       message: 'The transaction was not successful',
       options: {
-        variant: 'error'
+        variant: 'error',
+        
       }
     }
     ));
@@ -169,7 +172,7 @@ export function* withdrawFunding(action) {
   const project: Project = yield select((state: ApplicationRootState) => state.projects[projectId]);
 
   try {
-    yield call(withdrawAvailable, project.chainData.vaultAddress, project.vaultData.phases);
+    yield call(withdrawAvailable, project.chainData.vaultAddress);
     yield put(ProjectActions.withdrawFunding.success(projectId));
     yield put(NotificationActions.enqueueSnackbar({
       message: 'Successfully withdrew funding',

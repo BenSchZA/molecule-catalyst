@@ -20,17 +20,19 @@ const {
  } = require("../testing.settings.js");
 
 describe('Vault stress test', async () => {
+    let insecureDeployer = accounts[0];
     let molAdmin = accounts[1];
     let creator = accounts[2];
     let user1 = accounts[3];
     let user2 = accounts[4];
     let admin2 = accounts[5];
+    let backendMarketDeployer = accounts[6];
     let pseudoDaiInstance, moleculeVaultInstance, curveRegistryInstance, marketRegistryInstance, marketFactoryInstance, curveIntegralInstance;
 
     let marketInstance, vaultInstance;
 
     beforeEach('', async () => {
-        deployer = new etherlime.EtherlimeGanacheDeployer(molAdmin.secretKey);
+        deployer = new etherlime.EtherlimeGanacheDeployer(insecureDeployer.secretKey);
 
         pseudoDaiInstance = await deployer.deploy(
             PseudoDaiTokenAbi, 
@@ -44,18 +46,21 @@ describe('Vault stress test', async () => {
             MoleculeVaultAbi,
             false,
             pseudoDaiInstance.contract.address,
+            molAdmin.signer.address,
             moleculeVaultSettings.taxationRate
         );
 
         marketRegistryInstance = await deployer.deploy(
             MarketRegistryAbi,
-            false,
+            false
         );
+        await marketRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveRegistryInstance = await deployer.deploy(
             CurveRegistryAbi,
             false
         );
+        await curveRegistryInstance.from(insecureDeployer).init(molAdmin.signer.address);
 
         curveIntegralInstance = await deployer.deploy(
             CurveFunctionsAbi,
@@ -75,7 +80,12 @@ describe('Vault stress test', async () => {
             marketRegistryInstance.contract.address,
             curveRegistryInstance.contract.address
         );
-
+        // Adding the admins (in deployment this would be the multsig)
+        await marketFactoryInstance.from(insecureDeployer).init(
+            molAdmin.signer.address,
+            backendMarketDeployer.signer.address
+        );
+        // Adding the market deployer
         await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
 
         // Creating a market
@@ -260,7 +270,7 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM1[4].toString(), 0, "Round state is incorrect");
 
             // Withdrawing the funding from round 1
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             let balanceVaultW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceMolVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             let balanceOfCreatorW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
@@ -293,7 +303,7 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM2[1].toString(), marketSettingsStress.rollOverAmounts[1], "Round funding raised incorrect");
             assert.equal(phaseThreeM2[4].toString(), 1, "Round state is incorrect");
 
-            await vaultInstance.from(creator).withdraw(1);
+            await vaultInstance.from(creator).withdraw();
 
             let balanceVaultW2 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceMolVaultW2 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
@@ -309,16 +319,16 @@ describe('Vault stress test', async () => {
 
             assert.equal(balanceVaultM3.toString(), marketSettingsStress.vaultBalanceWithdraws[3], "Vault balance incorrect");
 
-            await vaultInstance.from(creator).withdraw(2);
+            await vaultInstance.from(creator).withdraw();
 
             try {
-                await vaultInstance.from(creator).withdraw(2);
+                await vaultInstance.from(creator).withdraw();
                 assert.equal(true, false, "Creator could withdraw round twice")
             } catch (error) {
                 assert.equal(true, true, "Creator could not withdraw funds twice")
             }
             try {
-                await vaultInstance.from(creator).withdraw(3);
+                await vaultInstance.from(creator).withdraw();
                 assert.equal(true, false, "Creator could withdraw round that does not exist")
             } catch (error) {
                 assert.equal(true, true, "Creator could withdraw round that does not exist")
@@ -414,20 +424,21 @@ describe('Vault stress test', async () => {
             assert.equal(balanceOfCreatorM2.toString(), 0, "Creator balance is incorrect");
             assert(balanceVaultT.toString() >= marketSettingsStress.vaultBalanceWithdraws[4].toString(), "Vault has incorrect balance");
 
+            let balanceVaultBW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+            let balanceOfCreatorBW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+            let balanceOfMolVaultBW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
             // Making sure the creator can still claim their funding
-            await vaultInstance.from(creator).withdraw(0);
+            await vaultInstance.from(creator).withdraw();
             let balanceVaultW1 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
             let balanceOfCreatorW1 = await pseudoDaiInstance.balanceOf(creator.signer.address);
+            let balanceOfMolVaultW1 = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
 
-            assert.equal(balanceVaultW1.toString(), marketSettingsStress.fundingGoalsWithTax[1].toString(), "Vault balance incorrect");
-            assert.equal(balanceOfCreatorW1.toString(), marketSettingsStress.creatorBalances[0].toString(), "Creator balance incorrect");
-             
-            await vaultInstance.from(creator).withdraw(1);
-            let balanceVaultW2 = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
-            let balanceOfCreatorW2 = await pseudoDaiInstance.balanceOf(creator.signer.address);
-
-            assert.equal(balanceVaultW2.toString(), 0, "Vault balance incorrect");
-            assert.equal(balanceOfCreatorW2.toString(), marketSettingsStress.creatorBalances[1].toString(), "Creator balance incorrect")
+            assert.equal(balanceVaultBW1.toString(), marketSettingsStress.vaultBalanceWithdraws[4].toString(), "Vault balance incorrect");
+            assert.equal(balanceOfCreatorBW1.toString(), 0, "Creator balance incorrect");
+            assert.equal(balanceOfMolVaultBW1.toString(), 0, "Creator balance incorrect");
+            assert.equal(balanceVaultW1.toString(), 0, "Vault balance incorrect");
+            assert.equal(balanceOfCreatorW1.toString(), marketSettingsStress.creatorBalances[1].toString(), "Creator balance incorrect");
+            assert.equal(balanceOfMolVaultW1.toString(), marketSettingsStress.molVaultBalances[1].toString(), "Mol vault balance incorrect");
         });
 
         it("Multiple rounds being bought at once", async () => {
@@ -519,6 +530,39 @@ describe('Vault stress test', async () => {
             
             estimateTokens = await marketInstance.collateralToTokenBuying(ethers.utils.parseUnits("500", 18))
             await assert.revert(marketInstance.from(user1).mint(user1.signer.address, estimateTokens), "Mint was allowed incorrectly")
+        });
+    });
+
+    describe("Admin functions", async () => {
+        it('Deployer cannot access Market Factory admin functions', async () => {
+            await assert.revert(
+                marketFactoryInstance.from(insecureDeployer).deployMarket(
+                    marketSettings.fundingGoals,
+                    marketSettings.phaseDuration,
+                    creator.signer.address,
+                    marketSettings.curveType,
+                    marketSettings.taxationRate
+                )
+            );
+        });
+
+        it('Deployer cannot access Market Registry admin functions', async () => {
+            await assert.revert(
+                marketRegistryInstance.from(insecureDeployer)
+                    .addMarketDeployer(
+                        marketFactoryInstance.contract.address,
+                        "Initial factory"
+                    )
+            );
+        });
+
+        it('Deployer cannot access Curve Registry admin functions', async () => {
+            await assert.revert(
+                curveRegistryInstance.from(insecureDeployer).registerCurve(
+                    curveIntegralInstance.contract.address,
+                    "y-axis shift"
+                )
+            );
         });
     });
 });

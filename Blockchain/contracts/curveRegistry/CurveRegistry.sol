@@ -29,6 +29,11 @@ contract CurveRegistry is ICurveRegistry, WhitelistAdminRole {
         publishedBlocknumber_ = block.number;
     }
 
+    function init(address _admin) public onlyWhitelistAdmin() {
+        super.addWhitelistAdmin(_admin);
+        super.renounceWhitelistAdmin();
+    }
+
     /**
       * @dev    Logs the market into the registery.
       * @param  _libraryAddress: Address of the library.

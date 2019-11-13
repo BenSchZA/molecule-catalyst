@@ -4,3 +4,4 @@ build
 /.etherlime-store
 .etherlime-store
 coverage
+.env

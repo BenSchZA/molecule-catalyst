@@ -1,8 +1,8 @@
-import { WithStyles, Typography, Paper, Avatar, TextField, Dialog } from '@material-ui/core';
+import { WithStyles, Typography, Paper, Avatar, TextField, Dialog, Link } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
 import { Info, Close } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { IMarket } from "@molecule-protocol/catalyst-contracts";
 import Blockies from 'react-blockies';
 import { PositiveButton, NegativeButton } from '../custom';
@@ -178,7 +178,7 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
         </Typography>
         <hr className={classes.divider} />
         <Typography className={classes.modalText}>
-          You can keep up to date with the value of your project tokens in the <Link to='/myProjects' className={classes.link}>My Projects</Link> tab
+          You can keep up to date with the value of your project tokens in the <RouterLink to='/myProjects' className={classes.link}>My Projects</RouterLink> tab
         </Typography>
         <div className={classes.buttons}>
           <NegativeButton
@@ -193,7 +193,11 @@ const ProjectRedeemModal: React.FunctionComponent<Props> = ({
           </PositiveButton>
         </div>
         <div className={classes.moreInfo}>
-          <Link className={classes.link} to="/">
+          <Link 
+            className={classes.link} 
+            href="https://catalyst.molecule.to/learn"
+            target="_blank"
+            rel="noreferrer">
             <Info />
             <span>
               Need more information?

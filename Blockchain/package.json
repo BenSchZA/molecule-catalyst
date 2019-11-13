@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "etherlime ganache --networkId=1337",
+    "start": "etherlime ganache -q --networkId=1337",
     "build": "etherlime compile --runs=999 --exportAbi",
-    "deploy:local": "etherlime deploy --runs=500",
+    "deploy:local": "etherlime deploy --network=local --runs=500",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
+    "deploy:mainnet": "etherlime deploy --network=mainnet --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
     "test-one": "etherlime test test/moleculeVault/moleculeVault.test.js --output=none --timeout 100000 --gas-report=true --runs=999"
@@ -15,7 +16,7 @@
   "author": "Linum Labs",
   "license": "MIT",
   "dependencies": {
-    "bignumber.js": "^9.0.0",
+    "bignumber.js": "9.0.0",
     "dotenv": "8.0.0",
     "etherlime": "2.2.0",
     "etherlime-lib": "1.1.3",

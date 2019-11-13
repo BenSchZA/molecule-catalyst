@@ -7,6 +7,9 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { LifeStore, ApplicationRootState } from 'types';
 import { init as initApm } from '@elastic/apm-rum';
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
 
 const getPageName = () => {
   var parts = window.location.pathname.split('/'); 
@@ -24,6 +27,7 @@ const apm = initApm({
   serverUrl: process.env.APM_SERVER_ENDPOINT,
   // Set service version (required for sourcemap feature)
   serviceVersion: '',
+  secretToken: process.env.APM_SECRET_TOKEN,
   pageLoadTransactionName: getPageName()
 })
 
@@ -41,15 +45,23 @@ const apmLogger = store => next => action => {
       const context = {
         id: (store.getState() as ApplicationRootState).authentication.userId,
       }
-      apm.setUserContext(context);
-      apm.setInitialPageLoadName(getPageName());
-      apm.setCustomContext({
+      // apm.setUserContext(context);
+      // apm.setInitialPageLoadName(getPageName());
+      const errorInfo = {
+        ...context,
         state: store.getState(),
         action: action,
-      });
-      apm.captureError(new Error(`Action failure: ${action.type}`));
+      };
+      // apm.setCustomContext(errorInfo);
+      // apm.captureError(new Error(`Action failure: ${action.type}`));
       // Remove state from APM context after capturing error
-      apm.setCustomContext({});
+      // apm.setCustomContext({});
+
+      Sentry.withScope((scope) => {
+        scope.setExtras(errorInfo);
+        Sentry.captureException(new Error(`Action failure: ${action.type}`));
+      });
+
       return next(action);
     } else if(action.type.endsWith('_REQUEST')) {
       const transaction = apm.startTransaction(action.type, 'action');

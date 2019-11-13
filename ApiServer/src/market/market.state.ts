@@ -3,10 +3,10 @@ import { ServiceBase } from 'src/common/serviceBase';
 import { Contract, Wallet, ethers, Event } from 'ethers';
 import { Provider } from 'ethers/providers';
 import { ConfigService } from 'src/config/config.service';
-import { IMarket } from '@molecule-protocol/catalyst-contracts';
+import { Market } from '@molecule-protocol/catalyst-contracts';
 import { MarketReducer } from './market.reducer';
 import { MarketDocument } from './market.schema';
-import { mintAction, burnAction, transferAction, marketTerminatedAction, setTaxRateAction, setMarketData, setMarketActive } from './market.actions';
+import { mintAction, burnAction, transferAction, marketTerminatedAction, setResearchContributionRateAction, setMarketData, setMarketActive } from './market.actions';
 import { BigNumber } from 'ethers/utils';
 import throttle = require('lodash/throttle');
 import { rehydrateMarketData } from './mongoRehydrationHelpers';
@@ -25,7 +25,7 @@ export class MarketState extends ServiceBase {
     private readonly marketEmitter: EventEmitter) {
     super(`${MarketState.name}-${marketAddress}`);
     const serverAccountWallet = new Wallet(this.config.get('serverWallet').privateKey, this.ethersProvider);
-    this.marketContract = new Contract(this.marketAddress, IMarket, this.ethersProvider).connect(serverAccountWallet);
+    this.marketContract = new Contract(this.marketAddress, Market, this.ethersProvider).connect(serverAccountWallet);
 
     this.marketState = this.stateDocument.isNew ? createStore(MarketReducer) : createStore(MarketReducer, rehydrateMarketData(this.stateDocument.marketData));
 
@@ -50,7 +50,7 @@ export class MarketState extends ServiceBase {
 
       this.stateDocument.markModified('marketData');
       await this.stateDocument.save();
-      this.marketState.dispatch(setTaxRateAction((await this.marketContract.taxationRate()).toNumber()));
+      this.marketState.dispatch(setResearchContributionRateAction((await this.marketContract.feeRate()).toNumber()));
       await this.updateContractData();
       await this.updateMarketActive();
     }

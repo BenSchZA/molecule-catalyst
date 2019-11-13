@@ -30,21 +30,16 @@ interface IVault {
     function initialize(address _market) external returns(bool);
 
     /**
-      * @notice Allows the creator to withdraw a round of funding.
-      * @dev    The withdraw function should be called after each funding round
-      *         has been sucessfully filled. If the withdraw is called after the
-      *         last round has ended, the market will terminate and any
-      *         remaining funds will be sent to the market.
-      * @param  _phase: The phase the creator wants to withdraw.
+	  * @notice	ALlows the creator to withdraw the various phases as they are
+	  *			compleated.
       * @return bool: The funding has sucessfully been transfered.
-      */
-    function withdraw(uint256 _phase) external returns(bool);
+	  */
+    function withdraw() external returns(bool);
 
     /**
-      * @notice Allows the market to check that the funding
-      * @dev    This function will terminate the market if the time for the
-      *         round is exceeded. This will loose any funding the creator has
-      *         not withdrawn.
+      * @notice	Verifies that the phase passed in: has not been withdrawn,
+	  *			funding goal has been reached, and that the phase has not
+	  *			expired. Adds fee amount to the vault pool.
       * @param  _receivedFunding: The amount of funding recived
       * @return bool: Wheather or not the funding is valid
       */
