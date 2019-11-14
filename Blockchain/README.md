@@ -190,15 +190,24 @@ The `Vault` allows for the creator to withdraw any successfully completed fundin
 The `withdraw()` function can only be called by a `WhitelistAdmin` of the `Vault`.
 
 **Validation**
-The `Vault` validates that 
+The `Vault` validates that:
+* The caller is a `WhitelistAdmin`
+* The `Vault` `isActive` (has been initialized (connected to its `Market`))
+* There is funding for the researcher to withdraw (`outstandingWithdraw_`)
+* Skips over any funding rounds that have already been paid out
+* Requires the funding gets sent to the creator
+* Checks if the current round is the last round, if it and the market is still active and the creator has withdrawn all funding, the market will be terminated.
 
-### Market termination 
+### Market termination
+
+The market can be terminated in multiple situations. There are 3 such situations.
+1. The market admin(a `WhitelistAdmin` on the `Vault`) calls the `terminateMarket()` function.
+2. The market admin(a `WhitelistAdmin` on the `Vault`) withdraws the remaining funding from the `Vault` after all rounds have ended. The `Vault` will then automatically checking the market is still active, and if it is terminate it.
+3. The minting of tokens called the `validateFunding()` function in the `Vault`. If the current round has expired (exceeded its pre-set time limit) the market will then terminate.
 
 <div align="center">
     <img src="x-imgs/market_terminate_options.png">
 </div>
-
-The market can be terminated in 3 ways.
 
 **Validation**
 
@@ -208,16 +217,4 @@ The document that covers the Contract Interfaces & Events was omitted from this 
 
 ## Constructors, Functions & Modifiers
 
-
-
-### Vault Contract CFM
-
-### Market Contract CFM
-
-### Market Factory CFM
-
-### Market Registry CFM
-
-### Curve Integrals CFM
-
-### Curve Registry CFM
+Please see the generated docs [here]().

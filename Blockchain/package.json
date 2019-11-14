@@ -11,7 +11,8 @@
     "deploy:mainnet": "etherlime deploy --network=mainnet --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
-    "test-one": "etherlime test test/moleculeVault/moleculeVault.test.js --output=none --timeout 100000 --gas-report=true --runs=999"
+    "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999",
+    "solc": "solc --help"
   },
   "author": "Linum Labs",
   "license": "MIT",
