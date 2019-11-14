@@ -11,6 +11,7 @@ docker-build:
     - .environments/deployment/build.sh
   only:
     - nightly
+    - staging
 
 deploy:
   stage: deploy
@@ -26,3 +27,4 @@ deploy:
     - .environments/deployment/deploy.sh
   only:
     - nightly
+    - staging
