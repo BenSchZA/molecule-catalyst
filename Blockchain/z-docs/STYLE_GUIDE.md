@@ -21,6 +21,8 @@
 * [Contract and functions](#contract-and-functions)
 #### [Function layout](#function-layout)
 
+#### [> To Contract Interfaces & Events](./ContractInterfaces&Events.md)
+#### [> To Generated Docs](./GeneratedDocsIndex.md)
 #### [< Back to `README`](../README.md)
 
 ---

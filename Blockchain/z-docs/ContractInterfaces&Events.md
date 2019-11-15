@@ -18,7 +18,10 @@
 #### [Curve](#curve)
 #### [Molecule Vault](#molecule-vault)
 
-#### [< Back to `README`](../../README.md)
+#### [> To Style Gide](./STYLE_GUIDE.md)
+#### [> To Generated Docs](./GeneratedDocsIndex.md)
+
+#### [< Back to `README`](../README.md)
 ---
 
 # Registries 
