@@ -1,6 +1,13 @@
+<div align="center">
+    <img src="../x-imgs/mol_cat_logo.png">
+    <h3>Molecule Catalyst is an open source crowdfunding platform for medical research and development</h3>
+</div>
+
+---
+
 # Style guide
 
-## Index
+# Index
 #### [Naming conventions](#naming-convention)
 * [Contract variables names](#contract-variables-names)
     * [Private & internal variables](#private-internal-variables)
@@ -14,7 +21,16 @@
 * [Contract and functions](#contract-and-functions)
 #### [Function layout](#function-layout)
 
+#### [< Back to `README`](../README.md)
+
+---
+
 # Naming convention
+
+A guide to the nameing contention of Molecule Smart Contracts.
+Excluding [Openzepplin utils and access](../node_modules/openzeppelin-solidity/README.md).
+
+---
 
 ## Contract variables names
 

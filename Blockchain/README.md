@@ -7,28 +7,37 @@
 
 # Index
 
-| Section | Topic | Sub-Topic | Sub-sub-Topic |
-|:--------|:------|:----------|:--------------|
-| 0. Project Details | [0.1 Dependencies](#dependencies) | |
-|  | [0.2 Project scripts](#project-scripts) |  |
-| 1. Smart Contracts | [1.1 Outline Of Architecture](#outline-of-architecture) | [1.1.1 Ecosystem Outline](#ecosystem-outline) |
-| | [1.2 Overview Of Individual Contracts](#overview-of-individual-contracts) | [1.1.2 Vault Contract](#vault-contract) |
-|  |  | [1.1.3 Market Contract](#market-contract) |
-|  |  | [1.1.4 Market Factory](#market-factory) |
-|  |  | [1.1.5 Market Registry](#market-registry) |
-|  |  | [1.1.6 Curve Integrals](#curve-integrals) |
-|  |  | [1.1.7 Curve Registry](#curve-registry) |
-|  |  | [1.1.8 Pseudo Dai <br>(The mocking of Dai for testing purposes)](#pseudo-dai) |
-|  |  | [1.1.9 Project Life Cycle](#project-life-cycle) |
-|  | 1.3 Detailed Breakdown of Smart Contracts | [1.3.1 Major functionality breakdown](#major-functionality-breakdown) | [Deploying ecosystem](#deploying-ecosystem) |
-| | | | [Creating a market](#creating-a-market)
-| | | | [Minting market tokens](#minting-market-tokens)
-| | | | [Creator withdrawing](#creator-withdrawing)
-| | | | [Market termination](#market-termination)
-| | |[1.3.1 Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) |
-|  |  | [1.3.3 Constructors, Functions & Modifiers]() |
-|  |  | [1.3.4 Style Guide](./z-docs/STYLE_GUIDE.md) |
-|  |  | [1.3.5 Security Considerations]() |
+### [Project Details](#project-details) 
+* [Dependencies](#dependencies)
+    * [Project scripts](#project-scripts)
+### [Smart Contracts](#smart-contracts) 
+* [Outline Of Architecture](#outline-of-architecture)
+    * [Ecosystem Outline](#ecosystem-outline)
+    * [Project Life Cycle](#project-life-cycle) 
+* [Overview Of Individual Contracts](#overview-of-individual-contracts)
+    * [Vault Contract](#vault-contract)
+    * [Market Contract](#market-contract) 
+    * [Market Factory](#market-factory) 
+    * [Market Registry](#market-registry) 
+    * [Curve Integrals](#curve-integrals) 
+    * [Curve Registry](#curve-registry) 
+    * [Pseudo Dai (The mocking of Dai for testing purposes)](#pseudo-dai)
+* Detailed Breakdown of Smart Contracts
+    * [Major functionality breakdown](#major-functionality-breakdown) 
+        * [Deploying ecosystem](#deploying-ecosystem) 
+        * [Creating a market](#creating-a-market)
+        * [Minting market tokens](#minting-market-tokens)
+        * [Creator withdrawing](#creator-withdrawing)
+        * [Market termination](#market-termination)
+    * [Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) 
+    * [Constructors, Functions & Modifiers](#constructors-functions-modifiers) 
+    * [Style Guide](./z-docs/STYLE_GUIDE.md) 
+    * [Security Considerations](#security-considerations) 
+
+#### [> To Style Gide](./z-docs/STYLE_GUIDE.md)
+#### [> To Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md)
+#### [> To Generated Docs](./z-docs/GeneratedDocsIndex.md)
+#### [< Back to main `README`](../README.md)
 
 ---
 
@@ -66,6 +75,24 @@ The Molecule contract ecosystem has multiple components. The major components ar
 * Factories: These create new markets
 * Registries: These store the addresses and information about markets 
 * Markets: A market consists of a market (ERC20 bonding curve) and a vault (storage of funding and )
+
+## Project Life Cycle 
+
+Below is a simplified flow of the contract life cycle. In this section we will go through the life cycle of a project on Molecule Catalyst. 
+
+<div align="center">
+    <img src="x-imgs/molCat_lifecycle.png">
+</div>
+
+1. The project life cycle starts outside the contracts with the submission of a project to the Molecule Catalyst team. The team reviews applications to ensure only the higheset quality projects make it onto the system. 
+2. If the Molecule Catalyst team approves the project, it then gets entered into the contract architecture. The project and its details are formatted and a transaction (`deployMarket()`) is made with the `MarketFactory`. 
+3. The `MarketFactory` will then deploy a `Market` and a `Vault` and link them. The linking of the `Vault` and `Market` allows for communication between the two, and the transferring of funds from the `Market` to the `Vault`, and checks enforced from the `Vault` to the `Market`. 
+4. The `MarketFactory` also sends the details of the `Vault` and `Market` to the `MarketRegistry`. This means that `MarketFactory`s can be updated and changed without loosing existing market systems. 
+5. Whenever a user buys tokens in the `Market`, a portion of the funding is sent to the `Vault`. The portion is determined by the `_taxationRate`. When the `mint()` function executes in the `Market`, the `validateFunding()` function is called on the `Vault`. This function ensures that the rounds is still valid (has not expired), that the round has not ended and that all the rounds have not been finished. 
+6. When a milestone (`_fundingGoal`) has been reached, the project creator will then gain access to that funding. The creator can call the `withdraw()` function on the `Vault` and receive a successful rounds funding. The creator can only withdraw a rounds funding when that rounds funding threshold has been reached.
+
+Anytime throughout the projects life cycle the creator can call the `terminateMarket()` function, and end the fund rasing. This function will not result in them loosing any rounds of funding that where already filled, but it will prevent the market from minting new tokens, and wil cause the market to terminate. The `Market`s termination means that users can no longer buy or sell tokens. They can `withdraw()` funding from the market, exchanging tokens they have for collateral in the market. 
+
 ## Overview Of Individual Contracts
 
 This section will expand on the meaning and use of each contract within the ecosystem, as well as going through the life cycle of a project within the ecosystem. 
@@ -92,25 +119,6 @@ These contracts have `integral` & `inverseIntegral` functions which are called b
 
 ### Curve Registry
 This registry allows Molecule and potentially other authorized accounts to register curve contracts. This allows the market factory to select a curve library from a range of approved curve integrals. 
-
-## Project Life Cycle 
-
-Below is a simplified flow of the contract life cycle. In this section we will go through the life cycle of a project on Molecule Catalyst. 
-
-<div align="center">
-    <img src="x-imgs/molCat_lifecycle.png">
-</div>
-
-1. The project life cycle starts outside the contracts with the submission of a project to the Molecule Catalyst team. The team reviews applications to ensure only the higheset quality projects make it onto the system. 
-2. If the Molecule Catalyst team approves the project, it then gets entered into the contract architecture. The project and its details are formatted and a transaction (`deployMarket()`) is made with the `MarketFactory`. 
-3. The `MarketFactory` will then deploy a `Market` and a `Vault` and link them. The linking of the `Vault` and `Market` allows for communication between the two, and the transferring of funds from the `Market` to the `Vault`, and checks enforced from the `Vault` to the `Market`. 
-4. The `MarketFactory` also sends the details of the `Vault` and `Market` to the `MarketRegistry`. This means that `MarketFactory`s can be updated and changed without loosing existing market systems. 
-5. Whenever a user buys tokens in the `Market`, a portion of the funding is sent to the `Vault`. The portion is determined by the `_taxationRate`. When the `mint()` function executes in the `Market`, the `validateFunding()` function is called on the `Vault`. This function ensures that the rounds is still valid (has not expired), that the round has not ended and that all the rounds have not been finished. 
-6. When a milestone (`_fundingGoal`) has been reached, the project creator will then gain access to that funding. The creator can call the `withdraw()` function on the `Vault` and receive a successful rounds funding. The creator can only withdraw a rounds funding when that rounds funding threshold has been reached.
-
-Anytime throughout the projects life cycle the creator can call the `terminateMarket()` function, and end the fund rasing. This function will not result in them loosing any rounds of funding that where already filled, but it will prevent the market from minting new tokens, and wil cause the market to terminate. The `Market`s termination means that users can no longer buy or sell tokens. They can `withdraw()` funding from the market, exchanging tokens they have for collateral in the market. 
-
----
 
 # Detailed Breakdown of Smart Contracts
 
@@ -217,4 +225,29 @@ The document that covers the Contract Interfaces & Events was omitted from this 
 
 ## Constructors, Functions & Modifiers
 
-Please see the generated docs [here]().
+Please see the generated docs in the following locations:
+* [`IVault` & `Vault`](./z-docs/ContractDocs/Vault.md)
+* [`IMarket` & `Market`](./z-docs/ContractDocs/Market.md)
+* [`IMarketFactory` & `MarketFactory`](./z-docs/ContractDocs/MarketFactory.md)
+* [`MarketRegistry`](./z-docs/ContractDocs/MarketRegistry.md)
+* [`CurveFunctions`](./z-docs/ContractDocs/curveFunctions.md)
+* [`CurveRegistry`](./z-docs/ContractDocs/curveRegistry.md)
+* [`MoleculeVault`](./z-docs/ContractDocs/MoleculeVault.md)
+
+## Security Considerations
+
+<h4>High Potential Impact (solved)</h4>
+
+**Deployer private key has a considerable likelihood to get compromised**
+The deployer script needs a private key in order to deploy the contract ecosystem. When the contracts are deployed the `msg.sender` of the contract creation transaction is added as a `WhitelistAdmin` to the major spokes within the architechture. As the `WhitelistAdmin` has upgradability rights on these spokes it is of high prioroty and importance that there is no unintended access to this level of control over the ecosystem.
+**Fix**
+The deployer, during the course of the deployment, adds a multisig wallet as the admin of the core contracts, and then removes itself as admin when it no longer needs to interact with the core contract again.
+
+<h4>Potential Impact (avoided)</h4>
+
+**Market Factory: API private key has a considerable likelihood to get compromised**
+The API needs to have the rights to deploy a market from the market factory.
+**Fix**
+Instead of adding the API private key as a prior mentioned `WhitelistAdmin`, the API private key is added with a specific role, (`marketCreator_`). This address is only allowed to deploy a market ecosystem (`Vault` & `Market`), and can be updated by the `WhitelistAdmin`.
+
+

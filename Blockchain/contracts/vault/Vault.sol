@@ -206,19 +206,25 @@ contract Vault is IVault, WhitelistAdminRole {
                 );
                 // Sets the rounds funding to be paid
                 fundingPhases_[i].state = FundingState.PAID;
-                // Works out the mol fee (included in the funding threashold) and sends
-                // the funding to the molecule vault
-                uint256 molFee = fundingPhases_[i].fundingThreshold
-                    .mul(moleculeFeeRate_)
-                    .div(moleculeFeeRate_.add(100));
-                // Transfers the mol fee to the molecle vault
-                require(
-                    collateralToken_.transfer(address(moleculeVault_), molFee),
-                    "Tokens not transfer"
-                );
+
+                uint256 molFee = 0;
+                // Ensures a 0 mol fee rate does not break math
+                if(moleculeFeeRate_ != 0 ) {
+                    // Works out the mol fee (included in the funding 
+                    // threashold) and sends the funding to the molecule vault
+                    molFee = fundingPhases_[i].fundingThreshold
+                        .mul(moleculeFeeRate_)
+                        .div(moleculeFeeRate_.add(100));
+                    // Transfers the mol fee to the molecle vault
+                    require(
+                        collateralToken_.transfer(address(moleculeVault_), molFee),
+                        "Tokens not transfer"
+                    );
+                }
                 // Working out the origional funding goal without the mol fee
                 uint256 creatorAmount = fundingPhases_[i].fundingThreshold
                     .sub(molFee);
+
                 // Sending the creator their collateral amoutn
                 require(
                     collateralToken_.transfer(msg.sender, creatorAmount),

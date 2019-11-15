@@ -31,6 +31,18 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     // activated
     bool internal isActive_;
 
+    event NewApiAddressAdded(address indexed oldAddress, address indexed newAddress);
+
+
+    modifier onlyAnAdmin() {
+        require(isActive_, "Market factory has not been activated");
+        require(
+            isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
+            "Functionality restricted to whitelisted admin"
+        );
+        _;
+    }
+
     /**
       * @dev    Sets variables for market deployments.
       * @param  _collateralToken Address of the ERC20 collateral token
@@ -73,13 +85,18 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         isActive_ = true;
     }
 
-    modifier onlyAnAdmin() {
-        require(isActive_, "Market factory has not been activated");
-        require(
-            isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
-            "Functionality restricted to whitelisted admin"
-        );
-        _;
+    function updateApiAddress(
+        address _newApiPublicKey
+    ) 
+        onlyWhitelistAdmin() 
+        public 
+        returns(address)
+    {
+        uint256 oldMarketCreator = marketCreator_;
+        marketCreator_ = _newApiPublicKey;
+
+        emit NewApiAddressAdded(oldMarketCreator, marketCreator_);
+        return _newApiPublicKey;
     }
 
     /**
