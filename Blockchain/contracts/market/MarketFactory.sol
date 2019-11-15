@@ -92,7 +92,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         public 
         returns(address)
     {
-        uint256 oldMarketCreator = marketCreator_;
+        address oldMarketCreator = marketCreator_;
         marketCreator_ = _newApiPublicKey;
 
         emit NewApiAddressAdded(oldMarketCreator, marketCreator_);
