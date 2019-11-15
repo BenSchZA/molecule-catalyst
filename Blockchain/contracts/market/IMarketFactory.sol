@@ -1,16 +1,16 @@
 pragma solidity 0.5.10;
 
 /**
-  * @author Veronica - @veronicalc
+  * @author @veronicaLC (Veronica Coutts)
   * @title  The interface for the market factory
   */
 interface IMarketFactory {
     /**
-      * @dev    This function allows for the creation of a
-      *         new market, consisting of a curve and vault
       * @notice Vyper cannot handle arrays of unknown length,
       *         and thus the funding goals and durations will
       *         only be stored in the vault, which is Solidity.
+      * @dev    This function allows for the creation of a
+      *         new market, consisting of a curve and vault
       * @param  _fundingGoals This is the amount wanting to be
       *         raised in each round, in collateral.
       * @param  _phaseDurations The time for each round in
@@ -35,22 +35,22 @@ interface IMarketFactory {
     function updateMoleculeVault(address _newMoleculeVault) external;
 
 	/**
-	  * @return	address : The address of the molecule vault contract.
-	  */
+      * @return address: The address of the molecule vault
+      */
     function moleculeVault() external view returns(address);
 
 	/**
-	  * @return	address : The address of the market registry cotnract.
-	  */
+      * @return address: The contract address of the market registry.
+      */
     function marketRegistry() external view returns(address);
 
 	/**
-	  * @return	address : The address of the curve registry contract
-	  */
+      * @return address: The contract address of the curve registry
+      */
     function curveRegistry() external view returns(address);
 
 	/**
-	  * @return	address : The address of the collateral token contract
-	  */
+      * @return address: The contract address of the collateral token
+      */
     function collateralToken() external view returns(address);
 }

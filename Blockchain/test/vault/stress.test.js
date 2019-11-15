@@ -215,8 +215,6 @@ describe('Vault stress test', async () => {
             assert.equal(phaseThreeM3[0].toString(), marketSettingsStress.fundingGoalsWithTax[2].toString(), "Funding threshold incorrect");
             assert.equal(phaseThreeM3[1].toString(), marketSettingsStress.fundingGoalsWithTax[2].toString(), "Round funding raised incorrect");
             assert.equal(phaseThreeM3[4].toString(), 2, "Round state is incorrect");
-
-            // TODO after automating market end, add tests here 
         });
 
         it("Round rollover and withdraw tests", async () => {
@@ -531,6 +529,37 @@ describe('Vault stress test', async () => {
             estimateTokens = await marketInstance.collateralToTokenBuying(ethers.utils.parseUnits("500", 18))
             await assert.revert(marketInstance.from(user1).mint(user1.signer.address, estimateTokens), "Mint was allowed incorrectly")
         });
+
+        // it('Vault allows for withdraws with a 0 mol tax', async () => {
+        //     // Changing taxation rate for the first time
+        //     await moleculeVaultInstance.from(molAdmin).updateFeeRate(0);
+        //     let feeRate = await moleculeVaultInstance.feeRate();
+
+        //     assert.equal(feeRate.toString(), 0, "Taxation rate not set to 0");
+
+        //     await (await marketFactoryInstance.from(molAdmin).deployMarket(
+        //         marketSettings.fundingGoals,
+        //         marketSettings.phaseDuration,
+        //         creator.signer.address,
+        //         marketSettings.curveType,
+        //         marketSettings.taxationRate
+        //     )).wait()
+            
+        //     const firstMarketDataObj = await marketRegistryInstance.from(creator).getMarket(1);
+        //     marketInstance = await etherlime.ContractAt(MarketAbi, firstMarketDataObj[0]);
+        //     vaultInstance = await etherlime.ContractAt(VaultAbi, firstMarketDataObj[1]);
+        //     let phaseOne = await vaultInstance.fundingPhase(0);
+            
+        //     let amount = ethers.utils.parseUnits("5000000", 18);
+        //     console.log(amount)
+        //     await (await marketInstance.from(user1).mint(user1.signer.address, amount)).wait();
+        //     let balanceOfMarket = await pseudoDaiInstance.balanceOf(marketInstance.contract.address);
+        //     let balanceOfVault = await pseudoDaiInstance.balanceOf(vaultInstance.contract.address);
+        //     let balanceOfMolVault = await pseudoDaiInstance.balanceOf(moleculeVaultInstance.contract.address);
+        //     console.log(balanceOfMarket.toString());
+        //     console.log(balanceOfVault.toString());
+        //     console.log(balanceOfMolVault.toString());
+        // });
     });
 
     describe("Admin functions", async () => {

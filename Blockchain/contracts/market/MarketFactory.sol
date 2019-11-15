@@ -31,6 +31,18 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     // activated
     bool internal isActive_;
 
+    event NewApiAddressAdded(address indexed oldAddress, address indexed newAddress);
+
+
+    modifier onlyAnAdmin() {
+        require(isActive_, "Market factory has not been activated");
+        require(
+            isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
+            "Functionality restricted to whitelisted admin"
+        );
+        _;
+    }
+
     /**
       * @dev    Sets variables for market deployments.
       * @param  _collateralToken Address of the ERC20 collateral token
@@ -73,13 +85,18 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         isActive_ = true;
     }
 
-    modifier onlyAnAdmin() {
-        require(isActive_, "Market factory has not been activated");
-        require(
-            isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
-            "Functionality restricted to whitelisted admin"
-        );
-        _;
+    function updateApiAddress(
+        address _newApiPublicKey
+    ) 
+        onlyWhitelistAdmin() 
+        public 
+        returns(address)
+    {
+        address oldMarketCreator = marketCreator_;
+        marketCreator_ = _newApiPublicKey;
+
+        emit NewApiAddressAdded(oldMarketCreator, marketCreator_);
+        return _newApiPublicKey;
     }
 
     /**
@@ -112,7 +129,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
 
         require(_feeRate > 0, "Fee rate too low");
         require(_feeRate < 100, "Fee rate too high");
-
+        require(_creator != address(0), "Creator address invalid");
         require(curveState == true, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
         
@@ -137,7 +154,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
 
     /**
       * @notice This function will only affect new markets, and will not update
-      *         already created markets.
+      *         already created markets. This can only be called by an admin
       */
     function updateMoleculeVault(
         address _newMoleculeVault
@@ -149,28 +166,28 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     }
 
     /**
-      * @return address : The address of the molecule vault
+      * @return address: The address of the molecule vault
       */
     function moleculeVault() public view returns(address) {
         return address(moleculeVault_);
     }
 
     /**
-      * @return address : The contract address of the market registry.
+      * @return address: The contract address of the market registry.
       */
     function marketRegistry() public view returns(address) {
         return address(marketRegistry_);
     }
 
     /**
-      * @return address : The contract address of the curve registry
+      * @return address: The contract address of the curve registry
       */
     function curveRegistry() public view returns(address) {
         return address(curveRegistry_);
     }
 
     /**
-      * @return address : The contract address of the collateral token
+      * @return address: The contract address of the collateral token
       */
     function collateralToken() public view returns(address) {
         return address(collateralToken_);
