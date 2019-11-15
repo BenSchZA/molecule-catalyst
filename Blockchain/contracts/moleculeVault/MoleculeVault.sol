@@ -30,7 +30,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         WhitelistAdminRole()
     {
         // Ensures that the fee rate is correct
-        require(_feeRate > 0, "Fee rate too low");
+        require(_feeRate >= 0, "Fee rate too low");
         require(_feeRate < 100, "Fee rate too high");
 
         collateralToken_ = IERC20(_collateralToken);
