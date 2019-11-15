@@ -4,7 +4,7 @@ import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles
 import { IMarketRegistry } from "./IMarketRegistry.sol";
 
 /**
-  * @author Veronica - @veronicalc & Ryan Nobel - @RyRy
+  * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  Storage of markets (vaults and markets) as well as deployers.
   */
 contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
@@ -25,10 +25,6 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
         address creator;
     }
 
-    event MarketCreated(uint256 index, address indexed marketAddress, address indexed vault, address indexed creator);
-    event DeployerAdded(address deployer, string version);
-    event DeployerRemoved(address deployer, string reason);
-
     /**
       * @notice The deployer of this contract will be the admin.
       */
@@ -48,8 +44,8 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
 
     /**
       * @dev    Adds a new market deployer to the registry.
-      * @param  _newDeployer : Address of the new market deployer.
-      * @param  _version : string - Log text for tracking purposes.
+      * @param  _newDeployer: Address of the new market deployer.
+      * @param  _version: string - Log text for tracking purposes.
       */
     function addMarketDeployer(
         address _newDeployer,
@@ -65,8 +61,8 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
 
     /**
       * @dev    Removes a market deployer from the registry.
-      * @param  _deployerToRemove : Address of the market deployer to remove.
-      * @param  _reason : Log text for tracking purposes.
+      * @param  _deployerToRemove: Address of the market deployer to remove.
+      * @param  _reason: Log text for tracking purposes.
       */
     function removeMarketDeployer(
         address _deployerToRemove,
@@ -82,9 +78,9 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
 
     /**
       * @dev    Logs the market into the registery.
-      * @param  _vault : Address of the vault.
-      * @param  _creator : Creator of the market.
-      * @return uint256 : Returns the index of market for looking up.
+      * @param  _vault: Address of the vault.
+      * @param  _creator: Creator of the market.
+      * @return uint256: Returns the index of market for looking up.
       */
     function registerMarket(
         address _marketAddress,
@@ -115,10 +111,10 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
       * @dev    Fetches all data and contract addresses of deployed
       *         markets by index, kept as interface for later
       *         intergration.
-      * @param  _index : Index of the market.
-      * @return address : The address of the market.
-	  * @return	address : The address of the vault.
-	  * @return	address : The address of the creator.
+      * @param  _index: Index of the market.
+      * @return address: The address of the market.
+	  * @return	address: The address of the vault.
+	  * @return	address: The address of the creator.
       */
     function getMarket(uint256 _index)
         external
@@ -139,7 +135,7 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     /**
 	  * @dev	Fetchs the current number of markets infering maximum
 	  *			callable index.
-	  * @return	uint256 : The number of markets that have been deployed.
+	  * @return	uint256: The number of markets that have been deployed.
 	  */
     function getIndex()
         external
@@ -151,16 +147,23 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
 
     /**
 	  * @dev	Used to check if the deployer is registered.
-	  * @return	bool : A simple bool to indicate state.
+      * @param  _deployer: The address of the deployer
+	  * @return	bool: A simple bool to indicate state.
 	  */
-    function isMarketDeployer(address _deployer) external view returns(bool){
+    function isMarketDeployer(
+        address _deployer
+    )
+        external
+        view
+        returns(bool)
+    {
         return deployer_[_deployer];
     }
 
     /**
 	  * @dev	In order to look up logs efficently, the published block is
 	  *			available.
-	  * @return	uint256 : The block when the contract was published.
+	  * @return	uint256: The block when the contract was published.
 	  */
     function publishedBlocknumber() external view returns(uint256) {
         return publishedBlocknumber_;

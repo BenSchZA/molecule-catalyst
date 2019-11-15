@@ -1,20 +1,37 @@
+<div align="center">
+    <img src="../x-imgs/mol_cat_logo.png">
+    <h3>Molecule Catalyst is an open source crowdfunding platform for medical research and development</h3>
+</div>
+
+---
+
 # Contract interfaces and Events 
 
 # Index
-[Registries](#registries)
+#### [Registries](#registries)
 * [Market Registry](#market-registry )
 * [Curve Registry](#curve-registry)
 
-[Market Factory](#market-factory)
-[Market](#market)
-[Vault](#vault)
-[Curve](#curve)
-[Molecule Vault](#molecule-vault)
+#### [Market Factory](#market-factory)
+#### [Market](#market)
+#### [Vault](#vault)
+#### [Curve](#curve)
+#### [Molecule Vault](#molecule-vault)
+
+#### [> To Style Gide](./STYLE_GUIDE.md)
+#### [> To Generated Docs](./GeneratedDocsIndex.md)
+
+#### [< Back to `README`](../README.md)
+---
 
 # Registries 
 
-## Market Registry 
-##### Add Market Deployer
+Storage for data, allowing for more flexible upgrade-ability.
+
+---
+
+# Market Registry 
+#### Add Market Deployer
 Adds a new market deployer to the registry
 ```
 function addMarketDeployer(address _newDeployer, string calldata _version) external;
@@ -23,7 +40,7 @@ emits `DeployerAdded(address deployer, string version);`
 
 ---
 
-##### Remove Market Deployer
+#### Remove Market Deployer
 Removes a market deployer from the registry
 ```
 function removeMarketDeployer(address _deployerToRemove, string calldata _reason) external;
@@ -32,7 +49,7 @@ emit `DeployerRemoved(address deployer, string reason);`
 
 ---
 
-##### Register Market
+#### Register Market
 Logs the market into the registry
 ```
 function registerMarket(
@@ -47,7 +64,7 @@ emit `MarketCreated(uint256 index, address indexed marketAddress, address indexe
 
 ---
 
-##### Get Market
+#### Get Market
 Fetches all data and contract addresses of deployed market by index
 ```
 function getMarket(uint256 _index)
@@ -62,7 +79,7 @@ function getMarket(uint256 _index)
 
 ---
 
-##### Get Index
+#### Get Index
 Fetches the length (max) number of markets currently stored
 ```
 function getIndex()
@@ -73,7 +90,7 @@ function getIndex()
 
 ---
 
-##### Is Market Deployer
+#### Is Market Deployer
 Checks if deployer is registered
 ```
 function isMarketDeployer(address _deployer) external view returns(bool);
@@ -81,13 +98,13 @@ function isMarketDeployer(address _deployer) external view returns(bool);
 
 ---
 
-##### Published Blocknumber
+#### Published Blocknumber
 For log look up efficiently. The published block number
 ```
 function publishedBlocknumber() external view returns(uint256);
 ```
 
-##### Is Whitelist Admin
+#### Is Whitelist Admin
 Returns true if address is an admin
 ```
 function isWhitelistAdmin(address account) public view returns (bool);
@@ -95,7 +112,7 @@ function isWhitelistAdmin(address account) public view returns (bool);
 
 ---
 
-##### Add Whitelist Admin
+#### Add Whitelist Admin
 Adds an address to the admins, notice: Can only be called by an admin
 ```
 function addWhitelistAdmin(address account) public
@@ -104,16 +121,16 @@ emits `WhitelistAdminAdded(address indexed account);`
 
 ---
 
-##### Renounce Whitelist Admin
+#### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
 function renounceWhitelistAdmin() public
 ```
 emits `WhitelistAdminRemoved(address indexed account);`
 
-## Curve Registry
+# Curve Registry
 
-##### Register Curve
+#### Register Curve
 Logs the market into the registry 
 ```
 function registerCurve(
@@ -126,7 +143,7 @@ emits `CurveRegisterd(uint256 index, address indexed libraryAddress, string curv
 
 ---
 
-##### Reactivate Curve
+#### Reactivate Curve
 Activates curve
 ```
 function reactivateCurve(uint256 _index) external;
@@ -135,7 +152,7 @@ emit `CurveActivated(uint256 index, address indexed libraryAddress);`
 
 ---
 
-##### Deactivate Curve
+#### Deactivate Curve
 Deactivates curve, if there is an issue with the curve it can be banned
 ```
 function deactivateCurve(uint256 _index) external;
@@ -144,7 +161,7 @@ emits `CurveDeactivated(uint256 index, address indexed libraryAddress);`
 
 ---
 
-##### Get Curve Address
+#### Get Curve Address
 Returns the address of the curve module 
 ```
 function getCurveAddress(uint256 _index)
@@ -155,7 +172,7 @@ function getCurveAddress(uint256 _index)
 
 ---
 
-##### Get Curve Data
+#### Get Curve Data
 Returns all data about the curve at that index
 ```
 function getCurveData(uint256 _index)
@@ -170,7 +187,7 @@ function getCurveData(uint256 _index)
 
 ---
 
-##### Get Index
+#### Get Index
 Returns the total number of curves
 ```
 function getIndex()
@@ -181,7 +198,7 @@ function getIndex()
 
 ---
 
-##### Published Blocknumber
+#### Published Blocknumber
 For log look up efficiently. The published block number
 ```
 function publishedBlocknumber() external view returns(uint256);
@@ -189,7 +206,7 @@ function publishedBlocknumber() external view returns(uint256);
 
 # Market Factory
 
-##### Deploy Market
+#### Deploy Market
 Deploys a market and then registers it with the market registry. The registry emits an event, but the factory does not emit any event
 ```
 function deployMarket(
@@ -206,7 +223,7 @@ function deployMarket(
 
 ---
 
-##### Molecule Vault function
+#### Molecule Vault function
 Gets the address of the molecule vault
 ```
 function moleculeVault() external view returns(address);
@@ -214,7 +231,7 @@ function moleculeVault() external view returns(address);
 
 ---
 
-##### Market Registry
+#### Market Registry
 Gets the address of the market registry
 ```
 function marketRegistry() external view returns(address);
@@ -222,7 +239,7 @@ function marketRegistry() external view returns(address);
 
 ---
 
-##### Collateral Token
+#### Collateral Token
 Gets the address of the collateral token
 ```
 function collateralToken() external view returns(address);
@@ -230,13 +247,13 @@ function collateralToken() external view returns(address);
 
 ---
 
-##### Curve Registry
+#### Curve Registry
 Gets the address of the curve registry
 ```
 function curveRegistry() public view returns(address);
 ```
 
-##### Is Whitelist Admin
+#### Is Whitelist Admin
 Returns true if address is an admin
 ```
 function isWhitelistAdmin(address account) public view returns (bool);
@@ -244,7 +261,7 @@ function isWhitelistAdmin(address account) public view returns (bool);
 
 ---
 
-##### Add Whitelist Admin
+#### Add Whitelist Admin
 Adds an address to the admins, notice: Can only be called by an admin
 ```
 function addWhitelistAdmin(address account) public
@@ -253,7 +270,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 
 ---
 
-##### Renounce Whitelist Admin
+#### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
 function renounceWhitelistAdmin() public
@@ -262,7 +279,7 @@ emits `WhitelistAdminRemoved(address indexed account);`
 
 # Market
 
-##### Approve
+#### Approve
 Approves an address as a spender for the `msg.sender`
 ```
 function approve(address _spender, uint256 _value) external returns (bool);
@@ -271,7 +288,7 @@ emits `Approval(address indexed owner, address indexed spender, uint256 value);`
 
 ---
 
-##### Burn
+#### Burn
 Sells tokens for collateral
 ```
 function burn(uint256 _numTokens) external returns(bool);
@@ -281,7 +298,7 @@ emits `Transfer(address indexed from, address indexed to, uint value);`
 
 ---
 
-##### Mint
+#### Mint
 Buys tokens for collateral. Note, the `totalCost` emitted includes the tax amount
 ```
 function mint(address _to, uint256 _numTokens) external returns(bool);
@@ -291,7 +308,7 @@ emits `Transfer(address indexed from, address indexed to, uint value);`
 
 ---
 
-##### Finalize Market
+#### Finalize Market
 Function ends the market (sets it to inactive) which will halt `mint` and `burn`. Notice this function can only be called by the vault
 ```
 function finaliseMarket() external returns(bool);
@@ -300,7 +317,7 @@ emit `MarketTerminated();`
 
 ---
 
-##### Withdraw
+#### Withdraw
 Allows token holders to withdraw their tokens after the `finalization` of the market. Note this function will only work after the market has been finalized
 ```
 function withdraw(uint256 _amount) public returns(bool);
@@ -309,7 +326,7 @@ emits `Transfer(address indexed from, address indexed to, uint value);`
 
 ---
 
-##### Transfer
+#### Transfer
 Transfers `_value` tokens from `msg.sender` to the `_to` address
 ```
 function transfer(address _to, uint256 _value) external returns (bool);
@@ -318,7 +335,7 @@ emits `Transfer(address indexed from, address indexed to, uint value);`
 
 ---
 
-##### Transfer From
+#### Transfer From
 Transfers tokens from the `_from` address to the `_to` address. Note that the `msg.sender` must be approved by the `_from` address *before* this function is called or this call will revert
 ```
 function transferFrom(address _from, address _to, uint256 _value) external returns (bool);
@@ -327,7 +344,7 @@ emits `Transfer(address indexed from, address indexed to, uint value);`
 
 ---
 
-##### Price To Mint
+#### Price To Mint
 Gets the DAI cost for the `_numTokens` to be minted. Notice, this function adds the tax amount to this calculation
 ```
 function priceToMint(uint256 _numTokens) external view returns(uint256);
@@ -335,7 +352,7 @@ function priceToMint(uint256 _numTokens) external view returns(uint256);
 
 ---
 
-##### Reward For Burn
+#### Reward For Burn
 Works out the DAI reward for burning `_numTokens`
 ```
 function rewardForBurn(uint256 _numTokens) external view returns(uint256);
@@ -343,7 +360,7 @@ function rewardForBurn(uint256 _numTokens) external view returns(uint256);
 
 ---
 
-##### Collateral To Token Buying
+#### Collateral To Token Buying
 Works out the number of tokens you would receive if you spend `_collateralTokenOffered`
 ```
 function collateralToTokenBuying(uint256 _collateralTokenOffered) external view returns(uint256);
@@ -351,7 +368,7 @@ function collateralToTokenBuying(uint256 _collateralTokenOffered) external view 
 
 ---
 
-##### Collateral To Token Selling
+#### Collateral To Token Selling
 Works out the number of tokens you would need to sell to receive `_collateralTokenNeeded` amount in collateral
 ```
 function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view returns(uint256);
@@ -359,7 +376,7 @@ function collateralToTokenSelling(uint256 _collateralTokenNeeded) external view 
 
 ---
 
-##### Allowance
+#### Allowance
 Allows for the checking of spenders allowances
 ```
 function allowance(address _owner, address _spender) external view returns (uint256);
@@ -367,7 +384,7 @@ function allowance(address _owner, address _spender) external view returns (uint
 
 ---
 
-##### Balance Of
+#### Balance Of
 Returns the balance of an address
 ```
 function balanceOf(address _owner) external view returns (uint256);
@@ -375,7 +392,7 @@ function balanceOf(address _owner) external view returns (uint256);
 
 ---
 
-##### Total Supply
+#### Total Supply
 Returns the number of tokens that are currently in circulation 
 ```
 function totalSupply() external view returns (uint256);
@@ -383,13 +400,13 @@ function totalSupply() external view returns (uint256);
 
 ---
 
-##### Pool Balance
+#### Pool Balance
 Returns the total collateral of the market
 ```
 function poolBalance() external view returns (uint256);
 ```
 
-##### Taxation Rate
+#### Taxation Rate
 The percentage tax paid when purchasing tokens
 ```
 function taxationRate() external view returns(uint256);
@@ -397,7 +414,7 @@ function taxationRate() external view returns(uint256);
 
 ---
 
-##### decimals
+#### decimals
 Returns the decimal accuracy of the contract
 ```
 function decimals() external view returns(uint256);
@@ -405,7 +422,7 @@ function decimals() external view returns(uint256);
 
 ---
 
-##### Active
+#### Active
 Returns the state of the contract
 ```
 function active() external view returns(bool);
@@ -413,7 +430,7 @@ function active() external view returns(bool);
 
 # Vault 
 
-##### Initialize
+#### Initialize
 Sets the address of the market. Notice: This function is protected so only an admin can call, and is called from the factory.
 ```
 function initialize(address _market) external returns(bool);
@@ -421,7 +438,7 @@ function initialize(address _market) external returns(bool);
 
 ---
 
-##### Withdraw
+#### Withdraw
 Allows a creator to withdraw a specific rounds funds
 ```
 function withdraw(uint256 _phase) external returns(bool);
@@ -430,7 +447,7 @@ emits `FundingWithdrawn(uint256 phase, uint256 amount);`
 
 ---
 
-##### Validate Funding
+#### Validate Funding
  Verifies that the phase passed in: has not been withdrawn, funding goal has been reached, and that the phase has not expired. Notice: Only emits phase finalize once the final phase has been finalized this function can only be called by the market, and is called when someone buys tokens. 
 ```
 function validateFunding() external returns(bool);
@@ -439,7 +456,7 @@ emits `PhaseFinalised(uint256 phase, uint256 amount);`
 
 ---
 
-##### Terminate Market
+#### Terminate Market
 This function is conditional, if the market has successfully finished (the previous rounds funding's state is `ENDED` and the next phases state is `NOT_STARTED`) then the function sends the Molecule vault it's tax and the creator their remaining collateral. If this condition is not met (the market has failed) then the remaining funds are sent to the market.
 Either way the market is finalized.
 The event is only emitted if the fundraiser successfully finished
@@ -450,7 +467,7 @@ emits `FundingWithdrawn(uint256 phase, uint256 amount);`
 
 ---
 
-##### Funding Phase
+#### Funding Phase
 Returns the funding information for a specific phase.
 ```
 uint256 : fundingThreshold  (in collateral)
@@ -463,7 +480,7 @@ function fundingPhase(uint256 _phase) external view returns(uint256, uint256, ui
 
 ---
 
-##### Outstanding Withdraw
+#### Outstanding Withdraw
 Returns the amount of funds the creator has not yet withdrawn
 ```
 function outstandingWithdraw() external view returns(uint256);
@@ -471,7 +488,7 @@ function outstandingWithdraw() external view returns(uint256);
 
 ---
 
-##### Current Phase
+#### Current Phase
 The current active fundraising round
 ```
 function currentPhase() external view returns(uint256);
@@ -479,7 +496,7 @@ function currentPhase() external view returns(uint256);
 
 ---
 
-##### Market
+#### Market
 Returns the address of the market
 ```
 function market() external view returns(address);
@@ -487,7 +504,7 @@ function market() external view returns(address);
 
 ---
 
-##### Creator
+#### Creator
 Returns the address of the creator (funds receiving account)
 ```
 function creator() external view returns(address);
@@ -495,7 +512,7 @@ function creator() external view returns(address);
 
 ---
 
-##### Is Whitelist Admin
+#### Is Whitelist Admin
 Returns true if address is an admin
 ```
 function isWhitelistAdmin(address account) public view returns (bool);
@@ -503,7 +520,7 @@ function isWhitelistAdmin(address account) public view returns (bool);
 
 ---
 
-##### Add Whitelist Admin
+#### Add Whitelist Admin
 Adds an address to the admins, notice: Can only be called by an admin
 ```
 function addWhitelistAdmin(address account) public
@@ -512,7 +529,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 
 ---
 
-##### Renounce Whitelist Admin
+#### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
 function renounceWhitelistAdmin() public
@@ -521,7 +538,7 @@ emits `WhitelistAdminRemoved(address indexed account);`
 
 # Curve
 
-##### Curve Integral 
+#### Curve Integral 
 Calculates the definite integral of the curve
 ```
 function curveIntegral(uint256 x_t) external pure returns(uint256);
@@ -529,7 +546,7 @@ function curveIntegral(uint256 x_t) external pure returns(uint256);
 
 ---
 
-##### Inverse Curve Integral
+#### Inverse Curve Integral
 Calculates the definite inverse integral of the curve
 ```
 function inverseCurveIntegral(uint256 x_d) external pure returns(uint256);
@@ -537,7 +554,7 @@ function inverseCurveIntegral(uint256 x_d) external pure returns(uint256);
 
 # Molecule Vault
 
-##### Transfer
+#### Transfer
 Transfers funds from the vault to the `_to` address
 ```
 function transfer(address _to, uint256 _amount) external;
@@ -545,7 +562,7 @@ function transfer(address _to, uint256 _amount) external;
 
 ---
 
-##### Approve
+#### Approve
 Approves a spender. 
 ```
 function approve(address _spender, uint256 _amount) external;
@@ -553,7 +570,7 @@ function approve(address _spender, uint256 _amount) external;
 
 ---
 
-##### Collateral Token
+#### Collateral Token
 Returns the address of the ERC20 collateral token
 ```
 function collateralToken() external view returns(address);
@@ -561,7 +578,7 @@ function collateralToken() external view returns(address);
 
 ---
 
-##### Tax Rate
+#### Tax Rate
 Returns the tax rate (as a percentage, i.e 50)
 ```
 function taxRate() external view returns(uint256);
@@ -569,7 +586,7 @@ function taxRate() external view returns(uint256);
 
 ---
 
-##### Is Whitelist Admin
+#### Is Whitelist Admin
 Returns true if address is an admin
 ```
 function isWhitelistAdmin(address account) public view returns (bool);
@@ -577,7 +594,7 @@ function isWhitelistAdmin(address account) public view returns (bool);
 
 ---
 
-##### Add Whitelist Admin
+#### Add Whitelist Admin
 Adds an address to the admins, notice: Can only be called by an admin
 ```
 function addWhitelistAdmin(address account) public
@@ -586,7 +603,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 
 ---
 
-##### Renounce Whitelist Admin
+#### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
 function renounceWhitelistAdmin() public

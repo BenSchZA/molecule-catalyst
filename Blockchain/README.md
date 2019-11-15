@@ -7,27 +7,40 @@
 
 # Index
 
-#### [Project Set Up](#project-set-up)
+### [Project Details](#project-details) 
 * [Dependencies](#dependencies)
-* [Project scripts](#project-scripts)
-* [Deploying](#deploying)
-    * [Local](#local)
-    * [Rinkeby](#rinkeby)
-    * [Mainnet](#mainnet)
-#### [Outline Of Architecture ](#outline-of-architecture)
+    * [Project scripts](#project-scripts)
+### [Smart Contracts](#smart-contracts) 
+* [Outline Of Architecture](#outline-of-architecture)
+    * [Ecosystem Outline](#ecosystem-outline)
 * [Overview Of Individual Contracts](#overview-of-individual-contracts)
     * [Vault Contract](#vault-contract)
-    * [Market Contract](#market-contract)
-    * [Market Factory](#market-factory)
-    * [Market Registry](#market-registry)
-    * [Curve Integrals](#curve-integrals)
-    * [Curve Registry](#curve-registry)
-* [Project Life Cycle](#project-life-cycle)
-[]()
+    * [Market Contract](#market-contract) 
+    * [Market Factory](#market-factory) 
+    * [Market Registry](#market-registry) 
+    * [Curve Integrals](#curve-integrals) 
+    * [Curve Registry](#curve-registry) 
+    * [Pseudo Dai (The mocking of Dai for testing purposes)](#pseudo-dai)
+* [Detailed Breakdown of Smart Contracts](#detailed-breakdown-of-smart-contracts)
+    * [Major functionality breakdown](#major-functionality-breakdown) 
+        * [Deploying ecosystem](#deploying-ecosystem) 
+        * [Creating a market](#creating-a-market)
+        * [Minting market tokens](#minting-market-tokens)
+        * [Creator withdrawing](#creator-withdrawing)
+        * [Market termination](#market-termination)
+    * [Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md) 
+    * [Constructors, Functions & Modifiers](#constructors-functions-modifiers) 
+    * [Style Guide](./z-docs/STYLE_GUIDE.md) 
+    * [Security Considerations](#security-considerations) 
+
+#### [> To Style Gide](./z-docs/STYLE_GUIDE.md)
+#### [> To Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md)
+#### [> To Generated Docs](./z-docs/GeneratedDocsIndex.md)
+#### [< Back to main `README`](../README.md)
 
 ---
 
-# Project Set Up
+# Project Details
 
 ## Dependencies 
 This project uses the following tools & libraries. You do not need to manually install these tools as running the scripts in the below section will set them up with the correct versions. 
@@ -41,77 +54,32 @@ This project uses the following tools & libraries. You do not need to manually i
 * `solc: 0.5.10`
 
 ## Project scripts
-
-1. First install the required packages `yarn`
+For the following example scripts to run, you will need to have `yarn` installed globally. You can use `npm` by replacing `yarn` with `npm run` 
+1. First install the required packages by running `yarn`
 2. Compile the contracts by running `yarn build`
 3. Then, in a separate terminal tab, start the Ganache local blockchain with `yarn start` 
 4. To run the tests, execute `yarn test`
 
-# Deploying
-
-For the deployment of the Molecule Catalyst contract eco-system, there are various scripts created depending on the network. 
-
-Before any deployment can take place, please make a file in the Blockchain directory called [`.env`](./.env). Then copy paste the fields in the [`.env.example`](./.env.example). Fill out the fields for the network you wish to deploy on. 
-
-Please note that the `DEPLOYER_PRIVATE_KEY`, `ADMIN_PUBLIC_KEY` and `ETHERSCAN_API_KEY` are used for all network deployments.
-
-> **NB! The deployer address (`DEPLOYER_PRIVATE_KEY`) and admin address (`ADMIN_PUBLIC_KEY`) cannot belong to the same wallet!** 
-
-The deployer address is considered insecure, and is therefore removed as an admin from all contracts. If the `ADMIN_PUBLIC_KEY` and `DEPLOYER_PRIVATE_KEY` are from the same wallet, you will essentially lock yourself out of the contracts, as there will be no admin on the contracts and you will have to re-deploy. 
-
-## Local
-
-Please ensure you have Ganache running. Ganache can be run through the project by running the script `yarn start` in a separate terminal tab. Ensure the following fields are filled in before running the script. 
-
+To regenerate the docs of the smart contracts, run:
 ```
-# Deployer private key used for all networks
-DEPLOYER_PRIVATE_KEY=
-ADMIN_PUBLIC_KEY=
-ETHERSCAN_API_KEY=
+npx solidity-docgen --solc-module='/Users/veronicac/Desktop/projects/linumlabs/molecule-alpha/Blockchain/node_modules/solc' --solc-settings "{remappings: ['@openzeppelin=$PWD/node_modules/@openzeppelin']}"
 ```
+Then copy past the output into the respective `x-docs/ContractDocs/` file. Edit the script to the next `contracts/` sub-folder and repeat.
 
-The script for local deployment is:
-```
-yarn deploy:local
-```
+---
 
-## Rinkeby
+# Smart Contracts
 
-Please ensure you have rinkeby test Ether before running this script. You will need at least 0.01 Ether, you can get from the faucet [here](https://faucet.rinkeby.io/).
+Below is the details of the Molecule smart contract ecosystem. 
 
-```
-# Deployer private key used for all networks
-DEPLOYER_PRIVATE_KEY=
-ADMIN_PUBLIC_KEY=
+# Outline Of Architecture
 
-# Rinkeby variables 
-INFURA_API_KEY_RINKEBY=
-```
+## Ecosystem Outline
 
-The script for Rinkeby deployment is:
-```
-yarn deploy:rinkeby
-```
-
-## Mainnet
-
-Please ensure you have at least 0.01 Mainnet Ether before running this script.
-
-```
-# Deployer private key used for all networks
-DEPLOYER_PRIVATE_KEY=
-ADMIN_PUBLIC_KEY=
-
-# Mainnet variables
-INFURA_API_KEY_MAINNET=
-```
-
-The script for Mainnet deployment is:
-```
-yarn deploy:mainnet
-```
-
-# Outline Of Architecture 
+The Molecule contract ecosystem has multiple components. The major components are:
+* Factories: These create new markets
+* Registries: These store the addresses and information about markets 
+* Markets: A market consists of a market (ERC20 bonding curve) and a vault (storage of funding and )
 
 ## Overview Of Individual Contracts
 
@@ -140,21 +108,141 @@ These contracts have `integral` & `inverseIntegral` functions which are called b
 ### Curve Registry
 This registry allows Molecule and potentially other authorized accounts to register curve contracts. This allows the market factory to select a curve library from a range of approved curve integrals. 
 
-## Project Life Cycle 
+# Detailed Breakdown of Smart Contracts
 
-Below is a simplified flow of the contract life cycle. In this section we will go through the life cycle of a project on Molecule Catalyst. 
+A function level breakdown of the smart contracts and vital functions. 
+Further documentation can be found here:
+
+#### [> To Style Gide](./z-docs/STYLE_GUIDE.md)
+#### [> To Contract Interfaces & Events](./z-docs/ContractInterfaces&Events.md)
+#### [> To Generated Docs](./z-docs/GeneratedDocsIndex.md)
+
+## Major functionality breakdown
+
+Below is a breakdown of each of the major functions within the Molecule ecosystem.
+
+### Deploying ecosystem
+
+Deploying an ecosystem refers specifically to the entire Molecule contract ecosystem rather than an individual project. The ecosystem consists of factories (deployer) and registries (persistent storage between possible upgrades). 
 
 <div align="center">
-    <img src="x-imgs/molCat_lifecycle.png">
+    <img src="x-imgs/deploying_mol_ecosystem.png">
 </div>
 
-1. The project life cycle starts outside the contracts with the submission of a project to the Molecule Catalyst team. The team reviews applications to ensure only the higheset quality projects make it onto the system. 
-2. If the Molecule Catalyst team approves the project, it then gets entered into the contract architecture. The project and its details are formatted and a transaction (`deployMarket()`) is made with the `MarketFactory`. 
-3. The `MarketFactory` will then deploy a `Market` and a `Vault` and link them. The linking of the `Vault` and `Market` allows for communication between the two, and the transferring of funds from the `Market` to the `Vault`. 
-4. The `MarketFactory` also sends the details of the `Vault` and `Market` to the `MarketRegistry`. This means that `MarketFactory`s can be updated and changed without loosing existing market systems. 
-5. Whenever a user buys tokens in the `Market`, a portion of the funding is sent to the `Vault`. The portion is determined by the `_taxationRate`. When the `mint()` function executes in the `Market`, the `validateFunding()` function is called on the `Vault`. This function ensures that the rounds is still valid (has not expired), that the round has not ended and that all the rounds have not been finished. 
-6. When a milestone (`_fundingGoal`/`_fundingThreshold`) has been reached, the project creator will then gain access to that funding. The creator can call the `withdraw()` function on the `Vault` and receive a successful rounds funding. The creator can only withdraw a rounds funding when that rounds funding threshold has been reached.
+The ecosystem is deployed by a deployer wallet. The deployer address is assumed to be insecure, and as such is removed/replaced as an admin on the major contracts.
 
-Anytime throughout the projects life cycle the creator can call the `terminateMarket()` function, and end the fund rasing. This function will not result in them loosing any rounds of funding that where already filled, but it will prevent the market from minting new tokens, and wil cause the market to terminate. The `Market`s termination means that users can no longer buy or sell tokens. They can `withdraw()` funding from the market, exchanging tokens they have for collateral in the market. 
+The pattern is such:
+The major contract is deployed, the deployer address is automatically added as an admin by the `WhitelistAdmin` contract. The deployer does any registering or secondary functionality that it needs to do, and then the `init()` function is called, adding the admin as an admin and removing the deployer as an admin.
 
----
+**Validation**
+There is no validation on the ecosystem deployment, as there is no pre-existing data to check against in a new instance of the system. 
+
+### Creating a market 
+
+A market consists of a `Market` and a `Vault`. Each market has a set number of funding rounds as well as a set time limit for each round.
+
+<div align="center">
+    <img src="x-imgs/deploying_market_ecosystem.png">
+</div>
+
+Only a user who is a `WhitelistAdmin` on the Market Factory can deploy a market system, with the exception of the API, which has been specially added to the `MarketFactory`, and can not do any admin functionality on the `MarketFactory` besides deploying a market. This was done for easy of use, and while it may open the system up to attack, the damage is limited by the scope of permissions given to the API. 
+
+**Validation**
+When creating a market, the following things are validated (within the `marketFactory`):
+* The `_fundingGoals` and `_phaseDurations` must have the same number of elements in the array. 
+* The `_creator` address cannot be a `0x` address.
+* The `_curveType` is used against the `curveRegistry` to get the address of the `curveLibrary`. The received `curveLibrary` address is checked for validity (not 0 address). It is also checked for its active state.
+* The `_taxationRate` is checked, ensuring that the rate is between (excluding) 0-100.
+
+The following things are validated within the `Vault`:
+* The `_fundingGoals` and `_phaseDurations` have matching lengths.
+* The `_fundingGoals` length is not smaller than 0 or larger than 10.
+
+The market does no validation.
+
+### Minting market tokens
+
+The tokens conform to the standard ERC20 model, with the added functionality of a `withdraw()` for once the market has been terminated. For more information about the market termination process, please see [this](#market-contract-cfm).
+
+<div align="center">
+    <img src="x-imgs/minting_market_tokens.png">
+</div>
+
+Any address can mint project tokens.
+
+**Validation**
+The following is validated within the `Market`:
+* The price for the number of tokens is bigger than 0
+* Requires that all `.transfer()`s pass
+* Requires the `validateFunding()` call on the vault passes
+
+The `Vault` within the `validateFunding()` function, checks:
+* That the current phase has started (this checks it is not the phase after the last phase, as that phase is never set to started)
+* That the current phase has not expired (run over its pre-set end date)
+* If there is an funding that pushes the vault over the `_fundingThreshold` then it will roll that funding over into the next funding round 
+* If that funding roll over will next the next round (or any round after that) the rounds are looped through and ended. 
+
+### Creator withdrawing 
+
+The `Vault` allows for the creator to withdraw any successfully completed funding rounds. If multiple rounds have been completed, calling the `withdraw()` function will withdraw all outstanding completed rounds funding.
+
+<div align="center">
+    <img src="x-imgs/creator_withdrawing_funding_round.png">
+</div>
+
+The `withdraw()` function can only be called by a `WhitelistAdmin` of the `Vault`.
+
+**Validation**
+The `Vault` validates that:
+* The caller is a `WhitelistAdmin`
+* The `Vault` `isActive` (has been initialized (connected to its `Market`))
+* There is funding for the researcher to withdraw (`outstandingWithdraw_`)
+* Skips over any funding rounds that have already been paid out
+* Requires the funding gets sent to the creator
+* Checks if the current round is the last round, if it and the market is still active and the creator has withdrawn all funding, the market will be terminated.
+
+### Market termination
+
+The market can be terminated in multiple situations. There are 3 such situations.
+1. The market admin(a `WhitelistAdmin` on the `Vault`) calls the `terminateMarket()` function.
+2. The market admin(a `WhitelistAdmin` on the `Vault`) withdraws the remaining funding from the `Vault` after all rounds have ended. The `Vault` will then automatically checking the market is still active, and if it is terminate it.
+3. The minting of tokens called the `validateFunding()` function in the `Vault`. If the current round has expired (exceeded its pre-set time limit) the market will then terminate.
+
+<div align="center">
+    <img src="x-imgs/market_terminate_options.png">
+</div>
+
+**Validation**
+
+## Contract Interfaces & Events
+
+The document that covers the Contract Interfaces & Events was omitted from this document to maintain a reasonable length. It can be found [here](./z-docs/ContractInterfaces&Events.md).
+
+## Constructors, Functions & Modifiers
+
+Please see the generated docs in the following locations:
+* [`IVault` & `Vault`](./z-docs/ContractDocs/Vault.md)
+* [`IMarket` & `Market`](./z-docs/ContractDocs/Market.md)
+* [`IMarketFactory` & `MarketFactory`](./z-docs/ContractDocs/MarketFactory.md)
+* [`MarketRegistry`](./z-docs/ContractDocs/MarketRegistry.md)
+* [`CurveFunctions`](./z-docs/ContractDocs/curveFunctions.md)
+* [`CurveRegistry`](./z-docs/ContractDocs/curveRegistry.md)
+* [`MoleculeVault`](./z-docs/ContractDocs/MoleculeVault.md)
+
+## Security Considerations
+
+<h4>High Potential Impact (solved)</h4>
+
+**Deployer private key has a considerable likelihood to get compromised**
+The deployer script needs a private key in order to deploy the contract ecosystem. When the contracts are deployed the `msg.sender` of the contract creation transaction is added as a `WhitelistAdmin` to the major spokes within the architecture. As the `WhitelistAdmin` has upgrade-ability rights on these spokes it is of high priority and importance that there is no unintended access to this level of control over the ecosystem.
+**Fix**
+The deployer, during the course of the deployment, adds a multi-sig wallet as the admin of the core contracts, and then removes itself as admin when it no longer needs to interact with the core contract again.
+
+<h4>Potential Impact (avoided)</h4>
+
+**Market Factory: API private key has a considerable likelihood to get compromised**
+The API needs to have the rights to deploy a market from the market factory.
+**Handling**
+Instead of adding the API private key as a prior mentioned `WhitelistAdmin`, the API private key is added with a specific role, (`marketCreator_`). This address is only allowed to deploy a market ecosystem (`Vault` & `Market`), and can be updated by the `WhitelistAdmin`.
+
+

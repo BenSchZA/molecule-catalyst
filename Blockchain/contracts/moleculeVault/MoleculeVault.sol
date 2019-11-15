@@ -41,7 +41,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
 
     /**
       * @notice Allows an admin to add another admin.
-      * @param  _moleculeAdmin : The address of the new admin.
+      * @param  _moleculeAdmin: The address of the new admin.
       */
     function addAdmin(address _moleculeAdmin) external onlyWhitelistAdmin() {
         // Adding the Molecule admin address as an admin
@@ -51,8 +51,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows an admin to transfer colalteral out of the molecule
       *         vault and into another address.
-      * @param  _to : The address that the collateral will be transfered to.
-      * @param  _amount : The amount of collateral being transfered.
+      * @param  _to: The address that the collateral will be transfered to.
+      * @param  _amount: The amount of collateral being transfered.
       */
     function transfer(
         address _to,
@@ -70,8 +70,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows an admin to approve a spender of the molecule vault
       *         collateral.
-      * @param  _spender : The address that will be aproved as a spender.
-      * @param  _amount : The amount the spender will be approved to spend.
+      * @param  _spender: The address that will be aproved as a spender.
+      * @param  _amount: The amount the spender will be approved to spend.
       */
     function approve(
         address _spender,
@@ -90,6 +90,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
       * @notice Allows the admin to update the fee rate charged by the
       *         molecule vault.
       * @param  _newFeeRate : The new fee rate.
+      * @return bool: If the update was successful
       */
     function updateFeeRate(
         uint256 _newFeeRate
@@ -108,7 +109,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @return address : The address of the collateral token.
+      * @return address: The address of the collateral token.
       */
     function collateralToken() public view returns(address) {
         return address(collateralToken_);

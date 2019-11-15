@@ -11,10 +11,7 @@
     "deploy:mainnet": "etherlime deploy --network=mainnet --runs=500",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
-    "test-one": "etherlime test test/marketRegistry/marketRegistry.test.js --output=none --timeout 100000 --gas-report=true --runs=999",
-    "test-debug": "node --inspect-brk ./node_modules/etherlime/cli.js test --timeout 100000ms",
-    "test-debug-idea": "node $NODE_DEBUG_OPTION ./node_modules/etherlime/cli.js test --timeout 100000",
-    "eth-ver": "etherlime flatten vault/Vault.sol"
+    "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999"
   },
   "author": "Linum Labs",
   "license": "MIT",
@@ -25,6 +22,7 @@
     "etherlime-lib": "1.1.3",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",
-    "solc": "0.5.10"
+    "solc": "0.5.10",
+    "solidity-docgen": "^0.3.12"
   }
 }
