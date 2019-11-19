@@ -50,6 +50,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error, errorInfo) {
     Sentry.withScope((scope) => {
+      scope.setTag("env", `${process.env.APP_NAME}`);
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
       this.setState({eventId: eventId});

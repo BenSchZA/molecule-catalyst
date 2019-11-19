@@ -21,7 +21,8 @@ metadata:
   name: env-config
   namespace: $NAMESPACE
 data:
-  APP_NAME: "molecule-api-server"
+  ENV: "$TAG"
+  APP_NAME: "molecule_API_server"
   APP_SCHEMA: "https"
   APP_HOST: "0.0.0.0"
   APP_PORT: "3001"
