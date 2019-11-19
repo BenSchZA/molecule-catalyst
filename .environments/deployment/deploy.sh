@@ -21,7 +21,7 @@ metadata:
   name: env-config
   namespace: $NAMESPACE
 data:
-  APP_NAME: "molecule_API_server"
+  APP_NAME: "molecule-api-server"
   APP_SCHEMA: "https"
   APP_HOST: "0.0.0.0"
   APP_PORT: "3001"
@@ -37,9 +37,9 @@ data:
   BCRYPT_SALT_ROUND: "10"
   JWT_EXPIRY: "1"
   ETHERS_PROVIDER: "default"
-  ETHERS_NETWORK: "rinkeby"
+  ETHERS_NETWORK: "$ETHERS_NETWORK"
   ETHERS_RPC_PROVIDER_URL: "http://localhost:8545"
-  WEB_APP_URL: "https://alpha-$TAG.mol.ai"
+  WEB_APP_URL: "https://$FRONTEND_HOST"
   DAI_CONTRACT_ADDRESS: $DAI_CONTRACT_ADDRESS
   MARKET_REGISTRY_ADDRESS: $MARKET_REGISTRY_ADDRESS
   MARKET_FACTORY_ADDRESS: $MARKET_FACTORY_ADDRESS
@@ -155,21 +155,32 @@ EOF
 
 deploy() {
   TAG=$BRANCH_NAME
+  echo "Configuring env variables for $TAG"
 
   if [ $TAG == "nightly" ]
   then
-    echo "Configuring env variables for $TAG"
+    ETHERS_NETWORK=rinkeby
     NPM_CONTRACTS_VERSION=0_0_14 # Contract NPM package version
     DAI_CONTRACT_ADDRESS=0x960d592b084755aEdaEA8634c6Fe4523843D58e0
     MARKET_REGISTRY_ADDRESS=0x1177CB6e1fD784d0Bf0701E35514Ab2065dAA463
     MARKET_FACTORY_ADDRESS=0x64bFB77eE77007eDe3a341d25e525a5279Eb3869
+    FRONTEND_HOST=alpha-$TAG.mol.ai
   elif [ $TAG == "staging" ]
   then
-    echo "Configuring env variables for $TAG"
+    ETHERS_NETWORK=rinkeby
     NPM_CONTRACTS_VERSION=0_0_14 # Contract NPM package version
     DAI_CONTRACT_ADDRESS=0xC36f9c2a26473F9e1acdbab3A9954039084C3F04
     MARKET_REGISTRY_ADDRESS=0x01E609E31F5e74a1aC34d45F70428A60424Bc9838
     MARKET_FACTORY_ADDRESS=0x3af48D3A727747ec4f82eb54B2c4f79b1522804C
+    FRONTEND_HOST=alpha-$TAG.mol.ai
+  elif [ $TAG == "production" ]
+  then
+    ETHERS_NETWORK=mainnet
+    NPM_CONTRACTS_VERSION= # Contract NPM package version
+    DAI_CONTRACT_ADDRESS=
+    MARKET_REGISTRY_ADDRESS=
+    MARKET_FACTORY_ADDRESS=
+    FRONTEND_HOST=app.catalyst.molecule.to
   else
     echo "Invalid tag for frontend host"
     exit 1
@@ -184,6 +195,9 @@ if [ $BRANCH_NAME == "nightly" ]
 then
   deploy
 elif [ $BRANCH_NAME == "staging" ]
+then
+  deploy
+elif [ $BRANCH_NAME == "production" ]
 then
   deploy
 else

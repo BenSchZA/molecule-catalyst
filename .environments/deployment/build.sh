@@ -44,6 +44,9 @@ then
 elif [ $BRANCH_NAME == "staging" ]
 then
   build
+elif [ $BRANCH_NAME == "production" ]
+then
+  build
 else
   echo "Invalid deployment branch"
   exit 1

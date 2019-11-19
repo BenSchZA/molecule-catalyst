@@ -12,6 +12,7 @@ docker-build:
   only:
     - nightly
     - staging
+    - production
 
 deploy:
   stage: deploy
@@ -28,3 +29,4 @@ deploy:
   only:
     - nightly
     - staging
+    - production
