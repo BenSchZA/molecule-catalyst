@@ -1,0 +1,18 @@
+#!/bin/sh
+set -a
+
+APP_NAME=molecule-production
+APP_SCHEMA=https
+APP_HOST=0.0.0.0
+APP_PORT=3000
+
+CHAIN_ID=1
+
+DAI_CONTRACT_ADDRESS=
+MARKET_REGISTRY_ADDRESS=
+MARKET_FACTORY_ADDRESS=
+
+SENTRY_DSN=https://42b4cf7806e74b22a5069acc5ec28e44@sentry.io/1809648
+APM_SERVER_ENDPOINT=https://c4b84527edb34331a2deb49cb7082bca.apm.eu-west-1.aws.cloud.es.io:443
+
+set +a
