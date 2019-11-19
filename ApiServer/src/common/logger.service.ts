@@ -5,16 +5,20 @@ import { Client } from '@elastic/elasticsearch';
 
 const Elasticsearch = require('winston-elasticsearch');
 
-Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
+const PRODUCTION = process.env.SENTRY_DSN && process.env.ELASTICSEARCH_HOST;
+let esClient;
+if(PRODUCTION) {
+  Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
 
-const esClient = new Client({
-  node: process.env.ELASTICSEARCH_HOST,
-  cloud: {
-    id: process.env.ELASTICSEARCH_CLOUD_ID,
-    username: 'elastic',
-    password: process.env.ELASTICSEARCH_PASSWORD
-  }
-});
+  esClient = new Client({
+    node: process.env.ELASTICSEARCH_HOST,
+    cloud: {
+      id: process.env.ELASTICSEARCH_CLOUD_ID,
+      username: 'elastic',
+      password: process.env.ELASTICSEARCH_PASSWORD
+    }
+  });
+}
 
 export enum LogLevel {
   info = 'info',
@@ -42,13 +46,17 @@ export class LoggerService extends Logger {
           format.prettyPrint(),
           format.json(),
         ),
-      }),
-      new Elasticsearch(esTransportOpts)
+      })
     ],
   })
 
   constructor(private readonly loggerContext: string = '') {
     super(loggerContext);
+    if(PRODUCTION) {
+      this.winstonLogger.add(new Elasticsearch(esTransportOpts));
+    } else {
+      super.log("Remote logging disabled, not production environment", "LOGGER");
+    }
   }
   
   log(message: any, context?: string) {
