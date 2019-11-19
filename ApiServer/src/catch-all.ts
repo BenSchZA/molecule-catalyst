@@ -1,5 +1,6 @@
 
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import * as Sentry from '@sentry/node';
 
 @Catch()
 //ts-ignore
@@ -8,6 +9,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
+
+    Sentry.withScope((scope) => {
+      scope.setTag("env", `${process.env.ENV}`);
+      Sentry.captureException(exception);
+    });
 
     const status =
       exception instanceof HttpException

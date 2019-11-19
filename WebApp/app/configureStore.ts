@@ -58,6 +58,7 @@ const apmLogger = store => next => action => {
       // apm.setCustomContext({});
 
       Sentry.withScope((scope) => {
+        scope.setTag("env", `${process.env.APP_NAME}`);
         scope.setExtras(errorInfo);
         Sentry.captureException(new Error(`Action failure: ${action.type}`));
       });
