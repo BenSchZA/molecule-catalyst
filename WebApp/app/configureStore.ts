@@ -9,7 +9,11 @@ import { LifeStore, ApplicationRootState } from 'types';
 import { init as initApm } from '@elastic/apm-rum';
 import * as Sentry from '@sentry/browser';
 
-Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
+const PRODUCTION = process.env.SENTRY_DSN && process.env.ELASTICSEARCH_HOST;
+
+if(PRODUCTION) {
+  Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
+}
 
 const getPageName = () => {
   var parts = window.location.pathname.split('/'); 
@@ -29,7 +33,7 @@ const apm = initApm({
   serviceVersion: '',
   secretToken: process.env.APM_SECRET_TOKEN,
   pageLoadTransactionName: getPageName()
-})
+});
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -81,8 +85,7 @@ const apmLogger = store => next => action => {
 }
 
 export default function configureStore(initialState) {
-  const middlewares = [apmLogger, sagaMiddleware];
-
+  let middlewares = PRODUCTION ? [apmLogger, sagaMiddleware] : [sagaMiddleware];
   const enhancers = [applyMiddleware(...middlewares)];
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
