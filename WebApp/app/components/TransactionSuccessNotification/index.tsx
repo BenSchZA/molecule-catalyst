@@ -34,16 +34,33 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface OwnProps {
+  projectTitle: string
 }
 
 const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
-  React.forwardRef((props: OwnProps, ref) => {
+  React.forwardRef(({projectTitle}: OwnProps, ref) => {
     const classes = useStyles();
 
     const url = window.location.href;
-    const text = 
-`Support the next therapeutic breakthrough.
-@Molecule_to #blockchain #crowdfunding #science #defi`;
+    const twitterText = `
+🔬 I just contributed to science! 
+🧪 For ${projectTitle}
+🧬 at ${url}
+
+☝️ You can also support the next therapeutic breakthrough on @Molecule_to Catalyst 
+
+#blockchain #science #defi`;
+
+const fbText = `
+I just contributed to science! 
+For ${projectTitle}
+at ${url}
+
+You can also support the next therapeutic breakthrough on @Molecule_to Catalyst 
+
+#blockchain #science #defi`;
+
+
 
     return (
       <Card ref={ref}>
@@ -52,14 +69,14 @@ const TransactionSuccessNotification: React.FunctionComponent<OwnProps> =
         </CardContent>
         <CardActions className={classes.actions}>
           <IconButton className={classes.icon} onClick={() => {
-            window.open('https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text),
+            window.open('https://twitter.com/intent/tweet?url=&text=' + encodeURIComponent(twitterText),
               '',
               'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
           }} >
             <Twitter />
           </IconButton>
           <IconButton className={classes.icon} onClick={() => {
-            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '&quote=' + encodeURIComponent(text),
+            window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://catalyst.molecule.to') + '&quote=' + encodeURIComponent(fbText),
               '',
               'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
           }}>

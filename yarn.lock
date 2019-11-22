@@ -5186,7 +5186,7 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-"circom@github:LimeChain/circom":
+circom@LimeChain/circom:
   version "0.0.24"
   resolved "https://codeload.github.com/LimeChain/circom/tar.gz/4ae2447b97d558820a7c7817d602185478ad0b92"
   dependencies:
@@ -14770,7 +14770,7 @@ os-locale@^2.0.0:
     lcid "^1.0.0"
     mem "^1.1.0"
 
-os-locale@^3.0.0:
+os-locale@^3.0.0, os-locale@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/os-locale/-/os-locale-3.1.0.tgz#a802a6ee17f24c10483ab9935719cef4ed16bf1a"
   integrity sha512-Z8l3R4wYWM40/52Z+S265okfFj8Kt2cC2MKY+xNi3kFs+XGI7WXu/I309QQQYbRW4ijiZ+yxs9pqEhJh0DqW3Q==
@@ -17759,7 +17759,7 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-"snarkjs@github:LimeChain/snarkjs":
+snarkjs@LimeChain/snarkjs:
   version "0.1.11"
   resolved "https://codeload.github.com/LimeChain/snarkjs/tar.gz/f7036ebe9bfa3f3817077f050780c8ec1542e249"
   dependencies:
@@ -21421,7 +21421,7 @@ yargs@^10.0.3:
     decamelize "^1.1.1"
     find-up "^2.1.0"
     get-caller-file "^1.0.1"
-    os-locale "^3.1.0"
+    os-locale "^2.0.0"
     require-directory "^2.1.1"
     require-main-filename "^1.0.1"
     set-blocking "^2.0.0"
