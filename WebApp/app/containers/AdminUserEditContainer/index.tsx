@@ -10,13 +10,14 @@ import { compose, Dispatch } from 'redux';
 import { ApplicationRootState } from 'types';
 import { RouteComponentProps } from 'react-router-dom';
 import { Formik } from 'formik';
-import CreatorApplicationForm from 'components/CreatorApplicationForm';
 import * as Yup from 'yup';
 import { fileSizeValidation, fileTypeValidation, MAX_FILE_SIZE, SUPPORTED_IMAGE_FORMATS } from 'utils/fileValidationHelpers';
 import { UserData } from './types';
 import { updateUserAction } from './actions';
 import injectSaga from 'utils/injectSaga';
 import saga from './saga';
+import UserDetailsForm from 'components/UserDetailsForm';
+import { Container, Typography } from '@material-ui/core';
 
 interface RouteParams {
   userId: string;
@@ -63,7 +64,10 @@ const AdminUserEditContainer: React.FunctionComponent<Props> = ({user, updateUse
       updateUser(values);
     }}
     render={() =>
-      <CreatorApplicationForm />
+      <Container maxWidth='md'>
+        <Typography variant="h3">Edit User</Typography>
+        <UserDetailsForm />
+      </Container>
     }
   />;
 };
