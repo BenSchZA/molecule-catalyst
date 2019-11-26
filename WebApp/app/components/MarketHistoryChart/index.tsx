@@ -113,7 +113,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     if(!marketHistory.length) {
       marketHistory.push({
         timestamp: dayjs(project.vaultData.phases[0].startDate).unix(),
-        firstTokenPrice: Number(ethers.utils.formatEther(project?.marketData?.tokenPrice || 0)),
+        firstTokenPrice: Number(ethers.utils.formatEther(project?.marketData?.tokenPrice || 0))*(100 - project?.marketData?.researchContributionRate)/100,
         tokenAmount: 0,
         daiAmount: 0,
         type: TransactionType.TRANSFER,
@@ -126,7 +126,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
     let market_creation_date = parseEpoch(marketHistory[0].timestamp),
       initial_price = marketHistory[0].firstTokenPrice,
       current_date = new Date(),
-      current_price = spotPrice;
+      current_price = spotPrice*(100 - project?.marketData?.researchContributionRate)/100;
 
     // append the svg obgect to the body of the page
     if(this._svgNode) {
