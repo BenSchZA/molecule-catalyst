@@ -33,7 +33,8 @@
     "jest-haste-map": "^24.5.0",
     "jest-resolve": "^24.5.0",
     "precommit": "^1.2.2",
-    "wsrun": "^3.6.5"
+    "wsrun": "^3.6.5",
+    "typescript": "3.7.2"
   },
   "resolutions": {
     "**/hoist-non-react-statics": "3.3.0"

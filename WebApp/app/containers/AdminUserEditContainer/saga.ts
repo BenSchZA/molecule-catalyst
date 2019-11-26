@@ -7,13 +7,12 @@ import { forwardTo } from "utils/history";
 import { addProject } from "domain/projects/actions";
 
 export function* updateUser(action) {
-  debugger;
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
     const result = yield call(updateUserApi, action.payload.userId, action.payload.data, apiKey);
     if (result.success) {
       yield put(addProject(result.data));
-      yield call(forwardTo, `/admin/user/${action.payload.projectId}`);
+      yield call(forwardTo, `/admin/user/${action.payload.userId}`);
     }
   } catch (error) {
     console.log(error);
