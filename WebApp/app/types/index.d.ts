@@ -47,4 +47,5 @@ export interface ApplicationRootState {
   readonly projectDetailsContainer: ProjectDetailsState;
   readonly transactionModalContainer: TransactionModalState;
   readonly adminProjectEditContainer: never;
+  readonly adminUserEditContainer: never;
 }

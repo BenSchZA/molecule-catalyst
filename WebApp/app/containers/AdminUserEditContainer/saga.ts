@@ -1,18 +1,19 @@
 import { getType, } from "typesafe-actions";
 import * as actions from "./actions";
-import { updateProject as updateProjectApi } from "../../api"
+import { updateUser as updateUserApi } from "../../api"
 import { takeLatest, select, call, put } from "redux-saga/effects";
 import { ApplicationRootState } from "types";
 import { forwardTo } from "utils/history";
 import { addProject } from "domain/projects/actions";
 
-export function* updateProject(action) {
+export function* updateUser(action) {
+  debugger;
   const apiKey = yield select((state: ApplicationRootState) => state.authentication.accessToken);
   try {
-    const result = yield call(updateProjectApi, action.payload.projectId, action.payload.data, apiKey);
+    const result = yield call(updateUserApi, action.payload.userId, action.payload.data, apiKey);
     if (result.success) {
       yield put(addProject(result.data));
-      yield call(forwardTo, `/admin/project/${action.payload.projectId}`);
+      yield call(forwardTo, `/admin/user/${action.payload.projectId}`);
     }
   } catch (error) {
     console.log(error);
@@ -20,5 +21,5 @@ export function* updateProject(action) {
 }
 
 export default function* adminProjectEditContainerWatcherSaga() {
-  yield takeLatest(getType(actions.updateProject.request), updateProject);
+  yield takeLatest(getType(actions.updateUserAction.request), updateUser);
 }

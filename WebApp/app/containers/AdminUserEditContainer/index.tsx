@@ -13,6 +13,10 @@ import { Formik } from 'formik';
 import CreatorApplicationForm from 'components/CreatorApplicationForm';
 import * as Yup from 'yup';
 import { fileSizeValidation, fileTypeValidation, MAX_FILE_SIZE, SUPPORTED_IMAGE_FORMATS } from 'utils/fileValidationHelpers';
+import { UserData } from './types';
+import { updateUserAction } from './actions';
+import injectSaga from 'utils/injectSaga';
+import saga from './saga';
 
 interface RouteParams {
   userId: string;
@@ -21,7 +25,9 @@ interface RouteParams {
 interface OwnProps extends RouteComponentProps<RouteParams>,
   React.Props<RouteParams> { }
 
-interface DispatchProps { }
+interface DispatchProps { 
+  updateUser(data: UserData): void
+}
 
 interface StateProps { 
   user: any,
@@ -29,7 +35,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const AdminUserEditContainer: React.FunctionComponent<Props> = ({user}: Props) => {
+const AdminUserEditContainer: React.FunctionComponent<Props> = ({user, updateUser}: Props) => {
   const CreatorApplicationSchema = Yup.object().shape({
     email: Yup.string().email(),
     firstName: Yup.string().required(),
@@ -54,7 +60,7 @@ const AdminUserEditContainer: React.FunctionComponent<Props> = ({user}: Props) =
     }}
     validationSchema={CreatorApplicationSchema}
     onSubmit={(values, actions) => {
-      console.log(values);
+      updateUser(values);
     }}
     render={() =>
       <CreatorApplicationForm />
@@ -75,10 +81,10 @@ const mapStateToProps = (state: ApplicationRootState, props: OwnProps) => ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  ownProps: OwnProps,
+  props: OwnProps,
 ): DispatchProps => {
   return {
-    dispatch: dispatch,
+    updateUser: (data: UserData) => dispatch(updateUserAction.request({userId: props.match.params.userId, data})),
   };
 };
 
@@ -87,6 +93,12 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
+const withSaga = injectSaga<OwnProps>({
+  key: 'adminUserEditContainer',
+  saga: saga,
+});
+
 export default compose(
+  withSaga,
   withConnect,
 )(AdminUserEditContainer);
