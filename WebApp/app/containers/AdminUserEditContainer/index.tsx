@@ -44,7 +44,13 @@ const AdminUserEditContainer: React.FunctionComponent<Props> = ({user}: Props) =
 
   return <Formik
     initialValues={{
-      ...user
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profileImage: user.profileImage,
+      biography: user.biography,
+      professionalTitle: user.professionalTitle,
+      affiliatedOrganisation: user.affiliatedOrganisation,
     }}
     validationSchema={CreatorApplicationSchema}
     onSubmit={(values, actions) => {
