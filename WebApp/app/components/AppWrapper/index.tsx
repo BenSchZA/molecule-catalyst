@@ -112,6 +112,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   walletUnlocked: boolean;
   approvedNetwork: boolean;
   ethAddress: string;
+  userId: string;
   navRoutes: Array<AppRoute>;
   approvedNetworkName: string;
 }
@@ -126,6 +127,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   isLoggedIn,
   onConnect,
   ethAddress,
+  userId,
   walletUnlocked,
   logOut,
   userRole,
@@ -220,7 +222,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
           </div>
           {children}
         </main>
-        <AppFooter />
+        <AppFooter userState={{ethAddress: ethAddress, userId: userId}} />
       </ErrorBoundary>
       <Fab className={classes.fab} color="primary" aria-label="scroll-to-top" onClick={() => window.scrollTo(0, 0)}>
         <ExpandLess />
