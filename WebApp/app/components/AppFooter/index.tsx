@@ -3,6 +3,7 @@ import React from "react";
 import ReactSVG from "react-svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTelegramPlane, faTwitter, faGitlab, faDiscord } from "@fortawesome/free-brands-svg-icons";
+import * as Sentry from '@sentry/browser';
 
 const footerHeight = 300;
 
@@ -40,6 +41,7 @@ const styles = (theme: Theme) => createStyles({
     color: "#FFFFFFDE",
     opacity: 1.0,
     paddingBottom: "3px",
+    cursor: 'pointer',
     "&:link": {
       textDecoration: "none",
     },
@@ -90,13 +92,25 @@ const styles = (theme: Theme) => createStyles({
   },
 });
 
-interface OwnProps extends WithStyles<typeof styles> { }
+interface OwnProps extends WithStyles<typeof styles> {
+  userState: object;
+}
 
 type Props = OwnProps;
 
 const AppFooter: React.FunctionComponent<Props> = ({
   classes,
+  userState,
 }) => {
+
+  let getSupport = () => {
+    Sentry.withScope((scope) => {
+      scope.setTag("env", `${process.env.APP_NAME}`);
+      scope.setExtra('user', userState);
+      const eventId = Sentry.captureMessage('Support Request');
+      Sentry.showReportDialog({ eventId });
+    });
+  }
 
   return (
     <footer className={classes.footer}>
@@ -134,7 +148,10 @@ const AppFooter: React.FunctionComponent<Props> = ({
                 <td><a className={classes.footerLinkText} href="https://docs.google.com/forms/d/e/1FAIpQLSf6KWvf68w9FMqMXHLJYfS2DBfwW7sxVgqLchoK3ZBj_S5rKA/viewform?usp=sf_link">Submit Proposal</a></td>
               </tr>
               <tr>
-                <td><a className={classes.footerLinkText} href="mailto:info@molecule.to">Support</a></td>
+                <td><a className={classes.footerLinkText} onClick={() => getSupport()}>Support</a></td>
+              </tr>
+              <tr>
+                <td><a className={classes.footerLinkText} href="mailto:info@molecule.to">Contact</a></td>
               </tr>
             </tbody>
           </table>

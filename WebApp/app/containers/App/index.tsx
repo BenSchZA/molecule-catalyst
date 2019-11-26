@@ -42,6 +42,7 @@ export interface StateProps {
   daiBalance: number,
   userRole: number;
   approvedNetworkName: string;
+  userId: string;
 }
 
 export interface DispatchProps {
