@@ -29,6 +29,7 @@ const apiUrlBuilder = {
   addResearchUpdate: (projectId: string) => generateUri(`api/project/${projectId}/update`),
   uploadFile: generateUri(`api/attachment/`),
   updateProject: (projectId: string) => generateUri(`api/project/${projectId}`),
+  updateUser: (userId: string) => generateUri(`api/users/${userId}`),
   websocket: generateUri(''),
 };
 

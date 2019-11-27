@@ -12,6 +12,7 @@ import { UserType } from './types';
 import MyProjectsContainer from 'containers/MyProjectsContainer';
 import ProjectDetailsContainer from 'containers/ProjectDetailsContainer';
 import AdminProjectEditContainer from 'containers/AdminProjectEditContainer';
+import AdminUserEditContainer from 'containers/AdminUserEditContainer';
 
 
 
@@ -77,6 +78,14 @@ const routes: AppRoute[] = [{
   name: 'Admin User View',
   path: '/admin/user/:userId',
   component: AdminUserViewContainer,
+  roleRequirement: UserType.Admin,
+  isNavRequired: false,
+  showNavForRoles: [UserType.Admin],
+  requireAuth: true,
+}, {
+  name: 'Admin User Edit',
+  path: '/admin/user/:userId/edit',
+  component: AdminUserEditContainer,
   roleRequirement: UserType.Admin,
   isNavRequired: false,
   showNavForRoles: [UserType.Admin],

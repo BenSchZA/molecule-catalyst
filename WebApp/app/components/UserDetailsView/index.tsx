@@ -146,6 +146,7 @@ const UserDetailsView: React.FunctionComponent<OwnProps> = (props: OwnProps) => 
     </Paper>
     <Grid className={props.classes.userActionButtons}>
       {(props.user.type !== UserType.Admin) && <Button onClick={() => props.promoteToAdmin()}>Promote to admin</Button>}
+      <Button onClick={() => forwardTo(`/admin/user/${props.user.id}/edit`)}>Edit</Button>
     </Grid>
   </Container>
 );

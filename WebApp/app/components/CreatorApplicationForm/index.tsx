@@ -5,12 +5,9 @@
  */
 
 import React from 'react';
-import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, InputLabel, Button, Container, Divider } from '@material-ui/core';
-import { Save } from '@material-ui/icons';
-import { Form, Field } from 'formik';
-import { TextField } from 'formik-material-ui';
-import UploadImageTextField from 'components/UploadImageTextField';
+import { Theme, createStyles, withStyles, WithStyles, Paper, Typography, Container, Divider } from '@material-ui/core';
 import { colors } from 'theme';
+import UserDetailsForm from 'components/UserDetailsForm';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -52,72 +49,9 @@ const CreatorApplicationForm: React.FunctionComponent<OwnProps> = (props: OwnPro
       <Divider variant='middle' />
     </Paper>
     <Container maxWidth='md'>
-      <Paper className={props.classes.root} square={true}>
-        <Form>
-          <InputLabel htmlFor='email'>Email</InputLabel>
-          <Field
-            name='email'
-            type='text'
-            placeholder='Enter your email'
-            component={TextField}
-            variant='outlined'
-            margin="dense" />
-          <InputLabel htmlFor='firstName'>First Name</InputLabel>
-          <Field
-            name='firstName'
-            type='text'
-            placeholder='Enter your first name'
-            component={TextField}
-            variant='outlined'
-            margin="dense" />
-          <InputLabel htmlFor='lastName'>Last Name</InputLabel>
-          <Field
-            name='lastName'
-            type='text'
-            placeholder='Enter your last name'
-            component={TextField}
-            variant='outlined'
-            margin="dense" />
-          <InputLabel htmlFor='profileImage'>Profile Image</InputLabel>
-          <Field
-            component={UploadImageTextField}
-            name='profileImage' />
-          <InputLabel htmlFor='biography'>About You</InputLabel>
-          <Field
-            name='biography'
-            type='text'
-            placeholder='Enter a short biography'
-            component={TextField}
-            variant='outlined'
-            multiline
-            rows='5'
-            rowsMax='5'
-            fullWidth
-            margin="dense" />
-          <InputLabel htmlFor='professionalTitle'>Professional Title</InputLabel>
-          <Field
-            name='professionalTitle'
-            type='text'
-            placeholder='Enter your job title'
-            component={TextField}
-            variant='outlined'
-            margin="dense" />
-          <InputLabel htmlFor='affiliatedOrganisation'>Affiliated Organisation</InputLabel>
-          <Field
-            name='affiliatedOrganisation'
-            type='text'
-            placeholder='Enter your affiliated organisation'
-            component={TextField}
-            variant='outlined'
-            margin="dense" />
-          <br />
-          <Button
-            type='submit'>
-            <Save />
-            Save
-          </Button>
-        </Form>
-      </Paper>
+    <Paper className={props.classes.root} square={true}>
+      <UserDetailsForm />
+    </Paper>
     </Container>
   </Container>
 );
