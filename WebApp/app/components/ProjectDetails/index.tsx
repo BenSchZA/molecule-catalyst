@@ -72,7 +72,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   const getEndDateOffset = (phases, phaseIndex) => {
     const firstPhaseDate: Dayjs = dayjs(project.vaultData.phases[0].startDate);
 
-    if (phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.ONGOING) {
+    if (phaseIndex + 1 < phases.length && phases[phaseIndex + 1].state >= FundingState.STARTED) {
       const periodEnd = dayjs(phases[phaseIndex + 1].startDate).format('YYYY-MM-DD');
       return dayjs(periodEnd).diff(dayjs(firstPhaseDate.format('YYYY-MM-DD')), 'day');
     }
@@ -89,7 +89,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
     project.vaultData.phases
       .some((phase, index, array) => {
         if (index <= phaseIndex) {
-          if (phase.state >= FundingState.ONGOING) {
+          if (phase.state >= FundingState.STARTED) {
             startDate = dayjs(phase.startDate);
           } else {
             startDate = firstPhaseDate.add(endDateOffset, 'day').subtract(array[index].phaseDuration, 'month');
@@ -322,7 +322,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
       </Paper>
       <Paper className={classes.projectSection} square>
         <Typography className={classes.sectionTitleText} align="center">
-          Token Bonding Curve
+          Market
         </Typography>
         {project && project.marketData ?
           <MarketChartLayout display={true} project={project} /> :

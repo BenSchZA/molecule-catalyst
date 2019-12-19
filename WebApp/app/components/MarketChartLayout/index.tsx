@@ -167,8 +167,8 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
       </Paper>
       <TabPanel {...classes} value={activeTab} index={ActiveTab.HISTORY}>
         <Typography className={classes.explainerText}>
-        Project tokens act as a <b>reward for your contribution</b> and can be exchanged for your project stake.&nbsp;
-        <b>The value of your project tokens changes</b> when new contributions come in or when contributors decide to sell their project tokens.
+          <b>The price for project tokens changes</b> when tokens are distributed&nbsp;
+          for additional contributions or when contributors decide to sell the ones they own.
         </Typography>
         <Typography className={classes.explainerText}>
           An <b>increasing</b> project token price shows that <b>contributors are confident</b>&nbsp;
@@ -185,9 +185,9 @@ const MarketChartLayout: React.FunctionComponent<OwnProps> = (props: OwnProps) =
           are in circulation and and the accumulated amount of Dai in the project stake reserve.
           </Typography>
         <Typography className={classes.explainerText}>
-        New contributions increase the amount of Dai in the project stake reserve and <b>raise&nbsp;
-         the price of the project tokens</b>. Selling tokens and withdrawing&nbsp;
-         from the project stake reserve <b>decreases the token price</b><div className=""></div>
+          Depending on this snapshot of the market below&nbsp;
+            <b>you can decide whether you want to buy or sell your tokens</b> and see what&nbsp;
+    indications they have depending on the overall performance of the project market.
           </Typography>
         <MarketChartD3
           project={project} />

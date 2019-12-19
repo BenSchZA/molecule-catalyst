@@ -120,9 +120,11 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <hr className={classes.divider} />
         <Typography className={classes.modalText}>
-        PLEASE NOTE: Your contribution will be split into two portions.
-        The first portion will go directly to the research funding vault that is controlled by the research lead.
-        The second portion will be added to the project stake reserve that determines the project token price.
+          PLEASE NOTE: Your contribution will be split into two portions.
+          The first portion will go directly to the project owner.
+          The second portion represents your stake in the research project
+          and will be added to a communal pool that grows proportionally
+          with more project contributions.
         </Typography>
         <section className={classes.fundingSplit}>
           <div>
@@ -150,7 +152,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </div>
         </section>
         <Typography className={classes.modalText}>
-        As a reward for your contribution, you will receive a number of unique project tokens that represent your project stake. The value for these tokens changes but they can always be redeemed at their current price.
+          In return for your contribution, you will receive tokens priced according to the project bonding curve.
+          These tokens can always be redeemed for their current value.
         </Typography>
         <section className={classes.projectTokens}>
           <div className={classes.currency}>
