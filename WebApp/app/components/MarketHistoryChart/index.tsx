@@ -236,7 +236,7 @@ class MarketHistoryChart extends React.Component<OwnProps> {
       .attr("class", "label")
       .attr("text-anchor", "middle")
       .attr("transform", "translate(" + -1 * (margin.left / 3 * 2) + "," + (height / 2) + ")rotate(-90)")
-      .text("Price per token");
+      .text("Price per Token in Dai");
 
     this._svgNode.append("text")
       .attr("class", "label")

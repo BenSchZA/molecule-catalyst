@@ -139,7 +139,7 @@ interface PhaseData {
 
 enum FundingState { 
   NOT_STARTED, 
-  STARTED, 
+  ONGOING, 
   ENDED, 
   PAID 
 }
