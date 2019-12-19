@@ -84,7 +84,7 @@ const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, cl
     value: -1
   }, {
     label: 'Ongoing',
-    value: ProjectSubmissionStatus.started,
+    value: ProjectSubmissionStatus.ongoing,
   }, {
     label: 'Ended',
     value: ProjectSubmissionStatus.ended,
