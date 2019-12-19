@@ -424,7 +424,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
     tooltipGroup.select(`text.pool-label-text-${tag}`)
       .attr("transform",
         "translate(" + (xscale(d.x)) + "," + (yscale(d.y/2)) + ")")
-      .text(`Incentive Pool:\t\t\t ${formatNumber(collateralPool)} DAI`);
+      .text(`Project Stake Reserve:\t\t\t ${formatNumber(collateralPool)} DAI`);
 
     // token price text
     tooltipGroup.select(`text.y-label-text-${tag}`)
