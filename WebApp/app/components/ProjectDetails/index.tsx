@@ -322,7 +322,7 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
       </Paper>
       <Paper className={classes.projectSection} square>
         <Typography className={classes.sectionTitleText} align="center">
-          Token Bonding Curve
+          Market
         </Typography>
         {project && project.marketData ?
           <MarketChartLayout display={true} project={project} /> :
