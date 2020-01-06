@@ -50,7 +50,7 @@ const routes: AppRoute[] = [{
   showNavForRoles: [UserType.ProjectCreator, UserType.Admin],
   requireAuth: true
 }, {
-  name: 'Creator Application',
+  name: 'Application',
   path: '/projects/becomeCreator',
   component: CreatorApplicationContainer,
   roleRequirement: UserType.Standard,
