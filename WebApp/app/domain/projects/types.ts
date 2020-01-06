@@ -7,7 +7,7 @@ enum ProjectSubmissionStatus {
   created,
   accepted,
   rejected,
-  started,
+  ongoing,
   ended
 }
 
@@ -139,7 +139,7 @@ interface PhaseData {
 
 enum FundingState { 
   NOT_STARTED, 
-  ONGOING, 
+  STARTED, 
   ENDED, 
   PAID 
 }

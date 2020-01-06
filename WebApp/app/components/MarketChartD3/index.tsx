@@ -238,7 +238,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
         .attr("class", "label")
         .attr("text-anchor", "middle")
         .attr("transform", "translate(" + -1 * (margin.left / 3 * 2) + "," + (height / 2) + ")rotate(-90)")
-        .text("Price per Token in Dai");
+        .text("Price per token");
 
       this._svgNode.append("text")
         .attr("class", "label")
@@ -424,7 +424,7 @@ class MarketChartD3 extends React.Component<OwnProps> {
     tooltipGroup.select(`text.pool-label-text-${tag}`)
       .attr("transform",
         "translate(" + (xscale(d.x)) + "," + (yscale(d.y/2)) + ")")
-      .text(`Project Stake Reserve:\t\t\t ${formatNumber(collateralPool)} DAI`);
+      .text(`Incentive Pool:\t\t\t ${formatNumber(collateralPool)} DAI`);
 
     // token price text
     tooltipGroup.select(`text.y-label-text-${tag}`)

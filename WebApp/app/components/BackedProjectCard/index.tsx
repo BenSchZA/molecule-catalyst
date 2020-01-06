@@ -226,17 +226,17 @@ const BackedProjectCard: React.FunctionComponent<OwnProps> = ({ project, userAdd
               <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Tokens</Typography>
-                <Typography className={classes.labelSmall}>Number of project tokens you own</Typography>
+                <Typography className={classes.labelSmall}>Amount of project tokens you own</Typography>
               </Grid>
               <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Value</Typography>
-                <Typography className={classes.labelSmall}>Value of your project stake</Typography>
+                <Typography className={classes.labelSmall}>Value of project tokens</Typography>
               </Grid>
               <Divider className={classes.dividerVertical} />
               <Grid item xs>
                 <Typography className={classes.label}>Change %</Typography>
-                <Typography className={classes.labelSmall}>Change in value since your contribution</Typography>
+                <Typography className={classes.labelSmall}>Change since initial contribution</Typography>
               </Grid>
             </Grid>
             <Divider className={classes.dividerHorizontal}></Divider>
