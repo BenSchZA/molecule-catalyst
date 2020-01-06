@@ -43,7 +43,6 @@ const styles = (theme: Theme) => createStyles({
     color: "#FFFFFFDE",
     opacity: 1.0,
     paddingBottom: "3px",
-    cursor: 'pointer',
     "&:link": {
       textDecoration: "none",
     },
