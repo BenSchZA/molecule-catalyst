@@ -3,6 +3,7 @@ import React from "react";
 import ReactSVG from "react-svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTelegramPlane, faTwitter, faGitlab, faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { forwardTo } from "utils/history";
 import * as Sentry from '@sentry/browser';
 
 const footerHeight = 300;
@@ -33,6 +34,7 @@ const styles = (theme: Theme) => createStyles({
     opacity: 1.0,
   },
   footerLinkText: {
+    cursor: 'pointer',
     textAlign: "left",
     fontFamily: "Montserrat",
     fontSize: "14px",
@@ -170,7 +172,7 @@ const AppFooter: React.FunctionComponent<Props> = ({
                 <td><a className={classes.footerLinkText} href="https://catalyst.molecule.to/faqs">FAQs</a></td>
               </tr>
               <tr>
-                <td><a className={classes.footerLinkText} href="https://alpha-nightly.mol.ai/discover">Discover</a></td>
+                <td><div className={classes.footerLinkText} onClick={() => forwardTo('/discover')}>Discover</div></td>
               </tr>
             </tbody>
           </table>
