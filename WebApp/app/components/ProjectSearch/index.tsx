@@ -79,6 +79,7 @@ interface OwnProps extends WithStyles<typeof styles> {
 }
 
 const ProjectSearch: React.FunctionComponent<OwnProps> = ({filter, setFilter, classes}: OwnProps) => {
+  
   const filterStatuses = [{
     label: 'All Statuses',
     value: -1
