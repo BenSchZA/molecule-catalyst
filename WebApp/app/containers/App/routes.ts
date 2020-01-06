@@ -1,6 +1,5 @@
 import DiscoverContainer from 'containers/DiscoverContainer';
 import PortfolioContainer from 'containers/PortfolioContainer';
-import LandingPage from 'components/LandingPage';
 import CreateProjectContainer from 'containers/CreateProjectContainer';
 import AdminUserListingContainer from 'containers/AdminUserListingContainer';
 import CreatorApplicationContainer from 'containers/CreatorApplicationContainer';
@@ -27,14 +26,6 @@ export interface AppRoute {
 }
 
 const routes: AppRoute[] = [{
-  name: 'Landing Page',
-  path: '/',
-  component: LandingPage,
-  roleRequirement: UserType.Standard,
-  isNavRequired: false,
-  showNavForRoles: [],
-  requireAuth: false
-}, {
   name: 'Discover',
   path: '/discover',
   component: DiscoverContainer,

@@ -89,6 +89,10 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
                 isAuthorized={(!r.requireAuth || r.requireAuth && props.isLoggedIn) && (props.userRole >= r.roleRequirement)}
                 key={r.path} />)
             )}
+            <Route path='/' component={() => { 
+                window.location.href = 'https://catalyst.molecule.to'; 
+                return null;
+            }} />
             <Route path='/unauthorized' exact component={UnauthorizedPage} />
             <Route path='/404' exact component={NotFoundPage} />
             <Route component={NotFoundRedirect} />
