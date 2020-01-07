@@ -67,17 +67,17 @@ const CreatorApplicationContainer: React.FunctionComponent<Props> = ({ onSubmitC
               Almost there...
             </Typography>
             <Button variant='contained' onClick={() => verifyEmail(parsed.token)} >Click here to verify email</Button>
-            <Divider  />
-            </Container>
+            <Divider />
+          </Container>
         )
       } else {
         return (
           <div>
-               <Container maxWidth="md">
-            <Typography variant='h2'>
-              Please check your email for a verification link
+            <Container maxWidth="md">
+              <Typography variant='h2'>
+                Please check your email for a verification link
             </Typography>
-            <Divider />
+              <Divider />
             </Container>
           </div>
         )
@@ -85,22 +85,22 @@ const CreatorApplicationContainer: React.FunctionComponent<Props> = ({ onSubmitC
     } else if (application.status === 2) {
       return (
         <div>
-             <Container maxWidth="md">
-          <Typography variant='h2'>
-            Your request is being reviewed.
-          </Typography>
-          <Divider />
+          <Container maxWidth="md">
+            <Typography variant='h2'>
+              Your request is being reviewed.
+            </Typography>
+            <Divider />
           </Container>
         </div>
       )
     } else if (application.status === 4) {
       return (
         <div>
-           <Container maxWidth="md">
-          <Typography variant='h2'>
-            We have reviewed your request and unfortunately are unable to approve it.
+          <Container maxWidth="md">
+            <Typography variant='h2'>
+              We have reviewed your request and unfortunately are unable to approve it.
           </Typography>
-          <Divider  />
+            <Divider />
           </Container>
         </div>
       )
