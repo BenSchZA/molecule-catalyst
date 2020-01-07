@@ -114,12 +114,12 @@ const MyProjectsListing: React.FunctionComponent<OwnProps> = (props: OwnProps) =
                   <TableCell className={props.classes.rowText}>{dayjs(project.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                   <TableCell className={props.classes.rowText}>{ProjectSubmissionStatus[project.status].toUpperCase()}</TableCell>
                   <TableCell>
-                    {project.status >= ProjectSubmissionStatus.started &&
+                    {project.status >= ProjectSubmissionStatus.ongoing &&
                       project.vaultData && project.vaultData.outstandingWithdraw &&
                       bigNumberify(project.vaultData.outstandingWithdraw).gt(0) &&
                       <Button className={props.classes.actionButton} onClick={() => handleOpenWithdraw(project.id)}>Withdraw</Button>
                     }
-                    {project.status === ProjectSubmissionStatus.started &&
+                    {project.status === ProjectSubmissionStatus.ongoing &&
                       <Button className={props.classes.actionButton} onClick={() => handleOpenResearchUpdateModal(project.id)}>Update</Button>
                     }
                   </TableCell>

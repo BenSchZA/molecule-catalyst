@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { List, ListItem, Button, Menu, MenuItem, Avatar, Container, Tooltip, Typography } from '@material-ui/core';
+import { List, ListItem, Button, Menu, MenuItem, Avatar, Container, Tooltip, Typography, Fab } from '@material-ui/core';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,6 +12,7 @@ import { forwardTo } from 'utils/history';
 import { UserType } from 'containers/App/types';
 import ErrorBoundary from 'containers/ErrorBoundary';
 import AppFooter from 'components/AppFooter';
+import { ExpandLess } from '@material-ui/icons';
 
 const spacingFromProfile = 20;
 const footerHeight = 300;
@@ -32,6 +33,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
   body: {
     height: "100%",
     margin: "0",
+    scrollBehavior: 'smooth',
   },
   content: {
     paddingTop: spacing(8),
@@ -94,6 +96,11 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
       zIndex: 0
     }
   },
+  fab: {
+    position: 'fixed',
+    bottom: '20px',
+    left: '20px',
+  }
 });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -105,6 +112,7 @@ interface OwnProps extends WithStyles<typeof styles> {
   walletUnlocked: boolean;
   approvedNetwork: boolean;
   ethAddress: string;
+  userId: string;
   navRoutes: Array<AppRoute>;
   approvedNetworkName: string;
 }
@@ -119,6 +127,7 @@ const AppWrapper: React.FunctionComponent<Props> = ({
   isLoggedIn,
   onConnect,
   ethAddress,
+  userId,
   walletUnlocked,
   logOut,
   userRole,
@@ -213,8 +222,11 @@ const AppWrapper: React.FunctionComponent<Props> = ({
           </div>
           {children}
         </main>
-        <AppFooter />
+        <AppFooter userState={{ethAddress: ethAddress, userId: userId}} />
       </ErrorBoundary>
+      <Fab className={classes.fab} color="primary" aria-label="scroll-to-top" onClick={() => window.scrollTo(0, 0)}>
+        <ExpandLess />
+      </Fab>
     </div>
   );
 }

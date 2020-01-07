@@ -3,6 +3,7 @@ import apiUrlBuilder from './apiUrlBuilder';
 import formDataHelper from './formDataHelper';
 import { CreatorApplicationData } from 'containers/CreatorApplicationContainer/types';
 import { ProjectData } from 'containers/CreateProjectContainer/types';
+import { UserData } from 'containers/AdminUserEditContainer/types';
 
 export class apiClient {
   private readonly apiToken: string;
@@ -135,6 +136,17 @@ export async function updateProject(projectId: string, projectData: ProjectData,
   return apiRequest(
     RequestMethod.PATCH,
     apiUrlBuilder.updateProject(projectId),
+    requestData,
+    undefined, // The Content-Type header is set automatically via the FormData object.
+    true,
+    apiToken);
+}
+
+export async function updateUser(userId: string, userData: UserData, apiToken: string) {
+  const requestData = formDataHelper(userData);
+  return apiRequest(
+    RequestMethod.PATCH,
+    apiUrlBuilder.updateUser(userId),
     requestData,
     undefined, // The Content-Type header is set automatically via the FormData object.
     true,

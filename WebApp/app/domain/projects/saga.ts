@@ -86,7 +86,7 @@ export function* supportProject(action) {
       message: '',
       options: {
         variant: 'success',
-        content: React.createElement(TransactionSuccessNotification),
+        content: React.createElement(TransactionSuccessNotification, {projectTitle: project.title}),
       }
     }));
   } catch (error) {
