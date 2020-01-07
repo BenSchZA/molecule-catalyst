@@ -177,10 +177,10 @@ deploy() {
   elif [ $TAG == "production" ]
   then
     ETHERS_NETWORK=mainnet
-    NPM_CONTRACTS_VERSION= # Contract NPM package version
-    DAI_CONTRACT_ADDRESS=
-    MARKET_REGISTRY_ADDRESS=
-    MARKET_FACTORY_ADDRESS=
+    NPM_CONTRACTS_VERSION=0_0_14 # Contract NPM package version
+    DAI_CONTRACT_ADDRESS=0xDC156d0d18820e555D9516f974040DF0fDC694f6
+    MARKET_REGISTRY_ADDRESS=0x30C63e5fBA2c353883BBf76d8E3DA62cc950F19e
+    MARKET_FACTORY_ADDRESS=0xC9Cc4b74090453C4Bce33e70C873D20db61340F1
     FRONTEND_HOST=app.catalyst.molecule.to
   else
     echo "Invalid tag for frontend host"
