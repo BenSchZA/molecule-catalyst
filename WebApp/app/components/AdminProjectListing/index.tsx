@@ -55,7 +55,7 @@ const AdminProjectListing: React.FunctionComponent<OwnProps> = (props: OwnProps)
     value: ProjectSubmissionStatus.created,
   }, {
     label: 'Ongoing',
-    value: ProjectSubmissionStatus.started,
+    value: ProjectSubmissionStatus.ongoing,
   }, {
     label: 'Ended',
     value: ProjectSubmissionStatus.ended,

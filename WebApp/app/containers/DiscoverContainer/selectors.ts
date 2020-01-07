@@ -27,7 +27,7 @@ const makeSelectDiscoverProjects = createSelector(
   selectAllProjects,
   makeSelectFilter,
   (allProjects, filter) => {
-    const allDashboardProjects = allProjects.filter(p => p.status === ProjectSubmissionStatus.started || p.status === ProjectSubmissionStatus.ended);
+    const allDashboardProjects = allProjects.filter(p => p.status === ProjectSubmissionStatus.ongoing || p.status === ProjectSubmissionStatus.ended);
     if (!filter.text && filter.projectStatus === -1) {
       return allDashboardProjects
     } else {

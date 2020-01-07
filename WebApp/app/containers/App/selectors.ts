@@ -10,6 +10,7 @@ import {
   makeSelectUserRole,
   makeSelectApprovedNetwork,
   makeSelectApprovedNetworkName,
+  makeSelectUserId,
 } from 'domain/authentication/selectors';
 
 /**
@@ -31,6 +32,7 @@ const selectApp = createStructuredSelector<RootState, StateProps>({
   isLoggedIn: makeSelectIsLoggedIn,
   walletUnlocked: makeSelectWalletUnlocked,
   ethAddress: makeSelectEthAddress,
+  userId: makeSelectUserId,
   daiBalance: makeSelectDaiBalance,
   userRole: makeSelectUserRole, 
   approvedNetwork: makeSelectApprovedNetwork,
