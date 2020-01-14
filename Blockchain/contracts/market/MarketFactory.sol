@@ -3,7 +3,7 @@ pragma solidity 0.5.10;
 import { Market } from "./Market.sol";
 import { IMarketFactory } from "./IMarketFactory.sol";
 import { Vault } from "../vault/Vault.sol";
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { ModifiedWhitelistAdminRole } from "../_shared/ModifiedWhitelistAdminRole.sol";
 // import { WhitelistedRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistedRole.sol";
 import { IMarketRegistry } from "../marketRegistry/IMarketRegistry.sol";
 import { ICurveRegistry } from "../curveRegistry/ICurveRegistry.sol";
@@ -14,9 +14,9 @@ import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  The creation and co-ordinated storage of markets (a vault and
   *         market).
-  * @notice The market factory stores the addresses in the relavant registry.
+  * @notice The market factory stores the addresses in the relevant registry.
   */
-contract MarketFactory is IMarketFactory, WhitelistAdminRole {
+contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
     //The molecule vault for molecule fee
     IMoleculeVault internal moleculeVault_;
     //The registry of all created markets
@@ -27,12 +27,11 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     IERC20 internal collateralToken_;
     // Address of market deployer
     address internal marketCreator_;
-    // Ensures no markets will be deployed untill market factory has been
+    // Ensures no markets will be deployed until market factory has been
     // activated
     bool internal isActive_;
 
     event NewApiAddressAdded(address indexed oldAddress, address indexed newAddress);
-
 
     modifier onlyAnAdmin() {
         require(isActive_, "Market factory has not been activated");
@@ -57,7 +56,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         address _marketRegistry,
         address _curveRegistry
     )
-        WhitelistAdminRole()
+        ModifiedWhitelistAdminRole()
         public
     {
         collateralToken_ = IERC20(_collateralToken);
@@ -81,7 +80,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
     {
         super.addWhitelistAdmin(_admin);
         marketCreator_ = _api;
-        super.renounceWhitelistAdmin();
+        super.removeWhitelistAdmin(msg.sender);
         isActive_ = true;
     }
 
@@ -107,10 +106,11 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
       *         which is Solidity.
       * @param  _fundingGoals This is the amount wanting to be raised in each
       *         round, in collateral.
-      * @param  _phaseDurations The time for each round in number of blocks.
+      * @param  _phaseDurations The time for each round in months. This number
+      *         is covered into block time within the vault.
       * @param  _creator Address of the researcher.
       * @param  _curveType Curve selected.
-      * @param  _feeRate The pecentage of fee. e.g: 60
+      * @param  _feeRate The percentage of fee. e.g: 60
       */
     function deployMarket(
         uint256[] calldata _fundingGoals,
@@ -130,7 +130,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
         require(_feeRate > 0, "Fee rate too low");
         require(_feeRate < 100, "Fee rate too high");
         require(_creator != address(0), "Creator address invalid");
-        require(curveState == true, "Curve inactive");
+        require(curveState, "Curve inactive");
         require(curveLibrary != address(0), "Curve library invalid");
         
         address newVault = address(new Vault(
@@ -148,7 +148,7 @@ contract MarketFactory is IMarketFactory, WhitelistAdminRole {
             address(collateralToken_)
         ));
 
-        require(Vault(newVault).initialize(newMarket), "Vault not initialised");
+        require(Vault(newVault).initialize(newMarket), "Vault not initialized");
         marketRegistry_.registerMarket(newMarket, newVault, _creator);
     }
 

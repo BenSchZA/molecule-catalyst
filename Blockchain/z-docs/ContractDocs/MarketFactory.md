@@ -10,7 +10,7 @@
 
 [MarketFactory]: #MarketFactory
 [MarketFactory-onlyAnAdmin--]: #MarketFactory-onlyAnAdmin--
-[WhitelistAdminRole-onlyWhitelistAdmin--]: #WhitelistAdminRole-onlyWhitelistAdmin--
+[ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]: #ModifiedWhitelistAdminRole-onlyWhitelistAdmin--
 [MarketFactory-moleculeVault_-contract-IMoleculeVault]: #MarketFactory-moleculeVault_-contract-IMoleculeVault
 [MarketFactory-marketRegistry_-contract-IMarketRegistry]: #MarketFactory-marketRegistry_-contract-IMarketRegistry
 [MarketFactory-curveRegistry_-contract-ICurveRegistry]: #MarketFactory-curveRegistry_-contract-ICurveRegistry
@@ -25,13 +25,13 @@
 [MarketFactory-marketRegistry--]: #MarketFactory-marketRegistry--
 [MarketFactory-curveRegistry--]: #MarketFactory-curveRegistry--
 [MarketFactory-collateralToken--]: #MarketFactory-collateralToken--
-[WhitelistAdminRole-isWhitelistAdmin-address-]: #WhitelistAdminRole-isWhitelistAdmin-address-
-[WhitelistAdminRole-addWhitelistAdmin-address-]: #WhitelistAdminRole-addWhitelistAdmin-address-
-[WhitelistAdminRole-renounceWhitelistAdmin--]: #WhitelistAdminRole-renounceWhitelistAdmin--
-[WhitelistAdminRole-_addWhitelistAdmin-address-]: #WhitelistAdminRole-_addWhitelistAdmin-address-
-[WhitelistAdminRole-_removeWhitelistAdmin-address-]: #WhitelistAdminRole-_removeWhitelistAdmin-address-
-[WhitelistAdminRole-WhitelistAdminAdded-address-]: #WhitelistAdminRole-WhitelistAdminAdded-address-
-[WhitelistAdminRole-WhitelistAdminRemoved-address-]: #WhitelistAdminRole-WhitelistAdminRemoved-address-
+[ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-isWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-removeWhitelistAdmin--]: #ModifiedWhitelistAdminRole-removeWhitelistAdmin--
+[ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-
 
 
 ## <span id="IMarketFactory"></span> `IMarketFactory`
@@ -91,7 +91,7 @@ The market factory stores the addresses in the relavant registry.
 
 
 - [`onlyAnAdmin()`][MarketFactory-onlyAnAdmin--]
-- [`onlyWhitelistAdmin()`][WhitelistAdminRole-onlyWhitelistAdmin--]
+- [`onlyWhitelistAdmin()`][ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]
 - [`constructor(address _collateralToken, address _moleculeVault, address _marketRegistry, address _curveRegistry)`][MarketFactory-constructor-address-address-address-address-]
 - [`init(address _admin, address _api)`][MarketFactory-init-address-address-]
 - [`deployMarket(uint256[] _fundingGoals, uint256[] _phaseDurations, address _creator, uint256 _curveType, uint256 _feeRate)`][MarketFactory-deployMarket-uint256---uint256---address-uint256-uint256-]
@@ -100,13 +100,13 @@ The market factory stores the addresses in the relavant registry.
 - [`marketRegistry()`][MarketFactory-marketRegistry--]
 - [`curveRegistry()`][MarketFactory-curveRegistry--]
 - [`collateralToken()`][MarketFactory-collateralToken--]
-- [`isWhitelistAdmin(address account)`][WhitelistAdminRole-isWhitelistAdmin-address-]
-- [`addWhitelistAdmin(address account)`][WhitelistAdminRole-addWhitelistAdmin-address-]
-- [`renounceWhitelistAdmin()`][WhitelistAdminRole-renounceWhitelistAdmin--]
-- [`_addWhitelistAdmin(address account)`][WhitelistAdminRole-_addWhitelistAdmin-address-]
-- [`_removeWhitelistAdmin(address account)`][WhitelistAdminRole-_removeWhitelistAdmin-address-]
-- [`WhitelistAdminAdded(address account)`][WhitelistAdminRole-WhitelistAdminAdded-address-]
-- [`WhitelistAdminRemoved(address account)`][WhitelistAdminRole-WhitelistAdminRemoved-address-]
+- [`isWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]
+- [`addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]
+- [`removeWhitelistAdmin()`][ModifiedWhitelistAdminRole-removeWhitelistAdmin--]
+- [`_addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]
+- [`_removeWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]
+- [`WhitelistAdminAdded(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]
+- [`WhitelistAdminRemoved(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]
 
 ### <span id="MarketFactory-onlyAnAdmin--"></span> `onlyAnAdmin()`
 

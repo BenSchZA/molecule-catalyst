@@ -6,7 +6,7 @@
 [IMoleculeVault-collateralToken--]: #IMoleculeVault-collateralToken--
 [IMoleculeVault-feeRate--]: #IMoleculeVault-feeRate--
 [MoleculeVault]: #MoleculeVault
-[WhitelistAdminRole-onlyWhitelistAdmin--]: #WhitelistAdminRole-onlyWhitelistAdmin--
+[ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]: #ModifiedWhitelistAdminRole-onlyWhitelistAdmin--
 [MoleculeVault-collateralToken_-contract-IERC20]: #MoleculeVault-collateralToken_-contract-IERC20
 [MoleculeVault-feeRate_-uint256]: #MoleculeVault-feeRate_-uint256
 [MoleculeVault-constructor-address-address-uint256-]: #MoleculeVault-constructor-address-address-uint256-
@@ -16,13 +16,13 @@
 [MoleculeVault-updateFeeRate-uint256-]: #MoleculeVault-updateFeeRate-uint256-
 [MoleculeVault-collateralToken--]: #MoleculeVault-collateralToken--
 [MoleculeVault-feeRate--]: #MoleculeVault-feeRate--
-[WhitelistAdminRole-isWhitelistAdmin-address-]: #WhitelistAdminRole-isWhitelistAdmin-address-
-[WhitelistAdminRole-addWhitelistAdmin-address-]: #WhitelistAdminRole-addWhitelistAdmin-address-
-[WhitelistAdminRole-renounceWhitelistAdmin--]: #WhitelistAdminRole-renounceWhitelistAdmin--
-[WhitelistAdminRole-_addWhitelistAdmin-address-]: #WhitelistAdminRole-_addWhitelistAdmin-address-
-[WhitelistAdminRole-_removeWhitelistAdmin-address-]: #WhitelistAdminRole-_removeWhitelistAdmin-address-
-[WhitelistAdminRole-WhitelistAdminAdded-address-]: #WhitelistAdminRole-WhitelistAdminAdded-address-
-[WhitelistAdminRole-WhitelistAdminRemoved-address-]: #WhitelistAdminRole-WhitelistAdminRemoved-address-
+[ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-isWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-removeWhitelistAdmin--]: #ModifiedWhitelistAdminRole-removeWhitelistAdmin--
+[ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-
 ## <span id="IMoleculeVault"></span> `IMoleculeVault`
 
 
@@ -88,7 +88,7 @@ funding has been successfully filled.
 
 
 
-- [`onlyWhitelistAdmin()`][WhitelistAdminRole-onlyWhitelistAdmin--]
+- [`onlyWhitelistAdmin()`][ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]
 - [`constructor(address _collateralToken, address _admin, uint256 _feeRate)`][MoleculeVault-constructor-address-address-uint256-]
 - [`addAdmin(address _moleculeAdmin)`][MoleculeVault-addAdmin-address-]
 - [`transfer(address _to, uint256 _amount)`][MoleculeVault-transfer-address-uint256-]
@@ -96,13 +96,13 @@ funding has been successfully filled.
 - [`updateFeeRate(uint256 _newFeeRate)`][MoleculeVault-updateFeeRate-uint256-]
 - [`collateralToken()`][MoleculeVault-collateralToken--]
 - [`feeRate()`][MoleculeVault-feeRate--]
-- [`isWhitelistAdmin(address account)`][WhitelistAdminRole-isWhitelistAdmin-address-]
-- [`addWhitelistAdmin(address account)`][WhitelistAdminRole-addWhitelistAdmin-address-]
-- [`renounceWhitelistAdmin()`][WhitelistAdminRole-renounceWhitelistAdmin--]
-- [`_addWhitelistAdmin(address account)`][WhitelistAdminRole-_addWhitelistAdmin-address-]
-- [`_removeWhitelistAdmin(address account)`][WhitelistAdminRole-_removeWhitelistAdmin-address-]
-- [`WhitelistAdminAdded(address account)`][WhitelistAdminRole-WhitelistAdminAdded-address-]
-- [`WhitelistAdminRemoved(address account)`][WhitelistAdminRole-WhitelistAdminRemoved-address-]
+- [`isWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]
+- [`addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]
+- [`removeWhitelistAdmin()`][ModifiedWhitelistAdminRole-removeWhitelistAdmin--]
+- [`_addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]
+- [`_removeWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]
+- [`WhitelistAdminAdded(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]
+- [`WhitelistAdminRemoved(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]
 
 ### <span id="MoleculeVault-constructor-address-address-uint256-"></span> `constructor(address _collateralToken, address _admin, uint256 _feeRate)` (public)
 

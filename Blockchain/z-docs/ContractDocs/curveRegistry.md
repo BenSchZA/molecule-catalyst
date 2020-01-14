@@ -1,5 +1,5 @@
 [CurveRegistry]: #CurveRegistry
-[WhitelistAdminRole-onlyWhitelistAdmin--]: #WhitelistAdminRole-onlyWhitelistAdmin--
+[ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]: #ModifiedWhitelistAdminRole-onlyWhitelistAdmin--
 [CurveRegistry-numberOfCurves_-uint256]: #CurveRegistry-numberOfCurves_-uint256
 [CurveRegistry-publishedBlocknumber_-uint256]: #CurveRegistry-publishedBlocknumber_-uint256
 [CurveRegistry-curveContracts_-mapping-uint256----struct-CurveRegistry-CurveOption-]: #CurveRegistry-curveContracts_-mapping-uint256----struct-CurveRegistry-CurveOption-
@@ -12,13 +12,13 @@
 [CurveRegistry-getCurveData-uint256-]: #CurveRegistry-getCurveData-uint256-
 [CurveRegistry-getIndex--]: #CurveRegistry-getIndex--
 [CurveRegistry-publishedBlocknumber--]: #CurveRegistry-publishedBlocknumber--
-[WhitelistAdminRole-isWhitelistAdmin-address-]: #WhitelistAdminRole-isWhitelistAdmin-address-
-[WhitelistAdminRole-addWhitelistAdmin-address-]: #WhitelistAdminRole-addWhitelistAdmin-address-
-[WhitelistAdminRole-renounceWhitelistAdmin--]: #WhitelistAdminRole-renounceWhitelistAdmin--
-[WhitelistAdminRole-_addWhitelistAdmin-address-]: #WhitelistAdminRole-_addWhitelistAdmin-address-
-[WhitelistAdminRole-_removeWhitelistAdmin-address-]: #WhitelistAdminRole-_removeWhitelistAdmin-address-
-[WhitelistAdminRole-WhitelistAdminAdded-address-]: #WhitelistAdminRole-WhitelistAdminAdded-address-
-[WhitelistAdminRole-WhitelistAdminRemoved-address-]: #WhitelistAdminRole-WhitelistAdminRemoved-address-
+[ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-isWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-removeWhitelistAdmin--]: #ModifiedWhitelistAdminRole-removeWhitelistAdmin--
+[ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-
 [ICurveRegistry-CurveRegisterd-uint256-address-string-]: #ICurveRegistry-CurveRegisterd-uint256-address-string-
 [ICurveRegistry-CurveActivated-uint256-address-]: #ICurveRegistry-CurveActivated-uint256-address-
 [ICurveRegistry-CurveDeactivated-uint256-address-]: #ICurveRegistry-CurveDeactivated-uint256-address-
@@ -39,7 +39,7 @@
 
 
 
-- [`onlyWhitelistAdmin()`][WhitelistAdminRole-onlyWhitelistAdmin--]
+- [`onlyWhitelistAdmin()`][ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]
 - [`constructor()`][CurveRegistry-constructor--]
 - [`init(address _admin)`][CurveRegistry-init-address-]
 - [`registerCurve(address _libraryAddress, string _curveFunction)`][CurveRegistry-registerCurve-address-string-]
@@ -49,13 +49,13 @@
 - [`getCurveData(uint256 _index)`][CurveRegistry-getCurveData-uint256-]
 - [`getIndex()`][CurveRegistry-getIndex--]
 - [`publishedBlocknumber()`][CurveRegistry-publishedBlocknumber--]
-- [`isWhitelistAdmin(address account)`][WhitelistAdminRole-isWhitelistAdmin-address-]
-- [`addWhitelistAdmin(address account)`][WhitelistAdminRole-addWhitelistAdmin-address-]
-- [`renounceWhitelistAdmin()`][WhitelistAdminRole-renounceWhitelistAdmin--]
-- [`_addWhitelistAdmin(address account)`][WhitelistAdminRole-_addWhitelistAdmin-address-]
-- [`_removeWhitelistAdmin(address account)`][WhitelistAdminRole-_removeWhitelistAdmin-address-]
-- [`WhitelistAdminAdded(address account)`][WhitelistAdminRole-WhitelistAdminAdded-address-]
-- [`WhitelistAdminRemoved(address account)`][WhitelistAdminRole-WhitelistAdminRemoved-address-]
+- [`isWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]
+- [`addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]
+- [`removeWhitelistAdmin()`][ModifiedWhitelistAdminRole-removeWhitelistAdmin--]
+- [`_addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]
+- [`_removeWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]
+- [`WhitelistAdminAdded(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]
+- [`WhitelistAdminRemoved(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]
 - [`CurveRegisterd(uint256 index, address libraryAddress, string curveFunction)`][ICurveRegistry-CurveRegisterd-uint256-address-string-]
 - [`CurveActivated(uint256 index, address libraryAddress)`][ICurveRegistry-CurveActivated-uint256-address-]
 - [`CurveDeactivated(uint256 index, address libraryAddress)`][ICurveRegistry-CurveDeactivated-uint256-address-]

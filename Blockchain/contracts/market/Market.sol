@@ -107,7 +107,12 @@ contract Market is IMarket, IERC20 {
 
     /**
       * @dev	We have modified the minting function to divert a portion of the
-      *         collateral for the purchased tokens to the vault.
+      *         collateral for the purchased tokens to the vault. 
+      * @notice If a mint transaction exceeded the needed funding for the last
+      *         round, the excess funds WILL NOT BE RETURNED TO SENDER. The
+      *         Molecule Catalyst front end prevents this.
+      *         The curve intergral code will reject any values that are too
+      *         small or large, that could result in over/under flows.
       * @param  _to : Address to mint tokens to.
       * @param  _numTokens : The number of tokens you want to mint.
       */
@@ -260,7 +265,7 @@ contract Market is IMarket, IERC20 {
       */
     function withdraw(uint256 _amount) public returns(bool) {
         // Ensures withdraw can only be called in an inactive market
-        require(active_ == false, "Market not finalised");
+        require(!active_, "Market not finalised");
         // Ensures the sender has enough tokens
         require(_amount <= balances[msg.sender], "Insufficient funds");
         // Ensures there are no anomaly withdraws that might break calculations
@@ -272,23 +277,27 @@ contract Market is IMarket, IERC20 {
         uint256 balance = collateralToken_.balanceOf(address(this));
 
         // Performs a flat linear 100% collateralized sale
-        uint256 daiToTransfer = balance.mul(_amount).div(totalSupply_);
+        uint256 collateralToTransfer = balance.mul(_amount).div(totalSupply_);
         // Removes token amount from the total supply
         totalSupply_ = totalSupply_.sub(_amount);
 
         // Ensures the sender is sent their collateral amount
         require(
-            collateralToken_.transfer(msg.sender, daiToTransfer),
+            collateralToken_.transfer(msg.sender, collateralToTransfer),
             "Dai transfer failed"
         );
 
         emit Transfer(msg.sender, address(0), _amount);
-        emit Burn(msg.sender, _amount, daiToTransfer);
+        emit Burn(msg.sender, _amount, collateralToTransfer);
+
+        return true;
     }
 
     /**
 	  * @dev	Returns the required collateral amount for a volume of bonding
-	  *			curve tokens
+	  *			curve tokens.
+      * @notice The curve intergral code will reject any values that are too
+      *         small or large, that could result in over/under flows.
 	  * @param	_numTokens: The number of tokens to calculate the price of
       * @return uint256 : The required collateral amount for a volume of bonding
       *         curve tokens.
@@ -383,7 +392,7 @@ contract Market is IMarket, IERC20 {
         return allowed[_owner][_spender];
     }
 
-	/**
+    /**
       * @notice Approves transfers for a given address.
       * @param  _spender : The account that will receive the funds.
       * @param  _value : The value of funds accessed.
@@ -398,6 +407,44 @@ contract Market is IMarket, IERC20 {
     {
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    /**
+      * @dev    Atomically increases the allowance granted to `spender` by the
+      *         caller.
+      * @notice This is an alternative to {approve} that can be used as a
+      *         mitigation for problems described in {IERC20-approve}.
+      */
+    function increaseAllowance(
+        address _spender,
+        uint256 _addedValue
+    )
+        public
+        returns(bool) 
+    {
+        allowed[msg.sender][_spender] = allowed[msg.sender][_spender]
+            .add(_addedValue);
+        emit Approval(msg.sender, _spender, _addedValue);
+        return true;
+    }
+
+    /**
+      * @dev    Atomically decreases the allowance granted to `spender` by the
+      *         caller.
+      * @notice This is an alternative to {approve} that can be used as a
+      *         mitigation for problems described in {IERC20-approve}.
+      */
+    function decreaseAllowance(
+        address _spender,
+        uint256 _subtractedValue
+    )
+        public
+        returns(bool)
+    {
+        allowed[msg.sender][_spender] = allowed[msg.sender][_spender]
+            .sub(_subtractedValue);
+        emit Approval(msg.sender, _spender, _subtractedValue);
         return true;
     }
 
@@ -422,6 +469,10 @@ contract Market is IMarket, IERC20 {
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+
+        emit Transfer(_from, _to, _value);
+
+        return true;
     }
 
 	/**

@@ -526,5 +526,47 @@ describe('Market test', async () => {
                 )
             );
         });
+
+        it('Increase allowance acts as expected', async () => {
+            let allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+                assert.equal(
+                    allowance.toString(),
+                    0,
+                    "Allowance already set"
+                );
+    
+                await (await marketInstance.from(user1).increaseAllowance(user2.signer.address, ethers.constants.MaxUint256)).wait();
+                allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+                assert.equal(
+                    allowance.toString(),
+                    ethers.constants.MaxUint256.toString(),
+                    "Allowance did not correctly increase"
+                );
+        });
+
+        it('Decrease allowance acts as expected', async () => {
+            let allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+            assert.equal(
+                allowance.toString(),
+                0,
+                "Allowance already set"
+            );
+
+            await (await marketInstance.from(user1).increaseAllowance(user2.signer.address, ethers.constants.MaxUint256)).wait();
+            allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+            assert.equal(
+                allowance.toString(),
+                ethers.constants.MaxUint256.toString(),
+                "Allowance did not correctly increase"
+            );
+
+            await (await marketInstance.from(user1).decreaseAllowance(user2.signer.address, ethers.constants.MaxUint256)).wait();
+            allowance = await marketInstance.allowance(user1.signer.address, user2.signer.address);
+            assert.equal(
+                allowance.toString(),
+                0,
+                "Allowance did not correctly decrease"
+            );
+        });
     });
 });

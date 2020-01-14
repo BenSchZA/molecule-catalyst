@@ -1,12 +1,12 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { ModifiedWhitelistAdminRole } from "../_shared/ModifiedWhitelistAdminRole.sol";
 import { ICurveRegistry } from "./ICurveRegistry.sol";
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  Storage of curves and active deployers.
   */
-contract CurveRegistry is ICurveRegistry, WhitelistAdminRole {
+contract CurveRegistry is ICurveRegistry, ModifiedWhitelistAdminRole {
     // The total number of curves
     uint256 internal numberOfCurves_ = 0;
     // The block number when this contract was published
@@ -25,13 +25,13 @@ contract CurveRegistry is ICurveRegistry, WhitelistAdminRole {
     /**
       * @notice The deployer of this contract will be the admin.
       */
-    constructor() public WhitelistAdminRole() {
+    constructor() public ModifiedWhitelistAdminRole() {
         publishedBlocknumber_ = block.number;
     }
 
     function init(address _admin) public onlyWhitelistAdmin() {
         super.addWhitelistAdmin(_admin);
-        super.renounceWhitelistAdmin();
+        super.removeWhitelistAdmin(msg.sender);
     }
 
     /**
@@ -47,6 +47,11 @@ contract CurveRegistry is ICurveRegistry, WhitelistAdminRole {
         onlyWhitelistAdmin()
         returns(uint256)
     {
+        require(
+            address(_libraryAddress) != address(0),
+            "Address cannot be 0"
+        );
+        
         uint256 index = numberOfCurves_;
         numberOfCurves_ = numberOfCurves_ + 1;
 
