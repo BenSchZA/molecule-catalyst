@@ -1,13 +1,13 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { ModifiedWhitelistAdminRole } from "../_shared/ModifiedWhitelistAdminRole.sol";
 import { IMarketRegistry } from "./IMarketRegistry.sol";
 
 /**
   * @author @veronicaLC (Veronica Coutts) & @RyRy79261 (Ryan Nobel)
   * @title  Storage of markets (vaults and markets) as well as deployers.
   */
-contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
+contract MarketRegistry is IMarketRegistry, ModifiedWhitelistAdminRole {
     // The total number of markets
     uint256 internal numberOfMarkets_ = 0;
     // The block number when this contract was published
@@ -28,18 +28,18 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
     /**
       * @notice The deployer of this contract will be the admin.
       */
-    constructor() public WhitelistAdminRole() {
+    constructor() public ModifiedWhitelistAdminRole() {
         publishedBlocknumber_ = block.number;
     }
 
     modifier isRegisteredDeployer() {
-        require(deployer_[msg.sender] == true, "Deployer not registered");
+        require(deployer_[msg.sender], "Deployer not registered");
         _;
     }
 
     function init(address _admin) public onlyWhitelistAdmin() {
         super.addWhitelistAdmin(_admin);
-        super.renounceWhitelistAdmin();
+        super.removeWhitelistAdmin(msg.sender);
     }
 
     /**
@@ -90,6 +90,14 @@ contract MarketRegistry is IMarketRegistry, WhitelistAdminRole {
         isRegisteredDeployer()
         returns(uint256)
     {
+        // Checks that none of the addresses are 0
+        require(
+            address(_marketAddress) != address(0) &&
+            address(_vault) != address(0) &&
+            address(_creator) != address(0),
+            "Address(s) cannot be 0"
+        );
+
         uint256 index = numberOfMarkets_;
         numberOfMarkets_ = numberOfMarkets_ + 1;
 

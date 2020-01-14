@@ -153,10 +153,7 @@ describe('Curve Registry test', async () => {
 
             it("Only admin can remove an admin", async () =>{
                 await assert.notRevert(curveRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-                await assert.revert(curveRegistryInstance.from(user2).renounceWhitelistAdmin())
-
-                // Admins are no longer able to remove each other with WhitelistAdmin
-                // await assert.notRevert(curveRegistryInstance.from(molAdmin).renounceWhitelistAdmin(user1.signer.address))
+                await assert.revert(curveRegistryInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
             });
 
             it("Checks if admin", async () =>{
