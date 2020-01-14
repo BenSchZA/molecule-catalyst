@@ -171,3 +171,6 @@ derivation_*
 
 .etherlime-store
 .outputParameter
+Blockchain/.vscode/
+
+Blockchain/coverage-artifacts/

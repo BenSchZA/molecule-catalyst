@@ -124,7 +124,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 #### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
-function renounceWhitelistAdmin() public
+function removeWhitelistAdmin() public
 ```
 emits `WhitelistAdminRemoved(address indexed account);`
 
@@ -273,7 +273,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 #### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
-function renounceWhitelistAdmin() public
+function removeWhitelistAdmin() public
 ```
 emits `WhitelistAdminRemoved(address indexed account);`
 
@@ -532,7 +532,7 @@ emits `WhitelistAdminAdded(address indexed account);`
 #### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
-function renounceWhitelistAdmin() public
+function removeWhitelistAdmin() public
 ```
 emits `WhitelistAdminRemoved(address indexed account);`
 
@@ -606,6 +606,6 @@ emits `WhitelistAdminAdded(address indexed account);`
 #### Renounce Whitelist Admin
 Allows an admin to renounce their administrative role
 ```
-function renounceWhitelistAdmin() public
+function removeWhitelistAdmin() public
 ```
 emits `WhitelistAdminRemoved(address indexed account);`

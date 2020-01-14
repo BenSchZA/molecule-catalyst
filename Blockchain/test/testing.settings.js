@@ -4,7 +4,7 @@ const BigNumber = require('bignumber.js');
 
 let MarketAbi = require('../build/Market.json');
 let VaultAbi = require('../build/Vault.json');
-let PseudoDaiTokenAbi = require('../build/PseudoDaiToken.json');
+let PseudoDaiTokenAbi = require('../build/pseudoDai.json');
 let MoleculeVaultAbi = require('../build/MoleculeVault.json');
 let CurveRegistryAbi = require('../build/CurveRegistry.json');
 let MarketRegistryAbi = require('../build/MarketRegistry.json');

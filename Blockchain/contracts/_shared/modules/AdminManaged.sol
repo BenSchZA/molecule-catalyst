@@ -19,14 +19,14 @@ contract AdminManaged{
     /// @param _newAdmin        :address The address of the new admin
     function addAdmin(address _newAdmin) external onlyAdmin {
         admins_.add(_newAdmin);
-        require(admins_.has(_newAdmin), "User not added as admin");
+        assert(admins_.has(_newAdmin));
     }
 
     /// @dev    Used to remove admins
     /// @param _oldAdmin        :address The address of the previous admin
     function removeAdmin(address _oldAdmin) external onlyAdmin {
         admins_.remove(_oldAdmin);
-        require(!admins_.has(_oldAdmin), "User not removed as admin");
+        assert(!admins_.has(_oldAdmin));
     }
 
     /// @dev    Checking admin rights
