@@ -65,7 +65,7 @@
     web3-eth-abi "^1.0.0-beta.24"
     yargs "^10.0.3"
 
-"@0x/sol-coverage@3.0.12":
+"@0x/sol-coverage@^3.0.0":
   version "3.0.12"
   resolved "https://registry.yarnpkg.com/@0x/sol-coverage/-/sol-coverage-3.0.12.tgz#4ca602495f7bcc4f045854850cd7f20fdf64e984"
   integrity sha512-V4Iq8LU8HWNctVCt+gMHKcZ0moiawpna7bd3SWQuiQIig0iNpXBBCQl9SEIwpboTcv4Xhzo4cZuCGsWwKAQSpw==
@@ -8319,13 +8319,6 @@ etherlime-lib@1.1.3:
     typescript "^3.5.1"
 
 etherlime-logger@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/etherlime-logger/-/etherlime-logger-1.1.2.tgz#44b9e746a105af01a335bfddfa667db735cc60ca"
-  integrity sha512-nU+EEDuxAqP8Z/6QmrAAVAzXdUvZAXcndXdD+YAgESP+7aFhjL8F+eiXzjz9Jp1SV9yq+znxD57Hvo54PL5ASg==
-  dependencies:
-    fs-extra "7.0.1"
-
-etherlime-logger@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/etherlime-logger/-/etherlime-logger-1.1.3.tgz#8940a2a9f9418343ea110c05cfe080481af209d3"
   integrity sha512-0th+CesKwEsDs6RotsiM1qXTYDoZU24zWQp/0VoHwlrzJLBxKYPIUkO5QkoG7jDKUWJ+vagyMgSab4XGWEEkIw==
@@ -8333,25 +8326,18 @@ etherlime-logger@^1.1.3:
     fs-extra "7.0.1"
 
 etherlime-utils@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/etherlime-utils/-/etherlime-utils-1.1.2.tgz#5d7c58434d7d89deaa4b5c64ef50964374083c4f"
-  integrity sha512-iOO0BFThfJMHDIHHsdXrM1kkWG8fzERP1mihoDr9ajPiJVoonyzARY9cfsHeZhVPI4oiT40GPikX4DgFyrBHmw==
-  dependencies:
-    chalk "2.4.1"
-
-etherlime-utils@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/etherlime-utils/-/etherlime-utils-1.1.3.tgz#237fe3ca6046dd4ea896766d5e2d6b912e2ff65a"
   integrity sha512-h5Kc5OM2YJM5aB1OIivh4pRMrT2Jjc1bS5eZIy0Jpuu8x6aH+EXjVJ1GavetCj+Qm7L+/oTgk5F9ZTU1BZ74CA==
   dependencies:
     chalk "2.4.1"
 
-etherlime@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/etherlime/-/etherlime-2.2.4.tgz#3781a33111037bbacdff6ec728ade7bff77df76d"
-  integrity sha512-+2ZYnOsYY6z6MVgA7VWLgZwc/pn3CFdmy+BrF6qSPWldi02wD0lAsU/PAttWgKmG51PmYekqh8ZsPyRPH7fBng==
+etherlime@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/etherlime/-/etherlime-2.2.0.tgz#2a3ab7d4130ac3dd72aa2d4691bceea858340ecb"
+  integrity sha512-Lo+Hkp8VxukoFrR2m+E9PjBb/O0a6r7hcYTOH4mwo2Z3WDVTqSdD9BM6eo/ajnBE+naKpOZJiFIJTC0v/WyNcQ==
   dependencies:
-    "@0x/sol-coverage" "3.0.12"
+    "@0x/sol-coverage" "^3.0.0"
     axios "^0.18.0"
     bn "^1.0.1"
     chai "4.1.2"
@@ -8361,12 +8347,12 @@ etherlime@^2.2.4:
     docker-cli-js "^2.5.2"
     ethereum-transaction-debugger "0.0.5"
     etherlime-config "^1.0.0"
-    etherlime-logger "^1.1.3"
-    etherlime-utils "^1.1.3"
+    etherlime-logger "^1.1.2"
+    etherlime-utils "^1.1.2"
     ethers "^4.0.27"
     find-cache-dir "2.0.0"
     fs-extra "7.0.1"
-    ganache-cli "6.4.1"
+    ganache-cli "^6.4.1"
     mocha "5.2.0"
     original-require "1.0.1"
     require-from-string "2.0.2"
@@ -9551,14 +9537,14 @@ g-status@^2.0.2:
     matcher "^1.0.0"
     simple-git "^1.85.0"
 
-ganache-cli@6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.4.1.tgz#77c1682883a544dcad160b0e8155e282aefb4f1f"
-  integrity sha512-MUZ1DNnmlTrXnH6EuINuew75AI9d/wbIC0WpZCJo5Endsf6ZwEvfnfxGMpEnVizRri1mon2WWxLGAmALDxVcRQ==
+ganache-cli@^6.4.1:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.7.0.tgz#b59845578221bdf686cf124d007c5ee62e85a62f"
+  integrity sha512-9CZsClo9hl5MxGL7hkk14mie89Q94P0idh92jcV7LmppTYTCG7SHatuwcfqN7emFHArMt3fneN4QbH2do2N6Ow==
   dependencies:
-    bn.js "4.11.8"
-    source-map-support "0.5.9"
-    yargs "11.1.0"
+    ethereumjs-util "6.1.0"
+    source-map-support "0.5.12"
+    yargs "13.2.4"
 
 ganache-core@^2.6.0:
   version "2.8.0"
@@ -14770,7 +14756,7 @@ os-locale@^2.0.0:
     lcid "^1.0.0"
     mem "^1.1.0"
 
-os-locale@^3.0.0:
+os-locale@^3.0.0, os-locale@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/os-locale/-/os-locale-3.1.0.tgz#a802a6ee17f24c10483ab9935719cef4ed16bf1a"
   integrity sha512-Z8l3R4wYWM40/52Z+S265okfFj8Kt2cC2MKY+xNi3kFs+XGI7WXu/I309QQQYbRW4ijiZ+yxs9pqEhJh0DqW3Q==
@@ -17985,14 +17971,6 @@ source-map-support@0.5.12, source-map-support@^0.5.6, source-map-support@^0.5.9,
   version "0.5.12"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.12.tgz#b4f3b10d51857a5af0138d3ce8003b201613d599"
   integrity sha512-4h2Pbvyy15EE02G+JOZpUCmqWJuqrs+sEkzewTm++BPi7Hvn/HwcqLAcNxYAyI0x13CpPPn+kMjl+hplXMHITQ==
-  dependencies:
-    buffer-from "^1.0.0"
-    source-map "^0.6.0"
-
-source-map-support@0.5.9:
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.9.tgz#41bc953b2534267ea2d605bccfa7bfa3111ced5f"
-  integrity sha512-gR6Rw4MvUlYy83vP0vxoVNzM6t8MUXqNuRsuBmBHQDu1Fh6X015FrLdgoDKcNdkwGubozq0P4N0Q37UyFVr1EA==
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
@@ -21353,7 +21331,7 @@ yargs-parser@^11.1.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^13.1.1:
+yargs-parser@^13.1.0, yargs-parser@^13.1.1:
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.1.tgz#d26058532aa06d365fe091f6a1fc06b2f7e5eca0"
   integrity sha512-oVAVsHz6uFrg3XQheFII8ESO2ssAf9luWuAd6Wexsu4F3OtIW0o8IribPXYrD4WC24LWtPrJlGy87y5udK+dxQ==
@@ -21400,23 +21378,22 @@ yargs@11.0.0:
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
 
-yargs@11.1.0, yargs@^11.0.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.1.0.tgz#90b869934ed6e871115ea2ff58b03f4724ed2d77"
-  integrity sha512-NwW69J42EsCSanF8kyn5upxvjp5ds+t3+udGBeTbFnERA+lF541DDpMawzo4z6W/QrzNM18D+BPMiOBibnFV5A==
+yargs@13.2.4:
+  version "13.2.4"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.2.4.tgz#0b562b794016eb9651b98bd37acf364aa5d6dc83"
+  integrity sha512-HG/DWAJa1PAnHT9JAhNa8AbAv3FPaiLzioSjCcmuXXhP8MlpHO5vwls4g4j6n30Z74GVQj8Xa62dWVx1QCGklg==
   dependencies:
-    cliui "^4.0.0"
-    decamelize "^1.1.1"
-    find-up "^2.1.0"
-    get-caller-file "^1.0.1"
-    os-locale "^2.0.0"
+    cliui "^5.0.0"
+    find-up "^3.0.0"
+    get-caller-file "^2.0.1"
+    os-locale "^3.1.0"
     require-directory "^2.1.1"
-    require-main-filename "^1.0.1"
+    require-main-filename "^2.0.0"
     set-blocking "^2.0.0"
-    string-width "^2.0.0"
+    string-width "^3.0.0"
     which-module "^2.0.0"
-    y18n "^3.2.1"
-    yargs-parser "^9.0.2"
+    y18n "^4.0.0"
+    yargs-parser "^13.1.0"
 
 yargs@^10.0.3:
   version "10.1.2"
@@ -21434,6 +21411,24 @@ yargs@^10.0.3:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^8.1.0"
+
+yargs@^11.0.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.1.0.tgz#90b869934ed6e871115ea2ff58b03f4724ed2d77"
+  integrity sha512-NwW69J42EsCSanF8kyn5upxvjp5ds+t3+udGBeTbFnERA+lF541DDpMawzo4z6W/QrzNM18D+BPMiOBibnFV5A==
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.1.1"
+    find-up "^2.1.0"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^9.0.2"
 
 yargs@^12.0.2, yargs@^12.0.5:
   version "12.0.5"

@@ -335,9 +335,9 @@ describe("Molecule vault test", async () => {
 
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(moleculeVaultInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(moleculeVaultInstance.from(user2).renounceWhitelistAdmin())
+            await assert.revert(moleculeVaultInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
             
-            await assert.notRevert(moleculeVaultInstance.from(user1.signer.address).renounceWhitelistAdmin())
+            await assert.notRevert(moleculeVaultInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
         });
 
         it("Only admin can approve collateral spending", async () =>{

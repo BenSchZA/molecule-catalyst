@@ -27,7 +27,7 @@ let contracts = {
   'MoleculeVault': require('./artifacts/MoleculeVault.json'),
   'Ownable': require('./artifacts/Ownable.json'),
   'PauserRole': require('./artifacts/PauserRole.json'),
-  'PseudoDaiToken': require('./artifacts/PseudoDaiToken.json'),
+  'pseudoDai': require('./artifacts/pseudoDai.json'),
   'ReentrancyGuard': require('./artifacts/ReentrancyGuard.json'),
   'Roles': require('./artifacts/Roles.json'),
   'SafeERC20': require('./artifacts/SafeERC20.json'),
@@ -36,7 +36,7 @@ let contracts = {
   'SignerRole': require('./artifacts/SignerRole.json'),
   'TokenTimelock': require('./artifacts/TokenTimelock.json'),
   'Vault': require('./artifacts/Vault.json'),
-  'WhitelistAdminRole': require('./artifacts/WhitelistAdminRole.json'),
+  'ModifiedWhitelistAdminRole': require('./artifacts/ModifiedWhitelistAdminRole.json'),
   'WhitelistedRole': require('./artifacts/WhitelistedRole.json'),
 };
 

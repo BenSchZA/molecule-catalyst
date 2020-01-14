@@ -6,19 +6,20 @@
   "scripts": {
     "start": "etherlime ganache -q --networkId=1337",
     "build": "etherlime compile --runs=999 --exportAbi",
-    "deploy:local": "etherlime deploy --network=local --runs=500",
-    "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=500",
-    "deploy:mainnet": "etherlime deploy --network=mainnet --runs=500",
+    "deploy:local": "etherlime deploy --network=local --timeout 100000 --runs=999",
+    "deploy:rinkeby": "etherlime deploy --network=rinkeby --timeout=90000000 --runs=999",
+    "deploy:mainnet": "etherlime deploy --network=mainnet --runs=999",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
-    "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999"
+    "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999",
+    "cover": "etherlime coverage --timeout 100000 --runs=999"
   },
   "author": "Linum Labs",
   "license": "MIT",
   "dependencies": {
     "bignumber.js": "9.0.0",
     "dotenv": "8.0.0",
-    "etherlime": "^2.2.4",
+    "etherlime": "2.2.0",
     "etherlime-lib": "1.1.3",
     "ethers": "4.0.31",
     "openzeppelin-solidity": "2.3.0",

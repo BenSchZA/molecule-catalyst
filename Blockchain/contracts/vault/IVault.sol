@@ -20,9 +20,9 @@ interface IVault {
 
    	/**
       * @dev    Initialized the contract, sets up owners and gets the market
-      *         address. This function exists becuase the Vault does not have
-      *         an address untill the constructor has funished running. The
-      *         cumulative funding threshold is set here becuse of gas issues
+      *         address. This function exists because the Vault does not have
+      *         an address until the constructor has finished running. The
+      *         cumulative funding threshold is set here because of gas issues
       *         within the constructor.
       * @param _market: The market that will be sending this vault it's
       *         collateral.
@@ -30,9 +30,9 @@ interface IVault {
     function initialize(address _market) external returns(bool);
 
     /**
-	  * @notice	ALlows the creator to withdraw the various phases as they are
-	  *			compleated.
-      * @return bool: The funding has sucessfully been transfered.
+	  * @notice	AAllows the creator to withdraw the various phases as they are
+	  *			completed.
+      * @return bool: The funding has successfully been transferred.
 	  */
     function withdraw() external returns(bool);
 

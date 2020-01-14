@@ -9,17 +9,18 @@ contract CurveFunctions {
 	using SafeMath for uint256;
 
 	// Description of function (function ID)
-	string constant public curveFunction = "linear: (1/20000)*x + 0.5";
+	string constant public curveFunction = "linear: (1/20000)*x + 0.5	curve integral: (0.000025*x + 0.5)*x	inverse curve integral: -10000 + 200*sqrt(x + 2500)";
 	// Decimal place precision
 	uint256 constant public DECIMALS = 18;
 
 	/**
-      * @dev    Calculates the definite integral of the curve
+      * @dev    Calculates the definite integral of the curve.
+	  * @notice	Various symboles are used within this function (i.e a, b). This
+	  *			is done to represent the variables within the curve integral 
+	  *			equation.
       * @param  _x : Token value for upper limit of definite integral
       */
 	function curveIntegral(uint256 _x) public pure returns (uint256) {
-		// Validating input number
-		require(_x >= 0, 'Input argument too small');
 		// Ensuring that after scaling the number will not be too large
 		require(_x <= 10**40, 'Input argument too large');
 
@@ -33,12 +34,13 @@ contract CurveFunctions {
 	}
 
 	/**
-		* @dev    Calculates the definite inverse integral of the curve
+	  * @dev    Calculates the definite inverse integral of the curve
+	  * @notice	Various symbols are used within this function (i.e a, b). This
+	  *			is done to represent the variables within the inverse curve 
+	  *			integral equation.
 		* @param  _x : collateral value for upper limit of definite integral
 		*/
 	function inverseCurveIntegral(uint256 _x) public pure returns(uint256) {
-		// Validating input number
-		require(_x >= 0, 'Input argument too small');
 		// Ensuring that after scaling the number will not be too large
 		require(_x <= 10**40, 'Input argument too large');
 

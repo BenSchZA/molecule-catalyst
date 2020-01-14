@@ -11,7 +11,7 @@
 [IMarketRegistry-DeployerRemoved-address-string-]: #IMarketRegistry-DeployerRemoved-address-string-
 [MarketRegistry]: #MarketRegistry
 [MarketRegistry-isRegisteredDeployer--]: #MarketRegistry-isRegisteredDeployer--
-[WhitelistAdminRole-onlyWhitelistAdmin--]: #WhitelistAdminRole-onlyWhitelistAdmin--
+[ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]: #ModifiedWhitelistAdminRole-onlyWhitelistAdmin--
 [MarketRegistry-numberOfMarkets_-uint256]: #MarketRegistry-numberOfMarkets_-uint256
 [MarketRegistry-publishedBlocknumber_-uint256]: #MarketRegistry-publishedBlocknumber_-uint256
 [MarketRegistry-markets_-mapping-uint256----struct-MarketRegistry-Market-]: #MarketRegistry-markets_-mapping-uint256----struct-MarketRegistry-Market-
@@ -25,13 +25,13 @@
 [MarketRegistry-getIndex--]: #MarketRegistry-getIndex--
 [MarketRegistry-isMarketDeployer-address-]: #MarketRegistry-isMarketDeployer-address-
 [MarketRegistry-publishedBlocknumber--]: #MarketRegistry-publishedBlocknumber--
-[WhitelistAdminRole-isWhitelistAdmin-address-]: #WhitelistAdminRole-isWhitelistAdmin-address-
-[WhitelistAdminRole-addWhitelistAdmin-address-]: #WhitelistAdminRole-addWhitelistAdmin-address-
-[WhitelistAdminRole-renounceWhitelistAdmin--]: #WhitelistAdminRole-renounceWhitelistAdmin--
-[WhitelistAdminRole-_addWhitelistAdmin-address-]: #WhitelistAdminRole-_addWhitelistAdmin-address-
-[WhitelistAdminRole-_removeWhitelistAdmin-address-]: #WhitelistAdminRole-_removeWhitelistAdmin-address-
-[WhitelistAdminRole-WhitelistAdminAdded-address-]: #WhitelistAdminRole-WhitelistAdminAdded-address-
-[WhitelistAdminRole-WhitelistAdminRemoved-address-]: #WhitelistAdminRole-WhitelistAdminRemoved-address-
+[ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-isWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-removeWhitelistAdmin--]: #ModifiedWhitelistAdminRole-removeWhitelistAdmin--
+[ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-
 [IMarketRegistry-MarketCreated-uint256-address-address-address-]: #IMarketRegistry-MarketCreated-uint256-address-address-address-
 [IMarketRegistry-DeployerAdded-address-string-]: #IMarketRegistry-DeployerAdded-address-string-
 [IMarketRegistry-DeployerRemoved-address-string-]: #IMarketRegistry-DeployerRemoved-address-string-
@@ -132,7 +132,7 @@ available.
 
 
 - [`isRegisteredDeployer()`][MarketRegistry-isRegisteredDeployer--]
-- [`onlyWhitelistAdmin()`][WhitelistAdminRole-onlyWhitelistAdmin--]
+- [`onlyWhitelistAdmin()`][ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]
 - [`constructor()`][MarketRegistry-constructor--]
 - [`init(address _admin)`][MarketRegistry-init-address-]
 - [`addMarketDeployer(address _newDeployer, string _version)`][MarketRegistry-addMarketDeployer-address-string-]
@@ -142,13 +142,13 @@ available.
 - [`getIndex()`][MarketRegistry-getIndex--]
 - [`isMarketDeployer(address _deployer)`][MarketRegistry-isMarketDeployer-address-]
 - [`publishedBlocknumber()`][MarketRegistry-publishedBlocknumber--]
-- [`isWhitelistAdmin(address account)`][WhitelistAdminRole-isWhitelistAdmin-address-]
-- [`addWhitelistAdmin(address account)`][WhitelistAdminRole-addWhitelistAdmin-address-]
-- [`renounceWhitelistAdmin()`][WhitelistAdminRole-renounceWhitelistAdmin--]
-- [`_addWhitelistAdmin(address account)`][WhitelistAdminRole-_addWhitelistAdmin-address-]
-- [`_removeWhitelistAdmin(address account)`][WhitelistAdminRole-_removeWhitelistAdmin-address-]
-- [`WhitelistAdminAdded(address account)`][WhitelistAdminRole-WhitelistAdminAdded-address-]
-- [`WhitelistAdminRemoved(address account)`][WhitelistAdminRole-WhitelistAdminRemoved-address-]
+- [`isWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]
+- [`addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]
+- [`removeWhitelistAdmin()`][ModifiedWhitelistAdminRole-removeWhitelistAdmin--]
+- [`_addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]
+- [`_removeWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]
+- [`WhitelistAdminAdded(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]
+- [`WhitelistAdminRemoved(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]
 - [`MarketCreated(uint256 index, address marketAddress, address vault, address creator)`][IMarketRegistry-MarketCreated-uint256-address-address-address-]
 - [`DeployerAdded(address deployer, string version)`][IMarketRegistry-DeployerAdded-address-string-]
 - [`DeployerRemoved(address deployer, string reason)`][IMarketRegistry-DeployerRemoved-address-string-]
