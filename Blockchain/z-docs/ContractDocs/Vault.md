@@ -14,7 +14,7 @@
 [Vault]: #Vault
 [Vault-onlyMarket--]: #Vault-onlyMarket--
 [Vault-isActive--]: #Vault-isActive--
-[WhitelistAdminRole-onlyWhitelistAdmin--]: #WhitelistAdminRole-onlyWhitelistAdmin--
+[ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]: #ModifiedWhitelistAdminRole-onlyWhitelistAdmin--
 [Vault-creator_-address]: #Vault-creator_-address
 [Vault-market_-contract-IMarket]: #Vault-market_-contract-IMarket
 [Vault-collateralToken_-contract-IERC20]: #Vault-collateralToken_-contract-IERC20
@@ -38,13 +38,13 @@
 [Vault-market--]: #Vault-market--
 [Vault-creator--]: #Vault-creator--
 [Vault-_endCurrentRound--]: #Vault-_endCurrentRound--
-[WhitelistAdminRole-isWhitelistAdmin-address-]: #WhitelistAdminRole-isWhitelistAdmin-address-
-[WhitelistAdminRole-addWhitelistAdmin-address-]: #WhitelistAdminRole-addWhitelistAdmin-address-
-[WhitelistAdminRole-renounceWhitelistAdmin--]: #WhitelistAdminRole-renounceWhitelistAdmin--
-[WhitelistAdminRole-_addWhitelistAdmin-address-]: #WhitelistAdminRole-_addWhitelistAdmin-address-
-[WhitelistAdminRole-_removeWhitelistAdmin-address-]: #WhitelistAdminRole-_removeWhitelistAdmin-address-
-[WhitelistAdminRole-WhitelistAdminAdded-address-]: #WhitelistAdminRole-WhitelistAdminAdded-address-
-[WhitelistAdminRole-WhitelistAdminRemoved-address-]: #WhitelistAdminRole-WhitelistAdminRemoved-address-
+[ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-isWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-removeWhitelistAdmin--]: #ModifiedWhitelistAdminRole-removeWhitelistAdmin--
+[ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]: #ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-
+[ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]: #ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-
 [IVault-FundingWithdrawn-uint256-uint256-]: #IVault-FundingWithdrawn-uint256-uint256-
 [IVault-PhaseFinalised-uint256-uint256-]: #IVault-PhaseFinalised-uint256-uint256-
 ## <span id="IVault"></span> `IVault`
@@ -176,7 +176,7 @@ market to be re-distributed.
 
 - [`onlyMarket()`][Vault-onlyMarket--]
 - [`isActive()`][Vault-isActive--]
-- [`onlyWhitelistAdmin()`][WhitelistAdminRole-onlyWhitelistAdmin--]
+- [`onlyWhitelistAdmin()`][ModifiedWhitelistAdminRole-onlyWhitelistAdmin--]
 - [`constructor(uint256[] _fundingGoals, uint256[] _phaseDurations, address _creator, address _collateralToken, address _moleculeVault)`][Vault-constructor-uint256---uint256---address-address-address-]
 - [`initialize(address _market)`][Vault-initialize-address-]
 - [`withdraw()`][Vault-withdraw--]
@@ -189,13 +189,13 @@ market to be re-distributed.
 - [`market()`][Vault-market--]
 - [`creator()`][Vault-creator--]
 - [`_endCurrentRound()`][Vault-_endCurrentRound--]
-- [`isWhitelistAdmin(address account)`][WhitelistAdminRole-isWhitelistAdmin-address-]
-- [`addWhitelistAdmin(address account)`][WhitelistAdminRole-addWhitelistAdmin-address-]
-- [`renounceWhitelistAdmin()`][WhitelistAdminRole-renounceWhitelistAdmin--]
-- [`_addWhitelistAdmin(address account)`][WhitelistAdminRole-_addWhitelistAdmin-address-]
-- [`_removeWhitelistAdmin(address account)`][WhitelistAdminRole-_removeWhitelistAdmin-address-]
-- [`WhitelistAdminAdded(address account)`][WhitelistAdminRole-WhitelistAdminAdded-address-]
-- [`WhitelistAdminRemoved(address account)`][WhitelistAdminRole-WhitelistAdminRemoved-address-]
+- [`isWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-isWhitelistAdmin-address-]
+- [`addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-addWhitelistAdmin-address-]
+- [`removeWhitelistAdmin()`][ModifiedWhitelistAdminRole-removeWhitelistAdmin--]
+- [`_addWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_addWhitelistAdmin-address-]
+- [`_removeWhitelistAdmin(address account)`][ModifiedWhitelistAdminRole-_removeWhitelistAdmin-address-]
+- [`WhitelistAdminAdded(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminAdded-address-]
+- [`WhitelistAdminRemoved(address account)`][ModifiedWhitelistAdminRole-WhitelistAdminRemoved-address-]
 - [`FundingWithdrawn(uint256 phase, uint256 amount)`][IVault-FundingWithdrawn-uint256-uint256-]
 - [`PhaseFinalised(uint256 phase, uint256 amount)`][IVault-PhaseFinalised-uint256-uint256-]
 

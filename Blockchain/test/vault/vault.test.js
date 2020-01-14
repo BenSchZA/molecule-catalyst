@@ -372,9 +372,9 @@ describe("Vault test", async () => {
 
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address), "Adding admin failed")
-            await assert.revert(vaultInstance.from(user2).renounceWhitelistAdmin(), "Unauthorised removal of admin")
+            await assert.revert(vaultInstance.from(user2).removeWhitelistAdmin(user2.signer.address), "Unauthorised removal of admin")
 
-            await assert.notRevert(vaultInstance.from(user1.signer.address).renounceWhitelistAdmin(), "Removal of admin failed")
+            await assert.notRevert(vaultInstance.from(user1).removeWhitelistAdmin(user1.signer.address), "Removal of admin failed")
         });
 
         describe("Meta Data", async () => {

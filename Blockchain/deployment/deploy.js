@@ -5,7 +5,7 @@ BACKEND_DEPLOYER_PUBLIC_KEY = process.env.BACKEND_DEPLOYER_PUBLIC_KEY;
 
 const etherlime = require('etherlime-lib');
 
-const PseudoDaiABI = require('../build/PseudoDaiToken.json');
+const PseudoDaiABI = require('../build/pseudoDai.json');
 const MoleculeVaultABI = require('../build/MoleculeVault.json');
 const CurveFunctionsABI = require('../build/CurveFunctions.json');
 const CurveRegistryABI = require('../build/CurveRegistry.json');
@@ -180,7 +180,7 @@ const deploy = async (network, secret) => {
 
 		const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
 			marketFactoryInstance.contract.address,
-			"Debug logs/version"
+			"Local test deployer"
 		);
 
 		await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
@@ -209,7 +209,8 @@ const deploy = async (network, secret) => {
 	} else if (network == 'mainnet') {
 		const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, process.env.INFURA_API_KEY_MAINNET, defaultConfigs);
 		// The contract of DAI
-		const daiAddress = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359";
+		const daiAddress = "0x6b175474e89094c44da98b954eedeac495271d0f";
+		// Found at: https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f
 
 		const deploy = (...args) => deployer.deployAndVerify(...args);
 
