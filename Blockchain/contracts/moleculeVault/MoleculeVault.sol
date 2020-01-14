@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { ModifiedWhitelistAdminRole } from "../_shared/ModifiedWhitelistAdminRole.sol";
 import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { IMoleculeVault } from "./IMoleculeVault.sol";
 
@@ -10,7 +10,7 @@ import { IMoleculeVault } from "./IMoleculeVault.sol";
   * @notice The vault will send the molecule vault its fee rate when a round of
   *         funding has been successfully filled.
   */
-contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
+contract MoleculeVault is IMoleculeVault, ModifiedWhitelistAdminRole {
     // The collateral token being used by the vaults and markets
     IERC20 internal collateralToken_;
     // The fee rate of the molecule vault
@@ -27,16 +27,21 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
         uint256 _feeRate
     )
         public
-        WhitelistAdminRole()
+        ModifiedWhitelistAdminRole()
     {
         // Ensures that the fee rate is correct
-        require(_feeRate >= 0, "Fee rate too low");
         require(_feeRate < 100, "Fee rate too high");
+        // Checks the addresses cannot be 0
+        require(
+            address(_collateralToken) != address(0) &&
+            address(_admin) != address(0),
+            "Address(s) cannot be 0"
+        );
 
         collateralToken_ = IERC20(_collateralToken);
         feeRate_ = _feeRate;
         super.addWhitelistAdmin(_admin);
-        super.renounceWhitelistAdmin();
+        super.removeWhitelistAdmin(msg.sender);
     }
 
     /**
@@ -49,10 +54,10 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     }
 
     /**
-      * @notice Allows an admin to transfer colalteral out of the molecule
+      * @notice Allows an admin to transfer collateral out of the molecule
       *         vault and into another address.
-      * @param  _to: The address that the collateral will be transfered to.
-      * @param  _amount: The amount of collateral being transfered.
+      * @param  _to: The address that the collateral will be transferred to.
+      * @param  _amount: The amount of collateral being transferred.
       */
     function transfer(
         address _to,
@@ -70,7 +75,7 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
     /**
       * @notice Allows an admin to approve a spender of the molecule vault
       *         collateral.
-      * @param  _spender: The address that will be aproved as a spender.
+      * @param  _spender: The address that will be approved as a spender.
       * @param  _amount: The amount the spender will be approved to spend.
       */
     function approve(
@@ -88,7 +93,9 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
 
     /**
       * @notice Allows the admin to update the fee rate charged by the
-      *         molecule vault.
+      *         molecule vault. Any change to this fee rate will not affect
+      *         future Markets. This was done to ensure transparency
+      *         and trust in the fee rates.
       * @param  _newFeeRate : The new fee rate.
       * @return bool: If the update was successful
       */
@@ -103,6 +110,8 @@ contract MoleculeVault is IMoleculeVault, WhitelistAdminRole {
             feeRate_ != _newFeeRate,
             "New fee rate cannot be the same as old fee rate"
         );
+        // Ensures that the fee rate is correct
+        require(_newFeeRate < 100, "Fee rate too high");
 
         feeRate_ = _newFeeRate;
         return true;

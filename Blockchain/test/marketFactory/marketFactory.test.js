@@ -152,9 +152,9 @@ describe("Market Factory test", async () => {
 
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(marketFactoryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(marketFactoryInstance.from(user2).renounceWhitelistAdmin())
+            await assert.revert(marketFactoryInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
 
-            await assert.notRevert(marketFactoryInstance.from(user1).renounceWhitelistAdmin())
+            await assert.notRevert(marketFactoryInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
             
         });
 

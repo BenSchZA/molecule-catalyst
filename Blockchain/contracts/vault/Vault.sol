@@ -1,6 +1,6 @@
 pragma solidity 0.5.10;
 
-import { WhitelistAdminRole } from "openzeppelin-solidity/contracts/access/roles/WhitelistAdminRole.sol";
+import { ModifiedWhitelistAdminRole } from "../_shared/ModifiedWhitelistAdminRole.sol";
 import { IMoleculeVault } from "../moleculeVault/IMoleculeVault.sol";
 import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
@@ -18,7 +18,7 @@ import { IMarket } from "../market/IMarket.sol";
   *         market to be re-distributed.
   * @dev    The vault pulls the mol fee directly from the molecule vault.
   */
-contract Vault is IVault, WhitelistAdminRole {
+contract Vault is IVault, ModifiedWhitelistAdminRole {
     // For math functions with overflow & underflow checks
     using SafeMath for uint256;
     // For keep track of time in months
@@ -36,13 +36,13 @@ contract Vault is IVault, WhitelistAdminRole {
     uint256 internal moleculeFeeRate_;
     // The funding round that is active
     uint256 internal currentPhase_;
-    // Offset for checking funding threashold
+    // Offset for checking funding threshold
     uint256 internal outstandingWithdraw_;
     // The total number of funding rounds
     uint256 internal totalRounds_;
     // The total cumulative fee received from market
     uint256 internal cumulativeReceivedFee_;
-    // If the vault has been initialized
+    // If the vault has been initialized and has not reached its funding goal
     bool internal _active;
     
     // All funding phases information to their position in mapping
@@ -61,8 +61,11 @@ contract Vault is IVault, WhitelistAdminRole {
     /**
       * @dev    Checks the range of funding rounds (1-9). Gets the Molecule fee
       *         from the molecule vault directly.
+      * @notice Any change in the fee rate in the Molecule Vault will not affect
+      *         already deployed vaults. This was done to ensure transparency
+      *         and trust in the fee rates.
       * @param  _fundingGoals: The collateral goal for each funding round.
-      * @param  _phaseDurations: The time limit of each fundign round.
+      * @param  _phaseDurations: The time limit of each funding round.
       * @param  _creator: The creator
       * @param  _collateralToken: The ERC20 collateral token
       * @param  _moleculeVault: The molecule vault
@@ -75,7 +78,7 @@ contract Vault is IVault, WhitelistAdminRole {
         address _moleculeVault
     )
         public
-        WhitelistAdminRole()
+        ModifiedWhitelistAdminRole()
     {
         require(_fundingGoals.length > 0, "No funding goals specified");
         require(_fundingGoals.length < 10, "Too many phases defined");
@@ -84,7 +87,7 @@ contract Vault is IVault, WhitelistAdminRole {
             "Invalid phase configuration"
         );
 
-        // Storing variables in stoage
+        // Storing variables in storage
         super.addWhitelistAdmin(_creator);
         outstandingWithdraw_ = 0;
         creator_ = _creator;
@@ -102,7 +105,7 @@ contract Vault is IVault, WhitelistAdminRole {
                 uint256 withFee = _fundingGoals[i].add(
                     _fundingGoals[i].mul(moleculeFeeRate_).div(100)
                 );
-                // Saving the funding threashold with fee
+                // Saving the funding threshold with fee
                 fundingPhases_[i].fundingThreshold = withFee;
             }
             // Setting the amount of funding raised so far
@@ -139,9 +142,9 @@ contract Vault is IVault, WhitelistAdminRole {
 
     /**
       * @dev    Initialized the contract, sets up owners and gets the market
-      *         address. This function exists becuase the Vault does not have
-      *         an address untill the constructor has funished running. The
-      *         cumulative funding threshold is set here becuse of gas issues
+      *         address. This function exists because the Vault does not have
+      *         an address until the constructor has finished running. The
+      *         cumulative funding threshold is set here because of gas issues
       *         within the constructor.
       * @param _market: The market that will be sending this vault it's
       *         collateral.
@@ -153,14 +156,14 @@ contract Vault is IVault, WhitelistAdminRole {
         onlyWhitelistAdmin()
         returns(bool)
     {
-        require(_market != address(0), "Contracts initalised");
-        // Stores the market in storage
-        market_ = IMarket(_market);
+        require(_market != address(0), "Contracts initialized");
+        // Stores the market in storage 
+        market_ = IMarket(_market); 
         // Removes the market factory contract as an admin
-        super.renounceWhitelistAdmin();
+        super.removeWhitelistAdmin(msg.sender);
 
         // Adding all previous rounds funding goals to the cumulative goal
-        for(uint8 i = 0; i > totalRounds_; i++) {
+        for(uint8 i = 0; i < totalRounds_; i++) {
             if(i == 0) {
                 fundingPhases_[i].cumulativeFundingThreshold.add(
                     fundingPhases_[i].fundingThreshold
@@ -178,10 +181,10 @@ contract Vault is IVault, WhitelistAdminRole {
     /**
       * @notice Allows the creator to withdraw a round of funding.
       * @dev    The withdraw function should be called after each funding round
-      *         has been sucessfully filled. If the withdraw is called after the
+      *         has been successfully filled. If the withdraw is called after the
       *         last round has ended, the market will terminate and any
       *         remaining funds will be sent to the market.
-      * @return bool : The funding has sucessfully been transfered.
+      * @return bool : The funding has successfully been transferred.
       */
     function withdraw()
         external
@@ -191,11 +194,6 @@ contract Vault is IVault, WhitelistAdminRole {
     {
         require(outstandingWithdraw_ > 0, "No funds to withdraw");
 
-        // require(
-        //     fundingPhases_[_phase].state == FundingState.ENDED,
-        //     "Fund phase incomplete"
-        // );
-        
         for(uint8 i; i <= totalRounds_; i++) {
             if(fundingPhases_[i].state == FundingState.PAID) {
                 continue;
@@ -207,25 +205,20 @@ contract Vault is IVault, WhitelistAdminRole {
                 // Sets the rounds funding to be paid
                 fundingPhases_[i].state = FundingState.PAID;
 
-                uint256 molFee = 0;
-                // Ensures a 0 mol fee rate does not break math
-                if(moleculeFeeRate_ != 0 ) {
-                    // Works out the mol fee (included in the funding 
-                    // threashold) and sends the funding to the molecule vault
-                    molFee = fundingPhases_[i].fundingThreshold
-                        .mul(moleculeFeeRate_)
-                        .div(moleculeFeeRate_.add(100));
-                    // Transfers the mol fee to the molecle vault
-                    require(
-                        collateralToken_.transfer(address(moleculeVault_), molFee),
-                        "Tokens not transfer"
-                    );
-                }
-                // Working out the origional funding goal without the mol fee
+                uint256 molFee = fundingPhases_[i].fundingThreshold
+                    .mul(moleculeFeeRate_)
+                    .div(moleculeFeeRate_.add(100));
+                // Transfers the mol fee to the molecule vault
+                require(
+                    collateralToken_.transfer(address(moleculeVault_), molFee),
+                    "Tokens not transfer"
+                );
+
+                // Working out the original funding goal without the mol fee
                 uint256 creatorAmount = fundingPhases_[i].fundingThreshold
                     .sub(molFee);
 
-                // Sending the creator their collateral amoutn
+                // Sending the creator their collateral amount
                 require(
                     collateralToken_.transfer(msg.sender, creatorAmount),
                     "Tokens not transfer"
@@ -238,12 +231,12 @@ contract Vault is IVault, WhitelistAdminRole {
         }
 
         // This checks if the current round is the last round, if it is, it
-        // terminates the market and sends all remaing funds to the market.
+        // terminates the market and sends all remaining funds to the market.
         if(
             fundingPhases_[currentPhase_].state == FundingState.NOT_STARTED
         ) {
             if(market_.active() && outstandingWithdraw_ == 0) {
-                // This will transfer any remianing funding to the market
+                // This will transfer any remaining funding to the market
                 terminateMarket();
             }
         }
@@ -251,12 +244,13 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
-      * @notice Allows the market to check that the funding
+      * @notice Allows the market to check that the funding round(s) have not
+      *         been completed, and that the market is still open.
       * @dev    This function will terminate the market if the time for the
       *         round is exceeded. This will loose any funding the creator has
       *         not withdrawn.
-      * @param  _receivedFunding: The amount of funding recived
-      * @return bool: Wheather or not the funding is valid
+      * @param  _receivedFunding: The amount of funding received
+      * @return bool: Whether or not the funding is valid
       */
     function validateFunding(
         uint256 _receivedFunding
@@ -289,20 +283,20 @@ contract Vault is IVault, WhitelistAdminRole {
         // Adds received funding to the cumulative record of fee received
         cumulativeReceivedFee_.add(_receivedFunding);
 
-        // Ensures the total fee recived finishes the current round
+        // Ensures the total fee received finishes the current round
         if(
             fundingPhases_[currentPhase_].cumulativeFundingThreshold <=
                 cumulativeReceivedFee_ &&
             balance.sub(outstandingWithdraw_) >=
                 fundingPhases_[currentPhase_].fundingThreshold
         ) {
-            // Ensures that the round has been funded corectly
+            // Ensures that the round has been funded correctly
             assert(
                 fundingPhases_[currentPhase_].fundingRaised >=
                 fundingPhases_[currentPhase_].fundingThreshold
             );
             // end current round will check if there is excess funding and add
-            // it to the next round, as well as incremeting the current round
+            // it to the next round, as well as incrementing the current round
             _endCurrentRound();
             // Checks if the funding raised is larger than this rounds goal
             if(
@@ -311,10 +305,10 @@ contract Vault is IVault, WhitelistAdminRole {
             ) {
                 // Ends the round
                 _endCurrentRound();
-                // Ensures the recived funding does not finish any other rounds
+                // Ensures the received funding does not finish any other rounds
                 do {
                     // checks if the next funding rounds cumulative funding goal
-                    // is compleated
+                    // is completed
                     if(
                         fundingPhases_[currentPhase_]
                             .cumulativeFundingThreshold <=
@@ -350,7 +344,7 @@ contract Vault is IVault, WhitelistAdminRole {
         if(outstandingWithdraw_ > 0) {
             remainingBalance = remainingBalance.sub(outstandingWithdraw_);
         }
-        // Transferes remaining balance to the market
+        // Transfers remaining balance to the market
         require(
             collateralToken_.transfer(address(market_), remainingBalance),
             "Transfering of funds failed"
@@ -360,7 +354,7 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
-      * @notice Returns all the details (relavant to external code) for a
+      * @notice Returns all the details (relevant to external code) for a
       *         specific phase.
       * @param  _phase: The phase that you want the information of
       * @return uint256: The funding goal (including mol tax) of the round
@@ -433,7 +427,7 @@ contract Vault is IVault, WhitelistAdminRole {
     }
 
     /**
-      * @dev    Ends the round, increments to the next round, rollsover excess
+      * @dev    Ends the round, increments to the next round, rolls-over excess
       *         funding, sets the start date of the next round, if there is one.
       */
     function _endCurrentRound() internal {
@@ -448,7 +442,7 @@ contract Vault is IVault, WhitelistAdminRole {
             fundingPhases_[currentPhase_.add(1)]
                 .fundingRaised = fundingPhases_[currentPhase_.add(1)]
                 .fundingRaised.add(excess);
-            // Setting the current rounds funding raised to the threashold
+            // Setting the current rounds funding raised to the threshold
             fundingPhases_[currentPhase_]
                 .fundingRaised = fundingPhases_[currentPhase_].fundingThreshold;
         }

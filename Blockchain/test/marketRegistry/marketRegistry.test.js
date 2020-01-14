@@ -319,9 +319,9 @@ describe("Market Registry test", async () => {
 
         it("Only admin can remove an admin", async () =>{
             await assert.notRevert(marketRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(marketRegistryInstance.from(user2).renounceWhitelistAdmin())
+            await assert.revert(marketRegistryInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
 
-            await assert.notRevert(marketRegistryInstance.from(user1.signer.address).renounceWhitelistAdmin())
+            await assert.notRevert(marketRegistryInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
         });
 
         describe("Meta Data", async () => {
