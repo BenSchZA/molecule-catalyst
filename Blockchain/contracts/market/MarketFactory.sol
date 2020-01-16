@@ -27,9 +27,8 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
     IERC20 internal collateralToken_;
     // Address of market deployer
     address internal marketCreator_;
-    // Ensures no markets will be deployed until market factory has been
-    // activated
-    bool internal isActive_;
+    // The init function can only be called once 
+    bool internal isInitialized_  = false;
 
     event NewApiAddressAdded(address indexed oldAddress, address indexed newAddress);
 
@@ -79,8 +78,8 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
     {
         super.addNewInitialAdmin(_admin);
         marketCreator_ = _api;
-        super.removeWhitelistAdmin(msg.sender);
-        isActive_ = true;
+        super.renounceWhitelistAdmin();
+        isInitialized_ = true;
     }
 
     function updateApiAddress(

@@ -372,11 +372,13 @@ describe("Vault test", async () => {
             await assert.revert(vaultInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
-        it("Only admin can remove an admin", async () =>{
-            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address), "Adding admin failed")
-            await assert.revert(vaultInstance.from(user2).removeWhitelistAdmin(user2.signer.address), "Unauthorised removal of admin")
+        it("Only mol admin can remove an admin", async () =>{
+            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address))
 
-            await assert.notRevert(vaultInstance.from(user1).removeWhitelistAdmin(user1.signer.address), "Removal of admin failed")
+            // Checks a normal admin cannot remove another admin
+            await assert.revert(vaultInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
+            // Checks the super admin can remove another admin
+            await assert.notRevert(vaultInstance.from(creator).removeWhitelistAdmin(user1.signer.address))
         });
 
         it("Admin can remove themselves as an admin", async () =>{

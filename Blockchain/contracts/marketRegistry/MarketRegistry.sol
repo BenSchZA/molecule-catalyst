@@ -40,8 +40,10 @@ contract MarketRegistry is IMarketRegistry, ModifiedWhitelistAdminRole {
     }
 
     function init(address _admin) public onlyWhitelistAdmin() {
-        super.addWhitelistAdmin(_admin);
-        super.removeWhitelistAdmin(msg.sender);
+        require(!isInitialized_, "Contract is initialized");
+        super.addNewInitialAdmin(_admin);
+        super.renounceWhitelistAdmin();
+        isInitialized_ = true;
     }
 
     /**
