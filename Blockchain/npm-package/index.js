@@ -24,6 +24,7 @@ let contracts = {
   'MarketRegistry': require('./artifacts/MarketRegistry.json'),
   'Math': require('./artifacts/Math.json'),
   'MinterRole': require('./artifacts/MinterRole.json'),
+  'ModifiedWhitelistAdminRole': require('./artifacts/ModifiedWhitelistAdminRole.json'),
   'MoleculeVault': require('./artifacts/MoleculeVault.json'),
   'Ownable': require('./artifacts/Ownable.json'),
   'PauserRole': require('./artifacts/PauserRole.json'),

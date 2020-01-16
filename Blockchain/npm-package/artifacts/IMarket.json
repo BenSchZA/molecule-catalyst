@@ -165,39 +165,6 @@
   },
   {
     "constant": false,
-    "inputs": [],
-    "name": "finaliseMarket",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdraw",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
     "inputs": [
       {
         "name": "_to",
@@ -236,6 +203,39 @@
       }
     ],
     "name": "transferFrom",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "finaliseMarket",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdraw",
     "outputs": [
       {
         "name": "",
@@ -367,7 +367,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "totalSupply",
+    "name": "poolBalance",
     "outputs": [
       {
         "name": "",
@@ -381,7 +381,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "poolBalance",
+    "name": "totalSupply",
     "outputs": [
       {
         "name": "",
