@@ -6,9 +6,9 @@
   "scripts": {
     "start": "etherlime ganache -q --networkId=1337",
     "build": "etherlime compile --runs=999 --exportAbi",
-    "deploy:local": "etherlime deploy --network=local --timeout 100000 --runs=999",
+    "deploy:local": "etherlime deploy --network=local --timeout 100000 --compile=false --runs=999",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --timeout=90000000 --runs=999",
-    "deploy:mainnet": "etherlime deploy --network=mainnet --runs=999",
+    "deploy:mainnet": "etherlime deploy --network=mainnet --timeout=90000000 --runs=999 --compile=false ",
     "deploy:rinkeby:debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000 deploy --network=rinkeby --runs=50",
     "test": "etherlime test --output=none --timeout 100000 --gas-report=true --runs=999",
     "test-one": "etherlime test test/vault/stress.test.js --output=none --timeout 100000 --gas-report=true --runs=999",

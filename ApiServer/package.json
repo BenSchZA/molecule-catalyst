@@ -36,7 +36,7 @@
     "@elastic/elasticsearch": "^7.4.0",
     "@godaddy/terminus": "4.1.2",
     "@hapi/joi": "15.1.0",
-    "@molecule-protocol/catalyst-contracts": "0.0.14",
+    "@molecule-protocol/catalyst-contracts": "1.0.0",
     "@nestjs/common": "6.3.2",
     "@nestjs/core": "6.3.2",
     "@nestjs/jwt": "6.1.1",

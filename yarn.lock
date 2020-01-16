@@ -1418,10 +1418,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@molecule-protocol/catalyst-contracts@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-0.0.14.tgz#b91395f67b12f59ba9e13912451a747ffbc40b96"
-  integrity sha512-uLOTO4ETQyB9LoL8aqOQPlOCfGu6W1sxQTToto24RJZvNUREfjpdwytmPTsK5Pwx/58zQyE+w7rfCQNSqxeO5g==
+"@molecule-protocol/catalyst-contracts@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@molecule-protocol/catalyst-contracts/-/catalyst-contracts-1.0.0.tgz#c0bd5d63b5969f76dd1d927f20fa576a5a01eb77"
+  integrity sha512-C06iFeiKgTX21F1LtezoyG/5V5CiQRiLQsaODhUO8Rjx1tQJEtj0Uh3V9GO1kxrn2I+Bw36Yz3x0bVpNWL0+BQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -19547,11 +19547,6 @@ typescript@^3.5.1:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
   integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==
-
-typescript@^3.7.0-beta:
-  version "3.7.0-beta"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.0-beta.tgz#4ad556e0eee14b90ecc39261001690e16e5eeba9"
-  integrity sha512-4jyCX+IQamrPJxgkABPq9xf+hUN+GWHVxoj+oey1TadCPa4snQl1RKwUba+1dyzYCamwlCxKvZQ3TjyWLhMGBA==
 
 typewise-core@^1.2, typewise-core@^1.2.0:
   version "1.2.0"

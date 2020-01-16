@@ -333,11 +333,54 @@ describe("Molecule vault test", async () => {
             await assert.revert(moleculeVaultInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
-        it("Only admin can remove an admin", async () =>{
+        it("Only mol admin can remove an admin", async () =>{
             await assert.notRevert(moleculeVaultInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
-            await assert.revert(moleculeVaultInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
+
+            // Checks a normal admin cannot remove another admin
+            await assert.revert(moleculeVaultInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
+            // Checks the super admin can remove another admin
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).removeWhitelistAdmin(user1.signer.address))
+        });
+
+        it("Admin can remove themselves as an admin", async () =>{
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
+
+            // Checks a non admin cannot remove themselves
+            await assert.revert(moleculeVaultInstance.from(user2).renounceWhitelistAdmin())
+            // Checks an admin can remove themselves as an admin
+            await assert.notRevert(moleculeVaultInstance.from(user1).renounceWhitelistAdmin())
+        });
+
+        it("One admin must always be present in the contract", async () =>{
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
             
-            await assert.notRevert(moleculeVaultInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
+            // A non admin may not remove themselves
+            await assert.revert(moleculeVaultInstance.from(user2).renounceWhitelistAdmin())
+            // A admin may remove themselves
+            await assert.notRevert(moleculeVaultInstance.from(user1).renounceWhitelistAdmin())
+            // Ensuring there is only 1 admin left in the contract
+            let adminCount = await moleculeVaultInstance.getAdminCount();
+            assert.equal(
+                adminCount.toString(),
+                1,
+                "Incorrect admin count"
+            );
+            // Mol admin should not be able to remove themselves as they are the last admin
+            await assert.revert(moleculeVaultInstance.from(molAdmin).renounceWhitelistAdmin());
+            // Checking there is still the correct number of admins in the contract
+            adminCount = await moleculeVaultInstance.getAdminCount();
+            assert.equal(
+                adminCount.toString(),
+                1,
+                "Incorrect admin count"
+            );
+        });
+
+        it("Initial admin can replace themselves", async () =>{
+            await assert.notRevert(moleculeVaultInstance.from(molAdmin).addNewInitialAdmin(user1.signer.address))
+
+            await assert.revert(moleculeVaultInstance.from(molAdmin).removeWhitelistAdmin(user1.signer.address))
+            await assert.notRevert(moleculeVaultInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
         });
 
         it("Only admin can approve collateral spending", async () =>{

@@ -12,6 +12,8 @@ contract MarketRegistry is IMarketRegistry, ModifiedWhitelistAdminRole {
     uint256 internal numberOfMarkets_ = 0;
     // The block number when this contract was published
     uint256 internal publishedBlocknumber_;
+    // The init function can only be called once 
+    bool internal isInitialized_  = false;
 
     // Mapping of all the markets deployed to their index
     mapping(uint256 => Market) internal markets_;
@@ -38,8 +40,10 @@ contract MarketRegistry is IMarketRegistry, ModifiedWhitelistAdminRole {
     }
 
     function init(address _admin) public onlyWhitelistAdmin() {
-        super.addWhitelistAdmin(_admin);
-        super.removeWhitelistAdmin(msg.sender);
+        require(!isInitialized_, "Contract is initialized");
+        super.addNewInitialAdmin(_admin);
+        super.renounceWhitelistAdmin();
+        isInitialized_ = true;
     }
 
     /**
