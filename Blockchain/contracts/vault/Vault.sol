@@ -88,7 +88,7 @@ contract Vault is IVault, ModifiedWhitelistAdminRole {
         );
 
         // Storing variables in storage
-        super.addWhitelistAdmin(_creator);
+        super.addNewInitialAdmin(_creator);
         outstandingWithdraw_ = 0;
         creator_ = _creator;
         collateralToken_ = IERC20(_collateralToken);
