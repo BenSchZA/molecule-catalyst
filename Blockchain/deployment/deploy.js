@@ -13,9 +13,11 @@ const MarketRegistryABI = require('../build/MarketRegistry.json');
 const MarketFactoryABI = require('../build/MarketFactory.json');
 
 const defaultConfigs = {
-	chainId: 4,
+	chainId: 1,
 	etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-};
+	gasPrice: 8000000000,
+};//	gasPrice: 10000000000,
+// gasLimit: 4700000, 
 
 const deploy = async (network, secret) => {
 	/**
@@ -144,24 +146,22 @@ const deploy = async (network, secret) => {
 			0
 		);
 
-		const curveFunctionsInstance = await deploy(CurveFunctionsABI);
+		const marketRegistryInstance = await deploy(
+			MarketRegistryABI,
+			false
+		);
 
 		const curveRegistryInstance = await deploy(CurveRegistryABI);
+
+		const curveFunctionsInstance = await deploy(CurveFunctionsABI);
 
 		const registerCurveTX = await curveRegistryInstance.registerCurve(
 			curveFunctionsInstance.contract.address,
 			"linear: (1/20000)*x + 0.5"
 		);
 
-		let result = await curveRegistryInstance.verboseWaitForTransaction(registerCurveTX, 'Register curve');
-
-		await curveRegistryInstance.init(
-			ADMIN_PUBLIC_KEY
-		);
-
-		const marketRegistryInstance = await deploy(
-			MarketRegistryABI,
-			false
+		let result = await curveRegistryInstance.verboseWaitForTransaction(
+			registerCurveTX, 'Register curve'
 		);
 
 		const marketFactoryInstance = await deploy(
@@ -173,11 +173,6 @@ const deploy = async (network, secret) => {
 			curveRegistryInstance.contract.address
 		);
 
-		await marketFactoryInstance.init(
-			ADMIN_PUBLIC_KEY,
-			BACKEND_DEPLOYER_PUBLIC_KEY
-		);
-
 		const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
 			marketFactoryInstance.contract.address,
 			"Local test deployer"
@@ -187,6 +182,15 @@ const deploy = async (network, secret) => {
 
 		await marketRegistryInstance.init(
 			ADMIN_PUBLIC_KEY
+		);
+
+		await curveRegistryInstance.init(
+			ADMIN_PUBLIC_KEY
+		);
+
+		await marketFactoryInstance.init(
+			ADMIN_PUBLIC_KEY,
+			BACKEND_DEPLOYER_PUBLIC_KEY
 		);
 
 		const CONTRACT_ADDRESSES = `
@@ -221,27 +225,25 @@ const deploy = async (network, secret) => {
 			false,
 			daiAddress,
 			ADMIN_PUBLIC_KEY,
-			1
+			0
 		);
 
-		const curveFunctionsInstance = await deploy(CurveFunctionsABI);
+		const marketRegistryInstance = await deploy(
+			MarketRegistryABI,
+			false
+		);
 
 		const curveRegistryInstance = await deploy(CurveRegistryABI);
+
+		const curveFunctionsInstance = await deploy(CurveFunctionsABI);
 
 		const registerCurveTX = await curveRegistryInstance.registerCurve(
 			curveFunctionsInstance.contract.address,
 			"linear: (1/20000)*x + 0.5"
 		);
 
-		let result = await curveRegistryInstance.verboseWaitForTransaction(registerCurveTX, 'Register curve');
-
-		await curveRegistryInstance.init(
-			ADMIN_PUBLIC_KEY
-		);
-
-		const marketRegistryInstance = await deploy(
-			MarketRegistryABI,
-			false
+		let result = await curveRegistryInstance.verboseWaitForTransaction(
+			registerCurveTX, 'Register curve'
 		);
 
 		const marketFactoryInstance = await deploy(
@@ -253,20 +255,24 @@ const deploy = async (network, secret) => {
 			curveRegistryInstance.contract.address
 		);
 
-		await marketFactoryInstance.init(
-			ADMIN_PUBLIC_KEY,
-			BACKEND_DEPLOYER_PUBLIC_KEY
-		);
-
 		const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
 			marketFactoryInstance.contract.address,
-			"Debug logs/version"
+			"Local test deployer"
 		);
 
 		await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
 
 		await marketRegistryInstance.init(
 			ADMIN_PUBLIC_KEY
+		);
+
+		await curveRegistryInstance.init(
+			ADMIN_PUBLIC_KEY
+		);
+
+		await marketFactoryInstance.init(
+			ADMIN_PUBLIC_KEY,
+			BACKEND_DEPLOYER_PUBLIC_KEY
 		);
 
 		const CONTRACT_ADDRESSES = `
@@ -278,6 +284,70 @@ const deploy = async (network, secret) => {
 		let balance2 = await deployer.provider.getBalance(deployer.signer.address)
 		console.log("\nBalance of deployer before deploying:\t" + balance.toString());
 		console.log("Balance of deployer after deploying:\t" + balance2.toString());
+		
+		// >>>>>>>>>>
+		// const moleculeVaultInstance = await deploy(
+		// 	MoleculeVaultABI,
+		// 	false,
+		// 	daiAddress,
+		// 	ADMIN_PUBLIC_KEY,
+		// 	1
+		// );
+
+		// const curveFunctionsInstance = await deploy(CurveFunctionsABI);
+
+		// const curveRegistryInstance = await deploy(CurveRegistryABI);
+
+		// const registerCurveTX = await curveRegistryInstance.registerCurve(
+		// 	curveFunctionsInstance.contract.address,
+		// 	"linear: (1/20000)*x + 0.5"
+		// );
+
+		// let result = await curveRegistryInstance.verboseWaitForTransaction(registerCurveTX, 'Register curve');
+
+		// await curveRegistryInstance.init(
+		// 	ADMIN_PUBLIC_KEY
+		// );
+
+		// const marketRegistryInstance = await deploy(
+		// 	MarketRegistryABI,
+		// 	false
+		// );
+
+		// const marketFactoryInstance = await deploy(
+		// 	MarketFactoryABI,
+		// 	false,
+		// 	daiAddress,
+		// 	moleculeVaultInstance.contract.address,
+		// 	marketRegistryInstance.contract.address,
+		// 	curveRegistryInstance.contract.address
+		// );
+
+		// await marketFactoryInstance.init(
+		// 	ADMIN_PUBLIC_KEY,
+		// 	BACKEND_DEPLOYER_PUBLIC_KEY
+		// );
+
+		// const addMarketDeployerTX = await marketRegistryInstance.addMarketDeployer(
+		// 	marketFactoryInstance.contract.address,
+		// 	"Debug logs/version"
+		// );
+
+		// await marketRegistryInstance.verboseWaitForTransaction(addMarketDeployerTX, 'Add market deployer');
+
+		// await marketRegistryInstance.init(
+		// 	ADMIN_PUBLIC_KEY
+		// );
+
+		// const CONTRACT_ADDRESSES = `
+		// 	DAI_CONTRACT_ADDRESS=${daiAddress}
+		// 	MARKET_REGISTRY_ADDRESS=${marketRegistryInstance.contract.address}
+		// 	MARKET_FACTORY_ADDRESS=${marketFactoryInstance.contract.address}`;
+		// console.log(CONTRACT_ADDRESSES);
+
+		// let balance2 = await deployer.provider.getBalance(deployer.signer.address)
+		// console.log("\nBalance of deployer before deploying:\t" + balance.toString());
+		// console.log("Balance of deployer after deploying:\t" + balance2.toString());
 		//
 		//
 	} else {

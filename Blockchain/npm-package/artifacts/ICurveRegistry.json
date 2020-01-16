@@ -22,6 +22,40 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "libraryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "CurveActivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "libraryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "CurveDeactivated",
+    "type": "event"
+  },
+  {
     "constant": false,
     "inputs": [
       {
