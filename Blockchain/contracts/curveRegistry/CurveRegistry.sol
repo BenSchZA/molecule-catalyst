@@ -11,6 +11,8 @@ contract CurveRegistry is ICurveRegistry, ModifiedWhitelistAdminRole {
     uint256 internal numberOfCurves_ = 0;
     // The block number when this contract was published
     uint256 internal publishedBlocknumber_;
+    // The init function can only be called once 
+    bool internal isInitialized_  = false;
 
     // Mapping of all the curves deployed by their index
     mapping(uint256 => CurveOption) internal curveContracts_;

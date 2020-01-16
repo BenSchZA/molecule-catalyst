@@ -1,8 +1,36 @@
 [
   {
     "constant": false,
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "addNewInitialAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [],
     "name": "renounceWhitelistAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "removeWhitelistAdmin",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -20,6 +48,20 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getAdminCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -69,6 +111,23 @@
     "inputs": [
       {
         "indexed": true,
+        "name": "oldAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "NewApiAddressAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "name": "account",
         "type": "address"
       }
@@ -102,6 +161,25 @@
     ],
     "name": "init",
     "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newApiPublicKey",
+        "type": "address"
+      }
+    ],
+    "name": "updateApiAddress",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
