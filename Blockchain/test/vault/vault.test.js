@@ -93,7 +93,9 @@ describe("Vault test", async () => {
             backendMarketDeployer.signer.address
         );
         // Adding the market deployer
-        await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(marketFactoryInstance.contract.address, "Initial factory")).wait()
+        await (await marketRegistryInstance.from(molAdmin).addMarketDeployer(
+            marketFactoryInstance.contract.address, "Initial factory"
+        )).wait()
         
         // Creating a market
         await (await marketFactoryInstance.from(molAdmin).deployMarket(
@@ -366,15 +368,58 @@ describe("Vault test", async () => {
 
     describe("Admin Managed Specific", async () => {
         it("Only admin can add an admin", async () => {
-            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address), "Adding admin failed")
-            await assert.revert(vaultInstance.from(user2).addWhitelistAdmin(user1.signer.address), "Unauthorised adding of admin")
+            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address))
+            await assert.revert(vaultInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
-        it("Only admin can remove an admin", async () =>{
-            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address), "Adding admin failed")
-            await assert.revert(vaultInstance.from(user2).removeWhitelistAdmin(user2.signer.address), "Unauthorised removal of admin")
+        it("Only mol admin can remove an admin", async () =>{
+            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address))
 
-            await assert.notRevert(vaultInstance.from(user1).removeWhitelistAdmin(user1.signer.address), "Removal of admin failed")
+            // Checks a normal admin cannot remove another admin
+            await assert.revert(vaultInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
+            // Checks the super admin can remove another admin
+            await assert.notRevert(vaultInstance.from(creator).removeWhitelistAdmin(user1.signer.address))
+        });
+
+        it("Admin can remove themselves as an admin", async () =>{
+            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address))
+
+            // Checks a non admin cannot remove themselves
+            await assert.revert(vaultInstance.from(user2).renounceWhitelistAdmin())
+            // Checks an admin can remove themselves as an admin
+            await assert.notRevert(vaultInstance.from(user1).renounceWhitelistAdmin())
+        });
+
+        it("One admin must always be present in the contract", async () =>{
+            await assert.notRevert(vaultInstance.from(creator).addWhitelistAdmin(user1.signer.address))
+            
+            // A non admin may not remove themselves
+            await assert.revert(vaultInstance.from(user2).renounceWhitelistAdmin())
+            // A admin may remove themselves
+            await assert.notRevert(vaultInstance.from(user1).renounceWhitelistAdmin())
+            // Ensuring there is only 1 admin left in the contract
+            let adminCount = await vaultInstance.getAdminCount();
+            assert.equal(
+                adminCount.toString(),
+                1,
+                "Incorrect admin count"
+            );
+            // Mol admin should not be able to remove themselves as they are the last admin
+            await assert.revert(vaultInstance.from(creator).renounceWhitelistAdmin());
+            // Checking there is still the correct number of admins in the contract
+            adminCount = await vaultInstance.getAdminCount();
+            assert.equal(
+                adminCount.toString(),
+                1,
+                "Incorrect admin count"
+            );
+        });
+
+        it("Initial admin can replace themselves", async () =>{
+            await assert.notRevert(vaultInstance.from(creator).addNewInitialAdmin(user1.signer.address))
+
+            await assert.revert(vaultInstance.from(creator).removeWhitelistAdmin(user1.signer.address))
+            await assert.notRevert(vaultInstance.from(user1).removeWhitelistAdmin(creator.signer.address))
         });
 
         describe("Meta Data", async () => {

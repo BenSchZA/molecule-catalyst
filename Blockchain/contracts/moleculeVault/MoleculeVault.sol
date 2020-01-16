@@ -40,8 +40,8 @@ contract MoleculeVault is IMoleculeVault, ModifiedWhitelistAdminRole {
 
         collateralToken_ = IERC20(_collateralToken);
         feeRate_ = _feeRate;
-        super.addWhitelistAdmin(_admin);
-        super.removeWhitelistAdmin(msg.sender);
+        super.addNewInitialAdmin(_admin);
+        super.renounceWhitelistAdmin();
     }
 
     /**

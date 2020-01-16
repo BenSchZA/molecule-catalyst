@@ -27,14 +27,13 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
     IERC20 internal collateralToken_;
     // Address of market deployer
     address internal marketCreator_;
-    // Ensures no markets will be deployed until market factory has been
-    // activated
-    bool internal isActive_;
+    // The init function can only be called once 
+    bool internal isInitialized_  = false;
 
     event NewApiAddressAdded(address indexed oldAddress, address indexed newAddress);
 
     modifier onlyAnAdmin() {
-        require(isActive_, "Market factory has not been activated");
+        require(isInitialized_, "Market factory has not been activated");
         require(
             isWhitelistAdmin(msg.sender) || msg.sender == marketCreator_,
             "Functionality restricted to whitelisted admin"
@@ -63,7 +62,6 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
         moleculeVault_ = IMoleculeVault(_moleculeVault);
         marketRegistry_ = IMarketRegistry(_marketRegistry);
         curveRegistry_ = ICurveRegistry(_curveRegistry);
-        isActive_ = false;
     }
 
     /**
@@ -78,10 +76,10 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
         onlyWhitelistAdmin()
         public
     {
-        super.addWhitelistAdmin(_admin);
+        super.addNewInitialAdmin(_admin);
         marketCreator_ = _api;
-        super.removeWhitelistAdmin(msg.sender);
-        isActive_ = true;
+        super.renounceWhitelistAdmin();
+        isInitialized_ = true;
     }
 
     function updateApiAddress(
@@ -100,7 +98,9 @@ contract MarketFactory is IMarketFactory, ModifiedWhitelistAdminRole {
 
     /**
       * @notice This function allows for the creation of a new market,
-      *         consisting of a curve and vault
+      *         consisting of a curve and vault. If the creator address is the
+      *         same as the deploying address the market the initialization of
+      *         the market will fail.
       * @dev    Vyper cannot handle arrays of unknown length, and thus the
       *         funding goals and durations will only be stored in the vault,
       *         which is Solidity.
