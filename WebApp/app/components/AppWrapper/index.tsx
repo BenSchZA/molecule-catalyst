@@ -65,6 +65,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
       color: colors.white,
       display: "inline-flex",
       justifyContent: "center",
+      whiteSpace: "nowrap",
     },
   },
   avatar: {
@@ -80,6 +81,7 @@ const styles = ({ spacing, zIndex, mixins }: Theme) => createStyles({
     fontFamily: "Montserrat",
     fontWeight: "bold",
     fontSize: "14px",
+    wordBreak: "keep-all",
   },
   background: {
     display: "block",

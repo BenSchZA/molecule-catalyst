@@ -150,12 +150,19 @@ describe("Market Factory test", async () => {
             await assert.revert(marketFactoryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
-        it("Only admin can remove an admin", async () =>{
+        it("Only mol admin can remove an admin", async () =>{
             await assert.notRevert(marketFactoryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
             await assert.revert(marketFactoryInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
 
             await assert.notRevert(marketFactoryInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
             
+        });
+
+        it("Initial admin can replace themselves", async () =>{
+            await assert.notRevert(marketFactoryInstance.from(molAdmin).addNewInitialAdmin(user1.signer.address))
+
+            await assert.revert(marketFactoryInstance.from(molAdmin).removeWhitelistAdmin(user1.signer.address))
+            await assert.notRevert(marketFactoryInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
         });
 
         it("Checks if admin", async () =>{

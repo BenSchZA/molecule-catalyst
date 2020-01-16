@@ -317,11 +317,18 @@ describe("Market Registry test", async () => {
             await assert.revert(marketRegistryInstance.from(user2).addWhitelistAdmin(user1.signer.address))
         });
 
-        it("Only admin can remove an admin", async () =>{
+        it("Only mol admin can remove an admin", async () =>{
             await assert.notRevert(marketRegistryInstance.from(molAdmin).addWhitelistAdmin(user1.signer.address))
             await assert.revert(marketRegistryInstance.from(user2).removeWhitelistAdmin(user2.signer.address))
 
             await assert.notRevert(marketRegistryInstance.from(user1).removeWhitelistAdmin(user1.signer.address))
+        });
+
+        it("Initial admin can replace themselves", async () =>{
+            await assert.notRevert(marketRegistryInstance.from(molAdmin).addNewInitialAdmin(user1.signer.address))
+
+            await assert.revert(marketRegistryInstance.from(molAdmin).removeWhitelistAdmin(user1.signer.address))
+            await assert.notRevert(marketRegistryInstance.from(user1).removeWhitelistAdmin(molAdmin.signer.address))
         });
 
         describe("Meta Data", async () => {
