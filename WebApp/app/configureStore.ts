@@ -9,7 +9,7 @@ import { LifeStore, ApplicationRootState } from 'types';
 import { init as initApm } from '@elastic/apm-rum';
 import * as Sentry from '@sentry/browser';
 
-const PRODUCTION = process.env.SENTRY_DSN && process.env.ELASTICSEARCH_HOST;
+const PRODUCTION = process.env.SENTRY_DSN;
 
 if(PRODUCTION) {
   Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
