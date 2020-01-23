@@ -176,8 +176,9 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
             } %
         </Typography>
           <Chip color="primary" label={
-            'Funded of ' + Math.ceil(project.vaultData.phases.reduce((total, phase) =>
-              total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() + ' DAI'
+            'Funded of ' + Math.ceil(
+                Number(ethers.utils.formatEther(project.vaultData.phases[project.vaultData.activePhase].fundingThreshold))
+              ).toLocaleString() + ' DAI'
           } />
           <BorderLinearProgress
             className={classes.margin}
