@@ -177,7 +177,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
         </Typography>
           <Chip color="primary" label={
             'Funded of ' + Math.ceil(
-                Number(ethers.utils.formatEther(project.vaultData.phases[project.vaultData.activePhase].fundingThreshold))
+                Number(ethers.utils.formatEther(project.vaultData ? project.vaultData.phases[project.vaultData.activePhase]?.fundingThreshold : 0))
               ).toLocaleString() + ' DAI'
           } />
           <BorderLinearProgress
