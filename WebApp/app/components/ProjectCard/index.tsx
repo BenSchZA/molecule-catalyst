@@ -168,10 +168,10 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
           <Typography className={classes.percentage}>
             {
               (() => {
-                const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-                const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
-                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-                return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
+                const currentPhase = project.vaultData.phases[project.vaultData.activePhase];
+                const fundingRaised = Number(ethers.utils.formatEther(currentPhase.fundingRaised));
+                const fundingThreshold = Number(ethers.utils.formatEther(currentPhase.fundingThreshold));
+                return Math.ceil(fundingRaised / fundingThreshold * 100);
               })()
             } %
         </Typography>
