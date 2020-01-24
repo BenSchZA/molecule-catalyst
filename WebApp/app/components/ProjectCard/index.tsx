@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
-import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus, PhaseData } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
 
@@ -168,7 +168,7 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
           <Typography className={classes.percentage}>
             {
               (() => {
-                const currentPhase = project.vaultData ? project.vaultData.phases[project.vaultData.activePhase] : 0;
+                const currentPhase: PhaseData | undefined = project?.vaultData?.phases[project.vaultData?.activePhase];
                 const fundingRaised = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingRaised)) : 0;
                 const fundingThreshold = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingThreshold)) : 0;
                 return fundingThreshold > 0 ? Math.ceil(fundingRaised / fundingThreshold * 100) : 0;
@@ -176,9 +176,12 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
             } %
         </Typography>
           <Chip color="primary" label={
-            'Funded of ' + Math.ceil(
-                Number(ethers.utils.formatEther(project.vaultData ? project.vaultData.phases[project.vaultData.activePhase]?.fundingThreshold : 0))
-              ).toLocaleString() + ' DAI'
+            (() => {
+              const fundingThreshold: ethers.utils.BigNumber | undefined = project?.vaultData?.phases[project.vaultData?.activePhase]?.fundingThreshold;
+              return 'Funded of ' + Math.ceil(
+                Number(ethers.utils.formatEther(fundingThreshold ? fundingThreshold : 0))
+              ).toLocaleString() + ' DAI';
+            })()
           } />
           <BorderLinearProgress
             className={classes.margin}
