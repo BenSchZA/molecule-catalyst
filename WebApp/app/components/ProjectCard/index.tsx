@@ -167,19 +167,27 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
           <div className={classes.abstract}>{truncateText(project.abstract)}</div>
           <Typography className={classes.percentage}>
             {
-              (() => {
-                const currentPhase: PhaseData | undefined = project?.vaultData?.phases[project.vaultData?.activePhase];
-                const fundingRaised = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingRaised)) : 0;
-                const fundingThreshold = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingThreshold)) : 0;
-                return fundingThreshold > 0 ? Math.ceil(fundingRaised / fundingThreshold * 100) : 0;
-              })()
+              project?.vaultData?.activePhase - 1 >= project?.vaultData?.phases?.length ? 
+                100 :
+                (() => {
+                  const currentPhase: PhaseData | undefined = project?.vaultData?.phases[project.vaultData?.activePhase];
+                  const fundingRaised = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingRaised)) : 0;
+                  const fundingThreshold = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingThreshold)) : 0;
+                  return fundingThreshold > 0 ? Math.ceil(fundingRaised / fundingThreshold * 100) : 0;
+                })()
             } %
         </Typography>
           <Chip color="primary" label={
             (() => {
-              const fundingThreshold: ethers.utils.BigNumber | undefined = project?.vaultData?.phases[project.vaultData?.activePhase]?.fundingThreshold;
+              const fundingThreshold: number | undefined =  project?.vaultData?.activePhase > project?.vaultData?.phases?.length ?
+                project.vaultData ?
+                  Math.ceil(project.vaultData.phases.reduce((total, phase) =>
+                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)) :
+                  project.researchPhases.reduce((total, phase) =>
+                    total += phase.fundingGoal, 0) :
+                  Number(ethers.utils.formatEther(project?.vaultData?.phases[project.vaultData?.activePhase]?.fundingThreshold));
               return 'Funded of ' + Math.ceil(
-                Number(ethers.utils.formatEther(fundingThreshold ? fundingThreshold : 0))
+                fundingThreshold ? fundingThreshold : 0
               ).toLocaleString() + ' DAI';
             })()
           } />
