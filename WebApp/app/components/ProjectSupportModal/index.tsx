@@ -104,7 +104,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           autoFocus
           type='number'
           helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
-          value={contribution.toString(10)}
+          value={contribution === 0 || contribution ? contribution : ''}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
           inputProps={{
