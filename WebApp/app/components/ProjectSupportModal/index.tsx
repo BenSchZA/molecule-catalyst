@@ -10,8 +10,10 @@ import MoleculeSpinner from 'components/MoleculeSpinner/Loadable';
 import { getBlockchainObjects } from 'blockchainResources';
 import { NegativeButton, PositiveButton } from 'components/custom';
 import DaiIcon from 'components/DaiIcon/Loadable';
-import styles from './styles';
 import ProjectDisclaimer from 'components/ProjectDisclaimer';
+
+import styles from './styles';
+import UniswapExpansionPanel from 'components/UniswapExpansionPanel';
 
 interface Props extends WithStyles<typeof styles> {
   modalState: boolean,
@@ -97,6 +99,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           Your Account Balance
         </Typography>
         <ProjectDisclaimer />
+        <UniswapExpansionPanel />
         <TextField
           autoFocus
           type='number'
