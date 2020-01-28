@@ -37,8 +37,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   marketAddress,
   maxResearchContribution,
 }: Props) => {
-  const [contribution, setContribution] = useState(0);
-  const [projectTokenAmount, setProjectTokenAmount] = useState(0);
+  const minProjectContribution = 0.5;
+  const [contribution, setContribution] = useState<number|null>(minProjectContribution);
+  const [projectTokenAmount, setProjectTokenAmount] = useState(minProjectContribution);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,7 +47,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       const { signer } = await getBlockchainObjects();
       const market = new ethers.Contract(marketAddress, IMarket, signer);
 
-      const tokenValue = (contribution > 0) ?
+      const tokenValue = (contribution && contribution > 0) ?
         await market.collateralToTokenBuying(ethers.utils.parseEther(`${contribution}`))
         : 0;
       if (!cancelled) {
@@ -58,13 +59,13 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   }, [contribution]);
 
   const displayPrecision = 2;
-  const toResearcher = Number((contribution * contributionRate / 100).toFixed(displayPrecision));
-  const toIncentivePool = Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision));
-  const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + 0.01, daiBalance);
+  const toResearcher = contribution ? Number((contribution * contributionRate / 100).toFixed(displayPrecision)) : 0;
+  const toIncentivePool = contribution ? Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision)) : 0;
+  const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + minProjectContribution, daiBalance);
 
   const validateContribution = (value: string) => {
     if (value === '') {
-      setContribution(0);
+      setContribution(null);
       setProjectTokenAmount(0);
       return;
     }
@@ -103,12 +104,18 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         <TextField
           autoFocus
           type='number'
-          helperText={maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`}
+          helperText={
+            !contribution && 'Please enter a valid numeric value' ||
+            contribution && (
+              contribution < minProjectContribution && `Minimum contribution is ${minProjectContribution} DAI` ||
+              maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`
+            )
+          }
           value={contribution === 0 || contribution ? contribution : ''}
           onChange={(e) => validateContribution(e.target.value)}
           className={classes.input}
           inputProps={{
-            min: 0,
+            min: minProjectContribution,
             max: maxProjectContribution,
             step: 0.01
           }}
@@ -123,9 +130,9 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </Typography>
         <hr className={classes.divider} />
         <Typography className={classes.modalText}>
-        PLEASE NOTE: Your contribution will be split into two portions.
-        The first portion will go directly to the research funding vault that is controlled by the research lead.
-        The second portion will be added to the project stake reserve that determines the project token price.
+          PLEASE NOTE: Your contribution will be split into two portions.
+          The first portion will go directly to the research funding vault that is controlled by the research lead.
+          The second portion will be added to the project stake reserve that determines the project token price.
         </Typography>
         <section className={classes.fundingSplit}>
           <div>
@@ -153,7 +160,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           </div>
         </section>
         <Typography className={classes.modalText}>
-        As a reward for your contribution, you will receive a number of unique project tokens that represent your project stake. The value for these tokens changes but they can always be redeemed at their current price.
+          As a reward for your contribution, you will receive a number of unique project tokens that represent your project stake. The value for these tokens changes but they can always be redeemed at their current price.
         </Typography>
         <section className={classes.projectTokens}>
           <div className={classes.currency}>
@@ -176,8 +183,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             Cancel
           </PositiveButton>
           <NegativeButton
-            disabled={txInProgress || contribution > maxProjectContribution}
-            onClick={() => supportProject(contribution)}>
+            disabled={txInProgress || !contribution || contribution > maxProjectContribution || contribution < minProjectContribution}
+            onClick={() => contribution ? supportProject(contribution) : undefined}>
             Support Project
           </NegativeButton>
         </div>
