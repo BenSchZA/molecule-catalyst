@@ -13,7 +13,7 @@ const MarketRegistryABI = require('../build/MarketRegistry.json');
 const MarketFactoryABI = require('../build/MarketFactory.json');
 
 const defaultConfigs = {
-	chainId: 1,
+	chainId: Number(process.env.CHAIN_ID) || 4,
 	etherscanApiKey: process.env.ETHERSCAN_API_KEY,
 	gasPrice: 8000000000,
 };//	gasPrice: 10000000000,
