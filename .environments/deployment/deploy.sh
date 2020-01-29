@@ -62,7 +62,6 @@ spec:
   selector:
     matchLabels:
       app: molecule-frontend
-  
   # Pod template
   template:
     metadata:
@@ -101,7 +100,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: molecule-backend 
+  name: molecule-backend
   namespace: $NAMESPACE
   labels:
     app: molecule-backend
@@ -169,10 +168,10 @@ deploy() {
   elif [ $TAG == "staging" ]
   then
     ETHERS_NETWORK=rinkeby
-    NPM_CONTRACTS_VERSION=0_0_14 # Contract NPM package version
-    DAI_CONTRACT_ADDRESS=0xC36f9c2a26473F9e1acdbab3A9954039084C3F04
-    MARKET_REGISTRY_ADDRESS=0x01E609E31F5e74a1aC34d45F70428A60424Bc9838
-    MARKET_FACTORY_ADDRESS=0x3af48D3A727747ec4f82eb54B2c4f79b1522804C
+    NPM_CONTRACTS_VERSION=1_0_0 # Contract NPM package version
+    DAI_CONTRACT_ADDRESS=0xF5d2c840E4CB78eDd8b83b55395A341a9F077212
+    MARKET_REGISTRY_ADDRESS=0xA1878dA3baa3a8705794a2907BdAf43A1dd79889
+    MARKET_FACTORY_ADDRESS=0x570E9eac2D3756849faEFb6B54342ec8520E6c3E
     FRONTEND_HOST=staging.catalyst.molecule.to
   elif [ $TAG == "production" ]
   then

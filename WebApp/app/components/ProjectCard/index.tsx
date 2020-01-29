@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { lighten } from '@material-ui/core/styles';
 import { colors } from 'theme';
 import apiUrlBuilder from 'api/apiUrlBuilder';
-import { Project, ProjectSubmissionStatus } from 'domain/projects/types';
+import { Project, ProjectSubmissionStatus, PhaseData } from 'domain/projects/types';
 import { forwardTo } from 'utils/history';
 import { ethers } from 'ethers';
 
@@ -167,17 +167,29 @@ const ProjectCard: React.FunctionComponent<OwnProps> = ({ project, classes }: Ow
           <div className={classes.abstract}>{truncateText(project.abstract)}</div>
           <Typography className={classes.percentage}>
             {
-              (() => {
-                const totalRaised = Number(ethers.utils.formatEther(project.vaultData.totalRaised));
-                const totalFundingGoal = project.vaultData.phases.reduce((total, phase) =>
-                  total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0);
-                return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-              })()
+              project?.vaultData?.activePhase - 1 >= project?.vaultData?.phases?.length ? 
+                100 :
+                (() => {
+                  const currentPhase: PhaseData | undefined = project?.vaultData?.phases[project.vaultData?.activePhase];
+                  const fundingRaised = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingRaised)) : 0;
+                  const fundingThreshold = currentPhase ? Number(ethers.utils.formatEther(currentPhase.fundingThreshold)) : 0;
+                  return fundingThreshold > 0 ? Math.ceil(fundingRaised / fundingThreshold * 100) : 0;
+                })()
             } %
         </Typography>
           <Chip color="primary" label={
-            'Funded of ' + Math.ceil(project.vaultData.phases.reduce((total, phase) =>
-              total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)).toLocaleString() + ' DAI'
+            (() => {
+              const fundingThreshold: number | undefined =  project?.vaultData?.activePhase > project?.vaultData?.phases?.length ?
+                project.vaultData ?
+                  Math.ceil(project.vaultData.phases.reduce((total, phase) =>
+                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0)) :
+                  project.researchPhases.reduce((total, phase) =>
+                    total += phase.fundingGoal, 0) :
+                  Number(ethers.utils.formatEther(project?.vaultData?.phases[project.vaultData?.activePhase]?.fundingThreshold));
+              return 'Funded of ' + Math.ceil(
+                fundingThreshold ? fundingThreshold : 0
+              ).toLocaleString() + ' DAI';
+            })()
           } />
           <BorderLinearProgress
             className={classes.margin}
