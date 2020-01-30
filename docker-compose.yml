@@ -25,6 +25,7 @@ services:
         - APM_SERVER_ENDPOINT
         - APM_SECRET_TOKEN
         - SENTRY_DSN
+        - GA_TRACKING_ID
     depends_on:
       - core
   mongo:
