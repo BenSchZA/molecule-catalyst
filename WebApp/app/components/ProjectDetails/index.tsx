@@ -36,6 +36,7 @@ import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
+import ReactGA from 'react-ga';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
@@ -55,11 +56,21 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   const handleOpenSupportModal = () => {
     setModalMode('support')
     setModalState(true);
+
+    ReactGA.event({
+      category: "ProjectDetails",
+      action: "User opened the support modal",
+    });
   };
 
   const handleOpenRedeemModal = () => {
     setModalMode('redeem')
     setModalState(true);
+
+    ReactGA.event({
+      category: "ProjectDetails",
+      action: "User opened the redeem modal",
+    });
   };
 
   const handleClose = () => {
