@@ -61,7 +61,8 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
   const displayPrecision = 2;
   const toResearcher = contribution ? Number((contribution * contributionRate / 100).toFixed(displayPrecision)) : 0;
   const toIncentivePool = contribution ? Number((contribution - (contribution * contributionRate / 100)).toFixed(displayPrecision)) : 0;
-  const maxProjectContribution = Math.min((maxResearchContribution / contributionRate * 100) + minProjectContribution, daiBalance);
+  const maxProjectContribution = (maxResearchContribution / contributionRate * 100) + minProjectContribution;
+  const maxContribution = Math.min(maxProjectContribution, daiBalance);
 
   const validateContribution = (value: string) => {
     if (value === '') {
@@ -69,7 +70,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
       setProjectTokenAmount(0);
       return;
     }
-    const newValue = Math.min(maxProjectContribution, parseFloat(value));
+    const newValue = Math.min(maxContribution, parseFloat(value));
     !isNaN(newValue) && setContribution(newValue);
   }
 
@@ -93,7 +94,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
         </div>
         <hr className={classes.divider} />
         <DaiIcon />
-        <Typography className={classes.daiBalance} onClick={() => setContribution(maxProjectContribution)}>
+        <Typography className={classes.daiBalance} onClick={() => setContribution(maxContribution)}>
           {daiBalance ? daiBalance.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Typography>
         <Typography className={classes.modalText}>
@@ -107,8 +108,10 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           helperText={
             !contribution && 'Please enter a valid numeric value' ||
             contribution && (
+              daiBalance < minProjectContribution && `You need to get DAI, try Uniswap. The minimum contribution is ${minProjectContribution} DAI.` ||
               contribution < minProjectContribution && `Minimum contribution is ${minProjectContribution} DAI` ||
-              maxProjectContribution <= contribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI`
+              contribution >= maxProjectContribution && `Contribution was larger than remaining funding goal of ${maxProjectContribution.toFixed(displayPrecision)} DAI` ||
+              contribution > maxContribution && `Contribution was larger than DAI balance of ${maxContribution}`
             )
           }
           value={contribution === 0 || contribution ? contribution : ''}
@@ -116,7 +119,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
           className={classes.input}
           inputProps={{
             min: minProjectContribution,
-            max: maxProjectContribution,
+            max: maxContribution,
             step: 0.01
           }}
           InputProps={{
@@ -183,7 +186,7 @@ const ProjectSupportModal: React.FunctionComponent<Props> = ({
             Cancel
           </PositiveButton>
           <NegativeButton
-            disabled={txInProgress || !contribution || contribution > maxProjectContribution || contribution < minProjectContribution}
+            disabled={txInProgress || !contribution || contribution > maxContribution || contribution < minProjectContribution}
             onClick={() => contribution ? supportProject(contribution) : undefined}>
             Support Project
           </NegativeButton>
