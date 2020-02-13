@@ -190,7 +190,7 @@ const AppFooter: React.FunctionComponent<Props> = ({
           <a href="https://gitlab.com/linumlabs/molecule-alpha/">
             <FontAwesomeIcon className={classes.footerIcon} icon={faGitlab} color="white" size="2x" />
           </a>
-          <a href="https://discord.gg/cf3WTJ">
+          <a href="https://discord.gg/KPqEZmQ">
             <FontAwesomeIcon className={classes.footerIcon} icon={faDiscord} color="white" size="2x" />
           </a>
         </Grid>
