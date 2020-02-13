@@ -129,6 +129,7 @@ const styles = ({ spacing, palette }: Theme) =>
         padding: `0 ${fundingStatsSpacing}px`,
         position: "relative",
         flexGrow: 1,
+        alignItems: "center",
         "& p":{
           padding: "2.5px 0"
         },
