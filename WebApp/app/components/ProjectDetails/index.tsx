@@ -237,18 +237,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
         <article className={classes.fundingStatusSection} >
           <div>
-            <Typography className={classes.projectProgress}>
-              {
-                (() => {
-                  const totalRaised = project.vaultData ? Number(ethers.utils.formatEther(project?.vaultData?.totalRaised)) : 0;
-                  const totalFundingGoal = project.vaultData ? project.vaultData.phases.reduce((total, phase) =>
-                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0) : 0;
-                  return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-                })()
-              } %
-              </Typography>
-          </div>
-          <div>
             <Typography className={classes.fundingLabels}>
               Total Funding Goal
             </Typography>
