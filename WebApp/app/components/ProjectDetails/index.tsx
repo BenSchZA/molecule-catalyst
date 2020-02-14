@@ -36,6 +36,7 @@ import MarketChartLayout from 'components/MarketChartLayout';
 import styles from './styles';
 import { bigNumberify } from 'ethers/utils';
 import TransactionModalContainer from 'containers/TransactionModalContainer';
+import ReactGA from 'react-ga';
 
 interface OwnProps extends WithStyles<typeof styles> {
   project: Project;
@@ -55,11 +56,21 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
   const handleOpenSupportModal = () => {
     setModalMode('support')
     setModalState(true);
+
+    ReactGA.event({
+      category: "ProjectDetails",
+      action: "User opened the support modal",
+    });
   };
 
   const handleOpenRedeemModal = () => {
     setModalMode('redeem')
     setModalState(true);
+
+    ReactGA.event({
+      category: "ProjectDetails",
+      action: "User opened the redeem modal",
+    });
   };
 
   const handleClose = () => {
@@ -225,18 +236,6 @@ const ProjectDetails: React.FunctionComponent<OwnProps> = ({
         </div>
         <Typography className={classes.sectionTitleText} align="center">Funding Status</Typography>
         <article className={classes.fundingStatusSection} >
-          <div>
-            <Typography className={classes.projectProgress}>
-              {
-                (() => {
-                  const totalRaised = project.vaultData ? Number(ethers.utils.formatEther(project?.vaultData?.totalRaised)) : 0;
-                  const totalFundingGoal = project.vaultData ? project.vaultData.phases.reduce((total, phase) =>
-                    total += Number(ethers.utils.formatEther(phase.fundingThreshold)), 0) : 0;
-                  return totalRaised >= totalFundingGoal ? 100 : Math.ceil(totalRaised / totalFundingGoal * 100);
-                })()
-              } %
-              </Typography>
-          </div>
           <div>
             <Typography className={classes.fundingLabels}>
               Total Funding Goal

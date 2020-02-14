@@ -31,9 +31,15 @@ import { Router } from 'react-router';
 import theme from 'theme';
 import { SnackbarProvider } from 'notistack';
 import ScrollToTop from './scrollToTop';
+import ReactGA from 'react-ga';
 
 const persistedState = loadState();
 const store = configureStore(persistedState);
+
+history.listen(location => {
+  ReactGA.set({ page: location.pathname }); // Update the user's current page
+  ReactGA.pageview(location.pathname); // Record a pageview for the given page
+});
 
 store.subscribe(throttle(() => {
   saveState({
