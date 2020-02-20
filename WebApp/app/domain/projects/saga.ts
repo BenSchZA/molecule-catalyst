@@ -21,6 +21,7 @@ import io from 'socket.io-client';
 import apiUrlBuilder from 'api/apiUrlBuilder';
 import TransactionSuccessNotification from 'components/TransactionSuccessNotification';
 import React from 'react';
+import ReactGA from 'react-ga';
 
 let socket;
 
@@ -101,6 +102,11 @@ export function* supportProject(action) {
     ));
     console.log(error);
   }
+
+  ReactGA.event({
+    category: "ProjectsSaga",
+    action: "supportProject",
+  });
 }
 
 export function* withdrawRedistribution(action) {

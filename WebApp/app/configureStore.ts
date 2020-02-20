@@ -8,11 +8,18 @@ import createSagaMiddleware from 'redux-saga';
 import { LifeStore, ApplicationRootState } from 'types';
 import { init as initApm } from '@elastic/apm-rum';
 import * as Sentry from '@sentry/browser';
+import ReactGA from 'react-ga';
 
 const PRODUCTION = process.env.SENTRY_DSN;
 
 if(PRODUCTION) {
   Sentry.init({dsn: `${process.env.SENTRY_DSN}`});
+
+  const trackingId = `${process.env.GA_TRACKING_ID}`; // Replace with your Google Analytics tracking ID
+  ReactGA.initialize(trackingId);
+  ReactGA.set({
+    env: process.env.APP_NAME, 
+  });
 }
 
 const getPageName = () => {
