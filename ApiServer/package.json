@@ -48,7 +48,7 @@
     "@nestjs/websockets": "^6.8.3",
     "@panterazar/nestjs-prom": "0.0.5",
     "@sentry/node": "^5.8.0",
-    "bcrypt": "^3.0.4",
+    "bcrypt": "^5.0.0",
     "class-transformer": "0.2.3",
     "class-validator": "^0.9.1",
     "compression": "^1.7.3",
