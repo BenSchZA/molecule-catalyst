@@ -57,7 +57,7 @@
     "ethers": "4.0.38",
     "helmet": "^3.15.0",
     "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mongodb-uri": "^0.9.7",
     "mongoose": "^5.4.19",
     "mongoose-gridfs": "^0.6.2",
